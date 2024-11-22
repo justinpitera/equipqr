@@ -22,6 +22,30 @@ node_modules
 .DS_Store
 Thumbs.db
 
+# python generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# venv
+.venv
+
+# Node packages
+node_modules
+
+# Output
+.output
+.vercel
+.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
 # Env
 .env
 .env.*
@@ -31,3 +55,5 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+.svelte-kit

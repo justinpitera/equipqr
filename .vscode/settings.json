@@ -3,5 +3,16 @@
         "connectionId": "https-sonarqube-justinpitera-com-9005-",
         "projectKey": "zeki_fejlmelings_7ed5815c-cfdc-4821-8bbe-5d1dcfad446a"
     },
-
+    "files.exclude": {
+        ".vscode": true,
+        ".gitlab-ci.yml": true,
+        "__pycache__": true,
+        "**/.venv": true,
+        "**/.python-version": true,
+        "**/*.lock*": true,
+        "**/.npmrc": true,
+        "**/node_modules": true,
+        "**/.svelte-kit": true,
+        "api/web": true,
+    },
 }
