@@ -6,7 +6,7 @@
     "files.exclude": {
         ".vscode": true,
         ".gitlab-ci.yml": true,
-        "__pycache__": true,
+        "**/__pycache__": true,
         "**/.venv": true,
         "**/.python-version": true,
         "**/*.lock*": true,
