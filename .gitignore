@@ -1,0 +1,8 @@
+# Certificate/Key bundles
+private/
+private/**/*.pem
+private/**/*.crt
+private/**/*.key
+
+# Built web files
+api/web

@@ -1,0 +1,17 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "https-sonarqube-justinpitera-com-9005-",
+        "projectKey": "pitera-co_pyvanguard_e71207a6-77b2-4cda-94fb-9fc282fe2d5d"
+    },
+    "files.exclude": {
+        ".vscode": true,
+        ".gitlab-ci.yml": true,
+        "__pycache__": true,
+        "**/.venv": true,
+        "**/.python-version": true,
+        "**/*.lock*": true,
+        "**/.npmrc": true,
+        "**/node_modules": true,
+        "**/.svelte-kit": true
+    },
+}

@@ -1,0 +1,58 @@
+image: 
+    name: sonarsource/sonar-scanner-cli:11.1.1.1661_6.2.1 
+    entrypoint: [""]
+
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  GIT_DEPTH: "0"
+
+stages:
+  - sonarqube-check-api
+  - sonarqube-check-svelte
+
+sonarqube-check-api:
+  stage: sonarqube-check-api
+  
+  script: 
+    - |
+      sonar-scanner \
+        -Dsonar.host.url="${SONAR_HOST_URL}" \
+        -Dsonar.projectBaseDir="${CI_PROJECT_DIR}/api" \
+        -Dsonar.sources="src" \
+        -Dsonar.exclusions="**/tests/**,**/__pycache__/**" \
+        -Dsonar.python.version="3.12.6" \
+        -Dsonar.projectKey="${SONAR_PROJECT_KEY}"
+
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      allow_failure: false
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      allow_failure: false
+    - if: '$CI_COMMIT_BRANCH != "main"'
+      allow_failure: true
+  when: always
+
+
+sonarqube-check-svelte:
+  stage: sonarqube-check-svelte
+  script: 
+    - |
+      sonar-scanner \
+        -Dsonar.host.url="${SONAR_HOST_URL}" \
+        -Dsonar.projectBaseDir="${CI_PROJECT_DIR}/svelte" \
+        -Dsonar.sources="src" \
+        -Dsonar.exclusions="**/*.test.ts,**/*.spec.ts" \
+        -Dsonar.language="TypeScript" \
+        -Dsonar.typescript.tsconfigPath="tsconfig.json" \
+        -Dsonar.svelte.file.suffixes=".svelte" \
+        -Dsonar.projectKey="${SONAR_PROJECT_KEY}"
+
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      allow_failure: false
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      allow_failure: false
+    - if: '$CI_COMMIT_BRANCH != "main"'
+      allow_failure: true
+  when: always
+
