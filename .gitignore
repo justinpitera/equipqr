@@ -1,8 +1,11 @@
+# Database migrations
+migrations/
+
 # Certificate/Key bundles
 private/
-private/**/*.pem
-private/**/*.crt
-private/**/*.key
+**/*.pem
+**/*.crt
+**/*.key
 
 # Built web files
 api/web

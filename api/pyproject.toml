@@ -39,6 +39,6 @@ packages = ["src"]
 start = "python -m src.main"
 
 [tool.aerich]
-tortoise_orm = "src.api.TORTOISE_CONFIG"
+tortoise_orm = "src.TORTOISE_CONFIG"
 location = "./migrations"
 src_folder = "./."
