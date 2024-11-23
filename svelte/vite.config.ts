@@ -7,6 +7,7 @@ import toml from 'toml';
 import forge from 'node-forge';
 import type { IncomingMessage } from 'node:http';
 import type { ClientRequest } from 'node:http';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // Load configuration file
 const configPath: string = path.resolve(__dirname, '../private/configurations/vite.config.toml');
@@ -145,7 +146,38 @@ const useHttps = config.server.use_https;
 const wsProtocol = useHttps ? 'wss' : 'ws';
 
 const viteConfig = {
-  plugins: [sveltekit(), startupDetailPlugin()],
+  plugins: [
+    sveltekit(),
+    startupDetailPlugin(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'My SvelteKit App',
+        short_name: 'SvelteApp',
+        description: 'A SvelteKit PWA Application',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        icons: [
+          {
+            src: '/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png}'],
+      },
+    }),
+  
+  
+  ],
   css: {
     postcss: './postcss.config.js',
   },
