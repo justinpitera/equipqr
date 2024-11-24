@@ -1,5 +1,5 @@
 """
-src/models/__init__.py - Database initialization module.
+src/models/GroundSupportEquiptment.py - Tortoise-ORM model for Ground Support Equiptment used throughout various airport services.
 
 Date: November 23, 2024
 
@@ -24,9 +24,7 @@ from tortoise.models import Model
 
 
 class GroundSupportEquiptment(Model):
-    """
-    Database model to represent various ground support equiptment (GSEs).
-    """
+    """Database model to represent various ground support equiptment (GSEs)."""
     id                               : Field[UUID]   = UUIDField(pk=True)
     gse_id                           : Field[str]    = CharField(max_length=255)
     old_gse_id                       : Field[str]    = CharField(null=True, max_length=255)
