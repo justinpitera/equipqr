@@ -1,6 +1,9 @@
 # Database migrations
 migrations/
 
+# Database csv
+database.csv
+
 # Certificate/Key bundles
 private/
 **/*.pem
