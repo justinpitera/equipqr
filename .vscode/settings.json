@@ -13,6 +13,6 @@
         "**/.npmrc": true,
         "**/node_modules": true,
         "**/.svelte-kit": true,
-        "api/web": true
+        "api/web": false 
     }
 }

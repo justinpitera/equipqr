@@ -13,5 +13,6 @@ from enum import Enum
 
 class CrewMemberPositionEnum(str, Enum):
     """Enum to describe crew member positions."""
-    GROUND_CREW   = "Ground Crew"
-    MECHANIC_CREW = "Mechanic Crew"
+    GROUND   = "Ground"
+    MECHANIC = "Mechanic"
+    MANAGEMENT = "Management"

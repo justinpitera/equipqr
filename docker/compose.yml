@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:latest
+    restart: always
     container_name: fejlmelings-postgres
     environment:
       POSTGRES_USER: "${POSTGRES_USERNAME}"

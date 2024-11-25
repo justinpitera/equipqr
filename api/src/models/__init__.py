@@ -9,8 +9,10 @@ Authors:
 
 from src.models.CrewMember import CrewMember
 from src.models.GroundSupportEquiptment import GroundSupportEquiptment
+from src.models.ImportMetadata import ImportMetadata
 
 __all__: list[str] = [
     "GroundSupportEquiptment",
     "CrewMember",
+    "ImportMetadata",
 ]
