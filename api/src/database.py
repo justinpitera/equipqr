@@ -151,7 +151,3 @@ async def database_importer() -> None:
         await GroundSupportEquiptment.bulk_create(records, batch_size=100)
         logger.info(f"Imported {len(records)} records successfully.")
     else:
-        logger.warning("No valid records found for import.")
-
-    await ImportMetadata.create(file_name=file_name, imported_at=datetime.now(timezone))
-    logger.info("Legacy database import completed.")
