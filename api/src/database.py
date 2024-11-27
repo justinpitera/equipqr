@@ -8,12 +8,14 @@ Authors:
 """
 
 # Standard
+import re
 import math
 from datetime import datetime
 
 # Third-party
 from loguru import logger
 import pandas as pd
+import pytz
 
 # Local
 from . import API_CONFIG
@@ -21,6 +23,7 @@ from src.models import GroundSupportEquiptment, ImportMetadata
 
 # Init
 LEGACY_CSV_PATH: str = API_CONFIG["database"]["legacy_path"]
+timezone = pytz.UTC
 
 def clean_value(value, field_name):
     """Converts NaN or invalid values to None for database compatibility."""
@@ -28,16 +31,21 @@ def clean_value(value, field_name):
         return None
     return value
 
-def clean_numeric_value(value, field_name, numeric_type=int):
-    """Cleans numeric values by removing commas and converting them to integers or floats."""
-    value = clean_value(value, field_name)
-    if value is None:
-        return None
+def clean_numeric_value(value, field_name: str, numeric_type: type[int | float] = int):
+    """
+    Cleans numeric values by removing letters, commas, and other non-numeric characters,
+    then converts them to the specified numeric type (int or float).
+    """
     try:
+        if value is None or pd.isna(value):
+            return None
+        if isinstance(value, (int, float)):
+            return numeric_type(value)
         if isinstance(value, str):
-            # Remove commas and convert to the specified numeric type
-            value = numeric_type(value.replace(",", ""))
-        return numeric_type(value)
+            # Remove non-numeric characters except for a decimal point
+            cleaned_value = re.sub(r"[^\d.]", "", value)
+            # Convert to the specified numeric type
+            return numeric_type(cleaned_value)
     except (ValueError, TypeError) as e:
         logger.warning(f"Invalid numeric value in field '{field_name}': {value}. Error: {e}")
     return None
@@ -51,14 +59,20 @@ def safe_parse_date(value, field_name):
             # Handle UNIX timestamps
             return datetime.fromtimestamp(value)
         if isinstance(value, str):
-            return datetime.fromisoformat(value)
+            try:
+                # Attempt ISO format first
+                return datetime.fromisoformat(value)
+            except ValueError:
+                # Handle other common formats
+                return datetime.strptime(value, "%m/%d/%Y")  # Adjust formats as needed
     except Exception as e:
         logger.warning(f"Invalid date in field '{field_name}': {value}. Error: {e}")
     return None
 
 async def database_importer() -> None:
-    """Imports data from the legacy CSV-style database with detailed logging for invalid data."""
-    logger.info("Importing legacy database...")
+    """Imports data from the legacy CSV-style database with detailed logging."""
+    logger.info("Starting legacy database import...")
+
     file_name = LEGACY_CSV_PATH.split("/")[-1]
     existing_import = await ImportMetadata.filter(file_name=file_name).first()
     
@@ -69,13 +83,13 @@ async def database_importer() -> None:
     try:
         df = pd.read_csv(LEGACY_CSV_PATH)
     except Exception as e:
-        logger.error(f"Failed to read CSV file '{LEGACY_CSV_PATH}'. Error: {e}")
+        logger.error(f"Error reading CSV: {e}")
         return
 
-    records = []
-    for index, row in df.iterrows():
+    def parse_row(row):
+        """Utility to parse and clean a row into a record object."""
         try:
-            record = GroundSupportEquiptment(
+            return GroundSupportEquiptment(
                 gse_id=row["gse_id"],
                 old_gse_id=clean_value(row["old_gse_id"], "old_gse_id"),
                 gse_type=clean_value(row["gse_type"], "gse_type"),
@@ -106,7 +120,7 @@ async def database_importer() -> None:
                 deice_type=clean_value(row["deice_type"], "deice_type"),
                 hot_type4=clean_value(row["hot_type4"], "hot_type4"),
                 glycol=clean_value(row["glycol"], "glycol"),
-                capacity=clean_numeric_value(row["capacity"], "capacity", float),
+                capacity=clean_value(row["capacity"], "capacity"),
                 ac_type=clean_value(row["ac_type"], "ac_type"),
                 single_double_max_ppm=clean_numeric_value(row["single_double_max_ppm"], "single_double_max_ppm", float),
                 power=clean_numeric_value(row["power"], "power", float),
@@ -126,16 +140,18 @@ async def database_importer() -> None:
                 item_type=clean_value(row["item_type"], "item_type"),
                 path=clean_value(row["path"], "path"),
             )
-
-            records.append(record)
         except Exception as e:
-            logger.error(f"Failed to process row {index}: {row.to_dict()}. Error: {e}")
+            logger.error(f"Row parsing failed: {row.to_dict()} | Error: {e}")
+            return None
+
+    records = [parse_row(row) for _, row in df.iterrows()]
+    records = [record for record in records if record]  # Filter out failed rows
 
     if records:
-        try:
-            await GroundSupportEquiptment.bulk_create(records)
-            logger.success("Legacy database imported successfully!")
-        except Exception as e:
-            logger.error(f"Failed to bulk insert records. Error: {e}")
+        await GroundSupportEquiptment.bulk_create(records, batch_size=100)
+        logger.info(f"Imported {len(records)} records successfully.")
     else:
-        logger.warning("No valid records to import.")
+        logger.warning("No valid records found for import.")
+
+    await ImportMetadata.create(file_name=file_name, imported_at=datetime.now(timezone))
+    logger.info("Legacy database import completed.")

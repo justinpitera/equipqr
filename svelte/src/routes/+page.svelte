@@ -53,19 +53,23 @@
     const codeReader = new BrowserMultiFormatReader();
 
     try {
-      await codeReader.decodeFromVideoDevice(
-        undefined,
-        videoElement,
-        (result) => {
-          if (result) {
-            qrCodeData.set(result.getText());
-            productName.set(result.getText());
-            showPopup.set(true);
-            codeReader.reset();
-            stopCamera();
+      if (videoElement) {
+        // Ensure videoElement is not null
+        await codeReader.decodeFromVideoDevice(
+          undefined,
+          videoElement,
+          (result) => {
+            if (result) {
+              qrCodeData.set(result.getText());
+              productName.set(result.getText());
+              showPopup.set(true);
+              stopCamera();
+            }
           }
-        }
-      );
+        );
+      } else {
+        console.error("Video element is not initialized.");
+      }
     } catch (error) {
       console.error("QR scanning error:", error);
     }
@@ -263,13 +267,6 @@
 {/if}
 
 <style>
-  .popup-backdrop {
-    @apply fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50;
-  }
-
-  .popup-content {
-    @apply bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl h-auto relative;
-  }
   .camera-feed {
     position: absolute;
     top: 0;
