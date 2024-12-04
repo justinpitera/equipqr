@@ -148,15 +148,9 @@ async def database_importer() -> None:
     records = [record for record in records if record]  # Filter out failed rows
 
     if records:
-        try:
-            await GroundSupportEquiptment.bulk_create(records)
-            logger.success("Legacy database imported successfully!")
-            # Add entry to ImportMetadata
-            await ImportMetadata.create(file_name=file_name, imported_at=datetime.utcnow())
-        except Exception as e:
-            logger.error(f"Failed to bulk insert records. Error: {e}")
+        await GroundSupportEquiptment.bulk_create(records, batch_size=100)
+        logger.info(f"Imported {len(records)} records successfully.")
     else:
-        logger.warning("No valid records to import.")
         logger.warning("No valid records found for import.")
 
     await ImportMetadata.create(file_name=file_name, imported_at=datetime.now(timezone))

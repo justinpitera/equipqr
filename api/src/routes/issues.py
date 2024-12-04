@@ -14,6 +14,7 @@ Authors:
 # Standard
 
 # Third-party
+from typing import Any
 from pydantic import BaseModel
 from starlette.requests import Request
 
@@ -25,6 +26,13 @@ class _GSEDetailsRequest(BaseModel):
 
 class _GSEIssueSubmission(BaseModel):
     gse_id: str
+    is_operable: bool
+    issue_
 
 async def submit_issue(request: Request):
+    body: dict[str, Any] = await request.json()
+    submitted_issue_data: _GSEIssueSubmission = _GSEIssueSubmission(**body)
+    
+    is_operable: bool = submitted_issue_data.is_operable
+    issue_desc
     return
