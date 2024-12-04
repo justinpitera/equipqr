@@ -1,136 +1,147 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { writable } from "svelte/store";
-  import { BrowserMultiFormatReader } from "@zxing/browser";
+import { onMount } from "svelte";
+import { writable } from "svelte/store";
+import { BrowserMultiFormatReader } from "@zxing/browser";
 
-  let videoElement: HTMLVideoElement | null = null;
-  let canvasElement: HTMLCanvasElement | null = null;
+let videoElement: HTMLVideoElement | null = null;
+let canvasElement: HTMLCanvasElement | null = null;
 
-  const qrCodeData = writable<string | null>(null);
-  const showPopup = writable<boolean>(false);
-  const productName = writable<string | null>(null);
+const qrCodeData = writable<string | null>(null);
+const showPopup = writable<boolean>(false);
+const productName = writable<string | null>(null);
 
-  let stream: MediaStream | null = null;
-  let operable = "";
-  const maxFiles = 4;
+let stream: MediaStream | null = null;
+let operable = "";
+const maxFiles = 4;
 
-  function stopCamera() {
-    if (stream) {
-      for (const track of stream.getTracks()) {
-        track.stop()
-      }
-      stream = null;
-    }
-  }
+function stopCamera() {
+	if (stream) {
+		for (const track of stream.getTracks()) {
+			track.stop();
+		}
+		stream = null;
+	}
+}
 
-  async function startCamera() {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
-      });
+async function startCamera() {
+	try {
+		stream = await navigator.mediaDevices.getUserMedia({
+			video: { facingMode: "environment" },
+		});
 
-      if (videoElement) {
-        videoElement.srcObject = stream;
-        await videoElement.play();
-        scanQRCode(); // Start scanning QR codes once the camera feed is ready
-      } else {
-        console.error("Video element is not available.");
-      }
-    } catch (error) {
-      console.error("Error starting camera:", error);
-      qrCodeData.set("Unable to access the camera.");
-    }
-  }
+		if (videoElement) {
+			videoElement.srcObject = stream;
+			await videoElement.play();
+			scanQRCode(); // Start scanning QR codes once the camera feed is ready
+		} else {
+			console.error("Video element is not available.");
+		}
+	} catch (error) {
+		console.error("Error starting camera:", error);
+		qrCodeData.set("Unable to access the camera.");
+	}
+}
 
-  function triggerFileInput(): void {
-    const fileInput = document.getElementById("file-input") as HTMLInputElement;
-    if (fileInput) {
-      fileInput.click();
-    } else {
-      console.error("File input element not found.");
-    }
-  }
+function triggerFileInput(): void {
+	const fileInput = document.getElementById("file-input") as HTMLInputElement;
+	if (fileInput) {
+		fileInput.click();
+	} else {
+		console.error("File input element not found.");
+	}
+}
 
-  async function scanQRCode() {
-    const codeReader = new BrowserMultiFormatReader();
+async function scanQRCode() {
+	const codeReader = new BrowserMultiFormatReader();
 
-    try {
-      if (videoElement) {
-        // Ensure videoElement is not null
-        await codeReader.decodeFromVideoDevice(
-          undefined,
-          videoElement,
-          (result) => {
-            if (result) {
-              qrCodeData.set(result.getText());
-              productName.set(result.getText());
-              showPopup.set(true);
-              stopCamera();
-            }
-          }
-        );
-      } else {
-        console.error("Video element is not initialized.");
-      }
-    } catch (error) {
-      console.error("QR scanning error:", error);
-    }
-  }
+	try {
+		if (videoElement) {
+			// Ensure videoElement is not null
+			await codeReader.decodeFromVideoDevice(
+				undefined,
+				videoElement,
+				(result) => {
+					if (result) {
+						qrCodeData.set(result.getText());
+						productName.set(result.getText());
+						showPopup.set(true);
+						stopCamera();
+					}
+				},
+			);
+		} else {
+			console.error("Video element is not initialized.");
+		}
+	} catch (error) {
+		console.error("QR scanning error:", error);
+	}
+}
 
-  function closePopup() {
-    showPopup.set(false);
-    startCamera();
-  }
+function closePopup() {
+	showPopup.set(false);
+	startCamera();
+}
 
-  onMount(() => {
-    if (videoElement) {
-      startCamera();
-    }
+console.log("+page.svelte updated")
+async function getAppVersion() {
+	try {
+		const request = await fetch("/api/version");
+		const response = request.json();
+		console.log(response);
+	} catch (e) {
+		console.error(e);
+	}
+}
 
-    const fileInput = document.getElementById("file-input") as HTMLInputElement;
-    const fileList = document.getElementById("file-list") as HTMLUListElement;
+onMount(() => {
+  getAppVersion();
 
-    function handleFileUpload(event: Event): void {
-      const target = event.target as HTMLInputElement;
-      const files = Array.from(target.files || []);
+	if (videoElement) {
+		startCamera();
+	}
 
-      if (files.length > maxFiles) {
-        alert(`You can only upload up to ${maxFiles} files.`);
-        fileInput.value = "";
-        return;
-      }
+	const fileInput = document.getElementById("file-input") as HTMLInputElement;
+	const fileList = document.getElementById("file-list") as HTMLUListElement;
 
-      fileList.innerHTML = "";
+	function handleFileUpload(event: Event): void {
+		const target = event.target as HTMLInputElement;
+		const files = Array.from(target.files || []);
 
-      files.forEach((file, index) => {
-        const listItem = document.createElement("li");
-        listItem.textContent = `${index + 1}. ${file.name}`;
-        fileList.appendChild(listItem);
-      });
-    }
+		if (files.length > maxFiles) {
+			alert(`You can only upload up to ${maxFiles} files.`);
+			fileInput.value = "";
+			return;
+		}
 
-    function handleFormSubmit(event: Event): void {
-      event.preventDefault();
+		fileList.innerHTML = "";
 
-      const productDetails = (
-        document.getElementById("product-details") as HTMLTextAreaElement
-      ).value;
-      const issueDescription = (
-        document.getElementById("issue-description") as HTMLTextAreaElement
-      ).value;
+		files.forEach((file, index) => {
+			const listItem = document.createElement("li");
+			listItem.textContent = `${index + 1}. ${file.name}`;
+			fileList.appendChild(listItem);
+		});
+	}
 
-      alert(
-        `Form submitted with the following details:\nProduct Details: ${productDetails}\nIssue Description: ${issueDescription}\nNumber of Files: ${(fileInput.files || []).length}`
-      );
-    }
+	function handleFormSubmit(event: Event): void {
+		event.preventDefault();
 
-    fileInput.addEventListener("change", handleFileUpload);
-    document
-      .querySelector("form")
-      ?.addEventListener("submit", handleFormSubmit);
+		const productDetails = (
+			document.getElementById("product-details") as HTMLTextAreaElement
+		).value;
+		const issueDescription = (
+			document.getElementById("issue-description") as HTMLTextAreaElement
+		).value;
 
-    return stopCamera;
-  });
+		alert(
+			`Form submitted with the following details:\nProduct Details: ${productDetails}\nIssue Description: ${issueDescription}\nNumber of Files: ${(fileInput.files || []).length}`,
+		);
+	}
+
+	fileInput.addEventListener("change", handleFileUpload);
+	document.querySelector("form")?.addEventListener("submit", handleFormSubmit);
+
+	return stopCamera;
+});
 </script>
 
 <div

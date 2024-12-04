@@ -1,4 +1,5 @@
 qr_codes
+qr_codes_page.html
 
 # Database migrations
 migrations/
