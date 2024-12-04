@@ -21,6 +21,7 @@ from loguru import logger
 # Local
 from . import API_CONFIG, TORTOISE_CONFIG
 from src.routes.index import homepage
+from src.routes.health import get_status
 from src.database import database_importer
 
 @asynccontextmanager
@@ -52,7 +53,10 @@ def init_asgi() -> Starlette:
         allow_methods=API_CONFIG["cors"]["allow_methods"],
         allow_headers=API_CONFIG["cors"]["allow_headers"]
     )
-    
+
+    # Health
+    _ASGI.add_route("/health/status", get_status, methods=["GET"])
+        
     # Index    
     _ASGI.mount("/", StaticFiles(directory="web", html=True), name="_app")
     _ASGI.add_route("/{path:path}", homepage, methods=["GET"]) # Handles Index subpaths
