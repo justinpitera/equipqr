@@ -11,7 +11,6 @@
         "**/.python-version": true,
         "**/*.lock*": true,
         "**/.npmrc": true,
-        "**/node_modules": true,
         "**/.svelte-kit": true,
         "api/web": false 
     }
