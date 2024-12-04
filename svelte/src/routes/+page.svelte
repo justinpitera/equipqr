@@ -82,16 +82,23 @@ function closePopup() {
 	startCamera();
 }
 
-console.log("+page.svelte updated")
 async function getAppVersion() {
 	try {
-		const request = await fetch("/api/version");
-		const response = request.json();
-		console.log(response);
+		const request = await fetch("/api/health/status");
+		const response = await request.json();
+		console.log("%cAviation Management Panel", "font-size: 28px; color: #1e90ff; font-weight: bold; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);");
+		if (response.version) 
+    console.log(`%cVersion: %c${response.version}`, "font-size: 20px; color: wheat; font-weight: bold;", "font-size: 20px; color: #32cd32; font-weight: bold;");
+		if (response.status === "healthy") {
+			console.log(`%cStatus: ${response.status}`, "color: green; font-size: 18px; font-weight: bold;");
+		} else {
+			console.log(`%cStatus: ${response.status}`, "color: red; font-size: 18px; font-weight: bold;");
+		}
 	} catch (e) {
-		console.error(e);
+		console.error("%cError fetching status", "color: red; font-size: 18px; font-weight: bold;", e);
 	}
 }
+
 
 onMount(() => {
   getAppVersion();
@@ -137,7 +144,7 @@ onMount(() => {
 		);
 	}
 
-	fileInput.addEventListener("change", handleFileUpload);
+	fileInput?.addEventListener("change", handleFileUpload);
 	document.querySelector("form")?.addEventListener("submit", handleFormSubmit);
 
 	return stopCamera;
