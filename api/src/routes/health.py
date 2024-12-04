@@ -21,6 +21,7 @@ async def get_status(request: Request) -> JSONResponse:
     response: JSONResponse = JSONResponse(
         status_code=200,
         content={
+            "status": "healthy",
             "version": API_VERSION
         }
     )

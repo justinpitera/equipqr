@@ -15,14 +15,17 @@ from pathlib import Path
 from granian import Granian
 from granian.constants import Interfaces
 from granian.log import LogLevels
-from colorama import Fore, Style
+from colorama import Fore, Style, init as init_colorama
 from starlette.applications import Starlette
 
 # Local
 from . import API_STARTUP_MESSAGE, API_CONFIG
 from src.asgi import init_asgi
 
+# Initialization
 _: Starlette = init_asgi()
+init_colorama(autoreset=True)
+
 
 async def _main() -> None:
     _GRANIAN_SERVER: Granian = Granian(
