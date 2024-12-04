@@ -16,7 +16,9 @@
 
   function stopCamera() {
     if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
+      for (const track of stream.getTracks()) {
+        track.stop()
+      }
       stream = null;
     }
   }
@@ -118,10 +120,7 @@
       ).value;
 
       alert(
-        "Form submitted with the following details:\n" +
-          `Product Details: ${productDetails}\n` +
-          `Issue Description: ${issueDescription}\n` +
-          `Number of Files: ${(fileInput.files || []).length}`
+        `Form submitted with the following details:\nProduct Details: ${productDetails}\nIssue Description: ${issueDescription}\nNumber of Files: ${(fileInput.files || []).length}`
       );
     }
 
