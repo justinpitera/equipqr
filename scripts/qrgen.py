@@ -6,6 +6,8 @@ from concurrent.futures import ThreadPoolExecutor
 import qrcode
 import qrcode.image.svg
 from xml.etree import ElementTree as ET
+import webbrowser
+from tqdm import tqdm
 
 method = 'basic'
 
@@ -29,7 +31,6 @@ def fix_svg_namespace(svg_file_path):
         content = content.replace('xmlns:svg', 'xmlns')
         with open(svg_file_path, 'w', encoding='utf-8') as file:
             file.write(content)
-        print(f"Fixed file: {svg_file_path}")
     except Exception as e:
         print(f"Error fixing file {svg_file_path}: {e}")
 
@@ -38,36 +39,33 @@ def generate_qr_code_with_label(gse_id_value, output_dir="../qr_codes"):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         
-        # Increase box_size for better quality (300 DPI)
         qr = qrcode.make(str(gse_id_value),
                          image_factory=factory,
                          error_correction=qrcode.constants.ERROR_CORRECT_H,
                          border=4,
-                         box_size=30)  # Adjusted for print quality
+                         box_size=30)
 
         qr_file_path = os.path.join(output_dir, f"{gse_id_value}.svg")
         qr.save(qr_file_path)
         tree = ET.parse(qr_file_path)
         root = tree.getroot()
 
-        # Center the label at the top
         label = ET.Element('text', {
-            'x': '50%',  # Center horizontally
-            'y': '40',   # Position label just above the QR code
+            'x': '50%',
+            'y': '40',
             'text-anchor': 'middle',
-            'font-size': '30',  # Adjust font size for better visibility
-            'font-family': 'Arial-Bold',  # Use a bold font
+            'font-size': '30',
+            'font-family': 'Arial-Bold',
             'fill': 'black'
         })
         label.text = gse_id_value
         root.append(label)
         tree.write(qr_file_path)
         fix_svg_namespace(qr_file_path)
-        print(f"QR Code with label generated for gse_id: {gse_id_value}")
     except Exception as e:
         print(f"Error generating QR Code for gse_id {gse_id_value}: {e}")
 
-def generate_html(input_csv, output_html_file="qr_codes_page.html"):
+def generate_qr_html_printer(input_csv, output_html_file="qr_codes_page.html"):
     try:
         df = pd.read_csv(input_csv)
         if 'gse_id' not in df.columns:
@@ -75,16 +73,11 @@ def generate_html(input_csv, output_html_file="qr_codes_page.html"):
             sys.exit(1)
         gse_ids = df['gse_id'].unique()
 
-        # Generate QR codes
-        for gse_id in gse_ids:
+        for gse_id in tqdm(gse_ids, desc="Generating QR codes", unit="QR", ncols=100):
             generate_qr_code_with_label(gse_id)
 
-        # Create HTML with embedded QR codes
-        qr_images = []
-        for gse_id in gse_ids:
-            qr_images.append(f"../qr_codes/{gse_id}.svg")
+        qr_images = [f"../qr_codes/{gse_id}.svg" for gse_id in gse_ids]
 
-        # Load template and generate HTML
         html_template = """
         <!DOCTYPE html>
         <html lang="en">
@@ -93,40 +86,12 @@ def generate_html(input_csv, output_html_file="qr_codes_page.html"):
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>QR Codes</title>
             <style>
-                @page {
-                    size: A4;
-                    margin: 0;
-                }
-                body {
-                    font-family: Arial, sans-serif;
-                    margin: 0;
-                    padding: 0;
-                }
-                .qr-page {
-                    page-break-before: always;
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: space-between;
-                }
-                .qr-code {
-                    width: 47%;
-                    margin-bottom: 10px;
-                    display: flex;
-                    justify-content: center;
-                }
-                .qr-code img {
-                    width: 100%;
-                    height: auto;
-                }
-                @media print {
-                    body {
-                        margin: 0;
-                        padding: 0;
-                    }
-                    .qr-page {
-                        page-break-before: always;
-                    }
-                }
+                @page { size: A4; margin: 0; }
+                body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+                .qr-page { page-break-before: always; display: flex; flex-wrap: wrap; justify-content: space-between; }
+                .qr-code { width: 47%; display: flex; justify-content: center; }
+                .qr-code img { width: 100%; height: auto; }
+                @media print { body { margin: 0; padding: 0; } .qr-page { page-break-before: always; } }
             </style>
         </head>
         <body>
@@ -147,11 +112,11 @@ def generate_html(input_csv, output_html_file="qr_codes_page.html"):
         template = Template(html_template)
         html_output = template.render(qr_images=qr_images)
 
-        # Write to HTML file
         with open(output_html_file, "w") as file:
             file.write(html_output)
 
         print(f"HTML file with QR codes generated: {output_html_file}")
+        webbrowser.open('file://' + os.path.realpath(output_html_file))
 
     except Exception as e:
         print(f"Error generating HTML file: {e}")
@@ -161,7 +126,7 @@ def main():
         print("Usage: python script.py <input_csv_file>")
         sys.exit(1)
     input_csv = sys.argv[1]
-    generate_html(input_csv)
+    generate_qr_html_printer(input_csv)
 
 if __name__ == "__main__":
     main()
