@@ -55,11 +55,14 @@ def init_asgi() -> Starlette:
         allow_headers=API_CONFIG["cors"]["allow_headers"]
     )
 
+    # api route prefix (used for production only)
+    _API_ROUTE_PREFIX = "/api" if API_CONFIG["api"]["mode"] == "production" else ""
+
     # Health
-    _ASGI.add_route("/health/status", get_status, methods=["GET"])
+    _ASGI.add_route(f"{_API_ROUTE_PREFIX}/health/status", get_status, methods=["GET"])
     
     # Issues
-    _ASGI.add_route("/gse/details", details_request, methods=["POST"])
+    _ASGI.add_route(f"{_API_ROUTE_PREFIX}/gse/details", details_request, methods=["POST"])
         
     # Index    
     _ASGI.mount("/", StaticFiles(directory="web", html=True), name="_app")

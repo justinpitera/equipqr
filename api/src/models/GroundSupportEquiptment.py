@@ -19,6 +19,7 @@ from tortoise.fields import (
     DatetimeField,
     IntField,
     BooleanField,
+    BinaryField
 )
 from tortoise.models import Model
 
@@ -75,6 +76,7 @@ class GroundSupportEquiptment(Model):
     training_documentation_available : Field[bool]   = BooleanField()
     item_type                        : Field[str]    = CharField(max_length=255)
     path                             : Field[str]    = CharField(max_length=255)
+    field_image                      : Field[bytes]  = BinaryField(null=True)
 
     def generate_qr_code(self) -> None:
         """

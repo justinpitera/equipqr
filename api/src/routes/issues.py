@@ -13,6 +13,7 @@ Authors:
 """
 
 # Standard
+from uuid import UUID, uuid4
 from datetime import datetime
 
 # Third-party
@@ -35,7 +36,6 @@ async def details_request(request: Request) -> JSONResponse:
         gse_id: str
 
     try:
-        # Parse and validate the request body
         logger.info(f"{Fore.CYAN}📥 Received request for GSE details{Style.RESET_ALL}")
         body: dict[str, Any] = await request.json()
         logger.debug(f"{Fore.LIGHTBLUE_EX}🔍 Request body: {body}{Style.RESET_ALL}")
@@ -56,7 +56,6 @@ async def details_request(request: Request) -> JSONResponse:
                 content={"error": "The requested model could not be found."}
             )
 
-        # Safely construct the response data
         fields_to_include: list[str] = [
             "gse_id",
             "gse_type",
@@ -72,8 +71,8 @@ async def details_request(request: Request) -> JSONResponse:
             "capacity",
         ]
 
-        # Custom serializer for datetime
         def serialize_field(value: Any) -> Any:
+            """Serializes datetime fields"""
             if isinstance(value, datetime):
                 return value.isoformat()
             return value
@@ -111,21 +110,25 @@ async def details_request(request: Request) -> JSONResponse:
             }
         )
 
-# async def submit_issue(request: Request) -> JSONResponse:
-# class _GSEIssueSubmission(BaseModel):
-#     """Pydantic validation model for incoming GSE issue submissions."""
-#     gse_id: str
-#     is_operable: bool
-#     issue_description: str
-#     # TODO: Add field for attachments
-#     body: dict[str, Any] = await request.json()
-#     submitted_issue_data: _GSEIssueSubmission = _GSEIssueSubmission(**body)
+async def submit_issue(request: Request) -> JSONResponse:
+    """POST route to submit a new issue."""
     
-#     # Generated data (by api)
-#     new_issue_id: UUID = uuid4()
-    
-#     # Submitted (validated data)
-#     is_operable: bool = submitted_issue_data.is_operable
-#     issue_description: str = submitted_issue_data.issue_description
-    
-#     return
+    class _GSEIssueSubmission(BaseModel):
+        """Pydantic validation model for incoming GSE issue submissions."""
+        gse_id: str
+        is_operable: bool
+        issue_description: str
+        # TODO: Add field for attachments
+        
+    body: dict[str, Any] = await request.json()
+    submitted_issue_data: _GSEIssueSubmission = _GSEIssueSubmission(**body)
+
+    # Generated data (by api)
+    new_issue_id: UUID = uuid4()
+
+    # Submitted (validated data)
+    gse_id: str = submitted_issue_data.gse_id
+    is_operable: bool = submitted_issue_data.is_operable
+    issue_description: str = submitted_issue_data.issue_description
+
+    return
