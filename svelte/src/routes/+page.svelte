@@ -32,11 +32,15 @@ async function loadQRScanner() {
 	}
 }
 
-onMount(() => {
-  const whatisthis = registerSw('sw.js', /* 12 hours */ 1000 * 60 * 60 * 12);
+async function registerServiceWorker() {
+  const whatisthis = await registerSw('sw.js', /* 12 hours */ 1000 * 60 * 60 * 12);
   console.log(whatisthis)
-	getAppVersion();
+}
+
+onMount(() => {
+  registerServiceWorker();
 	loadQRScanner();
+	getAppVersion();
 });
 
 onDestroy(() => {
