@@ -162,14 +162,15 @@
 
 #gallery {
   min-width: fit-content;
-  height: 125px;
+  height: 117px;
   gap: 15px;
   padding-right: 15px;
-  padding-left: 15px;
+  padding-left: 5px;
+  padding-bottom: 5px;
   display: flex;
   flex-wrap: nowrap;
   overflow: hidden;
-  align-items: center;
+  align-items: flex-end;
 }
 
 #gallery-container {
