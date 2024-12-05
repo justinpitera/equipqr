@@ -15,9 +15,8 @@ export function destroyScanner() {
 	if (canvasElement) {
 		canvasElement.hidden = true;
 		const canvas = canvasElement.getContext("2d");
-		if (canvas) {
+		if (canvas)
 			canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
-		}
 	}
 	if (videoTrack) {
 		videoTrack.stop();
@@ -40,7 +39,9 @@ export async function scanQRCode(): Promise<string> {
 		const canvasElement = document.getElementById(
 			"canvas",
 		) as HTMLCanvasElement;
-		const canvas = canvasElement.getContext("2d");
+		const canvas = canvasElement.getContext("2d", {
+			willReadFrequently: true,
+		});
 		const loadingMessage = document.getElementById("loadingMessage");
 		const outputContainer = document.getElementById("output");
 		const outputMessage = document.getElementById("outputMessage");
