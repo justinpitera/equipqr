@@ -73,3 +73,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+.flashlight-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  color: white;
+  border: none;
+  cursor: pointer;
+}

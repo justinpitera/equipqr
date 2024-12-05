@@ -1,6 +1,8 @@
 <script lang="ts">
 import { onDestroy, onMount } from "svelte";
 import { writable } from "svelte/store";
+import { LightbulbOff, Lightbulb } from "lucide-svelte";
+
 import { destroyScanner, scanQRCode, toggleScanner } from "../utils/camera";
 import { getAppVersion } from "../utils/reqs";
 import {
@@ -9,11 +11,12 @@ import {
 	triggerFileInput,
 } from "../utils/file-upload";
 import { browser } from "$app/environment";
-    import { registerSw } from "../utils/register-sw";
+import { registerSw } from "../utils/register-sw";
 
 const qrCodeData = writable<string | null>(null);
 const showPopup = writable<boolean>(false);
 const productName = writable<string | null>(null);
+const flashlightToggle = writable<boolean>(false);
 let operable = "";
 
 async function loadQRScanner() {
@@ -22,9 +25,11 @@ async function loadQRScanner() {
 		toggleScanner(false);
 		qrCodeData.set(result);
 		productName.set(result);
+		flashlightToggle.set(false);
 		showPopup.set(true);
-    document.getElementById('qrScanner')?.classList.add('hidden');
-	} else { // impossible state: (TODO show errors in the ui)
+		document.getElementById("qrScanner")?.classList.add("hidden");
+	} else {
+		// impossible state: (TODO show errors in the ui)
 		qrCodeData.set("");
 		productName.set("");
 		showPopup.set(false);
@@ -33,14 +38,20 @@ async function loadQRScanner() {
 }
 
 async function registerServiceWorker() {
-  const whatisthis = await registerSw('sw.js', /* 12 hours */ 1000 * 60 * 60 * 12);
-  console.log(whatisthis)
+	const whatisthis = await registerSw(
+		"sw.js",
+		/* 12 hours */ 1000 * 60 * 60 * 12,
+	);
+	console.log(whatisthis);
 }
 
 onMount(() => {
-  registerServiceWorker();
+	registerServiceWorker();
 	loadQRScanner();
 	getAppVersion();
+
+	// Cleanup
+	return () => {};
 });
 
 onDestroy(() => {
@@ -55,10 +66,14 @@ onDestroy(() => {
     <div id="outputMessage">No QR code detected.</div>
     <div hidden><b>Data:</b> <span id="outputData"></span></div>
   </div>
-  <button 
-    id="toggleFlashlight" 
-    class="flashlight-btn" >
-    Toggle Flashlight
+  <button id="toggleFlashlight" onclick={() => {
+		flashlightToggle.set(!$flashlightToggle);
+  }}>
+    {#if $flashlightToggle}
+      <Lightbulb class="flashlight-btn animate-pulse w-8 h-8" style="filter: drop-shadow(0px 0px 6px yellow) blur(0.2px)" />
+    {:else}
+      <LightbulbOff class="flashlight-btn w-8 h-8" />
+    {/if}
   </button>
 </div>
 
@@ -201,18 +216,5 @@ onDestroy(() => {
     #output div {
       padding-bottom: 10px;
       word-wrap: break-word;
-    }
-
-    .flashlight-btn {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
     }
 </style>

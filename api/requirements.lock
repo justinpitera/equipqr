@@ -29,6 +29,10 @@ click==8.1.7
     # via granian
 colorama==0.4.6
     # via api
+    # via click
+    # via loguru
+    # via qrcode
+    # via tqdm
 cryptography==43.0.3
     # via pyjwt
 granian==1.6.4
@@ -82,5 +86,5 @@ typing-extensions==4.12.2
     # via pydantic-core
 tzdata==2024.2
     # via pandas
-uvloop==0.21.0
-    # via granian
+win32-setctime==1.1.0
+    # via loguru
