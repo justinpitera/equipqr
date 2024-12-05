@@ -20,9 +20,10 @@ from loguru import logger
 
 # Local
 from . import API_CONFIG, TORTOISE_CONFIG
+from src.database import database_importer
 from src.routes.index import homepage
 from src.routes.health import get_status
-from src.database import database_importer
+from src.routes.issues import details_request
 
 @asynccontextmanager
 async def _lifespan(_app: Starlette) -> AsyncGenerator:
@@ -56,6 +57,9 @@ def init_asgi() -> Starlette:
 
     # Health
     _ASGI.add_route("/health/status", get_status, methods=["GET"])
+    
+    # Issues
+    _ASGI.add_route("/gse/details", details_request, methods=["POST"])
         
     # Index    
     _ASGI.mount("/", StaticFiles(directory="web", html=True), name="_app")

@@ -12,6 +12,9 @@ Authors:
     Justin N. Pitera (justinpitera@gmail.com)
 """
 
+# Standard
+from datetime import datetime
+
 # Third-party
 from typing import Any
 from pydantic import BaseModel, ValidationError
@@ -24,10 +27,9 @@ from colorama import Fore, Style
 # Local
 from src.models import GroundSupportEquiptment
 
-
 async def details_request(request: Request) -> JSONResponse:
-    """GET route to handle requests to the database for GSE."""
-    
+    """POST route to handle requests to the database for GSE."""
+
     class _GSEDetailsRequest(BaseModel):
         """Pydantic validation model for incoming GSE detail requests."""
         gse_id: str
@@ -69,7 +71,14 @@ async def details_request(request: Request) -> JSONResponse:
             "in_use",
             "capacity",
         ]
-        response_data = {field: getattr(fetched_gse_model, field, None) for field in fields_to_include}
+
+        # Custom serializer for datetime
+        def serialize_field(value: Any) -> Any:
+            if isinstance(value, datetime):
+                return value.isoformat()
+            return value
+
+        response_data = {field: serialize_field(getattr(fetched_gse_model, field, None)) for field in fields_to_include}
         logger.success(f"{Fore.GREEN}🎉 Successfully fetched GSE details for ID: {gse_details_request_data.gse_id}{Style.RESET_ALL}")
         
         return JSONResponse(status_code=200, content=response_data)
@@ -78,19 +87,28 @@ async def details_request(request: Request) -> JSONResponse:
         logger.error(f"{Fore.RED}🚨 Validation Error: {e}{Style.RESET_ALL}")
         return JSONResponse(
             status_code=422,
-            content={"error": "Validation error", "details": e.errors()}
+            content={
+                "error": "Validation error",
+                "details": e.errors()
+            }
         )
-    except (OperationalError, DoesNotExist) as e:
+    except OperationalError as e:
         logger.critical(f"{Fore.MAGENTA}💥 Database operation failed: {e}{Style.RESET_ALL}")
         return JSONResponse(
             status_code=500,
-            content={"error": "Database operation failed", "details": str(e)}
+            content={
+                "error": "Database operation failed",
+                "details": str(e)
+            }
         )
     except Exception as e:
         logger.exception(f"{Fore.RED}🔥 Unexpected error occurred: {e}{Style.RESET_ALL}")
         return JSONResponse(
             status_code=500,
-            content={"error": "Unexpected error occurred", "details": str(e)}
+            content={
+                "error": "Unexpected error occurred",
+                "details": str(e)
+            }
         )
 
 # async def submit_issue(request: Request) -> JSONResponse:
