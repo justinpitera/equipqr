@@ -1,172 +1,58 @@
 <script lang="ts">
-import { onMount } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { writable } from "svelte/store";
-import { BrowserMultiFormatReader } from "@zxing/browser";
-
-let videoElement: HTMLVideoElement | null = null;
-let canvasElement: HTMLCanvasElement | null = null;
+import { destroyScanner, scanQRCode, toggleScanner } from "../utils/camera";
+import { getAppVersion } from "../utils/reqs";
+import {
+	handleFileUpload,
+	handleFormSubmit,
+	triggerFileInput,
+} from "../utils/file-upload";
+import { browser } from "$app/environment";
 
 const qrCodeData = writable<string | null>(null);
 const showPopup = writable<boolean>(false);
 const productName = writable<string | null>(null);
-
-let stream: MediaStream | null = null;
 let operable = "";
-const maxFiles = 4;
 
-function stopCamera() {
-	if (stream) {
-		for (const track of stream.getTracks()) {
-			track.stop();
-		}
-		stream = null;
+async function loadQRScanner() {
+	const result = await scanQRCode();
+	if (result) {
+		toggleScanner(false);
+		qrCodeData.set(result);
+		productName.set(result);
+		showPopup.set(true);
+    document.getElementById('qrScanner')?.classList.add('hidden');
+	} else { // impossible state: (TODO show errors in the ui)
+		qrCodeData.set("");
+		productName.set("");
+		showPopup.set(false);
+		qrCodeData.set("Unable to read QR code.");
 	}
 }
-
-async function startCamera() {
-	try {
-		stream = await navigator.mediaDevices.getUserMedia({
-			video: { facingMode: "environment" },
-		});
-
-		if (videoElement) {
-			videoElement.srcObject = stream;
-			await videoElement.play();
-			scanQRCode(); // Start scanning QR codes once the camera feed is ready
-		} else {
-			console.error("Video element is not available.");
-		}
-	} catch (error) {
-		console.error("Error starting camera:", error);
-		qrCodeData.set("Unable to access the camera.");
-	}
-}
-
-function triggerFileInput(): void {
-	const fileInput = document.getElementById("file-input") as HTMLInputElement;
-	if (fileInput) {
-		fileInput.click();
-	} else {
-		console.error("File input element not found.");
-	}
-}
-
-async function scanQRCode() {
-	const codeReader = new BrowserMultiFormatReader();
-
-	try {
-		if (videoElement) {
-			// Ensure videoElement is not null
-			await codeReader.decodeFromVideoDevice(
-				undefined,
-				videoElement,
-				(result) => {
-					if (result) {
-						qrCodeData.set(result.getText());
-						productName.set(result.getText());
-						showPopup.set(true);
-						stopCamera();
-					}
-				},
-			);
-		} else {
-			console.error("Video element is not initialized.");
-		}
-	} catch (error) {
-		console.error("QR scanning error:", error);
-	}
-}
-
-function closePopup() {
-	showPopup.set(false);
-	startCamera();
-}
-
-async function getAppVersion() {
-	try {
-		const request = await fetch("/api/health/status");
-		const response = await request.json();
-		console.log("%cAviation Management Panel", "font-size: 28px; color: #1e90ff; font-weight: bold; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);");
-		if (response.version) 
-    console.log(`%cVersion: %c${response.version}`, "font-size: 20px; color: wheat; font-weight: bold;", "font-size: 20px; color: #32cd32; font-weight: bold;");
-		if (response.status === "healthy") {
-			console.log(`%cStatus: ${response.status}`, "color: green; font-size: 18px; font-weight: bold;");
-		} else {
-			console.log(`%cStatus: ${response.status}`, "color: red; font-size: 18px; font-weight: bold;");
-		}
-	} catch (e) {
-		console.error("%cError fetching status", "color: red; font-size: 18px; font-weight: bold;", e);
-	}
-}
-
 
 onMount(() => {
-  getAppVersion();
+	getAppVersion();
+	loadQRScanner();
+});
 
-	if (videoElement) {
-		startCamera();
-	}
-
-	const fileInput = document.getElementById("file-input") as HTMLInputElement;
-	const fileList = document.getElementById("file-list") as HTMLUListElement;
-
-	function handleFileUpload(event: Event): void {
-		const target = event.target as HTMLInputElement;
-		const files = Array.from(target.files || []);
-
-		if (files.length > maxFiles) {
-			alert(`You can only upload up to ${maxFiles} files.`);
-			fileInput.value = "";
-			return;
-		}
-
-		fileList.innerHTML = "";
-
-		files.forEach((file, index) => {
-			const listItem = document.createElement("li");
-			listItem.textContent = `${index + 1}. ${file.name}`;
-			fileList.appendChild(listItem);
-		});
-	}
-
-	function handleFormSubmit(event: Event): void {
-		event.preventDefault();
-
-		const productDetails = (
-			document.getElementById("product-details") as HTMLTextAreaElement
-		).value;
-		const issueDescription = (
-			document.getElementById("issue-description") as HTMLTextAreaElement
-		).value;
-
-		alert(
-			`Form submitted with the following details:\nProduct Details: ${productDetails}\nIssue Description: ${issueDescription}\nNumber of Files: ${(fileInput.files || []).length}`,
-		);
-	}
-
-	fileInput?.addEventListener("change", handleFileUpload);
-	document.querySelector("form")?.addEventListener("submit", handleFormSubmit);
-
-	return stopCamera;
+onDestroy(() => {
+	if (browser) destroyScanner();
 });
 </script>
 
-<div
-  class="camera-container w-full h-screen flex items-center justify-center bg-black"
->
-  <div class="qr-overlay"></div>
-  {#if !$showPopup}
-    <video
-      bind:this={videoElement}
-      autoplay
-      playsinline
-      class="camera-feed w-full h-auto object-cover"
-    >
-      <track kind="captions" label="Camera feed" srclang="en" default />
-    </video>
-
-    <canvas bind:this={canvasElement} class="hidden"></canvas>
-  {/if}
+<div id="qrScanner" class="relative w-full h-screen flex items-center justify-center bg-black">
+  <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
+  <canvas id="canvas" hidden style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;"></canvas>
+  <div id="output" hidden style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+    <div id="outputMessage">No QR code detected.</div>
+    <div hidden><b>Data:</b> <span id="outputData"></span></div>
+  </div>
+  <button 
+    id="toggleFlashlight" 
+    class="flashlight-btn hidden" >
+    Toggle Flashlight
+  </button>
 </div>
 
 {#if $showPopup}
@@ -179,19 +65,22 @@ onMount(() => {
       <div class="flex justify-between items-center">
         <h2 class="text-lg font-bold">Issue Details for: {$productName}</h2>
         <button
-          onclick={closePopup}
+          onclick={async () => {
+            showPopup.set(false);
+            document.getElementById('qrScanner')?.classList.remove('hidden');
+            toggleScanner(true);
+            loadQRScanner();
+          }}
           class="border border-gray-300 rounded-lg p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Close
         </button>
       </div>
-      <form class="space-y-4 mt-4">
+      <form class="space-y-4 mt-4" id="malfunction-report-form" onsubmit={handleFormSubmit}>
         <div>
           <label
             for="product-details"
-            class="block text-sm font-medium text-gray-700"
-            >Product Details</label
-          >
+            class="block text-sm font-medium text-gray-700">Product Details</label>
           <textarea
             id="product-details"
             rows="3"
@@ -244,6 +133,7 @@ onMount(() => {
             <input
               type="file"
               id="file-input"
+              onchange={handleFileUpload}
               multiple
               accept="image/*, video/*"
               class="hidden"
@@ -284,53 +174,38 @@ onMount(() => {
 {/if}
 
 <style>
-  .camera-feed {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover; /* Ensures the video covers the container without distortion */
-  }
-
-  .camera-container {
-    position: relative;
-  }
-
-  .qr-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-  }
-
-  .qr-overlay::after {
-    content: "";
-    display: block;
-    width: 50vmin;
-    height: 25vmax;
-    background: transparent;
-    border: 3px solid rgba(0, 255, 0, 0.7);
-    border-radius: 10px;
-    box-shadow: 0 0 15px 4px rgba(0, 255, 0, 0.5);
-    animation: pulse 1.5s infinite;
-    z-index: 20;
-  }
-
-  @keyframes pulse {
-    0% {
-      box-shadow: 0 0 15px 4px rgba(0, 255, 0, 0.5);
-      opacity: 1;
+    #loadingMessage {
+      text-align: center;
+      padding: 40px;
+      background-color: #eee;
     }
-    50% {
-      box-shadow: 0 0 25px 10px rgba(0, 255, 0, 0.3);
-      opacity: 0.8;
+
+    #canvas {
+      width: 100%;
     }
-    100% {
-      box-shadow: 0 0 15px 4px rgba(0, 255, 0, 0.5);
-      opacity: 1;
+
+    #output {
+      margin-top: 20px;
+      background: #eee;
+      padding: 10px;
+      padding-bottom: 0;
     }
-  }
+
+    #output div {
+      padding-bottom: 10px;
+      word-wrap: break-word;
+    }
+
+    .flashlight-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
 </style>
