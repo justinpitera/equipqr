@@ -2,6 +2,7 @@ import jsQR from "jsqr";
 import type { Point } from "jsqr/dist/locator";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
+let currentStream: MediaStream | null = null;
 let flashlightOn = false;
 
 export function toggleScanner(enabled: boolean) {
@@ -33,8 +34,13 @@ export function destroyScanner() {
 	console.log("Scanner destroyed and cleaned up.");
 }
 
-export async function scanQRCode(): Promise<string> {
+export async function scanQRCode(): Promise<string | null> {
 	return new Promise((resolve) => {
+		if (!navigator.mediaDevices || (navigator.mediaDevices && !navigator.mediaDevices.getUserMedia)) {
+			alert('Could not find an available camera to use for scanning QR codes...');
+			resolve(null);
+			return;
+		}
 		videoElement = document.createElement("video");
 		const canvasElement = document.getElementById(
 			"canvas",
@@ -69,6 +75,7 @@ export async function scanQRCode(): Promise<string> {
 			.then((stream) => {
 				if (!videoElement) return console.error("Could not find videoElement");
 				videoElement.srcObject = stream;
+				currentStream = stream;
 				videoElement.playsInline = true;
 				videoElement.play();
 				videoTrack = stream.getVideoTracks()[0];
@@ -86,9 +93,9 @@ export async function scanQRCode(): Promise<string> {
 				} else {
 					console.warn("Torch capability is not supported on this device.");
 				}
-				requestAnimationFrame(tick);
+				requestAnimationFrame(qrScanner);
 			});
-		function tick() {
+		function qrScanner() {
 			if (!videoTrack) return console.error("Could not find videoTrack");
 			if (!videoTrack.enabled) return;
 			if (!videoElement) return console.error("Could not find videoElement");
@@ -160,7 +167,7 @@ export async function scanQRCode(): Promise<string> {
 			} else {
 				loadingMessage.innerText = "⌛ Loading video...";
 			}
-			requestAnimationFrame(tick);
+			requestAnimationFrame(qrScanner);
 		}
 	});
 }
