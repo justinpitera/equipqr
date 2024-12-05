@@ -7,6 +7,13 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
+		interface MediaTrackCapabilities {
+			torch?: boolean;
+		}
+		
+		interface MediaTrackConstraintSet {
+			torch?: boolean;
+		}
 	}
 }
 

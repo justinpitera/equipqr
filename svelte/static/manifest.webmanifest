@@ -1,0 +1,22 @@
+{
+    "background_color": "rgb(66, 55, 66)",
+    "description": "Aviation Management Panel",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "icon-512x512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        },
+        {
+            "src": "icon-192x192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        }
+    ],
+    "name": "Aviation Management Panel",
+    "orientation": "portrait",
+    "short_name": "Aviation Panel",
+    "start_url": "/",
+    "theme_color": "rgb(33, 33, 33)"
+}

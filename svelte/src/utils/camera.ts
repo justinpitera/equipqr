@@ -77,11 +77,12 @@ export async function scanQRCode(): Promise<string> {
 						torch: boolean;
 					};
 				if (capabilities.torch) {
-					const toggleButton = document.getElementById("toggleFlashlight");
-					if (!toggleButton)
-						return console.error("Could not find flash button");
-					toggleButton.classList.remove("hidden");
-					toggleButton.style.display = "block";
+					// const toggleButton = document.getElementById("toggleFlashlight");
+					// if (!toggleButton)
+					// 	return console.error("Could not find flash button");
+					// toggleButton.classList.remove("hidden");
+					// toggleButton.style.display = "block";
+					console.log("You have a torch!")
 				} else {
 					console.warn("Torch capability is not supported on this device.");
 				}

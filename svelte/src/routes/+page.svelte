@@ -9,6 +9,7 @@ import {
 	triggerFileInput,
 } from "../utils/file-upload";
 import { browser } from "$app/environment";
+    import { registerSw } from "../utils/register-sw";
 
 const qrCodeData = writable<string | null>(null);
 const showPopup = writable<boolean>(false);
@@ -32,6 +33,8 @@ async function loadQRScanner() {
 }
 
 onMount(() => {
+  const whatisthis = registerSw('sw.js', /* 12 hours */ 1000 * 60 * 60 * 12);
+  console.log(whatisthis)
 	getAppVersion();
 	loadQRScanner();
 });
@@ -50,7 +53,7 @@ onDestroy(() => {
   </div>
   <button 
     id="toggleFlashlight" 
-    class="flashlight-btn hidden" >
+    class="flashlight-btn" >
     Toggle Flashlight
   </button>
 </div>
