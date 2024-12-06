@@ -13,43 +13,30 @@
   import { destroyScanner, scanQRCode, toggleScanner } from "../utils/camera";
   import { getAppVersion } from "../utils/server-requests";
   import { browser } from "$app/environment";
-  import { registerSw } from "../utils/register-sw";
+  import { registerServiceWorker } from "../utils/register-sw";
   import { Drawer, Button, CloseButton, Badge, Avatar } from "flowbite-svelte";
   import { InfoCircleSolid, ArrowRightOutline } from "flowbite-svelte-icons";
   import { sineIn } from "svelte/easing";
   import { ToastContainer, FlatToast } from "svelte-toasts";
-  import { DEBUG_MODE } from "../utils/config";
-  import { formatNumber } from "../utils/numbers";
-
-  interface MediaFile {
-    file: File;
-    url: string;
-    type: string;
-    deleteFile: (event: Event) => void;
-    handleClick: () => void;
-  }
+  import { DEBUG_MODE } from "../config";
+  import { formatNumber } from "../utils/utils.simple";
+  import { startWiggle, stopWiggle, fileUploadStore } from "../utils/file-upload";
+  const { wiggleModeEnabled, wiggleModeJustPressed, pressTimer,  isDragging } = fileUploadStore;
 
   const mediaFiles = writable<MediaFile[]>([]);
-
-  let isDragging = false;
   let fullscreenViewer: HTMLElement | null;
   let fullscreenImage: HTMLImageElement | null;
   let fullscreenVideo: HTMLVideoElement | null;
-
-  let pressTimer: NodeJS.Timeout;
   let closeReportHidden = true;
   let transitionParamsTop = {
     y: -320,
     duration: 200,
     easing: sineIn,
   };
-
   const qrCodeData = writable<string | null>(null);
   const showPopup = writable<boolean>(false);
   const productName = writable<string | null>(null);
   const flashlightToggle = writable<boolean>(false);
-  const wiggleModeJustPressed = writable<boolean>(false);
-  const wiggleModeEnabled = writable<boolean>(false);
   let operable = "";
 
   function handleFormSubmit(event: Event): void {
@@ -91,38 +78,6 @@
     }
   }
 
-  async function registerServiceWorker() {
-    await registerSw("sw.js", /* 12 hours */ 1000 * 60 * 60 * 12);
-  }
-
-  const startWiggle = () => {
-    isDragging = false;
-    const onMove = () => {
-      isDragging = true;
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("touchmove", onMove);
-    };
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("touchmove", onMove);
-    pressTimer = setTimeout(() => {
-      if (!isDragging) {
-        document.removeEventListener("mousemove", () => {});
-        document.removeEventListener("touchmove", () => {});
-        wiggleModeJustPressed.set(true);
-        wiggleModeEnabled.set(true);
-      }
-    }, 500);
-  };
-
-  const stopWiggle = () => {
-    clearTimeout(pressTimer);
-    document.removeEventListener("mousemove", () => {});
-    document.removeEventListener("touchmove", () => {});
-    setTimeout(() => {
-      wiggleModeJustPressed.set(false);
-    }, 100);
-  };
-
   const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target?.files) {
@@ -136,8 +91,8 @@
           type: file.type,
           deleteFile: (e: Event) => {
             e.stopPropagation();
-            wiggleModeJustPressed.set(false);
-            wiggleModeEnabled.set(false);
+            fileUploadStore.wiggleModeJustPressed.set(false);
+            fileUploadStore.wiggleModeEnabled.set(false);
             const confirmDelete = confirm(
               "Are you sure you want to delete this file?",
             );
@@ -152,8 +107,8 @@
               return;
             if ($wiggleModeJustPressed) return;
             if ($wiggleModeEnabled) {
-              wiggleModeJustPressed.set(false);
-              wiggleModeEnabled.set(false);
+              fileUploadStore.wiggleModeJustPressed.set(false);
+              fileUploadStore.wiggleModeEnabled.set(false);
             } else {
               fullscreenViewer.classList.remove("hidden");
               fullscreenViewer.classList.add("flex");
@@ -447,8 +402,8 @@
                       onmousedown={startWiggle}
                       onmouseup={stopWiggle}
                       onmouseleave={() => {
-                        clearTimeout(pressTimer);
-                        isDragging = false;
+                        clearTimeout($pressTimer);
+                        isDragging.set(false);
                       }}
                       ontouchstart={startWiggle}
                       ontouchend={stopWiggle}

@@ -1,7 +1,7 @@
 import { notify } from "./notify";
 import { Utils } from "./utils.service";
 
-export const registerSw = (
+const registerSw = (
 	scriptUrl: string,
 	updateCheckInterval: number,
 ): Promise<boolean> =>
@@ -26,3 +26,7 @@ export const registerSw = (
 			}
 		});
 	});
+
+export async function registerServiceWorker() {
+	await registerSw("sw.js", /* 12 hours */ 1000 * 60 * 60 * 12);
+}

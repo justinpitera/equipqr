@@ -7,14 +7,22 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
-		interface MediaTrackCapabilities {
-			torch?: boolean;
-		}
-		
-		interface MediaTrackConstraintSet {
-			torch?: boolean;
-		}
+	}
+	interface MediaTrackCapabilities {
+		torch?: boolean;
+	}
+
+	interface MediaTrackConstraintSet {
+		torch?: boolean;
+	}
+
+	interface MediaFile {
+		file: File;
+		url: string;
+		type: string;
+		deleteFile: (event: Event) => void;
+		handleClick: () => void;
 	}
 }
 
-export {};
+export { };

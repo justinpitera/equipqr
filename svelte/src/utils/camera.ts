@@ -1,7 +1,7 @@
 import jsQR from "jsqr";
 import type { Point } from "jsqr/dist/locator";
 import { notify } from "./notify";
-import { DEBUG_MODE } from "./config";
+import { DEBUG_MODE } from "../config";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
 let flashlightOn = false;
