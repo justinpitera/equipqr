@@ -40,7 +40,6 @@
     let operable = "";
   </script>
   
-
 {#if $showPopup}
   <div
     class="popup-backdrop fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
