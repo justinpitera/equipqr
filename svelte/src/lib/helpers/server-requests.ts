@@ -1,4 +1,4 @@
-import { notify } from "./notify";
+import { notify } from "$lib/helpers/notify";
 
 export async function getAppVersion() {
 	try {

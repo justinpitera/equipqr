@@ -1,5 +1,5 @@
-import { notify } from "./notify";
-import { Utils } from "./utils.service";
+import { notify } from "$lib/helpers/notify";
+import { Utils } from "$lib/helpers/utils.service";
 
 const registerSw = (
 	scriptUrl: string,

@@ -1,10 +1,41 @@
 import jsQR from "jsqr";
 import type { Point } from "jsqr/dist/locator";
-import { notify } from "./notify";
-import { DEBUG_MODE } from "../config";
+import { notify } from "$lib/helpers/notify";
+import { DEBUG_MODE } from "$lib/config";
+import { writable, type Writable } from "svelte/store";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
+
+class QRScannerStore {
+	constructor(
+		public flashlightOn: Writable<boolean> = writable(false),
+		public qrCodeData: Writable<string | null> = writable(null),
+		public showPopup: Writable<boolean> = writable(false),
+	) { }
+}
+
+export const qrScannerStore = new QRScannerStore();
+
 let flashlightOn = false;
+qrScannerStore.flashlightOn.subscribe((value) => {
+	flashlightOn = value;
+});
+
+export async function loadQRScanner(forceDebug?: string) {
+	const result = forceDebug || (await scanQRCode());
+	if (result) {
+		toggleScanner(false);
+		qrScannerStore.qrCodeData.set(result);
+		qrScannerStore.flashlightOn.set(false);
+		qrScannerStore.showPopup.set(true);
+		document.getElementById("qrScanner")?.classList.add("hidden");
+	} else {
+		// impossible state: (TODO show errors in the ui)
+		qrScannerStore.qrCodeData.set("");
+		qrScannerStore.showPopup.set(false);
+		qrScannerStore.qrCodeData.set("Unable to read QR code.");
+	}
+}
 
 export function toggleScanner(enabled: boolean) {
 	if (!videoTrack) {
@@ -15,7 +46,7 @@ export function toggleScanner(enabled: boolean) {
 }
 
 export function destroyScanner() {
-	flashlightOn = false;
+	qrScannerStore.flashlightOn.set(false);
 	const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
 	if (canvasElement) {
 		canvasElement.hidden = true;
@@ -38,7 +69,7 @@ export function destroyScanner() {
 	notify("QR Code Scanner", "Stopped scanning for QR codes...", "info");
 }
 
-export async function scanQRCode(): Promise<string | null> {
+async function scanQRCode(): Promise<string | null> {
 	return new Promise((resolve) => {
 		if (
 			!navigator.mediaDevices ||
@@ -227,7 +258,7 @@ function toggleFlashlight(on: boolean) {
 		notify("QR Code Scanner", "No video track available.", "error");
 		return;
 	}
-	flashlightOn = on;
+	qrScannerStore.flashlightOn.set(on);
 	try {
 		videoTrack.applyConstraints({
 			// @ts-ignore
