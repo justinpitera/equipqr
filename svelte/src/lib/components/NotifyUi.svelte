@@ -2,6 +2,6 @@
     import { ToastContainer, FlatToast } from "svelte-toasts";
 </script>
 
-<ToastContainer placement="bottom-right" let:data>
+<ToastContainer placement="bottom-center" let:data>
     <FlatToast {data} />
 </ToastContainer>
