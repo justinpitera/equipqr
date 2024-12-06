@@ -32,6 +32,6 @@
 </script>
 
 <NotifyUi />
-<CloseReportUi />
 <QRScannerUi />
+<CloseReportUi />
 <ReportUi />
