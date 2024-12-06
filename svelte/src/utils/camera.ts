@@ -1,12 +1,16 @@
 import jsQR from "jsqr";
 import type { Point } from "jsqr/dist/locator";
+import { notify } from "./notify";
+import { DEBUG_MODE } from "./config";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
-let currentStream: MediaStream | null = null;
 let flashlightOn = false;
 
 export function toggleScanner(enabled: boolean) {
-	if (!videoTrack) return console.error("Could not find videoTrack");
+	if (!videoTrack) {
+		if (!DEBUG_MODE) notify("Error", "Could not find videoTrack", "error");
+		return
+	}
 	videoTrack.enabled = enabled;
 }
 
@@ -31,13 +35,20 @@ export function destroyScanner() {
 	if (outputContainer) outputContainer.hidden = true;
 	const loadingMessage = document.getElementById("loadingMessage");
 	if (loadingMessage) loadingMessage.hidden = false;
-	console.log("Scanner destroyed and cleaned up.");
+	notify("QR Code Scanner", "Stopped scanning for QR codes...", "info");
 }
 
 export async function scanQRCode(): Promise<string | null> {
 	return new Promise((resolve) => {
-		if (!navigator.mediaDevices || (navigator.mediaDevices && !navigator.mediaDevices.getUserMedia)) {
-			alert('Could not find an available camera to use for scanning QR codes...');
+		if (
+			!navigator.mediaDevices ||
+			(navigator.mediaDevices && !navigator.mediaDevices.getUserMedia)
+		) {
+			notify(
+				"QR Code Scanner",
+				"Could not find an available camera to use for scanning QR codes...",
+				"error",
+			);
 			resolve(null);
 			return;
 		}
@@ -53,7 +64,8 @@ export async function scanQRCode(): Promise<string | null> {
 		const outputMessage = document.getElementById("outputMessage");
 		const outputData = document.getElementById("outputData");
 		const toggleButton = document.getElementById("toggleFlashlight");
-		if (!toggleButton) return console.error("Could not find flash button");
+		if (!toggleButton)
+			return notify("QR Code Scanner", "Could not find flash button", "error");
 		toggleButton.onclick = () => {
 			toggleFlashlight(!flashlightOn);
 		};
@@ -62,7 +74,8 @@ export async function scanQRCode(): Promise<string | null> {
 			end: Point,
 			color: string | CanvasGradient | CanvasPattern,
 		) {
-			if (!canvas) return console.error("Could not find canvas");
+			if (!canvas)
+				return notify("QR Code Scanner", "Could not find canvas", "error");
 			canvas.beginPath();
 			canvas.moveTo(begin.x, begin.y);
 			canvas.lineTo(end.x, end.y);
@@ -73,9 +86,13 @@ export async function scanQRCode(): Promise<string | null> {
 		navigator.mediaDevices
 			.getUserMedia({ video: { facingMode: "environment" } })
 			.then((stream) => {
-				if (!videoElement) return console.error("Could not find videoElement");
+				if (!videoElement)
+					return notify(
+						"QR Code Scanner",
+						"Could not find videoElement",
+						"error",
+					);
 				videoElement.srcObject = stream;
-				currentStream = stream;
 				videoElement.playsInline = true;
 				videoElement.play();
 				videoTrack = stream.getVideoTracks()[0];
@@ -89,25 +106,58 @@ export async function scanQRCode(): Promise<string | null> {
 					// 	return console.error("Could not find flash button");
 					// toggleButton.classList.remove("hidden");
 					// toggleButton.style.display = "block";
-					console.log("You have a torch!")
+					notify(
+						"QR Code Scanner",
+						"Your device can use the flash light",
+						"info",
+					);
 				} else {
-					console.warn("Torch capability is not supported on this device.");
+					notify(
+						"QR Code Scanner",
+						"The flash light capability is not supported on this device",
+						"error",
+					);
 				}
 				requestAnimationFrame(qrScanner);
 			});
 		function qrScanner() {
-			if (!videoTrack) return console.error("Could not find videoTrack");
+			if (!videoTrack)
+				return notify("QR Code Scanner", "Could not find videoTrack", "error");
 			if (!videoTrack.enabled) return;
-			if (!videoElement) return console.error("Could not find videoElement");
+			if (!videoElement)
+				return notify(
+					"QR Code Scanner",
+					"Could not find videoElement",
+					"error",
+				);
 			if (!loadingMessage)
-				return console.error("Could not find loadingMessage");
+				return notify(
+					"QR Code Scanner",
+					"Could not find loadingMessage",
+					"error",
+				);
 			if (!outputContainer)
-				return console.error("Could not find outputContainer");
-			if (!canvas) return console.error("Could not find canvas");
-			if (!outputMessage) return console.error("Could not find outputMessage");
-			if (!outputData) return console.error("Could not find outputData");
+				return notify(
+					"QR Code Scanner",
+					"Could not find outputContainer",
+					"error",
+				);
+			if (!canvas)
+				return notify("QR Code Scanner", "Could not find canvas", "error");
+			if (!outputMessage)
+				return notify(
+					"QR Code Scanner",
+					"Could not find outputMessage",
+					"error",
+				);
+			if (!outputData)
+				return notify("QR Code Scanner", "Could not find outputData", "error");
 			if (!outputData.parentElement)
-				return console.error("Could not find outputData parent");
+				return notify(
+					"QR Code Scanner",
+					"Could not find outputData parent",
+					"error",
+				);
 			if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
 				loadingMessage.hidden = true;
 				canvasElement.hidden = false;
@@ -174,7 +224,7 @@ export async function scanQRCode(): Promise<string | null> {
 
 function toggleFlashlight(on: boolean) {
 	if (!videoTrack) {
-		console.error("No video track available.");
+		notify("QR Code Scanner", "No video track available.", "error");
 		return;
 	}
 	flashlightOn = on;
@@ -183,8 +233,12 @@ function toggleFlashlight(on: boolean) {
 			// @ts-ignore
 			advanced: [{ torch: flashlightOn }],
 		});
-		console.log(`Flashlight turned ${flashlightOn ? "on" : "off"}.`);
+		notify(
+			"QR Code Scanner",
+			`Flashlight turned ${flashlightOn ? "on" : "off"}.`,
+			"info",
+		);
 	} catch (error) {
-		console.error("Error toggling flashlight:", error);
+		notify("QR Code Scanner", `Error toggling flashlight: ${error}`, "error");
 	}
 }

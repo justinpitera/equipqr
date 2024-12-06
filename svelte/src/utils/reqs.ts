@@ -1,3 +1,5 @@
+import { notify } from "./notify";
+
 export async function getAppVersion() {
 	try {
 		const request = await fetch("/api/health/status");
@@ -23,11 +25,17 @@ export async function getAppVersion() {
 				"color: red; font-size: 18px; font-weight: bold;",
 			);
 		}
+		notify(
+			"Aviation Management Panel",
+			`Version: ${response.version}\nStatus: ${response.status}`,
+			response.status === "healthy" ? "success" : "error",
+		);
 	} catch (e) {
 		console.error(
 			"%cError fetching status",
 			"color: red; font-size: 18px; font-weight: bold;",
 			e,
 		);
+		notify("Error fetching status", `Failed to get app version: ${e}`, "error");
 	}
 }

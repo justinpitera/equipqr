@@ -8,14 +8,17 @@ import {
 	Video,
 	Upload,
 	Trash,
+	ArrowLeft,
 } from "lucide-svelte";
 import { destroyScanner, scanQRCode, toggleScanner } from "../utils/camera";
 import { getAppVersion } from "../utils/reqs";
 import { browser } from "$app/environment";
 import { registerSw } from "../utils/register-sw";
-import { Drawer, Button, CloseButton } from "flowbite-svelte";
+import { Drawer, Button, CloseButton, Badge, Avatar } from "flowbite-svelte";
 import { InfoCircleSolid, ArrowRightOutline } from "flowbite-svelte-icons";
 import { sineIn } from "svelte/easing";
+import { ToastContainer, FlatToast } from "svelte-toasts";
+import { DEBUG_MODE } from "../utils/config";
 
 interface MediaFile {
 	file: File;
@@ -25,7 +28,6 @@ interface MediaFile {
 	handleClick: () => void;
 }
 
-const maxFiles = 4;
 const mediaFiles = writable<MediaFile[]>([]);
 
 let isDragging = false;
@@ -182,7 +184,7 @@ const closeFullscreen = () => {
 
 onMount(() => {
 	registerServiceWorker();
-	loadQRScanner("AHU 00001"); // Debug by adding an ID here
+	loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined); // Debug by adding an ID here
 	getAppVersion();
 
 	// Cleanup
@@ -194,8 +196,12 @@ onDestroy(() => {
 });
 </script>
 
+<ToastContainer placement="bottom-right" let:data={data}>
+  <FlatToast {data} />
+</ToastContainer>
+
 <Drawer placement="top" width="w-full" transitionType="fly" transitionParams={transitionParamsTop} bind:hidden={closeReportHidden}>
-  <div class="flex items-center justify-between">
+  <div class="flex items-center">
     <h5 id="drawer-label" class="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400">
       <InfoCircleSolid oncontextmenu={disableContextMenu} class="w-5 h-5 me-2.5" />Cancel Report?
     </h5>
@@ -205,7 +211,7 @@ onDestroy(() => {
     Are you sure you want to cancel the report for:<br/>{$productName}?
   </p>
   <Button type="button" color="light" on:click={() => (closeReportHidden = true)} class="p-2 pr-3 pl-3 select-none">No, Let me finish it</Button>
-  <Button type="button" color="light" on:click={() => {
+  <Button type="button" on:click={() => {
     closeReportHidden = true;
     showPopup.set(false);
     document.getElementById('qrScanner')?.classList.remove('hidden');
@@ -237,21 +243,23 @@ onDestroy(() => {
     class="popup-backdrop fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
   >
     <div
-      class="popup-content bg-white w-full max-w-sm rounded-lg shadow-lg p-4 md:p-6"
+      class="popup-content bg-white w-full h-full"
     >
-      <div class="flex justify-between items-center">
-        <h2 class="text-lg font-bold">Issue Details for: {$productName}</h2>
+      <div class="flex items-center justify-between p-4 md:p-6">
         <button
           type="button"
           onclick={async () => {
             closeReportHidden = false;
           }}
-          class="border border-gray-300 rounded-lg p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 select-none"
+          class="p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 select-none"
         >
-          Close
+          <ArrowLeft />
         </button>
+        <h2 class="text-base font-bold text-center">Issue Details for:<br/><Badge color="green">{$productName}</Badge></h2>
+        <Avatar src="/images/kalmar.png" rounded class="bg-transparent" />
       </div>
-      <form class="space-y-4 mt-4" id="malfunction-report-form" onsubmit={handleFormSubmit}>
+      <hr class="mt-2" style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.4));" />
+      <form class="space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7" id="malfunction-report-form" onsubmit={handleFormSubmit}>
         <div>
           <label
             for="issue-description"
@@ -274,9 +282,9 @@ onDestroy(() => {
           <div class="flex space-x-4 mt-2">
             <button
               type="button"
-              class="w-1/2 text-center py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 select-none"
+              class="w-1/2 text-center py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 select-none"
               class:active={operable === "yes"}
-              class:bg-blue-500={operable === "yes"}
+              class:bg-green-500={operable === "yes"}
               class:text-white={operable === "yes"}
               class:text-black={operable !== "yes"}
               onclick={() => (operable = "yes")}
@@ -285,9 +293,9 @@ onDestroy(() => {
             </button>
             <button
               type="button"
-              class="w-1/2 text-center py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 select-none"
+              class="w-1/2 text-center py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 select-none"
               class:active={operable === "no"}
-              class:bg-blue-500={operable === "no"}
+              class:bg-red-500={operable === "no"}
               class:text-white={operable === "no"}
               class:text-black={operable !== "no"}
               onclick={() => (operable = "no")}

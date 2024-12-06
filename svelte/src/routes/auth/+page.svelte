@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { toast } from "svelte-sonner";
     import { Toaster } from "$lib/components/ui/sonner/index.js";
     import type { TranslationKeys } from "$lib/locales"; 
@@ -37,10 +36,6 @@ function t(key: TranslationKeys): string {
             toast.success(successMessage);
         }
     }
-
-    onMount(() => {
-        console.log("Component mounted in the client");
-    });
 </script>
 
 

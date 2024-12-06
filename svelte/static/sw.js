@@ -18,7 +18,7 @@ sw.addEventListener('install', evt => {
 sw.addEventListener('activate', evt => {
     console.info('[New ServiceWorker] Activating...');
     evt.waitUntil(cleanUpObsoleteCaches().
-        then(() => sw.clients.claim()).
+        then(() => sw.Clients.claim()).
         then(() => console.info('[New ServiceWorker] Activated successfully.')).
         catch(err => console.info('[New ServiceWorker] Failed to activate:', err)));
 });

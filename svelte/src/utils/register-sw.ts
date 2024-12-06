@@ -1,3 +1,4 @@
+import { notify } from "./notify";
 import { Utils } from "./utils.service";
 
 export const registerSw = (
@@ -7,15 +8,12 @@ export const registerSw = (
 	new Promise((resolve, reject) => {
 		const swContainer = window.navigator.serviceWorker;
 		if (!swContainer) return resolve(false);
-
 		console.info("[ServiceWorker] Registering...");
-
 		const utils = Utils.getInstance();
 		utils.onLoad(async () => {
 			try {
 				await swContainer.register(scriptUrl);
 				console.info("[ServiceWorker] Registered successfully.");
-
 				setInterval(() => {
 					console.info("[ServiceWorker] Checking for updates...");
 					swContainer.ready.then((reg) => reg.update());
@@ -23,6 +21,7 @@ export const registerSw = (
 				resolve(true);
 			} catch (err) {
 				console.error("[ServiceWorker] Failed to register:", err);
+				notify("[ServiceWorker]", `Failed to register: ${err}`, "error");
 				reject(err);
 			}
 		});
