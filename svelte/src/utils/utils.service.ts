@@ -5,8 +5,6 @@ export class Utils {
   }
 
   public static getInstance(): Utils {
-    // biome-ignore lint/complexity/noThisInStatic: <explanation>
-    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
         return this.instance || (this.instance = new Utils());
   }
 
@@ -39,7 +37,6 @@ export class Utils {
 
   public async waitAndCheck(interval: number, attempts: number, conditionFn: () => boolean): Promise<boolean> {
     while (!conditionFn()) {
-      // biome-ignore lint/style/noParameterAssign: <explanation>
       if (--attempts < 0) return false;
       await this.sleep(interval);
     }
