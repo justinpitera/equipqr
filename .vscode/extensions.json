@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "ms-pyright.pyright",
-        "biomejs.biome",
         "ecmel.vscode-html-css",
         "ms-vscode.vscode-typescript-next",
         "inferrinizzard.prettier-sql-vscode",
