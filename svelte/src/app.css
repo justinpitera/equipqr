@@ -169,6 +169,7 @@
   width: 98%;
   margin: auto;
   margin-top: 1%;
+  overflow-y: auto;
 }
 
 #gallery {

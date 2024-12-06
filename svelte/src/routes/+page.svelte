@@ -19,6 +19,7 @@ import { InfoCircleSolid, ArrowRightOutline } from "flowbite-svelte-icons";
 import { sineIn } from "svelte/easing";
 import { ToastContainer, FlatToast } from "svelte-toasts";
 import { DEBUG_MODE } from "../utils/config";
+import { formatNumber } from "../utils/numbers";
 
 interface MediaFile {
 	file: File;
@@ -255,20 +256,32 @@ onDestroy(() => {
         >
           <ArrowLeft />
         </button>
-        <h2 class="text-base font-bold text-center">Issue Details for:<br/><Badge color="green">{$productName}</Badge></h2>
-        <Avatar src="/images/kalmar.png" rounded class="bg-transparent" />
+        <h2 class="text-base font-bold text-center">Issue Details for:<br/><Badge border color="purple">{$productName}</Badge></h2>
+        <Avatar src="/images/kalmar.png" rounded class="bg-transparent ring-red-400 dark:ring-red-300" />
       </div>
       <hr class="mt-2" style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.4));" />
       <form class="space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7" id="malfunction-report-form" onsubmit={handleFormSubmit}>
         <div>
-          <label
-            for="issue-description"
-            class="block text-sm font-medium text-gray-700"
-            >Describe the Issue</label
-          >
+          <div class="flex items-center justify-between mb-1">
+            <label
+              for="issue-description"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Describe the Issue
+            </label>
+            <Button class="p-1 pr-3 pl-3 flex items-center">
+              Past Issues
+              <Badge
+                rounded
+                class="w-6 h-6 ms-2 p-0 font-semibold text-primary-800 bg-white dark:text-primary-800 dark:bg-white"
+              >
+                {formatNumber(1500)}
+              </Badge>
+            </Button>
+          </div>
           <textarea
             id="issue-description"
-            rows="5"
+            rows="2"
             class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Provide a detailed explanation of the issue"
           ></textarea>
