@@ -1,7 +1,7 @@
 <script lang="ts">
   // Icons and components
   import {
-    GalleryThumbnails,
+    Image,
     Video,
     Upload,
     Trash,
@@ -37,9 +37,25 @@
   import { writable } from "svelte/store";
   // Details Drawer utilities
   import { detailsDrawerStore } from "$lib/helpers/details";
+  import { onDestroy, onMount } from "svelte";
+    import { maxFiles } from "$lib/config";
   const { hideGSEDetail } = detailsDrawerStore;
 
   const operable = writable("");
+
+  const handleWindowClick = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest(".ignore-js")) {
+      stopWiggle();
+      fileUploadStore.wiggleModeEnabled.set(false);
+    }
+  };
+  onMount(() => {
+    if (typeof window !== 'undefined') document.addEventListener("click", handleWindowClick);
+  });
+  onDestroy(() => {
+    if (typeof window !== 'undefined') document.removeEventListener("click", handleWindowClick);
+  });
 </script>
 
 <div
@@ -59,8 +75,8 @@
       <div class="flex flex-col items-center">
         <h2 class="text-base font-bold text-center">Issue Details for:</h2>
         <div
-          onclick={() => (hideGSEDetail.set(false))}
-          onkeydown={() => (hideGSEDetail.set(false))}
+          onclick={() => hideGSEDetail.set(false)}
+          onkeydown={() => hideGSEDetail.set(false)}
           role="button"
           tabindex="0"
           class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
@@ -159,11 +175,11 @@
           id="custom-file-upload"
         >
           <p class="text-center text-sm text-gray-600 mb-2">
-            Upload up to 4 files
+            Upload up to {maxFiles} files
           </p>
           <div class="flex justify-center">
             <label for="takePicture" class="file-button w-12 h-12">
-              <GalleryThumbnails
+              <Image
                 oncontextmenu={disableContextMenu}
                 class="w-6 h-6"
               />
@@ -203,11 +219,11 @@
           </div>
           {#if $mediaFiles.length > 0}
             <hr class="my-4" />
-            <div id="gallery-container">
-              <div id="gallery">
+            <div id="gallery-container" class="ignore-js">
+              <div id="gallery" class="ignore-js">
                 {#each $mediaFiles as { url, type, deleteFile, handleClick }}
                   <div
-                    class={`gallery-item select-none relative ${$wiggleModeEnabled ? "wiggle" : ""}`}
+                    class={`gallery-item ignore-js select-none relative ${$wiggleModeEnabled ? "wiggle" : ""}`}
                     onclick={handleClick}
                     onkeypress={handleClick}
                     onmousedown={startWiggle}
@@ -225,7 +241,7 @@
                       <img
                         src={url}
                         alt="media"
-                        class="disableSave"
+                        class="disableSave ignore-js"
                         draggable="false"
                         oncontextmenu={disableContextMenu}
                       />
@@ -236,20 +252,20 @@
                         loop={true}
                         autoplay={true}
                         muted={true}
-                        class="disableSave"
+                        class="disableSave ignore-js"
                         draggable="false"
                         oncontextmenu={disableContextMenu}
                       ></video>
                     {/if}
                     <button
                       type="button"
-                      class={`delete-button select-none ${$wiggleModeEnabled ? "flex" : "hidden"}`}
+                      class={`delete-button ignore-js select-none ${$wiggleModeEnabled ? "flex" : "hidden"}`}
                       onclick={deleteFile}
                       aria-label="Delete Uploaded Item"
                     >
                       <Trash
                         oncontextmenu={disableContextMenu}
-                        class="w-4 h-4"
+                        class="w-4 h-4 ignore-js"
                       />
                     </button>
                   </div>

@@ -1,5 +1,7 @@
 
 import { writable, type Writable } from "svelte/store";
+import { notify } from "./notify";
+import { maxFiles } from "$lib/config";
 
 class FileUploadStore {
   constructor(
@@ -15,6 +17,11 @@ class FileUploadStore {
 }
 
 export const fileUploadStore = new FileUploadStore();
+
+let mediaFiles: MediaFile[] = [];
+fileUploadStore.mediaFiles.subscribe((value) => {
+  mediaFiles = value;
+});
 
 let fullscreenViewer: HTMLElement | null = null;
 fileUploadStore.fullscreenViewer.subscribe((value) => {
@@ -84,7 +91,13 @@ export const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target?.files) {
     const newFiles: MediaFile[] = [];
+    let existingFileCount = mediaFiles.length;
+    if (existingFileCount + 1 > maxFiles) {
+      notify('File Uploader', `You uploaded more than the maximum allowed files, only ${maxFiles} can be uploaded at a time.`, 'warning', 8000);
+      return;
+    }
     for (const file_obj of Array.from(target.files)) {
+      existingFileCount++;
       const file = file_obj as File;
       const url = URL.createObjectURL(file);
       const newMedia: MediaFile = {
@@ -125,9 +138,11 @@ export const handleFileChange = (event: Event) => {
         },
       };
       newFiles.push(newMedia);
+      if (existingFileCount >= maxFiles) break;
     }
     fileUploadStore.mediaFiles.update((files) => [...files, ...newFiles]);
     target.value = "";
+    if (existingFileCount >= maxFiles) notify('File Uploader', `You uploaded more than the maximum allowed files, only ${maxFiles} can be uploaded at a time.`, 'warning', 8000);
   }
 };
 

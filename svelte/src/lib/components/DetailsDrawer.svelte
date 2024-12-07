@@ -102,7 +102,10 @@
     };
 
     const toggleAutoOpen = (event: Event) => {
-        isAutoOpen.set(((event as CustomEvent<boolean>).target as HTMLInputElement).checked);
+        isAutoOpen.set(
+            ((event as CustomEvent<boolean>).target as HTMLInputElement)
+                .checked,
+        );
         if (typeof window !== "undefined")
             localStorage.setItem("autoOpen", String($isAutoOpen));
     };
@@ -150,11 +153,20 @@
                     <span class="text-xl font-medium text-gray-800"
                         >{$detectedGSE.gse_type}</span
                     >
-                    <span class="font-semibold text-gray-700"
-                        >{$detectedGSE.model}{$detectedGSE.manufacturer
-                            ? " - " + $detectedGSE.manufacturer
-                            : ""}</span
-                    >
+                    <div class="flex gap-1">
+                        {#if $detectedGSE.manufacturer}
+                            <Avatar
+                                src="/images/kalmar.png"
+                                rounded
+                                class="w-7 h-7 bg-transparent ring-red-400 dark:ring-red-300"
+                            />
+                        {/if}
+                        <span class="font-semibold text-gray-700"
+                            >{$detectedGSE.manufacturer
+                                ? $detectedGSE.manufacturer + " - "
+                                : ""}{$detectedGSE.model}</span
+                        >
+                    </div>
                 </div>
             </div>
 
@@ -187,12 +199,7 @@
                         <div
                             class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2"
                         >
-                            <Avatar
-                                src="/images/kalmar.png"
-                                rounded
-                                class="w-8 h-8 bg-transparent ring-red-400 dark:ring-red-300"
-                            />
-                            <div>
+                            <div class="text-center">
                                 <p class="font-semibold">Manufacturer:</p>
                                 <p>{$detectedGSE.manufacturer}</p>
                             </div>
