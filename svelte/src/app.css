@@ -94,14 +94,12 @@
 }
 
 #output {
-  margin-top: 20px;
   background: #eee;
   padding: 10px;
   padding-bottom: 0;
   position: absolute;
   bottom: 20px;
-  right: 0;
-  left: 0;
+  right: 5px;
   max-width: fit-content;
   z-index: 10;
   margin: auto;
@@ -168,6 +166,11 @@
   width: 98%;
   margin: auto;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 transparent;
+}
+
+.container {
   scrollbar-width: thin;
   scrollbar-color: #3b82f6 transparent;
 }

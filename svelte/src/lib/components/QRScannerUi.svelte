@@ -1,14 +1,31 @@
 <script lang="ts">
-    import { LightbulbOff, Lightbulb } from "lucide-svelte";
+    import { LightbulbOff, Lightbulb, Menu } from "lucide-svelte";
     import { disableContextMenu } from "$lib/helpers/basics";
-    import { qrScannerStore } from "$lib/helpers/camera";
+    import { destroyScanner, qrScannerStore } from "$lib/helpers/camera";
     const { flashlightOn, flashlightDisabled } = qrScannerStore;
+    import { homePageStore } from "$lib/helpers/homepage";
+    const { startQRScanner } = homePageStore;
 </script>
 
 <div
     id="qrScanner"
     class="relative w-full h-screen flex items-center justify-center bg-black"
 >
+    <div
+        class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
+        onclick={() => {
+            startQRScanner.set(false);
+            destroyScanner();
+        }}
+        onkeydown={() => {
+            startQRScanner.set(false);
+            destroyScanner();
+        }}
+        role="button"
+        tabindex="0"
+    >
+        <Menu class="w-6 h-6 text-black" />
+    </div>
     <div id="loadingMessage">🎥 Loading Camera...</div>
     <canvas
         id="canvas"
