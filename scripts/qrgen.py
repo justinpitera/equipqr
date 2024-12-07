@@ -24,7 +24,7 @@ def convert_logo_to_black(logo_path):
         print(f"Error converting logo to black: {e}")
         return None
 
-def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_black, output_dir="../qr_codes"):
+def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_black, embed_logo_path, output_dir="../qr_codes"):
     try:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -38,7 +38,7 @@ def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_black, outp
         )
         qr.add_data(gse_id_value)
         qr.make(fit=True)
-        qr_img = qr.make_image(image_factory=StyledPilImage, embeded_image_path="star.png", fill_color="black", back_color="white").convert("RGB")
+        qr_img = qr.make_image(image_factory=StyledPilImage, embeded_image_path=embed_logo_path, fill_color="black", back_color="white").convert("RGB")
         label_width = mm_to_pixels(140)
         label_height = mm_to_pixels(40)
         canvas = Image.new("RGB", (label_width, label_height), "white")
@@ -67,7 +67,7 @@ def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_black, outp
     except Exception as e:
         print(f"Error generating QR Code for {gse_id_value}: {e}")
 
-def generate_qr_codes_from_csv(input_csv, logo_black):
+def generate_qr_codes_from_csv(input_csv, logo_black, embed_logo_path):
     try:
         df = pd.read_csv(input_csv)
         if 'gse_id' not in df.columns or 'old_gse_id' not in df.columns:
@@ -77,25 +77,35 @@ def generate_qr_codes_from_csv(input_csv, logo_black):
         for _, row in tqdm(gse_ids.iterrows(), desc="Generating QR codes", unit="QR", ncols=100):
             gse_id = row['gse_id']
             old_gse_id = row['old_gse_id']
-            generate_qr_code_with_label(gse_id, old_gse_id, logo_black)
+            generate_qr_code_with_label(gse_id, old_gse_id, logo_black, embed_logo_path)
         print("QR code generation complete.")
     except Exception as e:
         print(f"Error processing CSV file: {e}")
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <input_csv_file>")
-        sys.exit(1)
-
-    logo_path = "logo.png"
-    logo_black = convert_logo_to_black(logo_path)
-
-    if logo_black is None:
-        print("Failed to load and convert logo to black. Exiting.")
+    if len(sys.argv) != 4:
+        print("Usage: python script.py <input_csv_file> <logo_path> <embed_logo_path>")
         sys.exit(1)
 
     input_csv = sys.argv[1]
-    generate_qr_codes_from_csv(input_csv, logo_black)
+    logo_path = sys.argv[2]
+    embed_logo_path = sys.argv[3]
+
+    if not os.path.exists(logo_path):
+        print(f"❌ Logo file not found: {logo_path}")
+        sys.exit(1)
+
+    if not os.path.exists(embed_logo_path):
+        print(f"❌ Embed logo file not found: {embed_logo_path}")
+        sys.exit(1)
+
+    logo_black = convert_logo_to_black(logo_path)
+
+    if logo_black is None:
+        print("❌ Failed to load and convert logo to black. Exiting.")
+        sys.exit(1)
+
+    generate_qr_codes_from_csv(input_csv, logo_black, embed_logo_path)
 
 if __name__ == "__main__":
     main()
