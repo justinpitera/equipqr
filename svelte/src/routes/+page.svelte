@@ -20,7 +20,7 @@
   import DetailsDrawer from "$lib/components/DetailsDrawer.svelte";
 
   onMount(() => {
-    loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined); // Debug by adding an ID here
+    // loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined); // Debug by adding an ID here
     registerServiceWorker();
     getAppVersion();
     // Cleanup

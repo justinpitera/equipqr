@@ -6,7 +6,7 @@ export function notify(
 	description: string,
 	type: ToastType,
 	duration = 5000,
-	placement: Placement = "top-right",
+	placement: Placement = "top-center",
 	theme: Theme = "dark",
 	showProgress = true,
 ) {

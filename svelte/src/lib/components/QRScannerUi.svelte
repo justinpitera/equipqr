@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { LightbulbOff, Lightbulb } from "lucide-svelte";
     import { disableContextMenu } from "$lib/helpers/basics";
     import { qrScannerStore } from "$lib/helpers/camera";
@@ -10,10 +9,7 @@
     id="qrScanner"
     class="relative w-full h-screen flex items-center justify-center bg-black"
 >
-    <div id="loadingMessage">
-        🎥 Unable to access video stream (please make sure you have a webcam
-        enabled)
-    </div>
+    <div id="loadingMessage">🎥 Loading Camera...</div>
     <canvas
         id="canvas"
         hidden
@@ -27,7 +23,7 @@
         <button
             type="button"
             id="toggleFlashlight"
-            class="select-none"
+            class="select-none hidden"
             onclick={() => {
                 flashlightOn.set(!$flashlightOn);
             }}

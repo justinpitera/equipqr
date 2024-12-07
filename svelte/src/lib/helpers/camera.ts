@@ -113,6 +113,11 @@ export async function loadQRScanner(forceDebug?: string) {
 		qrScannerStore.showPopup.set(false);
 		qrScannerStore.detectedGSE.set(null);
 		qrScannerStore.qrCodeData.set("Unable to read QR code.");
+		const loadingMessage = document.getElementById("loadingMessage");
+		if (loadingMessage) {
+			loadingMessage.hidden = false;
+			loadingMessage.textContent = '🎥 Unable to access video stream (please make sure you have a webcam';
+		}
 	}
 }
 
@@ -193,6 +198,7 @@ async function scanQRCode(): Promise<string | null> {
 				torchInfo = cameraWithTorch;
 				if (cameraWithTorch.hasTorch) {
 					const torchButton = document.getElementById("toggleFlashlight");
+					torchButton?.classList.remove('hidden');
 					torchButton?.addEventListener("click", async () => {
 						try {
 							if (!torchInfo.track) return;
@@ -213,6 +219,8 @@ async function scanQRCode(): Promise<string | null> {
 					});
 					torch_state = "Off";
 				} else {
+					const torchButton = document.getElementById("toggleFlashlight");
+					torchButton?.classList.add('hidden');
 					torch_state = "Disabled";
 				}
 				if (!cameraWithTorch.stream || !cameraWithTorch.track) return notify("QR Code Scanner", "Could not find an available camera device!", "error");
@@ -222,6 +230,8 @@ async function scanQRCode(): Promise<string | null> {
 				videoTrack = cameraWithTorch.track;
 				requestAnimationFrame(qrScanner);
 			} catch (error) {
+				const torchButton = document.getElementById("toggleFlashlight");
+				torchButton?.classList.add('hidden');
 				torch_state = "Disabled";
 				console.error((error as Error).message)
 			}
