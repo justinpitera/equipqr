@@ -11,6 +11,7 @@ let torch_state = "Uninitialized";
 class QRScannerStore {
 	constructor(
 		public flashlightOn: Writable<boolean> = writable(false),
+		public flashlightDisabled: Writable<boolean> = writable(false),
 		public qrCodeData: Writable<string | null> = writable(null),
 		public showPopup: Writable<boolean> = writable(false),
 	) { }
@@ -66,8 +67,11 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 		}
 	}
 	for (const collectedTrack of collectedTracks) {
-		if (lastDevice?.deviceId !== collectedTrack.device_id) collectedTrack.stop();
+		if (lastDevice?.deviceId !== collectedTrack.device_id) collectedTrack.track.stop();
 	}
+	torch_state = "Disabled";
+	qrScannerStore.flashlightOn.set(false);
+	qrScannerStore.flashlightDisabled.set(true);
 	notify(
 		"QR Code Scanner",
 		"No camera with torch capability found.",

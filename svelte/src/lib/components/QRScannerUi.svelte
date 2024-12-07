@@ -2,7 +2,7 @@
     import { LightbulbOff, Lightbulb } from "lucide-svelte";
     import { disableContextMenu } from "$lib/helpers/basics";
     import { qrScannerStore } from "$lib/helpers/camera";
-    const { flashlightOn } = qrScannerStore;
+    const { flashlightOn, flashlightDisabled } = qrScannerStore;
 </script>
 
 <div
@@ -22,26 +22,28 @@
         <div id="outputMessage">No QR code detected.</div>
         <div hidden><b>Data:</b> <span id="outputData"></span></div>
     </div>
-    <button
-        type="button"
-        id="toggleFlashlight"
-        class="select-none"
-        onclick={() => {
-            flashlightOn.set(!$flashlightOn);
-        }}
-    >
-        {#if $flashlightOn}
-            <Lightbulb
-                oncontextmenu={disableContextMenu}
-                class="flashlight-btn animate-pulse w-8 h-8"
-                style="filter: drop-shadow(0px 0px 6px yellow) blur(0.2px)"
-            />
-        {:else}
-            <LightbulbOff
-                oncontextmenu={disableContextMenu}
-                class="flashlight-btn w-8 h-8"
-                style="filter: drop-shadow(0px 0px 6px black) blur(0.2px)"
-            />
-        {/if}
-    </button>
+    {#if !$flashlightDisabled}
+        <button
+            type="button"
+            id="toggleFlashlight"
+            class="select-none"
+            onclick={() => {
+                flashlightOn.set(!$flashlightOn);
+            }}
+        >
+            {#if $flashlightOn}
+                <Lightbulb
+                    oncontextmenu={disableContextMenu}
+                    class="flashlight-btn animate-pulse w-8 h-8"
+                    style="filter: drop-shadow(0px 0px 6px yellow) blur(0.2px)"
+                />
+            {:else}
+                <LightbulbOff
+                    oncontextmenu={disableContextMenu}
+                    class="flashlight-btn w-8 h-8"
+                    style="filter: drop-shadow(0px 0px 6px black) blur(0.2px)"
+                />
+            {/if}
+        </button>
+    {/if}
 </div>
