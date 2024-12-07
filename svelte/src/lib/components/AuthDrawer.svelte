@@ -46,6 +46,7 @@
                     : t("loginSuccess");
             notify("Success", successMessage, "success");
             isLoggedIn.set(!$isLoggedIn);
+            isAuthDrawerHidden.set(true);
         }
     }
 </script>
