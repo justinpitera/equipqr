@@ -13,13 +13,13 @@
 >
     <div
         class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
-        onclick={() => {
+        onclick={async () => {
             startQRScanner.set(false);
-            destroyScanner();
+            await destroyScanner();
         }}
-        onkeydown={() => {
+        onkeydown={async () => {
             startQRScanner.set(false);
-            destroyScanner();
+            await destroyScanner();
         }}
         role="button"
         tabindex="0"

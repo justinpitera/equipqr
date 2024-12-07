@@ -27,11 +27,6 @@ qrScannerStore.isAutoOpen.subscribe((value) => {
 	isAutoOpen = value;
 });
 
-let hideGSEDetail: boolean = true;
-detailsDrawerStore.hideGSEDetail.subscribe((value) => {
-	hideGSEDetail = value;
-});
-
 const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
 	const devices = await navigator.mediaDevices.enumerateDevices();
@@ -91,9 +86,9 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 };
 
 export async function loadQRScanner(forceDebug?: string) {
-	destroyScanner();
+	await destroyScanner();
 	const result = forceDebug || (await scanQRCode());
-	destroyScanner();
+	await destroyScanner();
 	if (result) {
 		qrScannerStore.qrCodeData.set(result);
 		qrScannerStore.showPopup.set(true);
@@ -121,30 +116,56 @@ export async function loadQRScanner(forceDebug?: string) {
 	}
 }
 
-export function destroyScanner() {
-	qrScannerStore.flashlightOn.set(false);
-	const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-	if (canvasElement) {
-		canvasElement.hidden = true;
-		const canvas = canvasElement.getContext("2d", {
-			willReadFrequently: true,
-		});
-		if (canvas)
-			canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
-	}
-	if (videoTrack) {
-		videoTrack.stop();
-		videoTrack = null;
-	}
-	if (videoElement) {
-		videoElement.remove();
-		videoElement = null;
-	}
-	const outputContainer = document.getElementById("output");
-	if (outputContainer) outputContainer.hidden = true;
-	const loadingMessage = document.getElementById("loadingMessage");
-	if (loadingMessage) loadingMessage.hidden = false;
+export async function destroyScanner() {
+    // Turn off the flashlight
+    qrScannerStore.flashlightOn.set(false);
+
+    // Stop the video track
+    if (videoTrack) {
+        videoTrack.stop();
+        videoTrack = null;
+    }
+
+    // Cleanup the video element
+    if (videoElement) {
+        videoElement.pause();
+        videoElement.src = ""; // Detach the stream
+        videoElement.srcObject = null; // Detach the stream
+        videoElement.remove(); // Remove from the DOM
+        videoElement = null; // Nullify reference
+    }
+
+    // Stop all tracks in the torch stream (if any)
+    if (torchInfo.stream) {
+        torchInfo.stream.getTracks().forEach((track) => track.stop());
+        torchInfo.stream = undefined;
+    }
+
+    // Hide and clear the canvas
+    const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
+    if (canvasElement) {
+        canvasElement.hidden = true;
+        const canvas = canvasElement.getContext("2d", { willReadFrequently: true });
+        if (canvas) {
+            canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        }
+    }
+
+    const loadingMessage = document.getElementById("loadingMessage");
+    if (loadingMessage) {
+        loadingMessage.hidden = false;
+        loadingMessage.textContent = "🎥 Loading Camera...";
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+	stream.getTracks().forEach((track) => track.stop());
+    const devices = await navigator.mediaDevices.enumerateDevices();
+	const activeStreams = devices.filter((device) => device.kind === "videoinput");
+	console.log("Active video streams:", activeStreams);
+    // Notify the user
+    console.log("QR Scanner destroyed, camera access released.");
 }
+
 
 async function scanQRCode(): Promise<string | null> {
 	return new Promise((resolve) => {
