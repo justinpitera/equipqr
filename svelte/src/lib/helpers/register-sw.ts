@@ -8,14 +8,11 @@ const registerSw = (
 	new Promise((resolve, reject) => {
 		const swContainer = window.navigator.serviceWorker;
 		if (!swContainer) return resolve(false);
-		console.info("[ServiceWorker] Registering...");
 		const utils = Utils.getInstance();
 		utils.onLoad(async () => {
 			try {
 				await swContainer.register(scriptUrl);
-				console.info("[ServiceWorker] Registered successfully.");
 				setInterval(() => {
-					console.info("[ServiceWorker] Checking for updates...");
 					swContainer.ready.then((reg) => reg.update());
 				}, updateCheckInterval);
 				resolve(true);
@@ -32,21 +29,19 @@ let attempts: number = 0;
 export async function registerServiceWorker() {
 	await registerSw("sw.js", /* 12 hours */ 1000 * 60 * 60 * 12);
 	window.addEventListener('beforeinstallprompt', (e) => {
-	  e.preventDefault();
-	  deferredPrompt = e;
-	  console.log('beforeinstallprompt event captured');
+		deferredPrompt = e; // e.preventDefault();
+		return false;
 	});
 	window.addEventListener('click', async () => {
-	  if (deferredPrompt) {
-		if (attempts === 3) return;
-		attempts += 1;
-		deferredPrompt.prompt();
-		const choiceResult = await deferredPrompt.userChoice;
-		console.log(`User choice: ${choiceResult.outcome}`);
-		deferredPrompt = null;
-	  }
+		if (deferredPrompt) {
+			if (attempts === 2) return;
+			attempts += 1;
+			deferredPrompt.prompt();
+			await deferredPrompt.userChoice; // const choiceResult = console.log(`User choice: ${choiceResult.outcome}`);
+			deferredPrompt = null;
+		}
 	});
 	window.addEventListener('appinstalled', () => {
-	  alert('App was installed');
+		alert('App was installed');
 	});
 }

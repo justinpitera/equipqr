@@ -8,6 +8,25 @@ declare global {
 		deleteFile: (event: Event) => void;
 		handleClick: () => void;
 	}
+	interface GSEDetails {
+		gse_id: string;
+		gse_type: string;
+		model: string;
+		manufacturer: string;
+		location: string;
+		status: string;
+		type_of_fuel: string;
+		in_use: boolean;
+		lift_inspection_expires?: string | null;
+		latest_service_chassi?: string | null;
+		latest_service_unit?: string | null;
+		capacity?: number | null;
+		details?: string;
+		error?: string;
+	}
+	interface Equipment {
+		[key: string]: string;
+	}
 	namespace App {
 		// interface Error {}
 		// interface Locals {}

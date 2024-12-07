@@ -39,3 +39,24 @@ export async function getAppVersion() {
 		notify("Error fetching status", `Failed to get app version: ${e}`, "error");
 	}
 }
+
+export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefined> {
+	try {
+		const request = await fetch("/api/gse/details", {
+			method: 'POST',
+			body: JSON.stringify({
+				gse_id
+			})
+		});
+		const response = await request.json();
+		return response as GSEDetails;
+	} catch (e) {
+		console.error(
+			"%cError fetching GSE Details",
+			"color: red; font-size: 18px; font-weight: bold;",
+			e,
+		);
+		notify("Error fetching GSE Details", `Failed to get vehicle information: ${e}`, "error");
+	}
+	return undefined
+}

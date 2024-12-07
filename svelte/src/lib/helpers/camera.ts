@@ -3,6 +3,7 @@ import type { Point } from "jsqr/dist/locator";
 import { notify } from "$lib/helpers/notify";
 import { DEBUG_MODE } from "$lib/config";
 import { writable, type Writable } from "svelte/store";
+import { getGSEDetails } from "./server-requests";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
 let torchInfo: ITorchInfo = { hasCamera: false, hasTorch: false };
@@ -14,6 +15,7 @@ class QRScannerStore {
 		public flashlightDisabled: Writable<boolean> = writable(false),
 		public qrCodeData: Writable<string | null> = writable(null),
 		public showPopup: Writable<boolean> = writable(false),
+		public detectedGSE: Writable<GSEDetails | null> = writable(null),
 	) { }
 }
 
@@ -83,14 +85,38 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 };
 
 export async function loadQRScanner(forceDebug?: string) {
+	destroyScanner();
 	const result = forceDebug || (await scanQRCode());
 	destroyScanner();
 	if (result) {
 		qrScannerStore.qrCodeData.set(result);
 		qrScannerStore.showPopup.set(true);
 		document.getElementById("qrScanner")?.classList.add("hidden");
+		const gseDetails = await getGSEDetails(result);
+		if (gseDetails) {
+			qrScannerStore.detectedGSE.set(gseDetails);
+			if (gseDetails.error && gseDetails.details) {
+				notify(gseDetails.error, gseDetails.details, "error")
+			} else {
+				const title = `GSE ID: ${gseDetails.gse_id}`;
+				const description = `
+				  Type: ${gseDetails.gse_type}
+				  Model: ${gseDetails.model}
+				  Manufacturer: ${gseDetails.manufacturer}
+				  Location: ${gseDetails.location}
+				  Status: ${gseDetails.status}
+				  Fuel Type: ${gseDetails.type_of_fuel}
+				  In Use: ${gseDetails.in_use ? "Yes" : "No"}
+				  Last Service: ${gseDetails.latest_service_chassi}
+				`;
+				notify(title, description, "info")
+			}
+		} else {
+			qrScannerStore.detectedGSE.set(null);
+		}
 	} else {
 		qrScannerStore.showPopup.set(false);
+		qrScannerStore.detectedGSE.set(null);
 		qrScannerStore.qrCodeData.set("Unable to read QR code.");
 	}
 }
