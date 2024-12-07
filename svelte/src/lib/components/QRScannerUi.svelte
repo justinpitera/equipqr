@@ -14,6 +14,7 @@
         enabled)
     </div>
     <canvas
+        willReadFrequently={true}
         id="canvas"
         hidden
         style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;"
