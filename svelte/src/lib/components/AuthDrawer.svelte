@@ -13,7 +13,7 @@
     let password = "";
     let selectedLanguage: keyof typeof translations = "en"; // Ensures it's one of the translation keys
 
-    const { isAuthDrawerHidden } = homePageStore; // Store to manage visibility
+    const { isLoggedIn, isAuthDrawerHidden } = homePageStore; // Store to manage visibility
 
     const languages = [
         { code: "en", label: "English" },
@@ -45,6 +45,7 @@
                     ? t("emailSuccess").replace("{email}", email)
                     : t("loginSuccess");
             notify("Success", successMessage, "success");
+            isLoggedIn.set(!$isLoggedIn);
         }
     }
 </script>
