@@ -39,11 +39,11 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	}[] = [];
 	for (const device of videoInputs) {
 		try {
-			notify(
-				"QR Code Scanner",
-				`Checking Device: ${device.label} - ${device.deviceId}`,
-				"info",
-			);
+			// notify(
+			// 	"QR Code Scanner",
+			// 	`Checking Device: ${device.label} - ${device.deviceId}`,
+			// 	"info",
+			// );
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: { facingMode: "environment", deviceId: { exact: device.deviceId } },
 			});
