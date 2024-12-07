@@ -17,6 +17,7 @@
   import CloseReportUi from "$lib/components/CloseReportUi.svelte";
   import QRScannerUi from "$lib/components/QRScannerUi.svelte";
   import ReportUi from "$lib/components/ReportUi.svelte";
+  import DetailsDrawer from "$lib/components/DetailsDrawer.svelte";
 
   onMount(() => {
     loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined); // Debug by adding an ID here
@@ -31,6 +32,7 @@
   });
 </script>
 
+<DetailsDrawer />
 <NotifyUi />
 <QRScannerUi />
 <CloseReportUi />

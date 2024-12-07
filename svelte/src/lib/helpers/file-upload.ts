@@ -16,11 +16,6 @@ class FileUploadStore {
 
 export const fileUploadStore = new FileUploadStore();
 
-let mediaFiles: MediaFile[] = [];
-fileUploadStore.mediaFiles.subscribe((value) => {
-  mediaFiles = value;
-});
-
 let fullscreenViewer: HTMLElement | null = null;
 fileUploadStore.fullscreenViewer.subscribe((value) => {
   fullscreenViewer = value;

@@ -1,9 +1,9 @@
 import jsQR from "jsqr";
 import type { Point } from "jsqr/dist/locator";
 import { notify } from "$lib/helpers/notify";
-import { DEBUG_MODE } from "$lib/config";
 import { writable, type Writable } from "svelte/store";
 import { getGSEDetails } from "./server-requests";
+import { detailsDrawerStore } from "./details";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
 let torchInfo: ITorchInfo = { hasCamera: false, hasTorch: false };
@@ -16,10 +16,21 @@ class QRScannerStore {
 		public qrCodeData: Writable<string | null> = writable(null),
 		public showPopup: Writable<boolean> = writable(false),
 		public detectedGSE: Writable<GSEDetails | null> = writable(null),
+		public isAutoOpen: Writable<boolean> = writable(typeof window !== "undefined" ? localStorage?.getItem("autoOpen") === "true" : false),
 	) { }
 }
 
 export const qrScannerStore = new QRScannerStore();
+
+let isAutoOpen: boolean = typeof window !== "undefined" ? localStorage?.getItem("autoOpen") === "true" : false;
+qrScannerStore.isAutoOpen.subscribe((value) => {
+	isAutoOpen = value;
+});
+
+let hideGSEDetail: boolean = true;
+detailsDrawerStore.hideGSEDetail.subscribe((value) => {
+	hideGSEDetail = value;
+});
 
 const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
@@ -92,19 +103,8 @@ export async function loadQRScanner(forceDebug?: string) {
 			qrScannerStore.detectedGSE.set(gseDetails);
 			if (gseDetails.error && gseDetails.details) {
 				notify(gseDetails.error, gseDetails.details, "error")
-			} else {
-				const title = `GSE ID: ${gseDetails.gse_id}`;
-				const description = `
-				  Type: ${gseDetails.gse_type}
-				  Model: ${gseDetails.model}
-				  Manufacturer: ${gseDetails.manufacturer}
-				  Location: ${gseDetails.location}
-				  Status: ${gseDetails.status}
-				  Fuel Type: ${gseDetails.type_of_fuel}
-				  In Use: ${gseDetails.in_use ? "Yes" : "No"}
-				  Last Service: ${gseDetails.latest_service_chassi}
-				`;
-				notify(title, description, "info")
+			} else if (isAutoOpen) {
+				detailsDrawerStore.hideGSEDetail.set(false);
 			}
 		} else {
 			qrScannerStore.detectedGSE.set(null);
