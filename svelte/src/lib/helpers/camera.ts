@@ -25,9 +25,7 @@ qrScannerStore.flashlightOn.subscribe((value) => {
 });
 
 const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
-	const test_stream = await navigator.mediaDevices.getUserMedia({
-		video: true,
-	});
+	await navigator.mediaDevices.getUserMedia({audio: true, video: true});
 	const devices = await navigator.mediaDevices.enumerateDevices();
 	console.log("Available devices:", devices);
 	const videoInputs = devices.filter((device) => device.kind === "videoinput");
