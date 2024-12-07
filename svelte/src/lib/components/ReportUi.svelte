@@ -62,7 +62,11 @@
   const defaultIcon = Fuel;
 
   function getResolvedIcon(fuelType: string): typeof Fuel {
-    return fuelIcons[(fuelType.split(' ')[0].toLowerCase()) as keyof typeof fuelIcons] || defaultIcon;
+    return (
+      fuelIcons[
+        fuelType.split(" ")[0].toLowerCase() as keyof typeof fuelIcons
+      ] || defaultIcon
+    );
   }
 
   const equipment: Equipment = {
@@ -171,21 +175,6 @@
       </div>
 
       <div class="grid mt-4 grid-cols-2 lg:grid-cols-3 gap-4 text-gray-800">
-        <!-- Manufacturer Card -->
-        <div
-          class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2"
-        >
-          <Avatar
-            src="/images/kalmar.png"
-            rounded
-            class="w-8 h-8 bg-transparent ring-red-400 dark:ring-red-300"
-          />
-          <div>
-            <p class="font-semibold">Manufacturer:</p>
-            <p>{$detectedGSE.manufacturer || "Unknown"}</p>
-          </div>
-        </div>
-
         <!-- Error Card -->
         {#if $detectedGSE.error}
           <div
@@ -207,6 +196,21 @@
         {/if}
 
         {#if !$detectedGSE.details && !$detectedGSE.error}
+          <!-- Manufacturer Card -->
+          <div
+            class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2"
+          >
+            <Avatar
+              src="/images/kalmar.png"
+              rounded
+              class="w-8 h-8 bg-transparent ring-red-400 dark:ring-red-300"
+            />
+            <div>
+              <p class="font-semibold">Manufacturer:</p>
+              <p>{$detectedGSE.manufacturer || "Unknown"}</p>
+            </div>
+          </div>
+
           <!-- Model Card -->
           <div
             class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
