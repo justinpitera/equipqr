@@ -1,12 +1,6 @@
 <script lang="ts">
   // Icons and components
-  import {
-    Image,
-    Video,
-    Upload,
-    Trash,
-    ArrowLeft,
-  } from "lucide-svelte";
+  import { Image, Video, Upload, Trash, ArrowLeft } from "lucide-svelte";
   import { Button, Badge, Avatar } from "flowbite-svelte";
   // Utilities
   import { disableContextMenu, formatNumber } from "$lib/helpers/basics";
@@ -33,15 +27,58 @@
   // Cancel report utilities
   import { cancelReportStore } from "$lib/helpers/cancel-report";
   const { closeReportHidden } = cancelReportStore;
-  import { handleFormSubmit } from "$lib/helpers/submit-report";
   import { writable } from "svelte/store";
   // Details Drawer utilities
   import { detailsDrawerStore } from "$lib/helpers/details";
   import { onDestroy, onMount } from "svelte";
-    import { maxFiles } from "$lib/config";
+  import { maxFiles } from "$lib/config";
   const { hideGSEDetail } = detailsDrawerStore;
 
   const operable = writable("");
+
+  function handleFormSubmit(event: Event): void {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData();
+    const issue_description =
+      (form.querySelector("#issue-description") as HTMLTextAreaElement)
+      ?.value || "";
+    const employee_name =
+      (form.querySelector("#employee-name") as HTMLTextAreaElement)
+        ?.value || "";
+    const is_operable = $operable === "yes";
+    formData.append("gse_id", $qrCodeData || 'Unknown');
+    formData.append("employee_name", employee_name);
+    formData.append("issue_description", issue_description);
+    formData.append("is_operable", String(is_operable));
+
+    // Append uploaded files
+    $mediaFiles.forEach((file) => {
+      formData.append("attachments", file.file, file.file.name);
+    });
+
+    // Send the data via fetch
+    submitIssue(formData);
+  }
+
+  async function submitIssue(formData: FormData) {
+    try {
+      const response = await fetch("/api/gse/issues/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Status Code:", response.status);
+        console.log("Response Data:", data);
+      } else {
+        console.error("Error submitting the issue:", response.statusText);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
 
   const handleWindowClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
@@ -50,11 +87,14 @@
       fileUploadStore.wiggleModeEnabled.set(false);
     }
   };
+
   onMount(() => {
-    if (typeof window !== 'undefined') document.addEventListener("click", handleWindowClick);
+    if (typeof window !== "undefined")
+      document.addEventListener("click", handleWindowClick);
   });
   onDestroy(() => {
-    if (typeof window !== 'undefined') document.removeEventListener("click", handleWindowClick);
+    if (typeof window !== "undefined")
+      document.removeEventListener("click", handleWindowClick);
   });
 </script>
 
@@ -179,10 +219,7 @@
           </p>
           <div class="flex justify-center">
             <label for="takePicture" class="file-button w-12 h-12">
-              <Image
-                oncontextmenu={disableContextMenu}
-                class="w-6 h-6"
-              />
+              <Image oncontextmenu={disableContextMenu} class="w-6 h-6" />
             </label>
             <input
               id="takePicture"
