@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { LightbulbOff, Lightbulb } from "lucide-svelte";
     import { disableContextMenu } from "$lib/helpers/basics";
     import { qrScannerStore } from "$lib/helpers/camera";
@@ -14,7 +15,6 @@
         enabled)
     </div>
     <canvas
-        willReadFrequently={true}
         id="canvas"
         hidden
         style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;"

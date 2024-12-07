@@ -126,9 +126,6 @@
     const match = status?.match(/^(\d+)/);
     return match ? match[1] : "0"; // Default to "0" if no match is found
   };
-
-  let statusNumber = getStatusNumber($detectedGSE?.status);
-  let color = statusColors[statusNumber];
 </script>
 
 <Drawer
@@ -162,14 +159,16 @@
         <Avatar
           src={equipment[$detectedGSE.gse_type]}
           rounded
-          class="w-16 h-16 ring-4 ring-green-400 dark:ring-red-300"
+          class="w-16 h-16 ring-4 ring-{!$detectedGSE.details && !$detectedGSE.error ? 'green' : 'red'}-400 dark:ring-red-300"
         />
         <div class="flex flex-col">
           <span class="text-xl font-medium text-gray-800"
             >{$detectedGSE.gse_type}</span
           >
           <span class="font-semibold text-gray-700"
-            >{$detectedGSE.model} - {$detectedGSE.manufacturer}</span
+            >{$detectedGSE.model}{$detectedGSE.manufacturer
+              ? " - " + $detectedGSE.manufacturer
+              : ""}</span
           >
         </div>
       </div>
@@ -196,20 +195,22 @@
         {/if}
 
         {#if !$detectedGSE.details && !$detectedGSE.error}
-          <!-- Manufacturer Card -->
-          <div
-            class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2"
-          >
-            <Avatar
-              src="/images/kalmar.png"
-              rounded
-              class="w-8 h-8 bg-transparent ring-red-400 dark:ring-red-300"
-            />
-            <div>
-              <p class="font-semibold">Manufacturer:</p>
-              <p>{$detectedGSE.manufacturer || "Unknown"}</p>
+          {#if $detectedGSE.manufacturer}
+            <!-- Manufacturer Card -->
+            <div
+              class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2"
+            >
+              <Avatar
+                src="/images/kalmar.png"
+                rounded
+                class="w-8 h-8 bg-transparent ring-red-400 dark:ring-red-300"
+              />
+              <div>
+                <p class="font-semibold">Manufacturer:</p>
+                <p>{$detectedGSE.manufacturer}</p>
+              </div>
             </div>
-          </div>
+          {/if}
 
           <!-- Model Card -->
           <div
@@ -233,27 +234,39 @@
           >
             <p class="font-semibold">Status:</p>
             <div
-              class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-{color}-100 text-{color}-800 dark:bg-gray-700 dark:text-{color}-400 border-{color}-400 dark:border-{color}-400 rounded"
+              class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-{statusColors[
+                getStatusNumber($detectedGSE?.status)
+              ]}-100 text-{statusColors[
+                getStatusNumber($detectedGSE?.status)
+              ]}-800 dark:bg-gray-700 dark:text-{statusColors[
+                getStatusNumber($detectedGSE?.status)
+              ]}-400 border-{statusColors[
+                getStatusNumber($detectedGSE?.status)
+              ]}-400 dark:border-{statusColors[
+                getStatusNumber($detectedGSE?.status)
+              ]}-400 rounded"
             >
               {$detectedGSE.status || "Unavailable"}
             </div>
           </div>
 
           <!-- Fuel Type Card -->
-          <div
-            class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
-          >
-            <p class="font-semibold">Fuel Type:</p>
-            <div class="flex items-center gap-2">
-              {$detectedGSE.type_of_fuel || "Unknown"}
-              {#if $detectedGSE.type_of_fuel}
-                {@const ResolvedIcon = getResolvedIcon(
-                  $detectedGSE.type_of_fuel,
-                )}
-                <ResolvedIcon style="vertical-align: middle;" />
-              {/if}
+          {#if $detectedGSE.type_of_fuel}
+            <div
+              class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
+            >
+              <p class="font-semibold">Fuel Type:</p>
+              <div class="flex items-center gap-2">
+                {$detectedGSE.type_of_fuel || "Unknown"}
+                {#if $detectedGSE.type_of_fuel}
+                  {@const ResolvedIcon = getResolvedIcon(
+                    $detectedGSE.type_of_fuel,
+                  )}
+                  <ResolvedIcon style="vertical-align: middle;" />
+                {/if}
+              </div>
             </div>
-          </div>
+          {/if}
 
           <!-- In Use Card -->
           <div

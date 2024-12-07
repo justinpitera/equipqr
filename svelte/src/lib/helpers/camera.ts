@@ -21,11 +21,6 @@ class QRScannerStore {
 
 export const qrScannerStore = new QRScannerStore();
 
-let flashlightOn = false;
-qrScannerStore.flashlightOn.subscribe((value) => {
-	flashlightOn = value;
-});
-
 const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
 	const devices = await navigator.mediaDevices.enumerateDevices();
@@ -126,7 +121,9 @@ export function destroyScanner() {
 	const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
 	if (canvasElement) {
 		canvasElement.hidden = true;
-		const canvas = canvasElement.getContext("2d");
+		const canvas = canvasElement.getContext("2d", {
+			willReadFrequently: true,
+		});
 		if (canvas)
 			canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
 	}
@@ -165,6 +162,7 @@ async function scanQRCode(): Promise<string | null> {
 		const canvas = canvasElement.getContext("2d", {
 			willReadFrequently: true,
 		});
+		if (canvas) canvas.willReadFrequently = true;
 		const loadingMessage = document.getElementById("loadingMessage");
 		const outputContainer = document.getElementById("output");
 		const outputMessage = document.getElementById("outputMessage");
@@ -278,11 +276,16 @@ async function scanQRCode(): Promise<string | null> {
 					canvasElement.width,
 					canvasElement.height,
 				);
+				canvas.willReadFrequently = true;
 				const imageData = canvas.getImageData(
 					0,
 					0,
 					canvasElement.width,
 					canvasElement.height,
+					{
+						// @ts-ignore
+						willReadFrequently: true
+					}
 				);
 				const code = jsQR(imageData.data, imageData.width, imageData.height, {
 					inversionAttempts: "dontInvert",

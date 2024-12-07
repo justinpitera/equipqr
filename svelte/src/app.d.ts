@@ -27,6 +27,9 @@ declare global {
 	interface Equipment {
 		[key: string]: string;
 	}
+	interface CanvasRenderingContext2D extends CanvasRenderingContext2D {
+		willReadFrequently?: boolean;
+	}
 	namespace App {
 		// interface Error {}
 		// interface Locals {}
