@@ -36,8 +36,9 @@
     import { cancelReportStore } from "$lib/helpers/cancel-report";
     const { closeReportHidden } = cancelReportStore;
     import { handleFormSubmit } from "$lib/helpers/submit-report";
+    import { writable, type Writable } from "svelte/store";
   
-    let operable = "";
+    const operable: Writable<string> = writable("");
   </script>
   
 {#if $showPopup}
@@ -122,22 +123,22 @@
             <button
               type="button"
               class="w-1/2 text-center py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 select-none"
-              class:active={operable === "yes"}
-              class:bg-green-500={operable === "yes"}
-              class:text-white={operable === "yes"}
-              class:text-black={operable !== "yes"}
-              onclick={() => (operable = "yes")}
+              class:active={$operable === "yes"}
+              class:bg-green-500={$operable === "yes"}
+              class:text-white={$operable === "yes"}
+              class:text-black={$operable !== "yes"}
+              onclick={() => ($operable = "yes")}
             >
               Yes
             </button>
             <button
               type="button"
               class="w-1/2 text-center py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 select-none"
-              class:active={operable === "no"}
-              class:bg-red-500={operable === "no"}
-              class:text-white={operable === "no"}
-              class:text-black={operable !== "no"}
-              onclick={() => (operable = "no")}
+              class:active={$operable === "no"}
+              class:bg-red-500={$operable === "no"}
+              class:text-white={$operable === "no"}
+              class:text-black={$operable !== "no"}
+              onclick={() => ($operable = "no")}
             >
               No
             </button>

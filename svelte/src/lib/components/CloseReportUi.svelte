@@ -5,7 +5,6 @@
     import {
       loadQRScanner,
       qrScannerStore,
-      toggleScanner,
     } from "$lib/helpers/camera";
     const { qrCodeData, showPopup } = qrScannerStore;
     import {
@@ -52,7 +51,6 @@
       $closeReportHidden = true;
       showPopup.set(false);
       document.getElementById("qrScanner")?.classList.remove("hidden");
-      toggleScanner(true);
       loadQRScanner();
     }}
     href="/"
