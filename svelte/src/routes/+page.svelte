@@ -19,8 +19,8 @@
   import ReportUi from "$lib/components/ReportUi.svelte";
 
   onMount(() => {
-    registerServiceWorker();
     loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined); // Debug by adding an ID here
+    registerServiceWorker();
     getAppVersion();
     // Cleanup
     return () => {};
