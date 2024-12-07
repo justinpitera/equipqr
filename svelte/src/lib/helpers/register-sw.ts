@@ -27,19 +27,26 @@ const registerSw = (
 		});
 	});
 
+let deferredPrompt: any | null = null;
+let attempts: number = 0;
 export async function registerServiceWorker() {
 	await registerSw("sw.js", /* 12 hours */ 1000 * 60 * 60 * 12);
 	window.addEventListener('beforeinstallprompt', (e) => {
-		// Prevent the default prompt from appearing automatically
-		e.preventDefault();
-		setTimeout(() => {
-			// @ts-ignore
-			e.prompt();
-		}, 2000);
+	  e.preventDefault();
+	  deferredPrompt = e;
+	  console.log('beforeinstallprompt event captured');
 	});
-	// Optionally track PWA install events
+	window.addEventListener('click', async () => {
+	  if (deferredPrompt) {
+		if (attempts === 3) return;
+		attempts += 1;
+		deferredPrompt.prompt();
+		const choiceResult = await deferredPrompt.userChoice;
+		console.log(`User choice: ${choiceResult.outcome}`);
+		deferredPrompt = null;
+	  }
+	});
 	window.addEventListener('appinstalled', () => {
-		alert('PWA was installed');
+	  alert('App was installed');
 	});
-
 }
