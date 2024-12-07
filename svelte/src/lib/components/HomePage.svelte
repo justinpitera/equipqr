@@ -6,7 +6,8 @@
     import { homePageStore } from "$lib/helpers/homepage";
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
     import AuthDrawer from "$lib/components/AuthDrawer.svelte";
-    const { isLoggedIn, isSettingsHidden, startQRScanner, isAuthDrawerHidden } = homePageStore;
+    const { isLoggedIn, isSettingsHidden, startQRScanner, isAuthDrawerHidden } =
+        homePageStore;
 
     const toggleLogin = () => {
         isAuthDrawerHidden.set(false);
@@ -27,7 +28,9 @@
     <QRScannerUi />
 </div>
 
-<main class="container px-1 py-1 bg-slate-100{$startQRScanner ? " hidden" : ""}">
+<main
+    class="container px-1 py-1 bg-slate-100{$startQRScanner ? ' hidden' : ''}"
+>
     <div class="text-center mb-4">
         <img
             src="/Fejlemingsapp_logo.png"
@@ -85,29 +88,31 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Login/Logout -->
-    <div class="card p-5 bg-white rounded-lg shadow-md">
-        <div class="card-content">
-            <LightbulbOff
-                class="w-10 h-10 mx-auto text-green-600 dark:text-white"
-            />
-            <div class="card-title mt-3">
-                {#if $isLoggedIn}
-                    <span class="text-green-500">Logged in</span>
-                {:else}
-                    <button class="button" onclick={toggleLogin}>Login</button>
-                {/if}
-            </div>
-            <div
-                class="card-description text-sm text-gray-500 dark:text-gray-300"
-            >
-                {#if $isLoggedIn}
-                    You're successfully logged in.
-                {:else}
-                    Please log in to access more features.
-                {/if}
+        <!-- Login/Logout -->
+        <div class="card p-5 bg-white rounded-lg shadow-md">
+            <div class="card-content">
+                <LightbulbOff
+                    class="w-10 h-10 mx-auto text-green-600 dark:text-white"
+                />
+                <div class="card-title mt-3">
+                    {#if $isLoggedIn}
+                        <span class="text-green-500">Logged in</span>
+                    {:else}
+                        <button class="button" onclick={toggleLogin}
+                            >Login</button
+                        >
+                    {/if}
+                </div>
+                <div
+                    class="card-description text-sm text-gray-500 dark:text-gray-300"
+                >
+                    {#if $isLoggedIn}
+                        You're successfully logged in.
+                    {:else}
+                        Please log in to access more features.
+                    {/if}
+                </div>
             </div>
         </div>
     </div>
