@@ -197,7 +197,7 @@
                     {#if $detectedGSE.manufacturer}
                         <!-- Manufacturer Card -->
                         <div
-                            class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2"
+                            class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2 justify-center"
                         >
                             <div class="text-center">
                                 <p class="font-semibold">Manufacturer:</p>
