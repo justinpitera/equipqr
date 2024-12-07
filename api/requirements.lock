@@ -12,36 +12,59 @@
 -e file:.
 aiosqlite==0.20.0
     # via tortoise-orm
+amqp==5.3.1
+    # via kombu
 annotated-types==0.7.0
     # via pydantic
 anyio==4.6.2.post1
     # via starlette
 argon2-cffi==23.1.0
     # via api
+    # via minio
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 asyncpg==0.30.0
     # via api
+billiard==4.2.1
+    # via celery
+celery==5.4.0
+    # via api
+certifi==2024.8.30
+    # via minio
+    # via requests
 cffi==1.17.1
     # via argon2-cffi-bindings
     # via cryptography
+charset-normalizer==3.4.0
+    # via requests
 click==8.1.7
+    # via celery
+    # via click-didyoumean
+    # via click-plugins
+    # via click-repl
     # via granian
+click-didyoumean==0.3.1
+    # via celery
+click-plugins==1.1.1
+    # via celery
+click-repl==0.3.0
+    # via celery
 colorama==0.4.6
     # via api
-    # via click
-    # via loguru
-    # via qrcode
-    # via tqdm
 cryptography==43.0.3
     # via pyjwt
 granian==1.6.4
     # via api
 idna==3.10
     # via anyio
+    # via requests
 iso8601==2.1.0
     # via tortoise-orm
+kombu==5.4.2
+    # via celery
 loguru==0.7.2
+    # via api
+minio==7.2.12
     # via api
 numpy==2.1.3
     # via pandas
@@ -49,8 +72,14 @@ orjson==3.10.11
     # via api
 pandas==2.2.3
     # via api
+pillow==11.0.0
+    # via api
+prompt-toolkit==3.0.48
+    # via click-repl
 pycparser==2.22
     # via cffi
+pycryptodome==3.21.0
+    # via minio
 pydantic==2.10.1
     # via tortoise-orm
 pydantic-core==2.27.1
@@ -60,11 +89,18 @@ pyjwt==2.10.0
 pypika-tortoise==0.2.2
     # via tortoise-orm
 python-dateutil==2.9.0.post0
+    # via celery
     # via pandas
+python-multipart==0.0.19
+    # via api
 pytz==2024.2
     # via pandas
     # via tortoise-orm
 qrcode==8.0
+    # via api
+redis==5.2.1
+    # via celery
+requests==2.32.3
     # via api
 setproctitle==1.3.4
     # via granian
@@ -82,9 +118,21 @@ tqdm==4.67.1
     # via api
 typing-extensions==4.12.2
     # via aiosqlite
+    # via minio
     # via pydantic
     # via pydantic-core
 tzdata==2024.2
+    # via celery
+    # via kombu
     # via pandas
-win32-setctime==1.1.0
-    # via loguru
+urllib3==2.2.3
+    # via minio
+    # via requests
+uvloop==0.21.0
+    # via granian
+vine==5.1.0
+    # via amqp
+    # via celery
+    # via kombu
+wcwidth==0.2.13
+    # via prompt-toolkit

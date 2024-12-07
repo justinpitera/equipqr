@@ -23,7 +23,7 @@ from . import API_CONFIG, TORTOISE_CONFIG
 from src.database import database_importer
 from src.routes.index import homepage
 from src.routes.health import get_status
-from src.routes.issues import details_request
+from src.routes.issues import details_request, submit_issue
 
 @asynccontextmanager
 async def _lifespan(_app: Starlette) -> AsyncGenerator:
@@ -61,8 +61,9 @@ def init_asgi() -> Starlette:
     # Health
     _ASGI.add_route(f"{_API_ROUTE_PREFIX}/health/status", get_status, methods=["GET"])
     
-    # Issues
+    # GroundSupportEquiptment (GSEs) related
     _ASGI.add_route(f"{_API_ROUTE_PREFIX}/gse/details", details_request, methods=["POST"])
+    _ASGI.add_route(f"{_API_ROUTE_PREFIX}/gse/issues/submit", submit_issue, methods=["POST"])
         
     # Index    
     _ASGI.mount("/", StaticFiles(directory="web", html=True), name="_app")

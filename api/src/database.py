@@ -64,7 +64,7 @@ def safe_parse_date(value, field_name):
                 return datetime.fromisoformat(value)
             except ValueError:
                 # Handle other common formats
-                return datetime.strptime(value, "%m/%d/%Y")  # Adjust formats as needed
+                return datetime.strptime(value, "%m/%d/%Y")
     except Exception as e:
         logger.warning(f"Invalid date in field '{field_name}': {value}. Error: {e}")
     return None

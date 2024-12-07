@@ -46,7 +46,7 @@ def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_black, outp
         canvas.paste(qr_img, (0, 0))
 
         try:
-            font = ImageFont.truetype("arial.ttf", size=190)
+            font = ImageFont.truetype("../fonts/arial.ttf", size=190)
         except IOError:
             font = ImageFont.load_default()
         

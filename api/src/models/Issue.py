@@ -1,5 +1,6 @@
 # Standard
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 # Third-party
@@ -9,9 +10,12 @@ from tortoise.fields import (
     DatetimeField,
     TextField,
     UUIDField,
-    Field
+    Field,
+    ReverseRelation
 )
 
+if TYPE_CHECKING:
+    from src.models import IssueAttachment
 
 class Issue(Model):
     """Stores issues relating to GroundSupportEquiptment."""
@@ -19,3 +23,4 @@ class Issue(Model):
     gse_id                           : Field[str]      = CharField(max_length=255)
     issue_description                : Field[str]      = TextField()
     reported_at                      : Field[datetime] = DatetimeField(auto_now_add=True)
+    attachments                      : ReverseRelation["IssueAttachment"]

@@ -12,5 +12,33 @@ services:
     volumes:
       - fejlmelings-storage:/var/lib/postgresql/data
 
+  minio:
+    image: minio/minio:latest
+    restart: always
+    container_name: fejlmelings-minio
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD}"
+    command: server --address 0.0.0.0:9000 --console-address 0.0.0.0:9001 /data
+    ports:
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
+    volumes:
+      - minio-data:/data
+
+  keydb:
+    image: eqalpha/keydb:latest
+    restart: always
+    container_name: fejlmelings-keydb
+    command: keydb-server /etc/keydb/keydb.conf
+    volumes:
+      - keydb-data:/data
+    environment:
+      KEYDB_PASSWORD: "${KEYDB_PASSWORD}"
+    ports:
+      - "${KEYDB_PORT}:6379"
+
 volumes:
   fejlmelings-storage:
+  minio-data:
+  keydb-data:
