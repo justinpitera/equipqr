@@ -110,33 +110,21 @@
   };
 
   const statusColors: Record<string, string> = {
-    "0": "gray", // Scraped
+    "0": "dark", // Scraped
     "1": "red", // Scrap
-    "2": "orange", // Usable
-    "3": "yellow", // Okay
-    "4": "lightgreen", // Good condition
+    "2": "yellow", // Usable
+    "3": "indigo", // Okay
+    "4": "purple", // Good condition
     "5": "green", // Very good condition
   };
 
-  const statusWidths: Record<string, string> = {
-    "0": "100%", // Scraped
-    "1": "80%", // Scrap
-    "2": "60%", // Usable
-    "3": "40%", // Okay
-    "4": "20%", // Good condition
-    "5": "10%", // Very good condition
-  };
-
-  let status = "3. Okay";
-
-  const getStatusNumber = (status: string): string => {
-    const match = status.match(/^(\d+)/);
+  const getStatusNumber = (status: string | undefined): string => {
+    const match = status?.match(/^(\d+)/);
     return match ? match[1] : "0"; // Default to "0" if no match is found
   };
 
-  let statusNumber = getStatusNumber(status);
+  let statusNumber = getStatusNumber($detectedGSE?.status);
   let color = statusColors[statusNumber];
-  let width = statusWidths[statusNumber];
 </script>
 
 <Drawer
@@ -157,12 +145,10 @@
     >
       <ArrowLeft class="h-6 w-6 text-gray-800" />
     </button>
-    <div class="flex flex-col items-center">
-      <div
-        class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
-      >
-        {$qrCodeData}
-      </div>
+    <div
+      class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
+    >
+      {$qrCodeData}
     </div>
   </div>
 
@@ -242,9 +228,11 @@
             class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
           >
             <p class="font-semibold">Status:</p>
-            <p class="text-sm">
+            <div
+              class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-{color}-100 text-{color}-800 dark:bg-gray-700 dark:text-{color}-400 border-{color}-400 dark:border-{color}-400 rounded"
+            >
               {$detectedGSE.status || "Unavailable"}
-            </p>
+            </div>
           </div>
 
           <!-- Fuel Type Card -->
