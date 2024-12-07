@@ -6,6 +6,11 @@ class HomePageStore {
         public isSettingsHidden: Writable<boolean> = writable(true),
         public isAuthDrawerHidden: Writable<boolean> = writable(true),
         public startQRScanner: Writable<boolean> = writable(false),
+        public darkMode: Writable<boolean> = writable(false),
+        public notificationsEnabled: Writable<boolean> = writable(true),
+        public selectedLanguage: Writable<string> = writable("en"),
+        public debugMode: Writable<boolean> = writable(false),
+        public qrScannerSound: Writable<boolean> = writable(true),
     ) { }
 }
 
