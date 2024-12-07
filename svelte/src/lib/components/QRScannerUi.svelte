@@ -40,6 +40,7 @@
             <LightbulbOff
                 oncontextmenu={disableContextMenu}
                 class="flashlight-btn w-8 h-8"
+                style="filter: drop-shadow(0px 0px 6px black) blur(0.2px)"
             />
         {/if}
     </button>

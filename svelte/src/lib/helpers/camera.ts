@@ -5,6 +5,8 @@ import { DEBUG_MODE } from "$lib/config";
 import { writable, type Writable } from "svelte/store";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
+let torchInfo: ITorchInfo = { hasCamera: false, hasTorch: false };
+let torch_state = "Uninitialized";
 
 class QRScannerStore {
 	constructor(
@@ -20,6 +22,59 @@ let flashlightOn = false;
 qrScannerStore.flashlightOn.subscribe((value) => {
 	flashlightOn = value;
 });
+
+const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
+	const devices = await navigator.mediaDevices.enumerateDevices();
+	console.log("Available devices:", devices);
+	const videoInputs = devices.filter((device) => device.kind === "videoinput");
+	console.log("Available cameras:", videoInputs);
+	let lastStream: MediaStream | undefined = undefined;
+	let lastTrack: MediaStreamTrack | undefined = undefined;
+	let lastDevice: MediaDeviceInfo | undefined = undefined;
+	const collectedTracks: {
+		device_id: string;
+		track: MediaStreamTrack;
+	}[] = [];
+	for (const device of videoInputs) {
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({
+				video: { facingMode: "environment", deviceId: { exact: device.deviceId } },
+			});
+			const track = stream.getVideoTracks()[0];
+			const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
+			console.log(`Capabilities for ${device.label}:`, capabilities);
+			lastStream = stream;
+			lastTrack = track;
+			lastDevice = device;
+			if (capabilities.torch) {
+				for (const collectedTrack of collectedTracks) {
+					collectedTrack.track.stop();
+				}
+				notify(
+					"QR Code Scanner",
+					`Torch is available on ${device.label}`,
+					"info",
+				);
+				return { hasCamera: true, hasTorch: true, track, stream };
+			}
+			collectedTracks.push({
+				device_id: device.deviceId,
+				track,
+			});
+		} catch (error) {
+			continue; // `Error accessing camera ${device.label}: ${error}`
+		}
+	}
+	for (const collectedTrack of collectedTracks) {
+		if (lastDevice?.deviceId !== collectedTrack.device_id) collectedTrack.stop();
+	}
+	notify(
+		"QR Code Scanner",
+		"No camera with torch capability found.",
+		"error",
+	);
+	return { hasCamera: videoInputs.length > 0, hasTorch: false, track: lastTrack, stream: lastStream };
+};
 
 export async function loadQRScanner(forceDebug?: string) {
 	const result = forceDebug || (await scanQRCode());
@@ -94,12 +149,6 @@ async function scanQRCode(): Promise<string | null> {
 		const outputContainer = document.getElementById("output");
 		const outputMessage = document.getElementById("outputMessage");
 		const outputData = document.getElementById("outputData");
-		const toggleButton = document.getElementById("toggleFlashlight");
-		if (!toggleButton)
-			return notify("QR Code Scanner", "Could not find flash button", "error");
-		toggleButton.onclick = () => {
-			toggleFlashlight(!flashlightOn);
-		};
 		function drawLine(
 			begin: Point,
 			end: Point,
@@ -114,43 +163,51 @@ async function scanQRCode(): Promise<string | null> {
 			canvas.strokeStyle = color;
 			canvas.stroke();
 		}
-		navigator.mediaDevices
-			.getUserMedia({ video: { facingMode: "environment" } })
-			.then((stream) => {
-				if (!videoElement)
-					return notify(
-						"QR Code Scanner",
-						"Could not find videoElement",
-						"error",
-					);
-				videoElement.srcObject = stream;
+		getCameraWithTorchInfo().then((cameraWithTorch) => {
+			if (!videoElement)
+				return notify(
+					"QR Code Scanner",
+					"Could not find videoElement",
+					"error",
+				);
+			torch_state = "Initializing";
+			try {
+				torchInfo = cameraWithTorch;
+				if (cameraWithTorch.hasTorch) {
+					const torchButton = document.getElementById("toggleFlashlight");
+					torchButton?.addEventListener("click", async () => {
+						try {
+							if (!torchInfo.track) return;
+							const on = torch_state === "Off";
+							await torchInfo.track.applyConstraints({
+								advanced: [{ torch: on } as ExtendedMediaTrackConstraintSet],
+							});
+							torch_state = on ? "On" : "Off";
+							qrScannerStore.flashlightOn.set(on);
+							notify(
+								"QR Code Scanner",
+								`Flashlight turned ${on ? "on" : "off"}.`,
+								"info",
+							);
+						} catch (e) {
+							notify("QR Code Scanner", `Error toggling flashlight: ${e}`, "error");
+						}
+					});
+					torch_state = "Off";
+				} else {
+					torch_state = "Disabled";
+				}
+				if (!cameraWithTorch.stream || !cameraWithTorch.track) return notify("QR Code Scanner", "Could not find an available camera device!", "error");
+				videoElement.srcObject = cameraWithTorch.stream;
 				videoElement.playsInline = true;
 				videoElement.play();
-				videoTrack = stream.getVideoTracks()[0];
-				const capabilities =
-					videoTrack.getCapabilities() as MediaTrackCapabilities & {
-						torch: boolean;
-					};
-				if (capabilities.torch) {
-					// const toggleButton = document.getElementById("toggleFlashlight");
-					// if (!toggleButton)
-					// 	return console.error("Could not find flash button");
-					// toggleButton.classList.remove("hidden");
-					// toggleButton.style.display = "block";
-					notify(
-						"QR Code Scanner",
-						"Your device can use the flash light",
-						"info",
-					);
-				} else {
-					notify(
-						"QR Code Scanner",
-						"The flash light capability is not supported on this device",
-						"error",
-					);
-				}
+				videoTrack = cameraWithTorch.track;
 				requestAnimationFrame(qrScanner);
-			});
+			} catch (error) {
+				torch_state = "Disabled";
+				console.error((error as Error).message)
+			}
+		});
 		function qrScanner() {
 			if (!videoTrack)
 				return notify("QR Code Scanner", "Could not find videoTrack", "error");
@@ -235,11 +292,19 @@ async function scanQRCode(): Promise<string | null> {
 					outputMessage.hidden = true;
 					outputData.parentElement.hidden = false;
 					outputData.innerText = code.data;
-					const capabilities =
-						videoTrack.getCapabilities() as MediaTrackCapabilities & {
-							torch: boolean;
-						};
-					if (capabilities.torch) toggleFlashlight(false);
+					if (torchInfo.hasTorch && torchInfo.track) {
+						torchInfo.track.applyConstraints({
+							advanced: [{ torch: false } as ExtendedMediaTrackConstraintSet],
+						}).then(() => {
+							torch_state = "Off";
+							qrScannerStore.flashlightOn.set(false);
+							notify(
+								"QR Code Scanner (DEBUG)",
+								`Found QR Code. Flashlight turned off.`,
+								"info",
+							);
+						});
+					}
 					resolve(code.data);
 				} else {
 					outputMessage.hidden = false;
@@ -251,25 +316,4 @@ async function scanQRCode(): Promise<string | null> {
 			requestAnimationFrame(qrScanner);
 		}
 	});
-}
-
-function toggleFlashlight(on: boolean) {
-	if (!videoTrack) {
-		notify("QR Code Scanner", "No video track available.", "error");
-		return;
-	}
-	qrScannerStore.flashlightOn.set(on);
-	try {
-		videoTrack.applyConstraints({
-			// @ts-ignore
-			advanced: [{ torch: flashlightOn }],
-		});
-		notify(
-			"QR Code Scanner",
-			`Flashlight turned ${flashlightOn ? "on" : "off"}.`,
-			"info",
-		);
-	} catch (error) {
-		notify("QR Code Scanner", `Error toggling flashlight: ${error}`, "error");
-	}
 }
