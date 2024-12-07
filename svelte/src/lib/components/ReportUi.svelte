@@ -76,7 +76,19 @@
         onsubmit={handleFormSubmit}
       >
         <div>
-          <div class="flex items-center justify-between mb-1">
+          <label
+            for="employee-name"
+            class="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Employee Name
+          </label>
+          <input
+            id="employee-name"
+            class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter your 3-letters name"
+            maxlength="3"
+          />
+          <div class="flex items-center justify-between mb-1 mt-2">
             <label
               for="issue-description"
               class="block text-sm font-medium text-gray-700"
@@ -89,7 +101,7 @@
                 rounded
                 class="w-6 h-6 ms-2 p-0 font-semibold text-primary-800 bg-white dark:text-primary-800 dark:bg-white"
               >
-                {formatNumber(1500)}
+                {formatNumber(100)}
               </Badge>
             </Button>
           </div>
