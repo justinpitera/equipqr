@@ -53,16 +53,16 @@
   };
 
   const fuelIcons = {
-    Diesel: Fuel,
-    Electric: BatteryCharging,
-    Hybrid: RefreshCw,
-    Petrol: Droplet,
+    diesel: Fuel,
+    electric: BatteryCharging,
+    hybrid: RefreshCw,
+    petrol: Droplet,
   } as const;
 
   const defaultIcon = Fuel;
 
   function getResolvedIcon(fuelType: string): typeof Fuel {
-    return fuelIcons[fuelType as keyof typeof fuelIcons] || defaultIcon;
+    return fuelIcons[(fuelType.split(' ')[0].toLowerCase()) as keyof typeof fuelIcons] || defaultIcon;
   }
 
   const equipment: Equipment = {
