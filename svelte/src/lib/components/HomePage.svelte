@@ -41,7 +41,7 @@
         ? ' hidden'
         : ''}"
 >
-    <div class="text-center mb-6">
+    <div class="text-center mb-4">
         <img
             src="/Fejlemingsapp_logo.png"
             alt="logo"
@@ -52,7 +52,7 @@
         <h1 class="text-3xl font-semibold text-gray-800 dark:text-white">
             Welcome, User!
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400 mt-3">
+        <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">
             Choose an action below to get started
         </p>
     </div>
