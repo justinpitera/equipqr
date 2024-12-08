@@ -33,15 +33,15 @@
     >
         <Menu class="w-6 h-6 text-black" />
     </div>
-    <div id="loadingMessage">🎥 Loading Camera...</div>
+    <div id="loadingMessage">🎥 {t("Loading Camera...")}</div>
     <canvas
         id="canvas"
         hidden
         style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;"
     ></canvas>
     <div id="output" hidden>
-        <div id="outputMessage">No QR code detected.</div>
-        <div hidden><b>Data:</b> <span id="outputData"></span></div>
+        <div id="outputMessage">{t("No QR code detected.")}</div>
+        <div hidden><b>{t("Data:")}</b> <span id="outputData"></span></div>
     </div>
     {#if !$flashlightDisabled}
         <button

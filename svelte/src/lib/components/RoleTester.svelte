@@ -2,8 +2,7 @@
     import { homePageStore } from "$lib/helpers/homepage";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, translations } from "$lib/locales";
-    const { isAuthDrawerHidden } = homePageStore;
-    const { selectedLanguage } = homePageStore;
+    const { isAuthDrawerHidden, selectedLanguage, userRole } = homePageStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -11,47 +10,37 @@
         return langTranslations[key] || key;
     }
 
-    const { userRole } = homePageStore;
-
     const setRole = (role: string) => {
         userRole.set(role);
-        notify(
-            "Success",
-            `Role has been updated to ${role} successfully.`,
-            "success",
-        );
+        notify(t("Success"), t(`Role has been updated to ${role} successfully.`), "success");
         isAuthDrawerHidden.set(true);
     };
 </script>
 
 <div class="text-center mb-4">
-    <h4 class="text-2xl font-semibold text-gray-800 dark:text-white">
-        Set User Role for Testing
-    </h4>
-    <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">
-        Choose a role below to simulate different user experiences
-    </p>
+    <h4 class="text-xl font-semibold text-gray-800 dark:text-white">{t("Set User Role for Testing")}</h4>
+    <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">{t("Choose a role below to simulate different user experiences")}</p>
 </div>
 
-<div class="grid gap-5 md:grid-cols-3">
+<div class="grid gap-1 md:grid-cols-3">
     <!-- Set Role to Employee -->
-    <div class="card p-1 pt-1 bg-white rounded-lg shadow-md">
+    <div class="card p-1 bg-white rounded-lg shadow-md">
         <button class="button" onclick={() => setRole("employee")}>
-            Set Role to Employee
+            {t("Set Role to Employee")}
         </button>
     </div>
 
     <!-- Set Role to Mechanic -->
-    <div class="card p-1 pt-1 bg-white rounded-lg shadow-md">
+    <div class="card p-1 bg-white rounded-lg shadow-md">
         <button class="button" onclick={() => setRole("mechanic")}>
-            Set Role to Mechanic
+            {t("Set Role to Mechanic")}
         </button>
     </div>
 
     <!-- Set Role to Master -->
-    <div class="card p-1 pt-1 bg-white rounded-lg shadow-md">
+    <div class="card p-1 bg-white rounded-lg shadow-md">
         <button class="button" onclick={() => setRole("master")}>
-            Set Role to Master
+            {t("Set Role to Master")}
         </button>
     </div>
 </div>

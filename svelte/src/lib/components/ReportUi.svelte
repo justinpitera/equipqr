@@ -185,7 +185,9 @@
         tabindex="0"
         id="header-label"
       >
-        <h2 class="text-base font-bold text-center">Issue Details for:</h2>
+        <h2 class="text-base font-bold text-center">
+          {t("Issue Details for:")}
+        </h2>
         <div class="flex gap-2">
           <div
             class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
@@ -208,7 +210,9 @@
         triggeredBy="#header-label"
         placement="bottom"
         open={true}
-        >Tip: Click here to view more information about the scanned unit</Tooltip
+        >{t(
+          "Tip: Click here to view more information about the scanned unit",
+        )}</Tooltip
       >
       <Avatar
         id="manu-logo"
@@ -248,7 +252,7 @@
           for="employee-name"
           class="block text-sm font-medium text-gray-700 mb-1"
         >
-          Employee Name
+          {t("Employee Name")}
         </label>
         <input
           id="employee-name"
@@ -262,7 +266,7 @@
             for="issue-description"
             class="block text-sm font-medium text-gray-700"
           >
-            Describe the Issue
+            {t("Describe the Issue")}
           </label>
           <Button
             class="p-1 pr-3 pl-3 flex items-center"
@@ -270,7 +274,7 @@
               isPastIssuesForSpecificIDHidden.set(false);
             }}
           >
-            Past Issues
+            {t("Past Issues")}
             <Badge
               rounded
               class="w-6 h-6 ms-2 p-0 font-semibold text-primary-800 bg-white dark:text-primary-800 dark:bg-white"
@@ -291,7 +295,8 @@
       <div style="margin-top: 0.5rem;">
         <label
           for="product-operable"
-          class="block text-sm font-medium text-gray-700">Is it operable?</label
+          class="block text-sm font-medium text-gray-700"
+          >{t("Is it operable?")}</label
         >
         <div class="flex space-x-4 mt-2">
           <button
@@ -303,7 +308,7 @@
             class:text-black={$operable !== "yes"}
             onclick={() => ($operable = "yes")}
           >
-            Yes
+            {t("Yes")}
           </button>
           <button
             type="button"
@@ -314,7 +319,7 @@
             class:text-black={$operable !== "no"}
             onclick={() => ($operable = "no")}
           >
-            No
+            {t("No")}
           </button>
         </div>
       </div>
@@ -401,14 +406,14 @@
       <!-- Upload Media: -->
       <div>
         <label for="attachments" class="block text-sm font-medium text-gray-700"
-          >Add Photos or Videos</label
+          >{t("Add Photos or Videos")}</label
         >
         <div
           class="w-full mt-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           id="custom-file-upload"
         >
           <p class="text-center text-sm text-gray-600 mb-2">
-            Upload up to {maxFiles} files
+            {t(`Upload up to ${maxFiles} files`)}
           </p>
           <div class="flex justify-center">
             <label for="takePicture" class="file-button w-12 h-12">
@@ -557,7 +562,7 @@
         type="submit"
         class="w-full select-none py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        Submit Issue
+        {t("Submit Issue")}
       </button>
     </form>
   </div>

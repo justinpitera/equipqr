@@ -23,15 +23,15 @@
         {
             id: 1,
             name: "John",
-            issue: "Broken screen",
-            operable: "No",
+            issue: t("Broken screen"),
+            operable: t("No"),
             files: ["file1.jpg", "file2.jpg"],
         },
         {
             id: 2,
             name: "Jane",
-            issue: "Battery not charging",
-            operable: "Yes",
+            issue: t("Battery not charging"),
+            operable: t("Yes"),
             files: ["battery.jpg"],
         },
     ];
@@ -62,7 +62,7 @@
     width="w-full"
 >
     <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold text-gray-800">Issues History</h2>
+        <h2 class="text-xl font-bold text-gray-800">{t("Issues History")}</h2>
         <button
             type="button"
             onclick={() => isIssuesHistoryHidden.set(true)}
@@ -80,12 +80,12 @@
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold">{issue.name}</h3>
                     <p class="text-gray-600">{issue.issue}</p>
-                    <p class="text-gray-500">Operable: {issue.operable}</p>
+                    <p class="text-gray-500">{t("Operable:")} {issue.operable}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <Button
                         on:click={() => toggleIssueDetails(issue.id)}
-                        class="text-white">View Details</Button
+                        class="text-white">{t("View Details")}</Button
                     >
                     <button class="text-red-600">
                         <Trash2 class="h-5 w-5" />

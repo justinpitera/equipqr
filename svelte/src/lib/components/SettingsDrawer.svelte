@@ -19,17 +19,6 @@
         isSettingsHidden.set(!$isSettingsHidden);
     };
 
-    const saveSettings = () => {
-        selectedLanguage.set($selectedLanguage);
-        localStorage.setItem("savedLang", $selectedLanguage);
-        notify(
-            "Settings Saved",
-            "Your preferences have been updated.",
-            "success",
-        );
-        toggleSettings();
-    };
-
     const resetSettings = () => {
         notificationsEnabled.set(true);
         selectedLanguage.set("en");
@@ -67,7 +56,7 @@
         >
             <ArrowLeft class="h-6 w-6 text-gray-800" />
         </button>
-        <h2 class="text-xl font-bold text-gray-800">Settings</h2>
+        <h2 class="text-xl font-bold text-gray-800">{t("Settings")}</h2>
     </div>
 
     <!-- Content -->
@@ -76,7 +65,9 @@
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <Bell class="h-5 w-5 text-blue-500" />
-                <span class="text-gray-800 font-semibold">Notifications</span>
+                <span class="text-gray-800 font-semibold"
+                    >{t("Notifications")}</span
+                >
             </div>
             <label class="switch">
                 <input type="checkbox" bind:checked={$notificationsEnabled} />
@@ -85,14 +76,18 @@
         </div>
 
         <!-- Language Selector -->
-        <div class="flex flex-col">
+        <div class="flex items-center justify-between">
             <label for="language-selector" class="text-gray-800 font-semibold">
-                <Globe class="inline h-5 w-5 text-green-500" /> Language
+                <Globe class="inline h-5 w-5 text-green-500" />
+                {t("Language")}
             </label>
             <select
                 id="language-selector"
                 bind:value={$selectedLanguage}
                 class="mt-2 p-2 border rounded-md focus:ring-2 focus:ring-blue-400"
+                onchange={() => {
+                    localStorage.setItem("savedLang", $selectedLanguage);
+                }}
             >
                 {#each languages as { code, label }}
                     <option value={code}>{label}</option>
@@ -107,13 +102,14 @@
             onclick={resetSettings}
             class="flex items-center text-red-600 hover:text-red-800"
         >
-            <Trash2 class="h-5 w-5 mr-1" /> Reset to Defaults
+            <Trash2 class="h-5 w-5 mr-1" />
+            {t("Reset to Defaults")}
         </button>
         <Button
-            on:click={saveSettings}
+            on:click={toggleSettings}
             class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg"
         >
-            Save Changes
+            {t("Close")}
         </Button>
     </div>
 </Drawer>

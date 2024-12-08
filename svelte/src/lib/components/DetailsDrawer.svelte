@@ -195,7 +195,7 @@
                     <div
                         class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-red-50"
                     >
-                        <p class="font-semibold text-red-600">Error:</p>
+                        <p class="font-semibold text-red-600">{t("Error:")}</p>
                         <p>{$detectedGSE.error}</p>
                     </div>
                 {/if}
@@ -205,7 +205,9 @@
                     <div
                         class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-yellow-50"
                     >
-                        <p class="font-semibold text-yellow-600">Details:</p>
+                        <p class="font-semibold text-yellow-600">
+                            {t("Details:")}
+                        </p>
                         <p>{$detectedGSE.details}</p>
                     </div>
                 {/if}
@@ -217,7 +219,9 @@
                             class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2 justify-center"
                         >
                             <div class="text-center">
-                                <p class="font-semibold">Manufacturer:</p>
+                                <p class="font-semibold">
+                                    {t("Manufacturer:")}
+                                </p>
                                 <p>{$detectedGSE.manufacturer}</p>
                             </div>
                         </div>
@@ -227,23 +231,23 @@
                     <div
                         class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
                     >
-                        <p class="font-semibold">Model:</p>
-                        <p>{$detectedGSE.model || "Unknown"}</p>
+                        <p class="font-semibold">{t("Model:")}</p>
+                        <p>{$detectedGSE.model || t("Unknown")}</p>
                     </div>
 
                     <!-- Location Card -->
                     <div
                         class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
                     >
-                        <p class="font-semibold">Location:</p>
-                        <p>{$detectedGSE.location || "Not specified"}</p>
+                        <p class="font-semibold">{t("Location:")}</p>
+                        <p>{$detectedGSE.location || t("Not specified")}</p>
                     </div>
 
                     <!-- Status Card -->
                     <div
                         class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
                     >
-                        <p class="font-semibold">Status:</p>
+                        <p class="font-semibold">{t("Status:")}</p>
                         <div
                             class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-{statusColors[
                                 getStatusNumber($detectedGSE?.status)
@@ -257,7 +261,7 @@
                                 getStatusNumber($detectedGSE?.status)
                             ]}-400 rounded"
                         >
-                            {$detectedGSE.status || "Unavailable"}
+                            {$detectedGSE.status || t("Unavailable")}
                         </div>
                     </div>
 
@@ -266,9 +270,9 @@
                         <div
                             class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
                         >
-                            <p class="font-semibold">Fuel Type:</p>
+                            <p class="font-semibold">{t("Fuel Type:")}</p>
                             <div class="flex items-center gap-2">
-                                {$detectedGSE.type_of_fuel || "Unknown"}
+                                {$detectedGSE.type_of_fuel || t("Unknown")}
                                 {#if $detectedGSE.type_of_fuel}
                                     {@const ResolvedIcon = getResolvedIcon(
                                         $detectedGSE.type_of_fuel,
@@ -285,7 +289,7 @@
                     <div
                         class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
                     >
-                        <p class="font-semibold">In Use:</p>
+                        <p class="font-semibold">{t("In Use:")}</p>
                         {#if $detectedGSE.in_use}
                             <Badge
                                 color="green"
@@ -309,7 +313,9 @@
                         <div
                             class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
                         >
-                            <p class="font-semibold">Last Service Date:</p>
+                            <p class="font-semibold">
+                                {t("Last Service Date:")}
+                            </p>
                             <p>{$detectedGSE.latest_service_chassi}</p>
                         </div>
                     {/if}
@@ -319,7 +325,9 @@
                         <div
                             class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
                         >
-                            <p class="font-semibold">Lift Inspection Expiry:</p>
+                            <p class="font-semibold">
+                                {t("Lift Inspection Expiry:")}
+                            </p>
                             <p>
                                 {$detectedGSE.lift_inspection_expires}
                             </p>
@@ -331,7 +339,9 @@
                         <div
                             class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
                         >
-                            <p class="font-semibold">Latest Service Unit:</p>
+                            <p class="font-semibold">
+                                {t("Latest Service Unit:")}
+                            </p>
                             <p>{$detectedGSE.latest_service_unit}</p>
                         </div>
                     {/if}
@@ -341,7 +351,7 @@
                         <div
                             class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
                         >
-                            <p class="font-semibold">Capacity:</p>
+                            <p class="font-semibold">{t("Capacity:")}</p>
                             <p>{$detectedGSE.capacity}</p>
                         </div>
                     {/if}
@@ -350,7 +360,7 @@
         {:else if $qrCodeData}
             <div class="flex flex-col items-center">
                 <h2 class="text-base font-bold text-center">
-                    Could not find information for GSE ID:
+                    {t("Could not find information for GSE ID:")}
                 </h2>
                 <div
                     class="font-medium mt-3 inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
@@ -361,8 +371,8 @@
         {:else}
             <div class="flex flex-col items-center">
                 <h2 class="text-base font-bold text-center">
-                    Could not find information for vehicle.<br />Please try
-                    again...
+                    {t("Could not find information for scanned QR code.")}<br
+                    />{t("Please try again...")}
                 </h2>
             </div>
         {/if}
@@ -370,7 +380,7 @@
 
     <div class="mt-6 flex justify-between">
         <div class="flex items-center space-x-4">
-            <label for="toggle" class="text-lg">Auto Open:</label>
+            <label for="toggle" class="text-lg">{t("Auto Open:")}</label>
             <Checkbox
                 id="toggle"
                 class="mt-1"
@@ -379,9 +389,9 @@
                 color="blue"
             >
                 {#if $isAutoOpen}
-                    On
+                    {t("On")}
                 {:else}
-                    Off
+                    {t("Off")}
                 {/if}
             </Checkbox>
         </div>
@@ -389,7 +399,7 @@
             on:click={() => hideGSEDetail.set(true)}
             class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2"
         >
-            Close
+            {t("Close")}
         </Button>
     </div>
 </Drawer>

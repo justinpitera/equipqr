@@ -92,8 +92,9 @@ export const handleFileChange = (event: Event) => {
   if (target?.files) {
     const newFiles: MediaFile[] = [];
     let existingFileCount = mediaFiles.length;
+    const maxUploadErr = `You uploaded more than the maximum allowed files, only ${maxFiles} can be uploaded at a time.`;
     if (existingFileCount + 1 > maxFiles) {
-      notify('File Uploader', `You uploaded more than the maximum allowed files, only ${maxFiles} can be uploaded at a time.`, 'warning', 8000);
+      notify('File Uploader', maxUploadErr, 'warning', 8000);
       return;
     }
     for (const file_obj of Array.from(target.files)) {
@@ -142,7 +143,7 @@ export const handleFileChange = (event: Event) => {
     }
     fileUploadStore.mediaFiles.update((files) => [...files, ...newFiles]);
     target.value = "";
-    if (existingFileCount >= maxFiles) notify('File Uploader', `You uploaded more than the maximum allowed files, only ${maxFiles} can be uploaded at a time.`, 'warning', 8000);
+    if (existingFileCount >= maxFiles) notify('File Uploader', maxUploadErr, 'warning', 8000);
   }
 };
 

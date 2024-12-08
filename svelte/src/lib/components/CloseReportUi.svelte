@@ -41,7 +41,7 @@
       <InfoCircleSolid
         oncontextmenu={disableContextMenu}
         class="w-5 h-5 me-2.5"
-      />Cancel Report?
+      />{t("Cancel Report?")}
     </h5>
     <CloseButton
       on:click={() => ($closeReportHidden = true)}
@@ -49,13 +49,13 @@
     />
   </div>
   <p class="max-w-lg mb-6 text-sm text-gray-500 dark:text-gray-400">
-    Are you sure you want to cancel the report for:<br />{$qrCodeData}?
+    {t("Are you sure you want to cancel the report for:")}<br />{$qrCodeData}?
   </p>
   <Button
     type="button"
     color="light"
     on:click={() => ($closeReportHidden = true)}
-    class="p-2 pr-3 pl-3 select-none">No, Let me finish it</Button
+    class="p-2 pr-3 pl-3 select-none">{t("No, Let me finish it")}</Button
   >
   <Button
     type="button"
@@ -71,7 +71,7 @@
     }}
     href="/"
     class="px-4 p-2 pr-3 pl-3 select-none"
-    >Yes, Cancel it <ArrowRightOutline
+    >{t("Yes, Cancel it")} <ArrowRightOutline
       oncontextmenu={disableContextMenu}
       class="w-5 h-5 ms-2"
     /></Button

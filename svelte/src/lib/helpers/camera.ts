@@ -64,11 +64,6 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 				for (const collectedTrack of collectedTracks) {
 					collectedTrack.track.stop();
 				}
-				notify(
-					"QR Code Scanner",
-					`Torch is available on ${device.label}`,
-					"info",
-				);
 				return { hasCamera: true, hasTorch: true, track, stream };
 			}
 			collectedTracks.push({
@@ -171,8 +166,6 @@ export async function destroyScanner() {
     const devices = await navigator.mediaDevices.enumerateDevices();
 	const activeStreams = devices.filter((device) => device.kind === "videoinput");
 	console.log("Active video streams:", activeStreams);
-    // Notify the user
-    console.log("QR Scanner destroyed, camera access released.");
 }
 
 async function scanQRCode(): Promise<string | null> {

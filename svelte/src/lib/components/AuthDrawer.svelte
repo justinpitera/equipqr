@@ -29,11 +29,11 @@
     function handleSubmit(e: Event) {
         e.preventDefault();
         if (authMode === "email" && !email) {
-            notify("Error", t("Please enter a valid email address."), "error");
+            notify("Error", "Please enter a valid email address.", "error");
         } else if (authMode === "credentials" && (!username || !password)) {
             notify(
                 "Error",
-                t("Please provide both username and password."),
+                "Please provide both username and password.",
                 "error",
             );
         } else {
@@ -83,6 +83,12 @@
                         <select
                             id="language-selector"
                             bind:value={$selectedLanguage}
+                            onchange={() => {
+                                localStorage.setItem(
+                                    "savedLang",
+                                    $selectedLanguage,
+                                );
+                            }}
                         >
                             {#each languages as { code, label }}
                                 <option value={code}>{label}</option>

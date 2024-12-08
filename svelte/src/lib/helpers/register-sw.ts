@@ -19,7 +19,7 @@ const registerSw = (
 				resolve(true);
 			} catch (err) {
 				console.error("[ServiceWorker] Failed to register:", err);
-				notify("[ServiceWorker]", `Failed to register: ${err}`, "error");
+				notify("[ServiceWorker]", `Failed to register service worker: ${err}`, "error");
 				reject(err);
 			}
 		});

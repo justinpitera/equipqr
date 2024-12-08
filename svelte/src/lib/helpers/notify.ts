@@ -2,7 +2,7 @@ import type { Placement, Theme, ToastType } from "svelte-toasts/types/common";
 import { toasts } from "svelte-toasts";
 import { langChecker, defaultLang, translations } from "$lib/locales";
 
-function t(key: string): string {
+function t_global(key: string): string {
 	const langTranslations = translations[defaultLang];
 	langChecker(key);
 	return langTranslations[key] || key;
@@ -18,8 +18,8 @@ export function notify(
 	showProgress = true,
 ) {
 	toasts.add({
-		title: t(title),
-		description: t(description),
+		title: t_global(title),
+		description: t_global(description),
 		duration,
 		placement,
 		type,

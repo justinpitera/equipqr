@@ -67,10 +67,11 @@
             class="m-auto mt-2"
         />
         <h1 class="text-3xl font-semibold text-gray-800 dark:text-white">
-            Welcome, {$userRole}!
+            {t("Welcome,")}
+            {t($userRole)}!
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">
-            Choose an action below to get started
+            {t("Choose an action below to get started")}
         </p>
     </div>
 
@@ -89,13 +90,14 @@
                         class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
-                        Report Failure or Malfunction
+                        {t("Report Failure or Malfunction")}
                     </div>
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
-                        Scan QR codes and submit issues related to failures or
-                        malfunctions.
+                        {t(
+                            "Scan QR codes and submit issues related to failures or malfunctions.",
+                        )}
                     </div>
                 </div>
             </div>
@@ -115,13 +117,14 @@
                         class="w-12 h-12 mx-auto text-green-600 dark:text-white"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
-                        Print QR Codes
+                        {t("Print QR Codes")}
                     </div>
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
-                        View and print QR codes for items to manage their
-                        information.
+                        {t(
+                            "View and print QR codes for items to manage their information.",
+                        )}
                     </div>
                 </div>
             </div>
@@ -132,13 +135,14 @@
                         class="w-12 h-12 mx-auto text-orange-600 dark:text-white"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
-                        View & Edit Items
+                        {t("View & Edit Items")}
                     </div>
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
-                        Add new items, edit existing ones, and view item
-                        details.
+                        {t(
+                            "Add new items, edit existing ones, and view item details.",
+                        )}
                     </div>
                 </div>
             </div>
@@ -155,12 +159,12 @@
                         class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
-                        View Issues History
+                        {t("View Issues History")}
                     </div>
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
-                        Track and resolve past issues with detailed logs.
+                        {t("Track and resolve past issues with detailed logs.")}
                     </div>
                 </div>
             </div>
@@ -180,12 +184,14 @@
                         class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
-                        Account Management
+                        {t("Account Management")}
                     </div>
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
-                        Manage user accounts and assign roles to individuals.
+                        {t(
+                            "Manage user accounts and assign roles to individuals.",
+                        )}
                     </div>
                 </div>
             </div>
@@ -196,13 +202,14 @@
                         class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
-                        Assign Roles
+                        {t("Assign Roles")}
                     </div>
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
-                        Assign different roles to users: employee, mechanic, or
-                        other.
+                        {t(
+                            "Assign different roles to users: employee, mechanic, or other.",
+                        )}
                     </div>
                 </div>
             </div>
@@ -220,12 +227,14 @@
                     class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
                 />
                 <div class="card-title mt-3 text-xl font-semibold">
-                    Settings
+                    {t("Settings")}
                 </div>
                 <div
                     class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                 >
-                    Configure your preferences and manage your account settings.
+                    {t(
+                        "Configure your preferences and manage your account settings.",
+                    )}
                 </div>
             </div>
         </div>
@@ -240,19 +249,23 @@
                         class="w-12 h-12 mx-auto text-green-600 dark:text-white"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
-                        Logged In
+                        {t("Logged In")}
                     </div>
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
-                        You're successfully logged in. Enjoy using the platform.
+                        {t(
+                            "You're successfully logged in. Enjoy using the platform.",
+                        )}
                     </div>
                 {:else}
-                    <button class="button" onclick={toggleLogin}>Login</button>
+                    <button class="button" onclick={toggleLogin}
+                        >{t("Login")}</button
+                    >
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
-                        Log in to access personalized features.
+                        {t("Log in to access personalized features.")}
                     </div>
                 {/if}
             </div>

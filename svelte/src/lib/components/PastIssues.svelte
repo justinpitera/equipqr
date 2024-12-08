@@ -71,7 +71,7 @@
     width="w-80"
 >
     <div class="flex items-center justify-between">
-        <h2 class="text-lg font-bold text-gray-800">Past Issues</h2>
+        <h2 class="text-lg font-bold text-gray-800">{t("Past Issues")}</h2>
         <button
             type="button"
             onclick={() => isPastIssuesForSpecificIDHidden.set(true)}
@@ -96,7 +96,7 @@
                 <div>
                     <h3 class="text-md font-semibold">{issue.employee_name}</h3>
                     <p class="text-sm text-gray-500 flex items-center">
-                        Operable:
+                        {t("Operable:")}
                         {#if issue.is_operable.toLowerCase() === "yes"}
                             <CheckOutline class="ml-2 h-4 w-4 text-green-500" />
                         {:else}
