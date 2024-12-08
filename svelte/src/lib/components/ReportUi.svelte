@@ -53,6 +53,7 @@
   import { maxFiles } from "$lib/config";
   import { submitIssue } from "$lib/helpers/server-requests";
   import { ChevronDownOutline } from "flowbite-svelte-icons";
+    import { notify } from "$lib/helpers/notify";
   const { hideGSEDetail } = detailsDrawerStore;
 
   const operable = writable("");
@@ -88,27 +89,43 @@
     });
   }
 
-  function handleFormSubmit(event: Event): void {
+  async function handleReportFormSubmit(event: Event): Promise<void> {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const formData = new FormData();
-    const issue_description =
+    const issueDescription =
       (form.querySelector("#issue-description") as HTMLTextAreaElement)
         ?.value || "";
-    const employee_name =
+    const employeeName =
       (form.querySelector("#employee-name") as HTMLTextAreaElement)?.value ||
       "";
-    const is_operable = $operable === "yes";
+    const isOperable = $operable === "yes";
+    const selectedGate = $selected_gate;
+    // Validate required fields
+    const errors: string[] = [];
+    if (!employeeName.trim()) errors.push("Employee name is required.");
+    if (!issueDescription.trim()) errors.push("Issue description is required.");
+    if ($operable === '') errors.push("Operable status must be selected.");
+    if ($operable === 'no' && selectedGate === "") errors.push("Gate type and selection are required if not operable.");
+    if ($mediaFiles.length === 0) errors.push("At least one photo or video must be uploaded.");
+    // Show errors if any
+    if (errors.length > 0) {
+      let error_count = 0;
+      for (const error of errors) {
+        error_count += 1;
+        notify("Error", error, "error");
+        if (error_count !== errors.length) await new Promise(resolve => setTimeout(resolve, 800));
+      }
+      return;
+    }
     formData.append("gse_id", $qrCodeData || "Unknown");
-    formData.append("employee_name", employee_name);
-    formData.append("issue_description", issue_description);
-    formData.append("is_operable", String(is_operable));
-
+    formData.append("employee_name", employeeName);
+    formData.append("issue_description", issueDescription);
+    formData.append("is_operable", String(isOperable));
     // Append uploaded files
     $mediaFiles.forEach((file) => {
       formData.append("attachments", file.file, file.file.name);
     });
-
     // Send the data via fetch
     submitIssue(formData);
   }
@@ -182,7 +199,7 @@
         ? 'hidden'
         : ''}"
       id="malfunction-report-form"
-      onsubmit={handleFormSubmit}
+      onsubmit={handleReportFormSubmit}
     >
       <div>
         <!-- Employee Name: -->
@@ -255,7 +272,7 @@
         </div>
       </div>
       <!-- Select Gate: -->
-      <div class="flex {$operable === "no" ? '' : 'hidden'}">
+      <div class="flex {$operable === 'no' ? '' : 'hidden'}">
         <button
           id="gates-button"
           class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
