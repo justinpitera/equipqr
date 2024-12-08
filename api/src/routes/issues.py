@@ -74,9 +74,11 @@ async def details_request(request: Request) -> JSONResponse:
             "capacity",
         ]
 
-        def serialize_field(value: datetime | None) -> str | None:
-            """Serializes datetime fields, handling None values."""
-            return value.isoformat() if value else None
+        def serialize_field(value: str | datetime | None) -> str | None:
+            """Serializes only datetime fields. Returns other values as-is."""
+            if isinstance(value, datetime):
+                return value.isoformat()
+            return value
 
         response_data: dict[str, str | None] = {
             field: serialize_field(value=getattr(fetched_gse_model, field, None)) for field in fields_to_include
