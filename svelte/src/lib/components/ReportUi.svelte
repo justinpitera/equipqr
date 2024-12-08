@@ -53,11 +53,12 @@
   import { maxFiles } from "$lib/config";
   import { submitIssue } from "$lib/helpers/server-requests";
   import { ChevronDownOutline } from "flowbite-svelte-icons";
-    import { notify } from "$lib/helpers/notify";
+  import { notify } from "$lib/helpers/notify";
   const { hideGSEDetail } = detailsDrawerStore;
 
   const operable = writable("");
-  const selected_gate = writable("");
+  const selected_gate_type = writable("");
+  const selected_gate_name = writable("");
   let is_gate_open = false;
 
   let gate_types: Record<string, string[]> = {
@@ -70,7 +71,7 @@
   let gates = writable<{ value: string; name: string }[]>([]);
 
   function build_gate_options(gate: string) {
-    selected_gate.set(gate);
+    selected_gate_type.set(gate);
     is_gate_open = false;
 
     gates.set([]);
@@ -100,7 +101,6 @@
       (form.querySelector("#employee-name") as HTMLTextAreaElement)?.value ||
       "";
     const isOperable = $operable === "yes";
-    const selectedGate = $selected_gate;
     // Validate required fields
     const errors: string[] = [];
     if (!employeeName.trim()) {
@@ -113,19 +113,23 @@
     } else if (employeeName.trim().length < 2) {
       errors.push("Issue description is too short.");
     }
-    if ($operable === '') {
+    if ($operable === "") {
       errors.push("Operable status must be selected.");
-    } else if ($operable === 'no' && selectedGate === "") {
-      errors.push("Gate type and selection are required if not operable.");
+    } else if ($operable === "no" && $selected_gate_type === "") {
+      errors.push("Gate type and name are required if not operable.");
+    } else if ($operable === "no" && $selected_gate_name === "") {
+      errors.push("Gate name is required if not operable.");
     }
-    if ($mediaFiles.length === 0) errors.push("At least one photo or video must be uploaded.");
+    if ($mediaFiles.length === 0)
+      errors.push("At least one photo or video must be uploaded.");
     // Show errors if any
     if (errors.length > 0) {
       let error_count = 0;
       for (const error of errors) {
         error_count += 1;
         notify("Error", error, "error");
-        if (error_count !== errors.length) await new Promise(resolve => setTimeout(resolve, 800));
+        if (error_count !== errors.length)
+          await new Promise((resolve) => setTimeout(resolve, 800));
       }
       return;
     }
@@ -133,6 +137,8 @@
     formData.append("employee_name", employeeName);
     formData.append("issue_description", issueDescription);
     formData.append("is_operable", String(isOperable));
+    formData.append("gate_type", String($selected_gate_type));
+    formData.append("gate_name", String($selected_gate_name));
     // Append uploaded files
     $mediaFiles.forEach((file) => {
       formData.append("attachments", file.file, file.file.name);
@@ -289,23 +295,23 @@
           class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
           type="button"
         >
-          {#if $selected_gate === ""}
+          {#if $selected_gate_type === ""}
             <Plane class="mr-1" />
             Gate Type
           {/if}
-          {#if $selected_gate === "cargo"}
+          {#if $selected_gate_type === "cargo"}
             <Boxes class="mr-1" />
             Cargo
           {/if}
-          {#if $selected_gate === "none"}
+          {#if $selected_gate_type === "none"}
             <PlaneLanding class="mr-1" />
             None
           {/if}
-          {#if $selected_gate === "airline"}
+          {#if $selected_gate_type === "airline"}
             <PlaneTakeoff class="mr-1" />
             Airline
           {/if}
-          {#if $selected_gate === "ga"}
+          {#if $selected_gate_type === "ga"}
             <Globe class="mr-1" />
             GA
           {/if}
@@ -351,8 +357,13 @@
         </Dropdown>
         <Select
           items={$gates}
-          placeholder="Choose a Gate {$selected_gate === '' ? 'Type' : 'Name'}"
+          placeholder="Choose a Gate {$selected_gate_type === ''
+            ? 'Type'
+            : 'Name'}"
           class="!rounded-s-none"
+          onchange={(e) => {
+            selected_gate_name.set((e.target as HTMLSelectElement).value);
+          }}
         />
       </div>
       <!-- Upload Media: -->
