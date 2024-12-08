@@ -32,7 +32,7 @@
   import { detailsDrawerStore } from "$lib/helpers/details";
   import { onDestroy, onMount } from "svelte";
   import { maxFiles } from "$lib/config";
-    import { submitIssue } from "$lib/helpers/server-requests";
+  import { submitIssue } from "$lib/helpers/server-requests";
   const { hideGSEDetail } = detailsDrawerStore;
 
   const operable = writable("");
@@ -43,12 +43,12 @@
     const formData = new FormData();
     const issue_description =
       (form.querySelector("#issue-description") as HTMLTextAreaElement)
-      ?.value || "";
-    const employee_name =
-      (form.querySelector("#employee-name") as HTMLTextAreaElement)
         ?.value || "";
+    const employee_name =
+      (form.querySelector("#employee-name") as HTMLTextAreaElement)?.value ||
+      "";
     const is_operable = $operable === "yes";
-    formData.append("gse_id", $qrCodeData || 'Unknown');
+    formData.append("gse_id", $qrCodeData || "Unknown");
     formData.append("employee_name", employee_name);
     formData.append("issue_description", issue_description);
     formData.append("is_operable", String(is_operable));
