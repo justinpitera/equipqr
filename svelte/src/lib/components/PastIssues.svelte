@@ -74,7 +74,7 @@
     </div>
 
     <div
-        class="mt-4 overflow-y-auto max-h-[calc(97vh-76px-15px)] space-y-2 cool-scrollbar"
+        class="mt-4 overflow-y-auto max-h-[calc(97vh-76px-15px)] space-y-2"
     >
         {#each issues as issue (issue.gse_id)}
             <div

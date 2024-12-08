@@ -153,7 +153,7 @@ body {
 }
 
 .file-button:hover {
-  background-color: #2563eb;
+  background-color: #003965;
 }
 
 .delete-button {
@@ -208,9 +208,9 @@ body {
 #drawer-example {
   margin: auto;
 }
-.cool-scrollbar {
+* {
   scrollbar-width: thin;
-  scrollbar-color: #3b82f6 transparent;
+  scrollbar-color: #003965 transparent;
 }
 
 #gallery {

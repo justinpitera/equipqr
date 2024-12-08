@@ -11,6 +11,7 @@ class HomePageStore {
         public darkMode: Writable<boolean> = writable(false),
         public notificationsEnabled: Writable<boolean> = writable(true),
         public selectedLanguage: Writable<string> = writable("en"),
+        public userRole: Writable<string> = writable("employee"),
         public debugMode: Writable<boolean> = writable(false),
         public qrScannerSound: Writable<boolean> = writable(true),
     ) { }

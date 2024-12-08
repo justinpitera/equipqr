@@ -6,6 +6,7 @@
     import type { TranslationKeys } from "$lib/locales";
     import { homePageStore } from "$lib/helpers/homepage";
     import { sineIn } from "svelte/easing";
+    import RoleTester from "./RoleTester.svelte";
 
     let authMode: "email" | "credentials" = "email";
     let email = "";
@@ -72,6 +73,7 @@
         </button>
     </div>
 
+    <RoleTester />
     <div class="mt-6">
         <div class="flex flex-col items-center">
             <div class="mt-2 bg-white p-6 rounded-lg shadow-lg">

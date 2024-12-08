@@ -163,8 +163,16 @@
       </button>
       <div
         class="flex flex-col items-center"
-        onclick={() => hideGSEDetail.set(false)}
-        onkeydown={() => hideGSEDetail.set(false)}
+        onclick={() => {
+          hideGSEDetail.set(false);
+          const tooltip1 = document.getElementById('example-tooltip-1');
+          if (tooltip1) tooltip1.remove();
+        }}
+        onkeydown={() => {
+          hideGSEDetail.set(false);
+          const tooltip1 = document.getElementById('example-tooltip-1');
+          if (tooltip1) tooltip1.remove();
+        }}
         role="button"
         tabindex="0"
         id="header-label"
@@ -186,6 +194,7 @@
         </div>
       </div>
       <Tooltip
+        id="example-tooltip-1"
         class="z-20 max-w-[300px]"
         type="dark"
         triggeredBy="#header-label"
@@ -213,13 +222,13 @@
     />
     {#if $showLoader}
       <div
-        class="report-form-bg cool-scrollbar flex justify-center space-y-4 p-4 pt-5 md:p-6 md:pt-7"
+        class="report-form-bg flex justify-center space-y-4 p-4 pt-5 md:p-6 md:pt-7"
       >
         <Spinner class="w-14 h-14 mt-[calc(50vh-78px-29px-4px)]" />
       </div>
     {/if}
     <form
-      class="report-form-bg cool-scrollbar space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
+      class="report-form-bg space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
         ? 'hidden'
         : ''}"
       id="malfunction-report-form"
@@ -432,7 +441,7 @@
           </div>
           {#if $mediaFiles.length > 0}
             <hr class="my-4" />
-            <div id="gallery-container" class="ignore-js cool-scrollbar">
+            <div id="gallery-container" class="ignore-js">
               <div id="gallery" class="ignore-js">
                 {#each $mediaFiles as { url, type, deleteFile, handleClick }}
                   <div
