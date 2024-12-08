@@ -60,3 +60,22 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 	}
 	return undefined
 }
+
+export async function submitIssue(formData: FormData) {
+    try {
+      const response = await fetch("https://preview.pitera.co:7878/api/gse/issues/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Status Code:", response.status);
+        console.log("Response Data:", data);
+      } else {
+        console.error("Error submitting the issue:", response.statusText);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }

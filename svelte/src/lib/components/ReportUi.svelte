@@ -32,6 +32,7 @@
   import { detailsDrawerStore } from "$lib/helpers/details";
   import { onDestroy, onMount } from "svelte";
   import { maxFiles } from "$lib/config";
+    import { submitIssue } from "$lib/helpers/server-requests";
   const { hideGSEDetail } = detailsDrawerStore;
 
   const operable = writable("");
@@ -59,25 +60,6 @@
 
     // Send the data via fetch
     submitIssue(formData);
-  }
-
-  async function submitIssue(formData: FormData) {
-    try {
-      const response = await fetch("/api/gse/issues/submit", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Status Code:", response.status);
-        console.log("Response Data:", data);
-      } else {
-        console.error("Error submitting the issue:", response.statusText);
-      }
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
   }
 
   const handleWindowClick = (event: MouseEvent) => {
