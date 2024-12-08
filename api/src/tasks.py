@@ -18,7 +18,7 @@ from minio import Minio
 from . import API_CONFIG
 
 celery_app: Celery = Celery(
-    "tasks",
+    main="tasks",
     broker=f"redis://:{API_CONFIG["redis"]["password"]}@{API_CONFIG["redis"]["address"]}:{API_CONFIG["redis"]["port"]}/0",
     backend=f"redis://:{API_CONFIG["redis"]["password"]}@{API_CONFIG["redis"]["address"]}:{API_CONFIG["redis"]["port"]}/0",
 )
@@ -30,7 +30,7 @@ def upload_attachments_to_minio(files_data: list[dict]) -> None:
     """
     Celery task to upload multiple files to MinIO in batch with improved error handling.
     """
-    client = Minio(
+    client: Minio = Minio(
         endpoint=f"{API_CONFIG['object_storage']['address']}:{API_CONFIG['object_storage']['port']}",
         access_key=f"{API_CONFIG['object_storage']['access_key']}",
         secret_key=f"{API_CONFIG['object_storage']['secret_key']}",
@@ -49,7 +49,7 @@ def upload_attachments_to_minio(files_data: list[dict]) -> None:
         try:
             # Wrap file content in BytesIO to provide a file-like object
             file_stream = BytesIO(file_data["file_stream"])
-            client.put_object(
+            _ = client.put_object(
                 bucket_name,
                 file_data["attachment_id"],
                 file_stream,

@@ -9,7 +9,7 @@ Authors:
 
 # Standard
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
+from typing import Any, AsyncGenerator
 
 # Third-party
 from starlette.applications import Starlette
@@ -26,12 +26,12 @@ from src.routes.health import get_status
 from src.routes.issues import details_request, submit_issue
 
 @asynccontextmanager
-async def _lifespan(_app: Starlette) -> AsyncGenerator:
+async def _lifespan(_app: Starlette) -> AsyncGenerator[None, None]:
     """Lifespan to handle the runtime duration of the Starlette app."""
     # Startup
     logger.info("Connecting to database...")    
-    await Tortoise.init(config=TORTOISE_CONFIG)
-    await Tortoise.generate_schemas() # TODO: Remove before production (generates the Schemas in the Database).
+    await Tortoise.init(config=TORTOISE_CONFIG) # pyright: ignore[reportUnknownMemberType]
+    await Tortoise.generate_schemas()
     
     await database_importer()
     logger.success("Startup completed successfully!")    
@@ -44,7 +44,7 @@ def init_asgi() -> Starlette:
     """Initializes the Starlette API."""
     _ASGI: Starlette = Starlette(
         debug=False,
-        lifespan=lambda app: _lifespan(app)
+        lifespan=lambda app: _lifespan(_app=app)
     )
     
     _ASGI.add_middleware(

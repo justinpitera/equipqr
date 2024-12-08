@@ -10,13 +10,13 @@ Authors:
 # Standard
 import toml, os
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 # Third-party
 from colorama import Style
 
-API_CONFIG: Dict[str, Any] = toml.load(Path(os.getcwd()).joinpath("../private/configurations/api.config.toml"))
-API_VERSION: str = (lambda line: line.split("=")[1].strip().strip('"') if line.startswith("version") else "Unknown")(open("pyproject.toml").readlines()[2].strip())
+API_CONFIG: dict[str, Any] = toml.load(Path(os.getcwd()).joinpath("../private/configurations/api.config.toml"))
+API_VERSION: str = (lambda line: line.split(sep="=")[1].strip().strip('"') if line.startswith("version") else "Unknown")(line=open(file="pyproject.toml").readlines()[2].strip())
 API_STARTUP_MESSAGE: str = f"""
 ╭━━╮╱╱╱╭╮╱╱╭╮
 ┃╭╮┣━┳━╋╋━╮┃╰┳━┳┳╮
@@ -25,7 +25,7 @@ API_STARTUP_MESSAGE: str = f"""
 =================
 Listening on {API_CONFIG["api"]["address"]}:{API_CONFIG["api"]["port"]}
 """
-TORTOISE_CONFIG: Dict[str, Any] = {
+TORTOISE_CONFIG: dict[str, Any] = {
     "connections": {
         "default": {
             "engine": API_CONFIG["database"]["engine"],

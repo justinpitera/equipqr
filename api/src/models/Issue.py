@@ -23,4 +23,4 @@ class Issue(Model):
     gse_id                           : Field[str]      = CharField(max_length=255)
     issue_description                : Field[str]      = TextField()
     reported_at                      : Field[datetime] = DatetimeField(auto_now_add=True)
-    attachments                      : ReverseRelation["IssueAttachment"]
+    attachments                      : ReverseRelation["IssueAttachment"] | None = None

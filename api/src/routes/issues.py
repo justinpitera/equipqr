@@ -135,6 +135,7 @@ async def submit_issue(request: Request) -> JSONResponse:
             is_operable: bool = str(is_operable_raw).strip().lower() == "true"
 
             if not gse_id or not issue_description:
+                logger.warning("⚠️ Missing required form fields: gse_id or issue_description.")
                 raise HTTPException(status_code=400, detail="Missing required form fields.")
 
             validated_data: _IssueSubmission = _IssueSubmission(
@@ -151,14 +152,16 @@ async def submit_issue(request: Request) -> JSONResponse:
                 }
                 for _, value in form.multi_items() if isinstance(value, UploadFile)
             ]
-            return validated_data, attachments
+            logger.info(f"📄 Extracted form data: {validated_data} and {len(attachments)} attachments.")
+            return validated_data, attachments    
         except ValidationError as e:
+            logger.error(f"❌ Validation error: {e}")
             raise HTTPException(
                 status_code=400,
                 detail="; ".join(f"{err['loc']}: {err['msg']}" for err in e.errors()),
             )
         except Exception as e:
-            logger.error(f"Error parsing form data: {e}")
+            logger.error(f"❌ Error parsing form data: {e}")
             raise HTTPException(status_code=400, detail="Invalid form data.")
 
     async def _save_issue_to_db(validated_data: _IssueSubmission, attachments: list[dict[str, str | bytes | None]]) -> UUID:
@@ -181,8 +184,8 @@ async def submit_issue(request: Request) -> JSONResponse:
             logger.error(f"Failed to save issue to database: {e}")
             raise HTTPException(status_code=500, detail="Failed to save issue to database.")
 
-    async def _save_issue_and_queue_attachments(_, attachments: list[dict[str, str | bytes | None]]) -> None:
-        """Save issue and queue attachment uploads."""
+    async def _queue_attachments(_, attachments: list[dict[str, str | bytes | None]]) -> None:
+        """Queue attachment uploads."""
         try:
             tasks: list[dict[str, str | bytes | int | None]] = [
                 {
@@ -193,21 +196,25 @@ async def submit_issue(request: Request) -> JSONResponse:
                 }
                 for att in attachments
             ]
+            logger.info(f"📂 Queueing {len(attachments)} attachments...")
             upload_attachments_to_minio(files_data=tasks)
+            logger.success("✅ Attachments queued successfully!")
         except Exception as e:
-            logger.error(f"Failed to process attachments: {e}")
+            logger.error(f"❌ Failed to process attachments: {e}")
             raise HTTPException(status_code=500, detail="Failed to process attachments.")
 
     try:
         validated_data, attachments = await _extract_form_data()
         issue_id: UUID = await _save_issue_to_db(validated_data, attachments)
-        await _save_issue_and_queue_attachments(_=issue_id, attachments=attachments)
+        await _queue_attachments(_=issue_id, attachments=attachments)
+        logger.info("📬 Attachments queued and issue saved successfully!")
         return JSONResponse(
             status_code=201,
             content={"message": "Issue submitted successfully.", "issue_id": str(issue_id)},
         )
     except HTTPException as e:
+        logger.warning(f"⚠️ HTTPException encountered: {e.detail}")
         raise e
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+        logger.critical(f"🔥 Unexpected error occurred: {e}")
         raise HTTPException(status_code=500, detail="Failed to submit issue.")
