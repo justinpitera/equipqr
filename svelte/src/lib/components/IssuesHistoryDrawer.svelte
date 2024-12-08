@@ -5,7 +5,6 @@
 
     const { isIssuesHistoryHidden } = homePageStore;
 
-    // Issue history mock data
     interface Issue {
         id: number;
         name: string;
@@ -48,6 +47,7 @@
 
 <!-- Issues History Drawer -->
 <Drawer
+    id="issue-history-drawer"
     placement="right"
     bind:hidden={$isIssuesHistoryHidden}
     on:close={() => isIssuesHistoryHidden.set(true)}

@@ -8,7 +8,7 @@ declare global {
 		deleteFile: (event: Event) => void;
 		handleClick: () => void;
 	}
-	interface GSEDetails {
+	interface GSEDetails { // getGSEDetails - /api/gse/details
 		gse_id: string;
 		old_gse_id: string;
 		gse_type: string;
@@ -31,6 +31,14 @@ declare global {
 	interface CanvasRenderingContext2D extends CanvasRenderingContext2D {
 		willReadFrequently?: boolean;
 	}
+    interface Issue {
+        gse_id: number;
+        employee_name: string;
+        issue_description: string;
+        is_operable: string;
+        gate_type?: string;
+        gate_name?: string;
+    }
 	namespace App {
 		// interface Error {}
 		// interface Locals {}

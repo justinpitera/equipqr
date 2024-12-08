@@ -39,7 +39,7 @@ function t(key: TranslationKeys): string {
 </script>
 
 
-<div class="container">
+<div class="container cool-scrollbar">
     <Toaster />
     <div class="form">
         <div class="form-header">{t("authHeader")}</div>

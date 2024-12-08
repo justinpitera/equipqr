@@ -129,7 +129,7 @@
         </div>
 
         <!-- Login/Logout -->
-        <div class="card p-4 pt-3 bg-white rounded-lg shadow-md">
+        <div class="card p-4 pt-3 bg-white rounded-lg rounded-br-none rounded-bl-none shadow-md absolute bottom-0 right-0 left-0">
             <div class="card-content">
                 {#if $isLoggedIn}
                     <LogIn

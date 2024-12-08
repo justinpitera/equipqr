@@ -20,12 +20,13 @@
     DropdownItem,
     Select,
     Spinner,
+    Tooltip,
   } from "flowbite-svelte";
   // Utilities
   import { disableContextMenu, formatNumber } from "$lib/helpers/basics";
   // QR Scanner utilities
   import { qrScannerStore } from "$lib/helpers/camera";
-  const { qrCodeData, showPopup, showLoader } = qrScannerStore;
+  const { qrCodeData, showPopup, showLoader, detectedGSE } = qrScannerStore;
   // File upload utilities
   import {
     startWiggle,
@@ -54,49 +55,25 @@
   import { submitIssue } from "$lib/helpers/server-requests";
   import { ChevronDownOutline } from "flowbite-svelte-icons";
   import { notify } from "$lib/helpers/notify";
+  import { homePageStore } from "$lib/helpers/homepage";
+  import {
+    build_gate_options,
+    reportUIStore,
+  } from "$lib/helpers/report-ui-store";
   const { hideGSEDetail } = detailsDrawerStore;
-
-  const operable = writable("");
-  const selected_gate_type = writable("");
-  const selected_gate_name = writable("");
-  let is_gate_open = false;
-
-  let gate_types: Record<string, string[]> = {
-    GA: ["103 Apn"],
-    Airline: ["A11"],
-    None: ["G110"],
-    Cargo: ["G126"],
-  };
-
-  let gates = writable<{ value: string; name: string }[]>([]);
-
-  function build_gate_options(gate: string) {
-    selected_gate_type.set(gate);
-    is_gate_open = false;
-
-    gates.set([]);
-    gates.update((currentGates) => {
-      for (const gate_type in gate_types) {
-        if (gate_type.toLowerCase() !== gate.toLowerCase()) continue;
-        const gate_names = gate_types[gate_type];
-        for (const gate_name of gate_names) {
-          currentGates.push({
-            value: gate_name,
-            name: gate_name,
-          });
-        }
-      }
-      return currentGates;
-    });
-  }
+  const {
+    issue_description,
+    operable,
+    selected_gate_type,
+    selected_gate_name,
+    gates,
+    is_gate_type_dropdown_open,
+  } = reportUIStore;
 
   async function handleReportFormSubmit(event: Event): Promise<void> {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const formData = new FormData();
-    const issueDescription =
-      (form.querySelector("#issue-description") as HTMLTextAreaElement)
-        ?.value || "";
     const employeeName =
       (form.querySelector("#employee-name") as HTMLTextAreaElement)?.value ||
       "";
@@ -108,7 +85,7 @@
     } else if (employeeName.trim().length !== 3) {
       errors.push("Employee name must be 3 letters long.");
     }
-    if (!issueDescription.trim()) {
+    if (!$issue_description.trim()) {
       errors.push("Issue description is required.");
     } else if (employeeName.trim().length < 2) {
       errors.push("Issue description is too short.");
@@ -135,10 +112,12 @@
     }
     formData.append("gse_id", $qrCodeData || "Unknown");
     formData.append("employee_name", employeeName);
-    formData.append("issue_description", issueDescription);
+    formData.append("issue_description", $issue_description);
     formData.append("is_operable", String(isOperable));
-    formData.append("gate_type", String($selected_gate_type));
-    formData.append("gate_name", String($selected_gate_name));
+    if (!isOperable) {
+      formData.append("gate_type", String($selected_gate_type));
+      formData.append("gate_name", String($selected_gate_name));
+    }
     // Append uploaded files
     $mediaFiles.forEach((file) => {
       formData.append("attachments", file.file, file.file.name);
@@ -182,23 +161,51 @@
       >
         <ArrowLeft />
       </button>
-      <div class="flex flex-col items-center">
+      <div
+        class="flex flex-col items-center"
+        onclick={() => hideGSEDetail.set(false)}
+        onkeydown={() => hideGSEDetail.set(false)}
+        role="button"
+        tabindex="0"
+        id="header-label"
+      >
         <h2 class="text-base font-bold text-center">Issue Details for:</h2>
-        <div
-          onclick={() => hideGSEDetail.set(false)}
-          onkeydown={() => hideGSEDetail.set(false)}
-          role="button"
-          tabindex="0"
-          class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
-        >
-          {$qrCodeData}
+        <div class="flex gap-2">
+          <div
+            class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
+          >
+            {$qrCodeData}
+          </div>
+          {#if $detectedGSE && $detectedGSE.old_gse_id}
+            <div
+              class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-red-100 text-red-800 dark:bg-gray-700 dark:text-red-400 border-red-400 dark:border-red-400 rounded"
+            >
+              {$detectedGSE.old_gse_id}
+            </div>
+          {/if}
         </div>
       </div>
+      <Tooltip
+        class="z-20 max-w-[300px]"
+        type="dark"
+        triggeredBy="#header-label"
+        placement="bottom"
+        open={true}
+        >Tip: Click here to view more information about the scanned unit</Tooltip
+      >
       <Avatar
+        id="manu-logo"
         src="/images/kalmar.png"
         rounded
         class="bg-transparent ring-red-400 dark:ring-red-300"
       />
+      <Tooltip
+        class="z-20"
+        type="dark"
+        triggeredBy="#manu-logo"
+        placement="left"
+        trigger="click">Kalmar</Tooltip
+      >
     </div>
     <hr
       class="mt-2"
@@ -206,13 +213,13 @@
     />
     {#if $showLoader}
       <div
-        class="report-form-bg flex justify-center space-y-4 p-4 pt-5 md:p-6 md:pt-7"
+        class="report-form-bg cool-scrollbar flex justify-center space-y-4 p-4 pt-5 md:p-6 md:pt-7"
       >
         <Spinner class="w-14 h-14 mt-[calc(50vh-78px-29px-4px)]" />
       </div>
     {/if}
     <form
-      class="report-form-bg space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
+      class="report-form-bg cool-scrollbar space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
         ? 'hidden'
         : ''}"
       id="malfunction-report-form"
@@ -240,7 +247,12 @@
           >
             Describe the Issue
           </label>
-          <Button class="p-1 pr-3 pl-3 flex items-center">
+          <Button
+            class="p-1 pr-3 pl-3 flex items-center"
+            onclick={() => {
+              homePageStore.isPastIssuesForSpecificIDHidden.set(false);
+            }}
+          >
             Past Issues
             <Badge
               rounded
@@ -251,6 +263,7 @@
           </Button>
         </div>
         <textarea
+          bind:value={$issue_description}
           id="issue-description"
           rows="2"
           class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -317,7 +330,10 @@
           {/if}
           <ChevronDownOutline class="w-6 h-6 ms-2" />
         </button>
-        <Dropdown triggeredBy="#gates-button" bind:open={is_gate_open}>
+        <Dropdown
+          triggeredBy="#gates-button"
+          bind:open={$is_gate_type_dropdown_open}
+        >
           <DropdownItem
             class="flex items-center"
             onclick={() => {
@@ -356,14 +372,13 @@
           </DropdownItem>
         </Dropdown>
         <Select
+          bind:value={$selected_gate_name}
+          id="select-gate-name"
           items={$gates}
           placeholder="Choose a Gate {$selected_gate_type === ''
             ? 'Type'
             : 'Name'}"
           class="!rounded-s-none"
-          onchange={(e) => {
-            selected_gate_name.set((e.target as HTMLSelectElement).value);
-          }}
         />
       </div>
       <!-- Upload Media: -->
@@ -417,7 +432,7 @@
           </div>
           {#if $mediaFiles.length > 0}
             <hr class="my-4" />
-            <div id="gallery-container" class="ignore-js">
+            <div id="gallery-container" class="ignore-js cool-scrollbar">
               <div id="gallery" class="ignore-js">
                 {#each $mediaFiles as { url, type, deleteFile, handleClick }}
                   <div

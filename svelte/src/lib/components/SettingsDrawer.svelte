@@ -37,6 +37,7 @@
 </script>
 
 <Drawer
+    id="settings-drawer"
     placement="bottom"
     bind:hidden={$isSettingsHidden}
     on:close={() => isSettingsHidden.set(true)}

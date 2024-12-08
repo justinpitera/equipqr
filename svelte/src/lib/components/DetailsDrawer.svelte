@@ -112,6 +112,7 @@
 </script>
 
 <Drawer
+    id="gse-details-drawer"
     placement="bottom"
     bind:hidden={$hideGSEDetail}
     on:close={() => hideGSEDetail.set(true)}
@@ -340,10 +341,10 @@
         {:else if $qrCodeData}
             <div class="flex flex-col items-center">
                 <h2 class="text-base font-bold text-center">
-                    Could not find information GSE ID:
+                    Could not find information for GSE ID:
                 </h2>
                 <div
-                    class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
+                    class="font-medium mt-3 inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
                 >
                     {$qrCodeData}
                 </div>

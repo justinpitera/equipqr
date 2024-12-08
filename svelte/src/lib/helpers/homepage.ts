@@ -6,6 +6,7 @@ class HomePageStore {
         public isSettingsHidden: Writable<boolean> = writable(true),
         public isAuthDrawerHidden: Writable<boolean> = writable(true),
         public isIssuesHistoryHidden: Writable<boolean> = writable(true),
+        public isPastIssuesForSpecificIDHidden: Writable<boolean> = writable(true),
         public startQRScanner: Writable<boolean> = writable(false),
         public darkMode: Writable<boolean> = writable(false),
         public notificationsEnabled: Writable<boolean> = writable(true),

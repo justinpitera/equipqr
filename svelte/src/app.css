@@ -74,6 +74,17 @@
   }
 }
 
+@media (min-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+html,
+body {
+  background: #000;
+}
+
 .flashlight-btn {
   position: fixed;
   top: 20px;
@@ -167,11 +178,37 @@
   width: 98%;
   margin: auto;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #3b82f6 transparent;
 }
 
-.container {
+.popup-content,
+.report-form-bg,
+#settings-drawer,
+#past-issues-drawer,
+#issue-history-drawer,
+#gse-details-drawer,
+#close-report-ui,
+#auth-drawer,
+.container,
+body,
+#drawer-example {
+  max-width: 768px !important;
+}
+
+body {
+  margin: auto;
+  position: relative;
+}
+
+#settings-drawer,
+#past-issues-drawer,
+#issue-history-drawer,
+#gse-details-drawer,
+#close-report-ui,
+#auth-drawer,
+#drawer-example {
+  margin: auto;
+}
+.cool-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #3b82f6 transparent;
 }
@@ -191,8 +228,6 @@
 
 #gallery-container {
   overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #3b82f6 transparent;
 }
 
 #gallery .gallery-item {

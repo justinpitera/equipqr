@@ -17,6 +17,7 @@
 </script>
 
 <Drawer
+  id="close-report-ui"
   placement="top"
   width="w-full"
   transitionType="fly"

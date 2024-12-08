@@ -52,6 +52,7 @@
 </script>
 
 <Drawer
+    id="auth-drawer"
     placement="bottom"
     bind:hidden={$isAuthDrawerHidden}
     on:close={() => isAuthDrawerHidden.set(true)}

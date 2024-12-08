@@ -13,6 +13,7 @@ let closeReportHidden = false;
 cancelReportStore.closeReportHidden.subscribe((value) => {
     closeReportHidden = value;
 });
+
 export let transitionParamsTop = {
     y: -320,
     duration: 200,
