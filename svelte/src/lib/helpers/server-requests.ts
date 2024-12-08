@@ -2,7 +2,7 @@ import { notify } from "$lib/helpers/notify";
 
 export async function getAppVersion() {
 	try {
-		const request = await fetch("/api/health/status");
+		const request = await fetch("https://preview.pitera.co:7878/api/health/status");
 		const response = await request.json();
 		console.log(
 			"%cAviation Management Panel",
@@ -42,7 +42,7 @@ export async function getAppVersion() {
 
 export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefined> {
 	try {
-		const request = await fetch("/api/gse/details", {
+		const request = await fetch("https://preview.pitera.co:7878/api/gse/details", {
 			method: 'POST',
 			body: JSON.stringify({
 				gse_id

@@ -166,7 +166,6 @@ export async function destroyScanner() {
     console.log("QR Scanner destroyed, camera access released.");
 }
 
-
 async function scanQRCode(): Promise<string | null> {
 	return new Promise((resolve) => {
 		if (
