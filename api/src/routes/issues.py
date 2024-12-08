@@ -17,11 +17,9 @@ from uuid import UUID, uuid4
 from datetime import datetime
 
 # Third-party
-from typing import Any
 from pydantic import BaseModel, ValidationError
 from tortoise.exceptions import OperationalError
-from starlette.datastructures import UploadFile  # Import UploadFile
-from tortoise.transactions import atomic
+from starlette.datastructures import FormData, UploadFile
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.exceptions import HTTPException
@@ -41,7 +39,7 @@ async def details_request(request: Request) -> JSONResponse:
 
     try:
         logger.info(f"{Fore.CYAN}📥 Received request for GSE details{Style.RESET_ALL}")
-        body: dict[str, Any] = await request.json()
+        body: dict[str, str] = await request.json()
         logger.debug(f"{Fore.LIGHTBLUE_EX}🔍 Request body: {body}{Style.RESET_ALL}")
         
         gse_details_request_data: _GSEDetailsRequest = _GSEDetailsRequest(**body)
@@ -62,6 +60,7 @@ async def details_request(request: Request) -> JSONResponse:
 
         fields_to_include: list[str] = [
             "gse_id",
+            "old_gse_id",
             "gse_type",
             "model",
             "manufacturer",
@@ -75,13 +74,13 @@ async def details_request(request: Request) -> JSONResponse:
             "capacity",
         ]
 
-        def serialize_field(value: Any) -> Any:
-            """Serializes datetime fields"""
-            if isinstance(value, datetime):
-                return value.isoformat()
-            return value
+        def serialize_field(value: datetime | None) -> str | None:
+            """Serializes datetime fields, handling None values."""
+            return value.isoformat() if value else None
 
-        response_data = {field: serialize_field(getattr(fetched_gse_model, field, None)) for field in fields_to_include}
+        response_data: dict[str, str | None] = {
+            field: serialize_field(value=getattr(fetched_gse_model, field, None)) for field in fields_to_include
+        }
         logger.success(f"{Fore.GREEN}🎉 Successfully fetched GSE details for ID: {gse_details_request_data.gse_id}{Style.RESET_ALL}")
         
         return JSONResponse(status_code=200, content=response_data)
@@ -123,26 +122,26 @@ async def submit_issue(request: Request) -> JSONResponse:
         is_operable: bool
         issue_description: str
 
-    async def _extract_form_data():
+    async def _extract_form_data() -> tuple[_IssueSubmission, list[dict[str, str | bytes | None]]]:
         """Extract and validate form data."""
         try:
-            form = await request.form()
+            form: FormData = await request.form()
 
-            gse_id = str(form.get("gse_id", "")).strip()
-            issue_description = str(form.get("issue_description", "")).strip()
-            is_operable_raw = form.get("is_operable", "false")
-            is_operable = str(is_operable_raw).strip().lower() == "true"
+            gse_id: str = str(form.get("gse_id", "")).strip()
+            issue_description: str = str(form.get("issue_description", "")).strip()
+            is_operable_raw: UploadFile | str = form.get("is_operable", "false")
+            is_operable: bool = str(is_operable_raw).strip().lower() == "true"
 
             if not gse_id or not issue_description:
                 raise HTTPException(status_code=400, detail="Missing required form fields.")
 
-            validated_data = _IssueSubmission(
+            validated_data: _IssueSubmission = _IssueSubmission(
                 gse_id=gse_id,
                 is_operable=is_operable,
                 issue_description=issue_description,
             )
 
-            attachments = [
+            attachments: list[dict[str, str | bytes | None]] = [
                 {
                     "filename": value.filename,
                     "content_type": value.content_type,
@@ -160,17 +159,17 @@ async def submit_issue(request: Request) -> JSONResponse:
             logger.error(f"Error parsing form data: {e}")
             raise HTTPException(status_code=400, detail="Invalid form data.")
 
-    async def _save_issue_to_db(validated_data, attachments):
+    async def _save_issue_to_db(validated_data: _IssueSubmission, attachments: list[dict[str, str | bytes | None]]) -> UUID:
         """Save issue and attachment metadata to the database."""
         try:
-            issue = await Issue.create(
+            issue: Issue = await Issue.create(
                 id=uuid4(),
                 gse_id=validated_data.gse_id,
                 issue_description=validated_data.issue_description,
             )
             for attachment in attachments:
-                attachment_id = uuid4()
-                await IssueAttachment.create(
+                attachment_id: UUID = uuid4()
+                _ = await IssueAttachment.create(
                     id=attachment_id,
                     issue=issue,
                     file_type=attachment["content_type"],
@@ -180,27 +179,27 @@ async def submit_issue(request: Request) -> JSONResponse:
             logger.error(f"Failed to save issue to database: {e}")
             raise HTTPException(status_code=500, detail="Failed to save issue to database.")
 
-    async def _save_issue_and_queue_attachments(issue_id, attachments):
+    async def _save_issue_and_queue_attachments(_, attachments: list[dict[str, str | bytes | None]]) -> None:
         """Save issue and queue attachment uploads."""
         try:
-            tasks = [
+            tasks: list[dict[str, str | bytes | int | None]] = [
                 {
                     "attachment_id": str(uuid4()),
                     "file_stream": att["file_content"],
-                    "content_length": len(att["file_content"]),
+                    "content_length": len(att["file_content"]) if att["file_content"] is not None else 0,
                     "content_type": att["content_type"],
                 }
                 for att in attachments
             ]
-            upload_attachments_to_minio(tasks)
+            upload_attachments_to_minio(files_data=tasks)
         except Exception as e:
             logger.error(f"Failed to process attachments: {e}")
             raise HTTPException(status_code=500, detail="Failed to process attachments.")
 
     try:
         validated_data, attachments = await _extract_form_data()
-        issue_id = await _save_issue_to_db(validated_data, attachments)
-        await _save_issue_and_queue_attachments(issue_id, attachments)
+        issue_id: UUID = await _save_issue_to_db(validated_data, attachments)
+        await _save_issue_and_queue_attachments(_=issue_id, attachments=attachments)
         return JSONResponse(
             status_code=201,
             content={"message": "Issue submitted successfully.", "issue_id": str(issue_id)},

@@ -1,3 +1,4 @@
+from io import BufferedReader
 import requests
 
 # API endpoint
@@ -11,7 +12,7 @@ payload = {
 }
 
 # Files to upload
-files = {
+files: dict[str, list[tuple[str, tuple[str, BufferedReader, str]]]] = {
     "attachments": [
         ("attachments", ("image.png", open("image.png", "rb"), "image/png")),
         ("attachments", ("video.mp4", open("video.mp4", "rb"), "video/mp4")),
@@ -23,7 +24,7 @@ verify_ssl = False
 
 try:
     # Send POST request
-    response = requests.post(
+    response: requests.Response = requests.post(
         url,
         data={
             "gse_id": payload["gse_id"],
@@ -34,9 +35,6 @@ try:
         verify=verify_ssl,
     )
 
-    # Print response details
-    print("Status Code:", response.status_code)
-    print("Response JSON:", response.json())
 except Exception as e:
     print("An error occurred:", e)
 finally:

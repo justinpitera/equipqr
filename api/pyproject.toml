@@ -24,6 +24,7 @@ dependencies = [
     "minio>=7.2.12",
     "requests>=2.32.3",
     "python-multipart>=0.0.19",
+    "pandas-stubs>=2.2.3.241126",
 ]
 requires-python = ">= 3.12.6"
 

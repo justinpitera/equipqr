@@ -22,7 +22,7 @@ from . import API_CONFIG
 from src.models import GroundSupportEquiptment, ImportMetadata
 
 # Init
-LEGACY_CSV_PATH: str = API_CONFIG["database"]["legacy_path"]
+LEGACY_CSV_PATH: str = API_CONFIG["database"]["importer"]["legacy_path"]
 timezone = pytz.UTC
 
 def clean_value(value, field_name):

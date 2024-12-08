@@ -68,9 +68,12 @@ minio==7.2.12
     # via api
 numpy==2.1.3
     # via pandas
+    # via pandas-stubs
 orjson==3.10.11
     # via api
 pandas==2.2.3
+    # via api
+pandas-stubs==2.2.3.241126
     # via api
 pillow==11.0.0
     # via api
@@ -116,6 +119,8 @@ tortoise-orm==0.22.0
     # via api
 tqdm==4.67.1
     # via api
+types-pytz==2024.2.0.20241003
+    # via pandas-stubs
 typing-extensions==4.12.2
     # via aiosqlite
     # via minio

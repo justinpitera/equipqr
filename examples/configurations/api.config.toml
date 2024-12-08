@@ -1,0 +1,125 @@
+# --------------------------------------------------------------------
+# Backend API Configuration
+#
+# Settings for the application's backend API, including server mode, 
+# address, port, and SSL certificates for secure connections.
+# --------------------------------------------------------------------
+[api]
+mode = "production"                                             # Set the application mode ("development" or "production").
+address = "0.0.0.0"                                             # The address to bind the server to (0.0.0.0 for all interfaces).
+port = 7878                                                     # Port on which the backend API will listen.
+cert_path="../private/certificates/example_cert_path"           # Path to SSL certificate bundle (must contain a certificate and key file).
+
+[api.rate_limiter]
+enabled = false   # Whether to enforce rate limiting policies defined in specified configuration path (not enforced if `mode="development"`.
+policy_path = "../private/configurations/example_rate_limiter.config.json"
+
+
+# --------------------------------------------------------------------
+# CORS Configuration
+#
+# This defines the CORS (Cross-Origin Resource Sharing) policy
+# for the API. Adjust these settings based on your security 
+# and functional needs. Use wildcards (*) with caution.
+# --------------------------------------------------------------------
+[cors]
+allow_credentials = true                         # Whether to allow credentials in CORS requests.
+allow_origins = ["*"]                            # List of allowed origins. Use "*" to allow all origins.
+allow_methods = [
+    "*",                                         # List of allowed HTTP methods. Use "*" to allow all methods.
+]                     
+allow_headers = ["*"]                            # List of allowed headers. Use "*" to allow all headers.
+
+
+# --------------------------------------------------------------------
+# Authentication Configuration
+#
+# This section defines the configuration for the authentication system.
+#
+# Supported authentication modes:
+#   - Magic links sent via email - "magic"
+#   - Credentials                - "credentials"
+#
+# Secret keys can be generated using:
+#   
+# --------------------------------------------------------------------
+[auth]
+mode = "magic"
+
+[auth.magic]
+restricted_domains = [
+    "example.com",      # Note: Only enforced if `mode="production"` in API Configuration.
+]
+
+[auth.credentials]
+min_password_length = 14
+
+[auth.jwt]
+secret = "example_jwt_secret_key"         # Secret used for signing access tokens (can be generated with: `python3 -c "import secrets; print(secrets.token_hex(64))"`).
+expires_in = 30                           # Expiry time for access tokens (in minutes) [default=30].
+refresh_expires_in = 7                    # Expiry time for refresh tokens (in days) [default=7].
+
+
+# --------------------------------------------------------------------
+# SMTP Email Configuration
+#
+# Configuration for sending emails using an SMTP server.
+# --------------------------------------------------------------------
+[smtp]
+host = "smtp.example.com"          # SMTP server host address.
+domain = "example.com"             # Domain name for the email service.
+port = 587                         # Port for email sending (587 for TLS, 465 for SSL, 25 for non-secure).
+username = "smtp_user@example.com" # Username for SMTP server authentication.
+password = "example_smtp_password" # Password for SMTP server authentication.
+
+
+# --------------------------------------------------------------------
+# Database Configuration
+#
+# Database engine and settings for Tortoise ORM. 
+# 
+# Supported engines include:
+#   - "tortoise.backends.asyncpg" : PostgreSQL (tested/recommended)
+#   - "tortoise.backends.mysql"   : MySQL (not tested)
+#   - "tortoise.backends.mssql"   : Microsoft SQL Server (not tested)
+#   - "tortoise.backends.sqlite"  : SQLite (not tested/not recommended for production)
+# --------------------------------------------------------------------
+[database]
+engine = "tortoise.backends.asyncpg"        # Database engine (read Database Configuration section notes for more details).
+address = "localhost"                       # Database server's host or IP address (localhost if the server is running on the same network).
+port = 5432                                 # Port for the service (5432 by default for PostgreSQL database engine).
+secure = false                              # Use true for SSL/TLS (secure), false for insecure.
+username = "example_db_user"                # Username used for authentication.
+password = "example_db_password"            # Password used for authentication.
+
+[database.importer]
+legacy_path = "example_database.csv"        # Will only be imported one time upon next startup, filename must be unique for each import.
+
+
+# --------------------------------------------------------------------
+# Object Storage Configuration
+#
+# --------------------------------------------------------------------
+[object_storage]
+address = "localhost"                   # Object storage server's host or IP address (localhost if the server is running on the same network).
+port = 9000                             # Port for the service (default: 9000).
+secure = false                          # Use true for HTTPS (secure), false for HTTP (local or testing).
+access_key = "example_access_key"       # Access key for authentication.
+secret_key = "example_secret_key"       # Secret key for authentication.
+
+
+# --------------------------------------------------------------------
+# Redis Configuration
+#
+# Settings to connect to an object storage service like MinIO or S3-compatible servers.
+#
+# Note:
+#   Alternatives that are compatible with the Redis-cli are also supported, such as:
+#       - KeyDB
+#       - DragonFlyDB
+# --------------------------------------------------------------------
+[redis]
+address = "localhost"                   # Redis server's host or IP address (localhost if the server is running on the same network).
+port = 6379                             # Port for the service (default: 6379 for Redis).
+secure = false                          # Use true for SSL/TLS (secure), false for insecure.
+password = "example_redis_password"     # Password used for authentication.
