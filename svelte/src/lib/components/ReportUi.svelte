@@ -47,7 +47,6 @@
   // Cancel report utilities
   import { cancelReportStore } from "$lib/helpers/cancel-report";
   const { closeReportHidden } = cancelReportStore;
-  import { writable } from "svelte/store";
   // Details Drawer utilities
   import { detailsDrawerStore } from "$lib/helpers/details";
   import { onDestroy, onMount } from "svelte";
@@ -60,6 +59,15 @@
     build_gate_options,
     reportUIStore,
   } from "$lib/helpers/report-ui-store";
+  import { langChecker, translations } from "$lib/locales";
+  const { selectedLanguage, isPastIssuesForSpecificIDHidden } = homePageStore;
+
+  function t(key: string): string {
+    const langTranslations = translations[$selectedLanguage];
+    langChecker(key);
+    return langTranslations[key] || key;
+  }
+
   const { hideGSEDetail } = detailsDrawerStore;
   const {
     issue_description,
@@ -165,12 +173,12 @@
         class="flex flex-col items-center"
         onclick={() => {
           hideGSEDetail.set(false);
-          const tooltip1 = document.getElementById('example-tooltip-1');
+          const tooltip1 = document.getElementById("example-tooltip-1");
           if (tooltip1) tooltip1.remove();
         }}
         onkeydown={() => {
           hideGSEDetail.set(false);
-          const tooltip1 = document.getElementById('example-tooltip-1');
+          const tooltip1 = document.getElementById("example-tooltip-1");
           if (tooltip1) tooltip1.remove();
         }}
         role="button"
@@ -259,7 +267,7 @@
           <Button
             class="p-1 pr-3 pl-3 flex items-center"
             onclick={() => {
-              homePageStore.isPastIssuesForSpecificIDHidden.set(false);
+              isPastIssuesForSpecificIDHidden.set(false);
             }}
           >
             Past Issues

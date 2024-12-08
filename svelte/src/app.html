@@ -11,6 +11,13 @@
 		<meta name="full-screen" content="yes">
 		<meta name="apple-mobile-web-app-title" content="Fejlmelings">
 		<link rel="manifest" href="manifest.webmanifest" />
+		<script>
+			const originalWarn = console.warn;
+			console.warn = (...data) => {
+				if (data[0].includes('read reactive state that was not visible to the compiler. Updates to this state will not cause the statement to re-run. The behaviour of this code will change if you migrate it to runes mode')) return;
+				originalWarn(...data);
+			}
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

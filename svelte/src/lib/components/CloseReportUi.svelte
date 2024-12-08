@@ -11,9 +11,18 @@
       cancelReportStore,
       transitionParamsTop,
     } from "$lib/helpers/cancel-report";
-    import { homePageStore } from "$lib/helpers/homepage";
     import { DEBUG_MODE } from "$lib/config";
+    import { langChecker, translations } from "$lib/locales";
     const { closeReportHidden } = cancelReportStore;
+    import { homePageStore } from "$lib/helpers/homepage";
+    const { selectedLanguage } = homePageStore;
+    
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
+
 </script>
 
 <Drawer

@@ -4,7 +4,14 @@
     import { destroyScanner, qrScannerStore } from "$lib/helpers/camera";
     const { flashlightOn, flashlightDisabled } = qrScannerStore;
     import { homePageStore } from "$lib/helpers/homepage";
-    const { startQRScanner } = homePageStore;
+    import { langChecker, translations } from "$lib/locales";
+    const { startQRScanner, selectedLanguage } = homePageStore;
+
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
 </script>
 
 <div

@@ -1,7 +1,15 @@
 <script lang="ts">
     import { homePageStore } from "$lib/helpers/homepage";
     import { notify } from "$lib/helpers/notify";
+    import { langChecker, translations } from "$lib/locales";
     const { isAuthDrawerHidden } = homePageStore;
+    const { selectedLanguage } = homePageStore;
+
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
 
     const { userRole } = homePageStore;
 
@@ -56,10 +64,6 @@
     .card:hover {
         background-color: #f1f5f9;
         cursor: pointer;
-    }
-
-    .card-content {
-        text-align: center;
     }
 
     .button {

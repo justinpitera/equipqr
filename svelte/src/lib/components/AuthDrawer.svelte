@@ -2,8 +2,7 @@
     import { ArrowLeft } from "lucide-svelte";
     import { Button, Drawer } from "flowbite-svelte";
     import { notify } from "$lib/helpers/notify";
-    import { translations } from "$lib/locales";
-    import type { TranslationKeys } from "$lib/locales";
+    import { langChecker, languages, translations } from "$lib/locales";
     import { homePageStore } from "$lib/helpers/homepage";
     import { sineIn } from "svelte/easing";
     import RoleTester from "./RoleTester.svelte";
@@ -12,16 +11,8 @@
     let email = "";
     let username = "";
     let password = "";
-    let selectedLanguage: keyof typeof translations = "en"; // Ensures it's one of the translation keys
 
-    const { isLoggedIn, isAuthDrawerHidden } = homePageStore; // Store to manage visibility
-
-    const languages = [
-        { code: "en", label: "English" },
-        { code: "da", label: "Dansk" },
-        { code: "no", label: "Norsk" },
-        { code: "sv", label: "Svenska" },
-    ];
+    const { isLoggedIn, isAuthDrawerHidden, selectedLanguage } = homePageStore;
 
     const transitionParamsBottom = {
         y: 320,
@@ -29,22 +20,27 @@
         easing: sineIn,
     };
 
-    function t(key: TranslationKeys): string {
-        const langTranslations = translations[selectedLanguage];
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
         return langTranslations[key] || key;
     }
 
     function handleSubmit(e: Event) {
         e.preventDefault();
         if (authMode === "email" && !email) {
-            notify("Error", t("emailError"), "error");
+            notify("Error", t("Please enter a valid email address."), "error");
         } else if (authMode === "credentials" && (!username || !password)) {
-            notify("Error", t("credentialsError"), "error");
+            notify(
+                "Error",
+                t("Please provide both username and password."),
+                "error",
+            );
         } else {
             const successMessage =
                 authMode === "email"
-                    ? t("emailSuccess").replace("{email}", email)
-                    : t("loginSuccess");
+                    ? t("Email sent to {email}").replace("{email}", email)
+                    : t("Login successful!");
             notify("Success", successMessage, "success");
             isLoggedIn.set(!$isLoggedIn);
             isAuthDrawerHidden.set(true);
@@ -78,17 +74,15 @@
         <div class="flex flex-col items-center">
             <div class="mt-2 bg-white p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-semibold text-gray-800">
-                    {t("authHeader")}
+                    {t("Authentication")}
                 </h2>
 
                 <div class="mt-4">
                     <div class="form-group">
-                        <label for="language-selector"
-                            >{t("languageLabel")}</label
-                        >
+                        <label for="language-selector">{t("Language")}</label>
                         <select
                             id="language-selector"
-                            bind:value={selectedLanguage}
+                            bind:value={$selectedLanguage}
                         >
                             {#each languages as { code, label }}
                                 <option value={code}>{label}</option>
@@ -100,39 +94,37 @@
                 <form onsubmit={handleSubmit} class="mt-4">
                     {#if authMode === "email"}
                         <div class="form-group">
-                            <label for="email">{t("emailLabel")}</label>
+                            <label for="email">{t("Email")}</label>
                             <input
                                 id="email"
                                 type="email"
                                 bind:value={email}
-                                placeholder={t("emailPlaceholder")}
+                                placeholder={t("Enter your email")}
                             />
                         </div>
                     {:else}
                         <div class="form-group">
-                            <label for="username">{t("usernameLabel")}</label>
+                            <label for="username">{t("Username")}</label>
                             <input
                                 id="username"
                                 type="text"
                                 bind:value={username}
-                                placeholder={t("usernamePlaceholder")}
+                                placeholder={t("Enter your username")}
                             />
                         </div>
                         <div class="form-group">
-                            <label for="password">{t("passwordLabel")}</label>
+                            <label for="password">{t("Password")}</label>
                             <input
                                 id="password"
                                 type="password"
                                 bind:value={password}
-                                placeholder={t("passwordPlaceholder")}
+                                placeholder={t("Enter your password")}
                             />
                         </div>
                     {/if}
 
                     <div class="form-footer mt-6">
-                        <button type="submit" class="btn"
-                            >{t("submitButton")}</button
-                        >
+                        <button type="submit" class="btn">{t("Submit")}</button>
                         <span
                             class="toggle-link"
                             tabindex="0"
@@ -153,8 +145,8 @@
                             }}
                         >
                             {authMode === "email"
-                                ? t("toggleToCredentials")
-                                : t("toggleToEmail")}
+                                ? t("Switch to Credentials Login")
+                                : t("Switch to Email Login")}
                         </span>
                     </div>
                 </form>

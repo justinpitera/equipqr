@@ -1,14 +1,7 @@
 <script>
-	import '../app.css';
-
+	import "../app.css";
 	let { children } = $props();
-
-
-
-
 </script>
-
-
 
 <!-- Main content area -->
 <div class="min-h-screen">

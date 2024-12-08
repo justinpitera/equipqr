@@ -1,32 +1,43 @@
-<script>
-    import { ArrowLeft, Sun, Bell, Globe, Trash2 } from "lucide-svelte";
+<script lang="ts">
+    import { ArrowLeft, Bell, Globe, Trash2 } from "lucide-svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import { Button, Drawer } from "flowbite-svelte";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
+    import { langChecker, languages, translations } from "$lib/locales";
 
-    const { isSettingsHidden, darkMode, notificationsEnabled, selectedLanguage } = homePageStore;
+    const { isSettingsHidden, notificationsEnabled, selectedLanguage } =
+        homePageStore;
+
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
 
     const toggleSettings = () => {
         isSettingsHidden.set(!$isSettingsHidden);
     };
 
-    const languages = [
-        { code: "en", label: "English" },
-        { code: "da", label: "Dansk" },
-        { code: "no", label: "Norsk" },
-        { code: "sv", label: "Svenska" },
-    ];
-
     const saveSettings = () => {
-        notify("Settings Saved", "Your preferences have been updated.", "success");
+        selectedLanguage.set($selectedLanguage);
+        localStorage.setItem("savedLang", $selectedLanguage);
+        notify(
+            "Settings Saved",
+            "Your preferences have been updated.",
+            "success",
+        );
+        toggleSettings();
     };
 
     const resetSettings = () => {
-        darkMode.set(false);
         notificationsEnabled.set(true);
         selectedLanguage.set("en");
-        notify("Settings Reset", "Settings have been reset to defaults.", "info");
+        notify(
+            "Settings Reset",
+            "Settings have been reset to defaults.",
+            "info",
+        );
     };
 
     let transitionParamsBottom = {
@@ -61,18 +72,6 @@
 
     <!-- Content -->
     <div class="mt-6 space-y-6">
-        <!-- Theme Toggle -->
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <Sun class="h-5 w-5 text-yellow-500" />
-                <span class="text-gray-800 font-semibold">Dark Mode</span>
-            </div>
-            <label class="switch">
-                <input type="checkbox" bind:checked={$darkMode} />
-                <span class="slider round"></span>
-            </label>
-        </div>
-
         <!-- Notifications Toggle -->
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">

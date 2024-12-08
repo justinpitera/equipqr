@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import QRScannerUi from "$lib/components/QRScannerUi.svelte";
     import { DEBUG_MODE } from "$lib/config";
     import { loadQRScanner } from "$lib/helpers/camera";
@@ -16,6 +16,7 @@
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
     import AuthDrawer from "$lib/components/AuthDrawer.svelte";
     import IssuesHistoryDrawer from "$lib/components/IssuesHistoryDrawer.svelte";
+    import { langChecker, translations } from "$lib/locales";
 
     const {
         isLoggedIn,
@@ -24,7 +25,14 @@
         isAuthDrawerHidden,
         isIssuesHistoryHidden,
         userRole,
+        selectedLanguage,
     } = homePageStore;
+
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
 
     const toggleLogin = () => {
         isAuthDrawerHidden.set(false);

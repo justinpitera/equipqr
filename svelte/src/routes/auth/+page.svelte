@@ -1,8 +1,7 @@
 <script lang="ts">
     import { toast } from "svelte-sonner";
     import { Toaster } from "$lib/components/ui/sonner/index.js";
-    import type { TranslationKeys } from "$lib/locales"; 
-    import { translations } from "$lib/locales";
+    import { langChecker, translations } from "$lib/locales";
 
     let authMode: "email" | "credentials" = "email";
     let email = "";
@@ -17,11 +16,11 @@
         { code: "sv", label: "Svenska" },
     ];
 
-function t(key: TranslationKeys): string {
-    const langTranslations = translations[selectedLanguage];
-    return langTranslations[key] || key;
-}
-
+    function t(key: string): string {
+        const langTranslations = translations[selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
 
     function handleSubmit() {
         if (authMode === "email" && !email) {
@@ -37,7 +36,6 @@ function t(key: TranslationKeys): string {
         }
     }
 </script>
-
 
 <div class="container">
     <Toaster />
@@ -92,15 +90,19 @@ function t(key: TranslationKeys): string {
                     tabindex="0"
                     role="button"
                     on:click={() =>
-                        (authMode = authMode === "email" ? "credentials" : "email")}
+                        (authMode =
+                            authMode === "email" ? "credentials" : "email")}
                     on:keydown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault();
-                            authMode = authMode === "email" ? "credentials" : "email";
+                            authMode =
+                                authMode === "email" ? "credentials" : "email";
                         }
                     }}
                 >
-                    {authMode === "email" ? t("toggleToCredentials") : t("toggleToEmail")}
+                    {authMode === "email"
+                        ? t("toggleToCredentials")
+                        : t("toggleToEmail")}
                 </span>
             </div>
         </form>

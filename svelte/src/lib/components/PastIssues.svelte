@@ -5,6 +5,14 @@
     import { homePageStore } from "$lib/helpers/homepage";
     import { build_gate_options, gate_types, reportUIStore } from "$lib/helpers/report-ui-store";
     const { isPastIssuesForSpecificIDHidden } = homePageStore;
+    import { langChecker, translations } from "$lib/locales";
+    const { selectedLanguage } = homePageStore;
+    
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
     const {
         issue_description,
         operable,

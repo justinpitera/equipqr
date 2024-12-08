@@ -2,8 +2,14 @@
     import { Button, Drawer } from "flowbite-svelte";
     import { Trash2, Edit, ArrowLeft } from "lucide-svelte";
     import { homePageStore } from "$lib/helpers/homepage";
+    import { langChecker, translations } from "$lib/locales";
+    const { selectedLanguage, isIssuesHistoryHidden } = homePageStore;
 
-    const { isIssuesHistoryHidden } = homePageStore;
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
 
     interface Issue {
         id: number;

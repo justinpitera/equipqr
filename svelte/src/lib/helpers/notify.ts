@@ -1,5 +1,12 @@
 import type { Placement, Theme, ToastType } from "svelte-toasts/types/common";
 import { toasts } from "svelte-toasts";
+import { langChecker, defaultLang, translations } from "$lib/locales";
+
+function t(key: string): string {
+	const langTranslations = translations[defaultLang];
+	langChecker(key);
+	return langTranslations[key] || key;
+}
 
 export function notify(
 	title: string,
@@ -11,8 +18,8 @@ export function notify(
 	showProgress = true,
 ) {
 	toasts.add({
-		title,
-		description,
+		title: t(title),
+		description: t(description),
 		duration,
 		placement,
 		type,

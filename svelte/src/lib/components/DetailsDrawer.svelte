@@ -19,6 +19,15 @@
     // Cancel report utilities
     import { CheckOutline } from "flowbite-svelte-icons";
     import { sineIn } from "svelte/easing";
+    import { homePageStore } from "$lib/helpers/homepage";
+    import { langChecker, translations } from "$lib/locales";
+    const { selectedLanguage } = homePageStore;
+
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations[key] || key;
+    }
 
     let transitionParamsBottom = {
         y: 320,
@@ -352,7 +361,8 @@
         {:else}
             <div class="flex flex-col items-center">
                 <h2 class="text-base font-bold text-center">
-                    Could not find information for vehicle.<br/>Please try again...
+                    Could not find information for vehicle.<br />Please try
+                    again...
                 </h2>
             </div>
         {/if}
