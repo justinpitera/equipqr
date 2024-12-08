@@ -104,7 +104,9 @@
     // Validate required fields
     const errors: string[] = [];
     if (!employeeName.trim()) errors.push("Employee name is required.");
+    if (employeeName.trim().length !== 3) errors.push("Employee name must be 3 letters long.");
     if (!issueDescription.trim()) errors.push("Issue description is required.");
+    if (employeeName.trim().length < 2) errors.push("Issue description is too short.");
     if ($operable === '') errors.push("Operable status must be selected.");
     if ($operable === 'no' && selectedGate === "") errors.push("Gate type and selection are required if not operable.");
     if ($mediaFiles.length === 0) errors.push("At least one photo or video must be uploaded.");
