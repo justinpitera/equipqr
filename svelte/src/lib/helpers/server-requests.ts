@@ -1,8 +1,14 @@
+import { BACKEND_URL } from "$lib/config";
 import { notify } from "$lib/helpers/notify";
 
 export async function getAppVersion() {
 	try {
-		const request = await fetch("https://preview.pitera.co:7878/api/health/status");
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 3s'), 3000);
+		const request = await fetch(`${BACKEND_URL}/api/health/status`, {
+            signal: controller.signal,
+		});
+        clearTimeout(timeout);
 		const response = await request.json();
 		console.log(
 			"%cAviation Management Panel",
@@ -42,12 +48,16 @@ export async function getAppVersion() {
 
 export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefined> {
 	try {
-		const request = await fetch("https://preview.pitera.co:7878/api/gse/details", {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const request = await fetch(`${BACKEND_URL}/api/gse/details`, {
 			method: 'POST',
 			body: JSON.stringify({
 				gse_id
-			})
+			}),
+            signal: controller.signal,
 		});
+        clearTimeout(timeout);
 		const response = await request.json();
 		return response as GSEDetails;
 	} catch (e) {
@@ -56,17 +66,21 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 			"color: red; font-size: 18px; font-weight: bold;",
 			e,
 		);
-		notify("Error fetching GSE Details", `Failed to get vehicle information: ${e}`, "error");
+		notify("Error fetching GSE Details", `Failed to get information: ${e}`, "error");
 	}
 	return undefined
 }
 
 export async function submitIssue(formData: FormData) {
 	try {
-		const response = await fetch("https://preview.pitera.co:7878/api/gse/issues/submit", {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 240s'), 240000);
+		const response = await fetch(`${BACKEND_URL}/api/gse/issues/submit`, {
 			method: "POST",
 			body: formData,
+            signal: controller.signal,
 		});
+        clearTimeout(timeout);
 
 		if (response.ok) {
 			const data = await response.json();

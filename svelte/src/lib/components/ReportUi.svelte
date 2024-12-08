@@ -1,12 +1,31 @@
 <script lang="ts">
   // Icons and components
-  import { Image, Video, Upload, Trash, ArrowLeft } from "lucide-svelte";
-  import { Button, Badge, Avatar } from "flowbite-svelte";
+  import {
+    Image,
+    Video,
+    Upload,
+    Trash,
+    ArrowLeft,
+    Plane,
+    PlaneLanding,
+    PlaneTakeoff,
+    Boxes,
+    Globe,
+  } from "lucide-svelte";
+  import {
+    Button,
+    Badge,
+    Avatar,
+    Dropdown,
+    DropdownItem,
+    Select,
+    Spinner,
+  } from "flowbite-svelte";
   // Utilities
   import { disableContextMenu, formatNumber } from "$lib/helpers/basics";
   // QR Scanner utilities
   import { qrScannerStore } from "$lib/helpers/camera";
-  const { qrCodeData, showPopup } = qrScannerStore;
+  const { qrCodeData, showPopup, showLoader } = qrScannerStore;
   // File upload utilities
   import {
     startWiggle,
@@ -33,9 +52,41 @@
   import { onDestroy, onMount } from "svelte";
   import { maxFiles } from "$lib/config";
   import { submitIssue } from "$lib/helpers/server-requests";
+  import { ChevronDownOutline } from "flowbite-svelte-icons";
   const { hideGSEDetail } = detailsDrawerStore;
 
   const operable = writable("");
+  const selected_gate = writable("");
+  let is_gate_open = false;
+
+  let gate_types: Record<string, string[]> = {
+    GA: ["103 Apn"],
+    Airline: ["A11"],
+    None: ["G110"],
+    Cargo: ["G126"],
+  };
+
+  let gates = writable<{ value: string; name: string }[]>([]);
+
+  function build_gate_options(gate: string) {
+    selected_gate.set(gate);
+    is_gate_open = false;
+
+    gates.set([]);
+    gates.update((currentGates) => {
+      for (const gate_type in gate_types) {
+        if (gate_type.toLowerCase() !== gate.toLowerCase()) continue;
+        const gate_names = gate_types[gate_type];
+        for (const gate_name of gate_names) {
+          currentGates.push({
+            value: gate_name,
+            name: gate_name,
+          });
+        }
+      }
+      return currentGates;
+    });
+  }
 
   function handleFormSubmit(event: Event): void {
     event.preventDefault();
@@ -87,10 +138,13 @@
     <div class="flex items-center justify-between p-4 md:p-6">
       <button
         type="button"
-        onclick={async () => {
+        onclick={() => {
+          if ($showLoader) return;
           $closeReportHidden = false;
         }}
-        class="p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 select-none"
+        class="p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 select-none {$showLoader
+          ? 'opacity-0'
+          : ''}"
       >
         <ArrowLeft />
       </button>
@@ -116,12 +170,22 @@
       class="mt-2"
       style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.4));"
     />
+    {#if $showLoader}
+      <div
+        class="report-form-bg flex justify-center space-y-4 p-4 pt-5 md:p-6 md:pt-7"
+      >
+        <Spinner class="w-14 h-14 mt-[calc(50vh-78px-29px-4px)]" />
+      </div>
+    {/if}
     <form
-      class="space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7"
+      class="report-form-bg space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
+        ? 'hidden'
+        : ''}"
       id="malfunction-report-form"
       onsubmit={handleFormSubmit}
     >
       <div>
+        <!-- Employee Name: -->
         <label
           for="employee-name"
           class="block text-sm font-medium text-gray-700 mb-1"
@@ -134,6 +198,7 @@
           placeholder="Enter your 3-letters name"
           maxlength="3"
         />
+        <!-- Describe the issue: -->
         <div class="flex items-center justify-between mb-1 mt-2">
           <label
             for="issue-description"
@@ -158,6 +223,7 @@
           placeholder="Provide a detailed explanation of the issue"
         ></textarea>
       </div>
+      <!-- Operable: -->
       <div style="margin-top: 0.5rem;">
         <label
           for="product-operable"
@@ -188,6 +254,80 @@
           </button>
         </div>
       </div>
+      <!-- Select Gate: -->
+      <div class="flex {$operable === "no" ? '' : 'hidden'}">
+        <button
+          id="gates-button"
+          class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+          type="button"
+        >
+          {#if $selected_gate === ""}
+            <Plane class="mr-1" />
+            Gate Type
+          {/if}
+          {#if $selected_gate === "cargo"}
+            <Boxes class="mr-1" />
+            Cargo
+          {/if}
+          {#if $selected_gate === "none"}
+            <PlaneLanding class="mr-1" />
+            None
+          {/if}
+          {#if $selected_gate === "airline"}
+            <PlaneTakeoff class="mr-1" />
+            Airline
+          {/if}
+          {#if $selected_gate === "ga"}
+            <Globe class="mr-1" />
+            GA
+          {/if}
+          <ChevronDownOutline class="w-6 h-6 ms-2" />
+        </button>
+        <Dropdown triggeredBy="#gates-button" bind:open={is_gate_open}>
+          <DropdownItem
+            class="flex items-center"
+            onclick={() => {
+              build_gate_options("cargo");
+            }}
+          >
+            <Boxes class="mr-1" />
+            Cargo
+          </DropdownItem>
+          <DropdownItem
+            class="flex items-center"
+            onclick={() => {
+              build_gate_options("none");
+            }}
+          >
+            <PlaneLanding class="mr-1" />
+            None
+          </DropdownItem>
+          <DropdownItem
+            class="flex items-center"
+            onclick={() => {
+              build_gate_options("airline");
+            }}
+          >
+            <PlaneTakeoff class="mr-1" />
+            Airline
+          </DropdownItem>
+          <DropdownItem
+            class="flex items-center"
+            onclick={() => {
+              build_gate_options("ga");
+            }}
+          >
+            <Globe class="mr-1" />
+            GA
+          </DropdownItem>
+        </Dropdown>
+        <Select
+          items={$gates}
+          placeholder="Choose a Gate {$selected_gate === '' ? 'Type' : 'Name'}"
+          class="!rounded-s-none"
+        />
+      </div>
+      <!-- Upload Media: -->
       <div>
         <label for="attachments" class="block text-sm font-medium text-gray-700"
           >Add Photos or Videos</label

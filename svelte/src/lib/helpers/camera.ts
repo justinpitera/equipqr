@@ -4,6 +4,9 @@ import { notify } from "$lib/helpers/notify";
 import { writable, type Writable } from "svelte/store";
 import { getGSEDetails } from "./server-requests";
 import { detailsDrawerStore } from "./details";
+import { homePageStore } from "./homepage";
+import { DEBUG_MODE } from "$lib/config";
+import { cancelReportStore } from "./cancel-report";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
 let torchInfo: ITorchInfo = { hasCamera: false, hasTorch: false };
@@ -11,6 +14,7 @@ let torch_state = "Uninitialized";
 
 class QRScannerStore {
 	constructor(
+		public showLoader: Writable<boolean> = writable(false),
 		public flashlightOn: Writable<boolean> = writable(false),
 		public flashlightDisabled: Writable<boolean> = writable(false),
 		public qrCodeData: Writable<string | null> = writable(null),
@@ -86,10 +90,13 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 };
 
 export async function loadQRScanner(forceDebug?: string) {
-	await destroyScanner();
+	qrScannerStore.showLoader.set(true);
+	homePageStore.startQRScanner.set(true);
+	if (!DEBUG_MODE) await destroyScanner();
 	const result = forceDebug || (await scanQRCode());
-	await destroyScanner();
+	if (!DEBUG_MODE) requestAnimationFrame(destroyScanner);
 	if (result) {
+		// homePageStore.startQRScanner.set(false); // Goes back to homepage
 		qrScannerStore.qrCodeData.set(result);
 		qrScannerStore.showPopup.set(true);
 		document.getElementById("qrScanner")?.classList.add("hidden");
@@ -103,6 +110,7 @@ export async function loadQRScanner(forceDebug?: string) {
 			}
 		} else {
 			qrScannerStore.detectedGSE.set(null);
+			cancelReportStore.closeReportHidden.set(false);
 		}
 	} else {
 		qrScannerStore.showPopup.set(false);
@@ -114,6 +122,7 @@ export async function loadQRScanner(forceDebug?: string) {
 			loadingMessage.textContent = '🎥 Unable to access video stream (please make sure you have a webcam';
 		}
 	}
+	qrScannerStore.showLoader.set(false);
 }
 
 export async function destroyScanner() {

@@ -25,7 +25,6 @@
     };
 
     const startQRCode = () => {
-        startQRScanner.set(!$startQRScanner);
         loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined); // Debug by adding an ID here
     };
 </script>

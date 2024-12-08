@@ -10,6 +10,7 @@ declare global {
 	}
 	interface GSEDetails {
 		gse_id: string;
+		old_gse_id: string;
 		gse_type: string;
 		model: string;
 		manufacturer: string;

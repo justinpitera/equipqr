@@ -136,6 +136,13 @@
                 {$qrCodeData}
             </div>
         {/if}
+        {#if $detectedGSE && $detectedGSE.old_gse_id}
+            <div
+                class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-red-100 text-red-800 dark:bg-gray-700 dark:text-red-400 border-red-400 dark:border-red-400 rounded"
+            >
+                {$detectedGSE.old_gse_id}
+            </div>
+        {/if}
     </div>
 
     <div class="mt-6">
@@ -333,7 +340,7 @@
         {:else if $qrCodeData}
             <div class="flex flex-col items-center">
                 <h2 class="text-base font-bold text-center">
-                    Could not find information for vehicle with GSE id:
+                    Could not find information GSE ID:
                 </h2>
                 <div
                     class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
@@ -344,7 +351,7 @@
         {:else}
             <div class="flex flex-col items-center">
                 <h2 class="text-base font-bold text-center">
-                    Could not find information for vehicle, please try again..
+                    Could not find information for vehicle.<br/>Please try again...
                 </h2>
             </div>
         {/if}

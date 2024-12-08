@@ -11,6 +11,8 @@
       cancelReportStore,
       transitionParamsTop,
     } from "$lib/helpers/cancel-report";
+    import { homePageStore } from "$lib/helpers/homepage";
+    import { DEBUG_MODE } from "$lib/config";
     const { closeReportHidden } = cancelReportStore;
 </script>
 
@@ -51,7 +53,11 @@
       $closeReportHidden = true;
       showPopup.set(false);
       document.getElementById("qrScanner")?.classList.remove("hidden");
-      loadQRScanner();
+      if (DEBUG_MODE) {
+        homePageStore.startQRScanner.set(false);
+      } else {
+        loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
+      }
     }}
     href="/"
     class="px-4 p-2 pr-3 pl-3 select-none"
