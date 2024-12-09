@@ -26,6 +26,7 @@
         isIssuesHistoryHidden,
         userRole,
         selectedLanguage,
+        darkModeEnabled,
     } = homePageStore;
 
     function t(key: string): string {
@@ -65,6 +66,7 @@
             width="128"
             height="auto"
             class="m-auto mt-2"
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         />
         <h1
             class="text-3xl font-semibold text-gray-800 dark:text-white{!$isLoggedIn
@@ -97,6 +99,9 @@
                     <div class="card-content">
                         <UserCog
                             class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Account Management")}
@@ -115,6 +120,9 @@
                     <div class="card-content">
                         <UserPlus
                             class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Assign Roles")}
@@ -142,6 +150,9 @@
                     <div class="card-content">
                         <Clipboard
                             class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Report Failure or Malfunction")}
@@ -172,6 +183,9 @@
                     <div class="card-content">
                         <Camera
                             class="w-12 h-12 mx-auto text-green-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Print QR Codes")}
@@ -193,6 +207,9 @@
                     <div class="card-content">
                         <Edit
                             class="w-12 h-12 mx-auto text-orange-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("View & Edit Items")}
@@ -220,6 +237,9 @@
                     >
                         <FileText
                             class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("View Issues History")}
@@ -249,6 +269,7 @@
             >
                 <Settings
                     class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
+                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
                 <div class="card-title mt-3 text-xl font-semibold">
                     {t("Settings")}
@@ -275,6 +296,7 @@
                 {#if $isLoggedIn}
                     <LogIn
                         class="w-12 h-12 mx-auto text-green-600 dark:text-white"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
                         {t("Logged In")}

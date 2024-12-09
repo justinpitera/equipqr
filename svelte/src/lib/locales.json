@@ -154,7 +154,8 @@
     "Request timed out after 3s": "Request timed out after 3s",
     "Request timed out after 5s": "Request timed out after 5s",
     "Failed to set language: Request timed out after 5s": "Failed to set language: Request timed out after 5s",
-    "Failed to set language: TypeError: Failed to fetch": "Failed to set language: TypeError: Failed to fetch"
+    "Failed to set language: TypeError: Failed to fetch": "Failed to set language: TypeError: Failed to fetch",
+    "Dark Mode": "Dark Mode"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -311,7 +312,8 @@
     "Request timed out after 3s": "Anmod om tidsbestemt efter 3'ere",
     "Request timed out after 5s": "Anmod om tidsbestemt ud efter 5s",
     "Failed to set language: Request timed out after 5s": "Kunne ikke indstille sprog: Anmod om tidsbestemt efter 5'erne",
-    "Failed to set language: TypeError: Failed to fetch": "Kunne ikke indstille sprog: TypeError: Kunne ikke hente"
+    "Failed to set language: TypeError: Failed to fetch": "Kunne ikke indstille sprog: TypeError: Kunne ikke hente",
+    "Dark Mode": "Mørk tilstand"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -468,7 +470,8 @@
     "Request timed out after 3s": "Be om tidsavbrudd etter 3 -tallet",
     "Request timed out after 5s": "Be om tidsavbrudd etter 5 -tallet",
     "Failed to set language: Request timed out after 5s": "Kunne ikke angi språk: Be om tidsbestemt etter 5 -tallet",
-    "Failed to set language: TypeError: Failed to fetch": "Kunne ikke sette språk: typeerror: Kunne ikke hente"
+    "Failed to set language: TypeError: Failed to fetch": "Kunne ikke sette språk: typeerror: Kunne ikke hente",
+    "Dark Mode": "Mørk modus"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -625,6 +628,7 @@
     "Request timed out after 3s": "Begär tidpunkten efter 3 -tal",
     "Request timed out after 5s": "Begär tidpunkten efter 5 -talet",
     "Failed to set language: Request timed out after 5s": "Det gick inte att ställa in språk: Begär tidsinställd efter 5s",
-    "Failed to set language: TypeError: Failed to fetch": "Det gick inte att ställa in språk: TypeError: Det gick inte att hämta"
+    "Failed to set language: TypeError: Failed to fetch": "Det gick inte att ställa in språk: TypeError: Det gick inte att hämta",
+    "Dark Mode": "Mörkt läge"
   }
 }

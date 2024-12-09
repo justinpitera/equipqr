@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { ArrowLeft, Bell, Globe, Trash2 } from "lucide-svelte";
+    import { ArrowLeft, Bell, Globe, Sun, Trash2 } from "lucide-svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import { Button, Drawer } from "flowbite-svelte";
     import { sineIn } from "svelte/easing";
@@ -8,8 +8,23 @@
     import { defaultLang } from "$lib/config";
     import { setLanguage } from "$lib/helpers/server-requests";
 
-    const { isSettingsHidden, notificationsEnabled, selectedLanguage, isLoggedIn } =
-        homePageStore;
+    const {
+        isSettingsHidden,
+        notificationsEnabled,
+        darkModeEnabled,
+        selectedLanguage,
+        isLoggedIn,
+    } = homePageStore;
+
+    $effect(() => {
+        const html = document.querySelector("html");
+        if (!html) return;
+        const invert = `invert(${$darkModeEnabled ? '1' : '0'})`;
+        html.style.filter = invert;
+        for (const container of document.querySelectorAll('.toast-container')) {
+            (container as HTMLElement).style.filter = invert;
+        }
+    });
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -24,7 +39,8 @@
     const resetSettings = () => {
         notificationsEnabled.set(true);
         localStorage.setItem("notificationsEnabled", "true");
-        if ($isLoggedIn && $selectedLanguage !== defaultLang) setLanguage(defaultLang);
+        if ($isLoggedIn && $selectedLanguage !== defaultLang)
+            setLanguage(defaultLang);
         selectedLanguage.set(defaultLang);
         localStorage.setItem("savedLang", defaultLang);
         notify(
@@ -65,35 +81,18 @@
 
     <!-- Content -->
     <div class="mt-6 space-y-6">
-        <!-- Notifications Toggle -->
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <Bell class="h-5 w-5 text-blue-500" />
-                <span class="text-gray-800 font-semibold"
-                    >{t("Notifications")}</span
-                >
-            </div>
-            <label class="switch">
-                <input
-                    type="checkbox"
-                    bind:checked={$notificationsEnabled}
-                    onchange={() => {
-                        localStorage.setItem(
-                            "notificationsEnabled",
-                            $notificationsEnabled ? "true" : "false",
-                        );
-                    }}
-                />
-                <span class="slider round"></span>
-            </label>
-        </div>
-
         <!-- Language Selector -->
         <div class="flex items-center justify-between">
-            <label for="language-selector" class="text-gray-800 font-semibold">
-                <Globe class="inline h-5 w-5 text-green-500" />
-                {t("Language")}
-            </label>
+            <div class="flex items-center gap-2">
+                <Globe
+                    class="h-5 w-5 text-green-500"
+                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                />
+                <label
+                    for="language-selector"
+                    class="text-gray-800 font-semibold">{t("Language")}</label
+                >
+            </div>
             <select
                 id="language-selector"
                 bind:value={$selectedLanguage}
@@ -108,6 +107,61 @@
                 {/each}
             </select>
         </div>
+        <!-- Notifications Toggle -->
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <Bell
+                    class="h-5 w-5 text-blue-500"
+                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                />
+                <span class="text-gray-800 font-semibold"
+                    >{t("Notifications")}</span
+                >
+            </div>
+            <label
+                class="switch"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            >
+                <input
+                    type="checkbox"
+                    bind:checked={$notificationsEnabled}
+                    onchange={() => {
+                        localStorage.setItem(
+                            "notificationsEnabled",
+                            $notificationsEnabled ? "true" : "false",
+                        );
+                    }}
+                />
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <!-- Darkmode Toggle -->
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <Sun
+                    class="h-5 w-5 text-yellow-500"
+                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                />
+                <span class="text-gray-800 font-semibold">{t("Dark Mode")}</span
+                >
+            </div>
+            <label
+                class="switch"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            >
+                <input
+                    type="checkbox"
+                    bind:checked={$darkModeEnabled}
+                    onchange={() => {
+                        localStorage.setItem(
+                            "darkModeEnabled",
+                            $darkModeEnabled ? "true" : "false",
+                        );
+                    }}
+                />
+                <span class="slider round"></span>
+            </label>
+        </div>
     </div>
 
     <!-- Footer Buttons -->
@@ -115,6 +169,7 @@
         <button
             onclick={resetSettings}
             class="flex items-center text-red-600 hover:text-red-800"
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             <Trash2 class="h-5 w-5 mr-1" />
             {t("Reset to Defaults")}
@@ -122,6 +177,7 @@
         <Button
             on:click={toggleSettings}
             class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg"
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             {t("Close")}
         </Button>

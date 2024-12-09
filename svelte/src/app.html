@@ -12,6 +12,8 @@
 		<meta name="apple-mobile-web-app-title" content="Fejlmelings">
 		<link rel="manifest" href="manifest.webmanifest" />
 		<script>
+			const html = document.querySelector('html');
+			if (html && localStorage.getItem('darkModeEnabled') === 'true') html.style.filter = 'invert(1)';
 			const originalWarn = console.warn;
 			console.warn = (...data) => {
 				if (data[0].includes('read reactive state that was not visible to the compiler. Updates to this state will not cause the statement to re-run. The behaviour of this code will change if you migrate it to runes mode')) return;

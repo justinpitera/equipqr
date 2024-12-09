@@ -76,7 +76,7 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 	return undefined
 }
 
-export async function submitIssue(formData: FormData) {
+export async function submitIssue(formData: FormData, loadingFunctionBefore: () => Promise<void>) {
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 240s'), 240000);

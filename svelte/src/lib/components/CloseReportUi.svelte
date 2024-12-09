@@ -1,28 +1,24 @@
 <script lang="ts">
-    import { Drawer, Button, CloseButton } from "flowbite-svelte";
-    import { InfoCircleSolid, ArrowRightOutline } from "flowbite-svelte-icons";
-    import { disableContextMenu } from "$lib/helpers/basics";
-    import {
-      loadQRScanner,
-      qrScannerStore,
-    } from "$lib/helpers/camera";
-    const { qrCodeData, showPopup } = qrScannerStore;
-    import {
-      cancelReportStore,
-      transitionParamsTop,
-    } from "$lib/helpers/cancel-report";
-    import { DEBUG_MODE } from "$lib/config";
-    import { langChecker, translations } from "$lib/locales";
-    const { closeReportHidden } = cancelReportStore;
-    import { homePageStore } from "$lib/helpers/homepage";
-    const { selectedLanguage } = homePageStore;
-    
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
+  import { Drawer, Button, CloseButton } from "flowbite-svelte";
+  import { InfoCircleSolid, ArrowRightOutline } from "flowbite-svelte-icons";
+  import { disableContextMenu } from "$lib/helpers/basics";
+  import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
+  const { qrCodeData, showPopup } = qrScannerStore;
+  import {
+    cancelReportStore,
+    transitionParamsTop,
+  } from "$lib/helpers/cancel-report";
+  import { DEBUG_MODE } from "$lib/config";
+  import { langChecker, translations } from "$lib/locales";
+  const { closeReportHidden } = cancelReportStore;
+  import { homePageStore } from "$lib/helpers/homepage";
+  const { selectedLanguage, darkModeEnabled } = homePageStore;
 
+  function t(key: string): string {
+    const langTranslations = translations[$selectedLanguage];
+    langChecker(key);
+    return langTranslations?.[key] || key;
+  }
 </script>
 
 <Drawer
@@ -71,7 +67,9 @@
     }}
     href="/"
     class="px-4 p-2 pr-3 pl-3 select-none"
-    >{t("Yes, Cancel it")} <ArrowRightOutline
+    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+    >{t("Yes, Cancel it")}
+    <ArrowRightOutline
       oncontextmenu={disableContextMenu}
       class="w-5 h-5 ms-2"
     /></Button

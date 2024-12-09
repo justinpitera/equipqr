@@ -12,7 +12,12 @@
     let email = "";
     let isLoading = writable(false);
 
-    const { isLoggedIn, isAuthDrawerHidden, selectedLanguage } = homePageStore;
+    const {
+        isLoggedIn,
+        isAuthDrawerHidden,
+        selectedLanguage,
+        darkModeEnabled,
+    } = homePageStore;
 
     const transitionParamsBottom = {
         y: 320,
@@ -140,6 +145,7 @@
             class="bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2{!$isLoggedIn
                 ? ' hidden'
                 : ''}"
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             {t("Logout")}
             <LogOut class="w-4 h-4 ml-2" />

@@ -60,7 +60,8 @@
     reportUIStore,
   } from "$lib/helpers/report-ui-store";
   import { langChecker, translations } from "$lib/locales";
-  const { selectedLanguage, isPastIssuesForSpecificIDHidden } = homePageStore;
+  const { selectedLanguage, isPastIssuesForSpecificIDHidden, darkModeEnabled } =
+    homePageStore;
 
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];
@@ -128,7 +129,9 @@
       formData.append("attachments", file.file, file.file.name);
     });
     // Send the data via fetch
-    submitIssue(formData);
+    submitIssue(formData, async () => {
+      console.log("loading...");
+    });
   }
 
   const handleWindowClick = (event: MouseEvent) => {
@@ -190,12 +193,14 @@
         <div class="flex gap-2">
           <div
             class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
           >
             {$qrCodeData}
           </div>
           {#if $detectedGSE && $detectedGSE.old_gse_id}
             <div
               class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-red-100 text-red-800 dark:bg-gray-700 dark:text-red-400 border-red-400 dark:border-red-400 rounded"
+              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
               {$detectedGSE.old_gse_id}
             </div>
@@ -218,6 +223,7 @@
         src="/images/kalmar.png"
         rounded
         class="bg-transparent ring-red-400 dark:ring-red-300"
+        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
       />
       <Tooltip
         class="z-20"
@@ -274,6 +280,7 @@
             onclick={() => {
               isPastIssuesForSpecificIDHidden.set(false);
             }}
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
           >
             {t("Past Issues")}
             <Badge
@@ -305,22 +312,28 @@
             class="w-1/2 text-center py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 select-none"
             class:active={$operable === "yes"}
             class:bg-green-500={$operable === "yes"}
-            class:text-white={$operable === "yes"}
+            class:text-white={!$darkModeEnabled && $operable === "yes"}
             class:text-black={$operable !== "yes"}
             onclick={() => ($operable = "yes")}
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
           >
-            {t("Yes")}
+            <span style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+              >{t("Yes")}</span
+            >
           </button>
           <button
             type="button"
             class="w-1/2 text-center py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 select-none"
             class:active={$operable === "no"}
             class:bg-red-500={$operable === "no"}
-            class:text-white={$operable === "no"}
+            class:text-white={!$darkModeEnabled && $operable === "no"}
             class:text-black={$operable !== "no"}
             onclick={() => ($operable = "no")}
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
           >
-            {t("No")}
+            <span style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+              >{t("No")}</span
+            >
           </button>
         </div>
       </div>
@@ -417,7 +430,11 @@
             {t(`Upload up to ${maxFiles} files`)}
           </p>
           <div class="flex justify-center">
-            <label for="takePicture" class="file-button w-12 h-12">
+            <label
+              for="takePicture"
+              class="file-button w-12 h-12"
+              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            >
               <Image oncontextmenu={disableContextMenu} class="w-6 h-6" />
             </label>
             <input
@@ -429,7 +446,11 @@
               class="file-input"
               onchange={handleFileChange}
             />
-            <label for="captureVideo" class="file-button ml-4 w-12 h-12">
+            <label
+              for="captureVideo"
+              class="file-button ml-4 w-12 h-12"
+              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            >
               <Video oncontextmenu={disableContextMenu} class="w-6 h-6" />
             </label>
             <input
@@ -441,7 +462,11 @@
               class="file-input"
               onchange={handleFileChange}
             />
-            <label for="selectMediaFiles" class="file-button ml-4 w-12 h-12">
+            <label
+              for="selectMediaFiles"
+              class="file-button ml-4 w-12 h-12"
+              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            >
               <Upload oncontextmenu={disableContextMenu} class="w-6 h-6" />
             </label>
             <input
@@ -455,7 +480,11 @@
           </div>
           {#if $mediaFiles.length > 0}
             <hr class="my-4" />
-            <div id="gallery-container" class="ignore-js">
+            <div
+              id="gallery-container"
+              class="ignore-js"
+              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            >
               <div id="gallery" class="ignore-js">
                 {#each $mediaFiles as { url, type, deleteFile, handleClick }}
                   <div
@@ -566,6 +595,7 @@
       <button
         type="submit"
         class="w-full select-none py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
       >
         {t("Submit Issue")}
       </button>

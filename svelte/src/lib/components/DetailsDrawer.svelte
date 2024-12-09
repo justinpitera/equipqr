@@ -21,7 +21,7 @@
     import { sineIn } from "svelte/easing";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
-    const { selectedLanguage } = homePageStore;
+    const { selectedLanguage, darkModeEnabled } = homePageStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -141,6 +141,7 @@
         {#if $qrCodeData}
             <div
                 class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 {$qrCodeData}
             </div>
@@ -148,6 +149,7 @@
         {#if $detectedGSE && $detectedGSE.old_gse_id}
             <div
                 class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-red-100 text-red-800 dark:bg-gray-700 dark:text-red-400 border-red-400 dark:border-red-400 rounded"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 {$detectedGSE.old_gse_id}
             </div>
@@ -158,12 +160,15 @@
         {#if $detectedGSE}
             <div class="flex items-center space-x-4">
                 <Avatar
-                    src={equipment[$detectedGSE.gse_type]}
+                    src={$detectedGSE.gse_type
+                        ? equipment[$detectedGSE.gse_type]
+                        : undefined}
                     rounded
                     class="w-16 h-16 ring-4 ring-{!$detectedGSE.details &&
                     !$detectedGSE.error
                         ? 'green'
                         : 'red'}-400 dark:ring-red-300"
+                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
                 <div class="flex flex-col">
                     <span class="text-xl font-medium text-gray-800"
@@ -175,6 +180,9 @@
                                 src="/images/kalmar.png"
                                 rounded
                                 class="w-7 h-7 bg-transparent ring-red-400 dark:ring-red-300"
+                                style="filter: invert({$darkModeEnabled
+                                    ? '1'
+                                    : '0'});"
                             />
                         {/if}
                         <span class="font-semibold text-gray-700"
@@ -259,6 +267,9 @@
                             ]}-400 dark:border-{statusColors[
                                 getStatusNumber($detectedGSE?.status)
                             ]}-400 rounded"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         >
                             {$detectedGSE.status || t("Unavailable")}
                         </div>
@@ -295,11 +306,21 @@
                                 rounded
                                 large
                                 class="!p-1 !font-semibold"
+                                style="filter: invert({$darkModeEnabled
+                                    ? '1'
+                                    : '0'});"
                             >
                                 <CheckOutline class="h-4 w-4" />
                             </Badge>
                         {:else}
-                            <Badge rounded large class="!p-1 !font-semibold">
+                            <Badge
+                                rounded
+                                large
+                                class="!p-1 !font-semibold"
+                                style="filter: invert({$darkModeEnabled
+                                    ? '1'
+                                    : '0'});"
+                            >
                                 <X
                                     class="h-4 w-4 text-primary-800 dark:text-primary-400"
                                 />
@@ -363,6 +384,7 @@
                 </h2>
                 <div
                     class="font-medium mt-3 inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
+                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 >
                     {$qrCodeData}
                 </div>
@@ -386,6 +408,7 @@
                 checked={$isAutoOpen}
                 on:change={toggleAutoOpen}
                 color="blue"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 {#if $isAutoOpen}
                     {t("On")}
@@ -397,6 +420,7 @@
         <Button
             on:click={() => hideGSEDetail.set(true)}
             class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2"
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             {t("Close")}
         </Button>

@@ -3,11 +3,15 @@
     import { ArrowLeft, Plane, X } from "lucide-svelte";
     import { CheckOutline } from "flowbite-svelte-icons";
     import { homePageStore } from "$lib/helpers/homepage";
-    import { build_gate_options, gate_types, reportUIStore } from "$lib/helpers/report-ui-store";
+    import {
+        build_gate_options,
+        gate_types,
+        reportUIStore,
+    } from "$lib/helpers/report-ui-store";
     const { isPastIssuesForSpecificIDHidden } = homePageStore;
     import { langChecker, translations } from "$lib/locales";
-    const { selectedLanguage } = homePageStore;
-    
+    const { selectedLanguage, darkModeEnabled } = homePageStore;
+
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
         langChecker(key);
@@ -29,12 +33,18 @@
     }));
 
     issues.forEach((issue) => {
-    if (issue.is_operable === "No") {
-        const gate_keys = Object.keys(gate_types);
-        const selected_gate_type = gate_keys[Math.floor(Math.random() * gate_keys.length)];
-        issue.gate_type = selected_gate_type;
-        issue.gate_name = gate_types[selected_gate_type][Math.floor(Math.random() * gate_types[selected_gate_type].length)];
-    }
+        if (issue.is_operable === "No") {
+            const gate_keys = Object.keys(gate_types);
+            const selected_gate_type =
+                gate_keys[Math.floor(Math.random() * gate_keys.length)];
+            issue.gate_type = selected_gate_type;
+            issue.gate_name =
+                gate_types[selected_gate_type][
+                    Math.floor(
+                        Math.random() * gate_types[selected_gate_type].length,
+                    )
+                ];
+        }
     });
 
     const selectIssue = (issueId: number): void => {
@@ -50,11 +60,11 @@
                     build_gate_options(gate_type, issue.gate_name);
                     selected_gate_name.set(issue.gate_name);
                 } else {
-                    selected_gate_name.set('');
+                    selected_gate_name.set("");
                     build_gate_options(gate_type);
                 }
             } else {
-                selected_gate_type.set('');
+                selected_gate_type.set("");
             }
         }
     };
@@ -80,9 +90,7 @@
         </button>
     </div>
 
-    <div
-        class="mt-4 overflow-y-auto max-h-[calc(97vh-76px-15px)] space-y-2"
-    >
+    <div class="mt-4 overflow-y-auto max-h-[calc(97vh-76px-15px)] space-y-2">
         {#each issues as issue (issue.gse_id)}
             <div
                 class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer transition relative flex items-center justify-between"
@@ -97,9 +105,19 @@
                     <p class="text-sm text-gray-500 flex items-center">
                         {t("Operable:")}
                         {#if issue.is_operable.toLowerCase() === "yes"}
-                            <CheckOutline class="ml-2 h-4 w-4 text-green-500" />
+                            <CheckOutline
+                                class="ml-2 h-4 w-4 text-green-500"
+                                style="filter: invert({$darkModeEnabled
+                                    ? '1'
+                                    : '0'});"
+                            />
                         {:else}
-                            <X class="ml-2 h-4 w-4 text-red-500" />
+                            <X
+                                class="ml-2 h-4 w-4 text-red-500"
+                                style="filter: invert({$darkModeEnabled
+                                    ? '1'
+                                    : '0'});"
+                            />
                         {/if}
                     </p>
                     <p class="text-sm text-gray-600">
@@ -110,7 +128,9 @@
                 {#if issue.gate_type && issue.gate_name}
                     <div
                         class="flex items-center bg-yellow-300 border-2 border-navy-800 rounded-md px-2 py-1 ml-3 text-navy-900 shadow-sm"
-                        style="width: fit-content; min-width: fit-content;"
+                        style="width: fit-content; min-width: fit-content;filter: invert({$darkModeEnabled
+                            ? '1'
+                            : '0'});"
                     >
                         <!-- Airplane Icon -->
                         <div class="flex-shrink-0 rounded-md bg-yellow-400 p-1">
