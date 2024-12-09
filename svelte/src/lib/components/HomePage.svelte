@@ -263,7 +263,7 @@
             </div>
         </div>
 
-        <!-- Login/Logout -->
+        <!-- Login -->
         <div
             class="card p-4 pt-3 bg-white rounded-lg rounded-br-none rounded-bl-none shadow-md md:absolute md:bottom-0 md:right-0 md:left-0"
             onclick={toggleLogin}

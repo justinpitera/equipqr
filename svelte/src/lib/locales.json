@@ -141,7 +141,8 @@
     "Failed to log in: Error: Failed to log in: Internal Server Error": "Failed to log in: Error: Failed to log in: Internal Server Error",
     "Could not login.": "Could not login.",
     "(Visible to Employees)": "(Visible to Employees)",
-    "(Visible to Mechanics)": "(Visible to Mechanics)"
+    "(Visible to Mechanics)": "(Visible to Mechanics)",
+    "Logout": "Logout"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -285,7 +286,8 @@
     "Failed to log in: Error: Failed to log in: Internal Server Error": "Kunne ikke logge ind: Fejl: Kunne ikke logge ind: Intern serverfejl",
     "Could not login.": "Kunne ikke logge ind.",
     "(Visible to Employees)": "(Synlig for medarbejderne)",
-    "(Visible to Mechanics)": "(Synlig for mekanik)"
+    "(Visible to Mechanics)": "(Synlig for mekanik)",
+    "Logout": "Logout"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -429,7 +431,8 @@
     "Failed to log in: Error: Failed to log in: Internal Server Error": "Kunne ikke logge inn: Feil: Kunne ikke logge på: Intern serverfeil",
     "Could not login.": "Kunne ikke logge inn.",
     "(Visible to Employees)": "(Synlig for ansatte)",
-    "(Visible to Mechanics)": "(Synlig for mekanikk)"
+    "(Visible to Mechanics)": "(Synlig for mekanikk)",
+    "Logout": "Logging"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -573,6 +576,7 @@
     "Failed to log in: Error: Failed to log in: Internal Server Error": "Det gick inte att logga in: Fel: Det gick inte att logga in: Internt serverfel",
     "Could not login.": "Kunde inte logga in.",
     "(Visible to Employees)": "(Synlig för anställda)",
-    "(Visible to Mechanics)": "(Synlig för mekanik)"
+    "(Visible to Mechanics)": "(Synlig för mekanik)",
+    "Logout": "Utloggning"
   }
 }

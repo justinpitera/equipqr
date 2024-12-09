@@ -6,6 +6,7 @@
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";
     import { defaultLang } from "$lib/config";
+    import { setLanguage } from "$lib/helpers/server-requests";
 
     const { isSettingsHidden, notificationsEnabled, selectedLanguage } =
         homePageStore;
@@ -23,6 +24,7 @@
     const resetSettings = () => {
         notificationsEnabled.set(true);
         localStorage.setItem("notificationsEnabled", "true");
+        if ($selectedLanguage !== defaultLang) setLanguage(defaultLang);
         selectedLanguage.set(defaultLang);
         localStorage.setItem("savedLang", defaultLang);
         notify(
@@ -98,6 +100,7 @@
                 class="mt-2 p-2 border rounded-md focus:ring-2 focus:ring-blue-400"
                 onchange={() => {
                     localStorage.setItem("savedLang", $selectedLanguage);
+                    setLanguage($selectedLanguage);
                 }}
             >
                 {#each languages as { code, label }}

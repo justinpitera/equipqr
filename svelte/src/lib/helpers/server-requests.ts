@@ -99,6 +99,32 @@ export async function submitIssue(formData: FormData) {
 	}
 }
 
+export async function setLanguage(language: string): Promise<{ token: string } | undefined> {
+	try {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const response = await fetch(`${BACKEND_URL}/api/lang`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ language }),
+			signal: controller.signal,
+		});
+		clearTimeout(timeout);
+		if (!response.ok) throw new Error(`Failed to set language: ${response.statusText}`);
+		return response.json();
+	} catch (e) {
+		console.error(
+			"%cError setting language",
+			"color: red; font-size: 18px; font-weight: bold;",
+			e,
+		);
+		notify("Error setting language", `Failed to set language: ${e}`, "error");
+	}
+	return undefined;
+}
+
 export async function login(email: string): Promise<{ token: string } | undefined> {
 	try {
 		const controller = new AbortController();
