@@ -41,7 +41,6 @@
                     email,
                 );
                 notify("Success", successMessage, "success");
-                isLoggedIn.set(!$isLoggedIn);
                 isAuthDrawerHidden.set(true);
             } else {
                 notify("Error", "Could not login.", "error");
@@ -78,7 +77,7 @@
 
     <div class={$isLoading ? "hidden" : ""}><RoleTester /></div>
 
-    <div class="mt-6 {$isLoading ? 'hidden' : ''}">
+    <div class="mt-6 {$isLoggedIn || $isLoading ? 'hidden' : ''}">
         <div class="flex flex-col items-center">
             <div class="mt-2 bg-white p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-semibold text-gray-800">

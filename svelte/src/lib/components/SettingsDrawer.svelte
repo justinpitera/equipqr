@@ -4,7 +4,12 @@
     import { Button, Drawer } from "flowbite-svelte";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
-    import { defaultLang, langChecker, languages, translations } from "$lib/locales";
+    import {
+        defaultLang,
+        langChecker,
+        languages,
+        translations,
+    } from "$lib/locales";
 
     const { isSettingsHidden, notificationsEnabled, selectedLanguage } =
         homePageStore;
@@ -21,6 +26,7 @@
 
     const resetSettings = () => {
         notificationsEnabled.set(true);
+        localStorage.setItem("notificationsEnabled", "true");
         selectedLanguage.set(defaultLang);
         localStorage.setItem("savedLang", defaultLang);
         notify(
@@ -71,7 +77,13 @@
                 >
             </div>
             <label class="switch">
-                <input type="checkbox" bind:checked={$notificationsEnabled} />
+                <input
+                    type="checkbox"
+                    bind:checked={$notificationsEnabled}
+                    onchange={() => {
+                        localStorage.setItem("notificationsEnabled", $notificationsEnabled ? "true" : "false");
+                    }}
+                />
                 <span class="slider round"></span>
             </label>
         </div>

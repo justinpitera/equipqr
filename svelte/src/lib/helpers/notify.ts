@@ -1,6 +1,12 @@
 import type { Placement, Theme, ToastType } from "svelte-toasts/types/common";
 import { toasts } from "svelte-toasts";
-import { langChecker, defaultLang, translations, type LanguageKeys, t_global } from "$lib/locales";
+import { t_global } from "$lib/locales";
+import { homePageStore } from "./homepage";
+
+let notificationsEnabled: boolean = typeof window !== 'undefined' ? localStorage.getItem('notificationsEnabled') !== 'false' : true;
+homePageStore.notificationsEnabled.subscribe((value) => {
+	notificationsEnabled = value;
+});
 
 export function notify(
 	title: string,
@@ -12,6 +18,7 @@ export function notify(
 	theme: Theme = "dark",
 	showProgress = true,
 ) {
+	if (!notificationsEnabled) return console.log(title, description);
 	toasts.add({
 		title: ignore_translate ? title : t_global(title),
 		description: ignore_translate ? description : t_global(description),
@@ -20,7 +27,7 @@ export function notify(
 		type,
 		theme,
 		showProgress,
-		onClick: () => {},
-		onRemove: () => {},
+		onClick: () => { },
+		onRemove: () => { },
 	});
 }
