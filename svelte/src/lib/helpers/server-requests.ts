@@ -7,9 +7,9 @@ export async function getAppVersion() {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 3s'), 3000);
 		const request = await fetch(`${BACKEND_URL}/api/health/status`, {
-            signal: controller.signal,
+			signal: controller.signal,
 		});
-        clearTimeout(timeout);
+		clearTimeout(timeout);
 		const response = await request.json();
 		console.log(
 			"%cAviation Failure Reporting",
@@ -34,7 +34,7 @@ export async function getAppVersion() {
 		}
 		notify(
 			t_global("Aviation Failure Reporting"),
-			`${t_global('Version:')} ${response.version}\n${t_global('Status:')} ${response.status}`,
+			`${t_global('Version:')} ${response.version}\n${t_global('Status:')} ${t_global(response.status)}`,
 			response.status === "healthy" ? "success" : "error",
 			5000,
 			true
@@ -45,7 +45,7 @@ export async function getAppVersion() {
 			"color: red; font-size: 18px; font-weight: bold;",
 			e,
 		);
-		notify(t_global("Error fetching status"), `${t_global('Failed to get app version:')} ${e}`, "error",
+		notify(t_global("Error fetching status"), `${t_global('Failed to get app version:')} ${t_global(`${e}`)}`, "error",
 			5000,
 			true);
 	}
@@ -60,9 +60,9 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 			body: JSON.stringify({
 				gse_id
 			}),
-            signal: controller.signal,
+			signal: controller.signal,
 		});
-        clearTimeout(timeout);
+		clearTimeout(timeout);
 		const response = await request.json();
 		return response as GSEDetails;
 	} catch (e) {
@@ -83,9 +83,9 @@ export async function submitIssue(formData: FormData) {
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/submit`, {
 			method: "POST",
 			body: formData,
-            signal: controller.signal,
+			signal: controller.signal,
 		});
-        clearTimeout(timeout);
+		clearTimeout(timeout);
 
 		if (response.ok) {
 			const data = await response.json();
