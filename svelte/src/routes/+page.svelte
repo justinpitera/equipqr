@@ -30,19 +30,8 @@
 
 {#if typeof window === "undefined"}
   <main class="container px-4 py-5 pt-2 min-h-screen bg-slate-100">
-    <div class="text-center mb-4">
-      <img
-        src="/Fejlemingsapp_logo.png"
-        alt="logo"
-        width="128"
-        height="auto"
-        class="m-auto mt-2"
-      />
-    </div>
-    <div
-      class="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900 z-50"
-    >
-      <Spinner />
+    <div class="fixed inset-0 flex items-center justify-center z-50">
+      <Spinner class="w-12 h-12" />
     </div>
   </main>
 {:else}
