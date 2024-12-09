@@ -144,7 +144,10 @@
     "(Visible to Mechanics)": "(Visible to Mechanics)",
     "Logout": "Logout",
     "Error setting language": "Error setting language",
-    "Failed to set language: Error": "Failed to set language: Error"
+    "Failed to set language: Error": "Failed to set language: Error",
+    "Gate Type": "Gate Type",
+    "Choose a Gate Name": "Choose a Gate Name",
+    "Choose a Gate Type": "Choose a Gate Type"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -291,7 +294,10 @@
     "(Visible to Mechanics)": "(Synlig for mekanik)",
     "Logout": "Logout",
     "Error setting language": "Fejlindstilling af sprog",
-    "Failed to set language: Error": "Kunne ikke indstille sprog: fejl"
+    "Failed to set language: Error": "Kunne ikke indstille sprog: fejl",
+    "Gate Type": "Gate Type",
+    "Choose a Gate Name": "Vælg et portnavn",
+    "Choose a Gate Type": "Vælg en porttype"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -438,7 +444,10 @@
     "(Visible to Mechanics)": "(Synlig for mekanikk)",
     "Logout": "Logging",
     "Error setting language": "Feilsettingsspråk",
-    "Failed to set language: Error": "Kunne ikke angi språk: feil"
+    "Failed to set language: Error": "Kunne ikke angi språk: feil",
+    "Gate Type": "Porttype",
+    "Choose a Gate Name": "Velg et portnavn",
+    "Choose a Gate Type": "Velg en porttype"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -585,6 +594,9 @@
     "(Visible to Mechanics)": "(Synlig för mekanik)",
     "Logout": "Utloggning",
     "Error setting language": "Felinställning språk",
-    "Failed to set language: Error": "Det gick inte att ställa in språk: fel"
+    "Failed to set language: Error": "Det gick inte att ställa in språk: fel",
+    "Gate Type": "Grindtyp",
+    "Choose a Gate Name": "Välj ett grindnamn",
+    "Choose a Gate Type": "Välj en grindtyp"
   }
 }

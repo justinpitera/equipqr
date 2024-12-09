@@ -333,7 +333,7 @@
         >
           {#if $selected_gate_type === ""}
             <Plane class="mr-1" />
-            Gate Type
+            {t("Gate Type")}
           {/if}
           {#if $selected_gate_type === "cargo"}
             <Boxes class="mr-1" />
@@ -398,9 +398,9 @@
           bind:value={$selected_gate_name}
           id="select-gate-name"
           items={$gates}
-          placeholder="Choose a Gate {$selected_gate_type === ''
-            ? 'Type'
-            : 'Name'}"
+          placeholder={t(
+            `Choose a Gate ${$selected_gate_type === "" ? "Type" : "Name"}`,
+          )}
           class="!rounded-s-none"
         />
       </div>
