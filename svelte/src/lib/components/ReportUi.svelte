@@ -65,7 +65,7 @@
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];
     langChecker(key);
-    return langTranslations[key] || key;
+    return langTranslations?.[key] || key;
   }
 
   const { hideGSEDetail } = detailsDrawerStore;
@@ -259,6 +259,7 @@
           class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder={t("Enter your 3-letters name")}
           maxlength="3"
+          required
         />
         <!-- Describe the issue: -->
         <div class="flex items-center justify-between mb-1 mt-2">

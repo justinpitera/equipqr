@@ -1,16 +1,16 @@
 <script lang="ts">
     import { ArrowLeft } from "lucide-svelte";
-    import { Button, Drawer } from "flowbite-svelte";
+    import { Button, Drawer, Spinner } from "flowbite-svelte";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";
     import { homePageStore } from "$lib/helpers/homepage";
     import { sineIn } from "svelte/easing";
     import RoleTester from "./RoleTester.svelte";
+    import { writable } from "svelte/store";
+    import { login } from "$lib/helpers/server-requests";
 
-    let authMode: "email" | "credentials" = "email";
     let email = "";
-    let username = "";
-    let password = "";
+    let isLoading = writable(false);
 
     const { isLoggedIn, isAuthDrawerHidden, selectedLanguage } = homePageStore;
 
@@ -23,27 +23,29 @@
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
         langChecker(key);
-        return langTranslations[key] || key;
+        return langTranslations?.[key] || key;
     }
 
-    function handleSubmit(e: Event) {
+    async function handleSubmit(e: Event) {
         e.preventDefault();
-        if (authMode === "email" && !email) {
+        if (!email) {
             notify("Error", "Please enter a valid email address.", "error");
-        } else if (authMode === "credentials" && (!username || !password)) {
-            notify(
-                "Error",
-                "Please provide both username and password.",
-                "error",
-            );
         } else {
-            const successMessage =
-                authMode === "email"
-                    ? t("Email sent to {email}").replace("{email}", email)
-                    : t("Login successful!");
-            notify("Success", successMessage, "success");
-            isLoggedIn.set(!$isLoggedIn);
-            isAuthDrawerHidden.set(true);
+            isLoading.set(true);
+            const isLoggedSuccess = await login(email);
+            isLoading.set(false);
+            console.log("isLoggedSuccess", isLoggedSuccess);
+            if (isLoggedSuccess) {
+                const successMessage = t("Email sent to {email}").replace(
+                    "{email}",
+                    email,
+                );
+                notify("Success", successMessage, "success");
+                isLoggedIn.set(!$isLoggedIn);
+                isAuthDrawerHidden.set(true);
+            } else {
+                notify("Error", "Could not login.", "error");
+            }
         }
     }
 </script>
@@ -59,7 +61,12 @@
     transitionType="fly"
     transitionParams={transitionParamsBottom}
 >
-    <div class="flex items-center justify-between">
+    {#if $isLoading}
+        <div class="flex justify-center space-y-4 p-4 pt-5">
+            <Spinner class="w-14 h-14" />
+        </div>
+    {/if}
+    <div class="flex items-center justify-between {$isLoading ? 'hidden' : ''}">
         <button
             type="button"
             onclick={() => isAuthDrawerHidden.set(true)}
@@ -69,8 +76,9 @@
         </button>
     </div>
 
-    <RoleTester />
-    <div class="mt-6">
+    <div class={$isLoading ? "hidden" : ""}><RoleTester /></div>
+
+    <div class="mt-6 {$isLoading ? 'hidden' : ''}">
         <div class="flex flex-col items-center">
             <div class="mt-2 bg-white p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-semibold text-gray-800">
@@ -98,69 +106,26 @@
                 </div>
 
                 <form onsubmit={handleSubmit} class="mt-4">
-                    {#if authMode === "email"}
-                        <div class="form-group">
-                            <label for="email">{t("Email")}</label>
-                            <input
-                                id="email"
-                                type="email"
-                                bind:value={email}
-                                placeholder={t("Enter your email")}
-                            />
-                        </div>
-                    {:else}
-                        <div class="form-group">
-                            <label for="username">{t("Username")}</label>
-                            <input
-                                id="username"
-                                type="text"
-                                bind:value={username}
-                                placeholder={t("Enter your username")}
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="password">{t("Password")}</label>
-                            <input
-                                id="password"
-                                type="password"
-                                bind:value={password}
-                                placeholder={t("Enter your password")}
-                            />
-                        </div>
-                    {/if}
+                    <div class="form-group">
+                        <label for="email">{t("Email")}</label>
+                        <input
+                            id="email"
+                            type="email"
+                            bind:value={email}
+                            placeholder={t("Enter your email")}
+                            required
+                        />
+                    </div>
 
                     <div class="form-footer mt-6">
                         <button type="submit" class="btn">{t("Submit")}</button>
-                        <span
-                            class="toggle-link"
-                            tabindex="0"
-                            role="button"
-                            onclick={() =>
-                                (authMode =
-                                    authMode === "email"
-                                        ? "credentials"
-                                        : "email")}
-                            onkeydown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") {
-                                    e.preventDefault();
-                                    authMode =
-                                        authMode === "email"
-                                            ? "credentials"
-                                            : "email";
-                                }
-                            }}
-                        >
-                            {authMode === "email"
-                                ? t("Switch to Credentials Login")
-                                : t("Switch to Email Login")}
-                        </span>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="mt-6 flex">
+    <div class="mt-6 flex {$isLoading ? 'hidden' : ''}">
         <Button
             on:click={() => isAuthDrawerHidden.set(true)}
             class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2"
@@ -211,13 +176,5 @@
     }
     .btn:hover {
         background: #0056b3;
-    }
-    .toggle-link {
-        display: block;
-        margin-top: 1rem;
-        font-size: 0.875rem;
-        text-align: center;
-        color: #007bff;
-        cursor: pointer;
     }
 </style>

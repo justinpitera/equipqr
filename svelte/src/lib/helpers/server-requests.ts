@@ -98,3 +98,29 @@ export async function submitIssue(formData: FormData) {
 		console.error("An error occurred:", error);
 	}
 }
+
+export async function login(email: string): Promise<{ token: string } | undefined> {
+	try {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const response = await fetch(`/api/login`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ email }),
+			signal: controller.signal,
+		});
+		clearTimeout(timeout);
+		if (!response.ok) throw new Error(`Failed to log in: ${response.statusText}`);
+		return response.json();
+	} catch (e) {
+		console.error(
+			"%cError logging in",
+			"color: red; font-size: 18px; font-weight: bold;",
+			e,
+		);
+		notify("Error logging in", `Failed to log in: ${e}`, "error");
+	}
+	return undefined;
+}

@@ -136,7 +136,10 @@
     "master": "master",
     "Failed to get information: TypeError: Failed to fetch": "Failed to get information: TypeError: Failed to fetch",
     "Version:": "Version:",
-    "Aviation Failure Reporting": "Aviation Failure Reporting"
+    "Aviation Failure Reporting": "Aviation Failure Reporting",
+    "Error logging in": "Error logging in",
+    "Failed to log in: Error: Failed to log in: Internal Server Error": "Failed to log in: Error: Failed to log in: Internal Server Error",
+    "Could not login.": "Could not login."
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -275,7 +278,10 @@
     "master": "mestre",
     "Failed to get information: TypeError: Failed to fetch": "Kunne ikke få information: TypeError: Kunne ikke hente",
     "Version:": "Version:",
-    "Aviation Failure Reporting": "Rapportering af luftfartssvigt"
+    "Aviation Failure Reporting": "Rapportering af luftfartssvigt",
+    "Error logging in": "Fejl logging ind",
+    "Failed to log in: Error: Failed to log in: Internal Server Error": "Kunne ikke logge ind: Fejl: Kunne ikke logge ind: Intern serverfejl",
+    "Could not login.": "Kunne ikke logge ind."
   },
   "no": {
     "Authentication": "Autentisering",
@@ -414,7 +420,10 @@
     "master": "herre",
     "Failed to get information: TypeError: Failed to fetch": "Kunne ikke få informasjon: Typeerror: Kunne ikke hente",
     "Version:": "Versjon:",
-    "Aviation Failure Reporting": "Rapportering av luftfartssvikt"
+    "Aviation Failure Reporting": "Rapportering av luftfartssvikt",
+    "Error logging in": "Feil logge på",
+    "Failed to log in: Error: Failed to log in: Internal Server Error": "Kunne ikke logge inn: Feil: Kunne ikke logge på: Intern serverfeil",
+    "Could not login.": "Kunne ikke logge inn."
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -553,6 +562,9 @@
     "master": "bemästra",
     "Failed to get information: TypeError: Failed to fetch": "Det gick inte att få information: TypeError: Det gick inte att hämta",
     "Version:": "Version:",
-    "Aviation Failure Reporting": "Rapportering av flygfel"
+    "Aviation Failure Reporting": "Rapportering av flygfel",
+    "Error logging in": "Felloggning",
+    "Failed to log in: Error: Failed to log in: Internal Server Error": "Det gick inte att logga in: Fel: Det gick inte att logga in: Internt serverfel",
+    "Could not login.": "Kunde inte logga in."
   }
 }

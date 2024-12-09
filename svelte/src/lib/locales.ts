@@ -19,7 +19,7 @@ homePageStore.selectedLanguage.subscribe((value) => {
 export function t_global(key: string): string {
 	const langTranslations = translations[selectedLanguage];
 	langChecker(key);
-	return langTranslations[key] || key;
+	return langTranslations?.[key] || key;
 }
 
 export function langChecker(value: string) {

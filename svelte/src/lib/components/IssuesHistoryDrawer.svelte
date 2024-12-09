@@ -8,7 +8,7 @@
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
         langChecker(key);
-        return langTranslations[key] || key;
+        return langTranslations?.[key] || key;
     }
 
     interface Issue {
