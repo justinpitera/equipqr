@@ -152,7 +152,8 @@
     "Request timed out after 240s": "Request timed out after 240s",
     "healthy": "healthy",
     "Request timed out after 3s": "Request timed out after 3s",
-    "Request timed out after 5s": "Request timed out after 5s"
+    "Request timed out after 5s": "Request timed out after 5s",
+    "Failed to set language: Request timed out after 5s": "Failed to set language: Request timed out after 5s"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -307,7 +308,8 @@
     "Request timed out after 240s": "Anmod om tidsbestemt ud efter 240'erne",
     "healthy": "sund",
     "Request timed out after 3s": "Anmod om tidsbestemt efter 3'ere",
-    "Request timed out after 5s": "Anmod om tidsbestemt ud efter 5s"
+    "Request timed out after 5s": "Anmod om tidsbestemt ud efter 5s",
+    "Failed to set language: Request timed out after 5s": "Kunne ikke indstille sprog: Anmod om tidsbestemt efter 5'erne"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -462,7 +464,8 @@
     "Request timed out after 240s": "Be om tidsavbrudd etter 240 -tallet",
     "healthy": "sunn",
     "Request timed out after 3s": "Be om tidsavbrudd etter 3 -tallet",
-    "Request timed out after 5s": "Be om tidsavbrudd etter 5 -tallet"
+    "Request timed out after 5s": "Be om tidsavbrudd etter 5 -tallet",
+    "Failed to set language: Request timed out after 5s": "Kunne ikke angi språk: Be om tidsbestemt etter 5 -tallet"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -617,6 +620,7 @@
     "Request timed out after 240s": "Begär tidpunkten efter 240 -talet",
     "healthy": "hälsosam",
     "Request timed out after 3s": "Begär tidpunkten efter 3 -tal",
-    "Request timed out after 5s": "Begär tidpunkten efter 5 -talet"
+    "Request timed out after 5s": "Begär tidpunkten efter 5 -talet",
+    "Failed to set language: Request timed out after 5s": "Det gick inte att ställa in språk: Begär tidsinställd efter 5s"
   }
 }
