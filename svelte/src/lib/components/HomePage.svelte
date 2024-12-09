@@ -266,19 +266,17 @@
         <!-- Login/Logout -->
         <div
             class="card p-4 pt-3 bg-white rounded-lg rounded-br-none rounded-bl-none shadow-md md:absolute md:bottom-0 md:right-0 md:left-0"
+            onclick={toggleLogin}
+            onkeypress={toggleLogin}
+            tabindex="0"
+            role="button"
         >
             <div class="card-content">
                 {#if $isLoggedIn}
                     <LogIn
                         class="w-12 h-12 mx-auto text-green-600 dark:text-white"
                     />
-                    <div
-                        class="card-title mt-3 text-xl font-semibold"
-                        onclick={toggleLogin}
-                        onkeypress={toggleLogin}
-                        tabindex="0"
-                        role="button"
-                    >
+                    <div class="card-title mt-3 text-xl font-semibold">
                         {t("Logged In")}
                     </div>
                     <div

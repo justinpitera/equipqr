@@ -1,7 +1,7 @@
 import translate from 'translate-google';
 import readlineSync from 'readline-sync';
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from 'fs';
+import path from 'path';
 
 const defaultLang = 'en';
 const languages = [
@@ -12,7 +12,7 @@ const languages = [
 ];
 
 // Path to the locales.json file
-const localesPath = path.join('src', 'lib', 'locales.json');
+const localesPath = path.join(__dirname, 'src', 'lib', 'locales.json');
 
 // Read the existing locales.json file (if it exists)
 let translations = {};
