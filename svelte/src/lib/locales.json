@@ -150,7 +150,9 @@
     "Choose a Gate Type": "Choose a Gate Type",
     "Failed to get app version:": "Failed to get app version:",
     "Request timed out after 240s": "Request timed out after 240s",
-    "healthy": "healthy"
+    "healthy": "healthy",
+    "Request timed out after 3s": "Request timed out after 3s",
+    "Request timed out after 5s": "Request timed out after 5s"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -303,7 +305,9 @@
     "Choose a Gate Type": "Vælg en porttype",
     "Failed to get app version:": "Kunne ikke få appversion:",
     "Request timed out after 240s": "Anmod om tidsbestemt ud efter 240'erne",
-    "healthy": "sund"
+    "healthy": "sund",
+    "Request timed out after 3s": "Anmod om tidsbestemt efter 3'ere",
+    "Request timed out after 5s": "Anmod om tidsbestemt ud efter 5s"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -456,7 +460,9 @@
     "Choose a Gate Type": "Velg en porttype",
     "Failed to get app version:": "Kunne ikke få appversjon:",
     "Request timed out after 240s": "Be om tidsavbrudd etter 240 -tallet",
-    "healthy": "sunn"
+    "healthy": "sunn",
+    "Request timed out after 3s": "Be om tidsavbrudd etter 3 -tallet",
+    "Request timed out after 5s": "Be om tidsavbrudd etter 5 -tallet"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -609,6 +615,8 @@
     "Choose a Gate Type": "Välj en grindtyp",
     "Failed to get app version:": "Det gick inte att få appversion:",
     "Request timed out after 240s": "Begär tidpunkten efter 240 -talet",
-    "healthy": "hälsosam"
+    "healthy": "hälsosam",
+    "Request timed out after 3s": "Begär tidpunkten efter 3 -tal",
+    "Request timed out after 5s": "Begär tidpunkten efter 5 -talet"
   }
 }
