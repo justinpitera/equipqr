@@ -62,7 +62,7 @@
 >
     {#if $isLoading}
         <div class="flex justify-center space-y-4 p-4 pt-5">
-            <Spinner class="w-14 h-14" />
+            <Spinner color="blue" class="w-14 h-14" />
         </div>
     {/if}
     <div class="flex items-center justify-between {$isLoading ? 'hidden' : ''}">

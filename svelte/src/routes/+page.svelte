@@ -31,7 +31,7 @@
 {#if typeof window === "undefined"}
   <main class="container px-4 py-5 pt-2 min-h-screen bg-slate-100">
     <div class="fixed inset-0 flex items-center justify-center z-50">
-      <Spinner class="w-12 h-12" />
+      <Spinner color="blue" class="w-12 h-12" />
     </div>
   </main>
 {:else}
