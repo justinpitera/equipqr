@@ -309,7 +309,10 @@
                         )}
                     </div>
                 {:else}
-                    <button class="button" onclick={toggleLogin}
+                    <button
+                        class="button"
+                        onclick={toggleLogin}
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                         >{t("Login")}</button
                     >
                     <div
