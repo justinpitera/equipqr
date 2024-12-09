@@ -103,7 +103,7 @@ export async function login(email: string): Promise<{ token: string } | undefine
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
-		const response = await fetch(`${BACKEND_URL}/api/login`, {
+		const response = await fetch(`${BACKEND_URL}/api/auth`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
