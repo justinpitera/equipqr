@@ -112,7 +112,7 @@ export async function setLanguage(language: string): Promise<{ token: string } |
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
-		if (!response.ok) throw new Error(`Failed to set language: ${response.statusText}`);
+		if (!response.ok) throw new Error(response.statusText);
 		return response.json();
 	} catch (e) {
 		console.error(
@@ -138,7 +138,7 @@ export async function login(email: string): Promise<{ token: string } | undefine
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
-		if (!response.ok) throw new Error(`Failed to log in: ${response.statusText}`);
+		if (!response.ok) throw new Error(response.statusText);
 		return response.json();
 	} catch (e) {
 		console.error(

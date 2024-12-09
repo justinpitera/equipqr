@@ -142,7 +142,9 @@
     "Could not login.": "Could not login.",
     "(Visible to Employees)": "(Visible to Employees)",
     "(Visible to Mechanics)": "(Visible to Mechanics)",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "Error setting language": "Error setting language",
+    "Failed to set language: Error": "Failed to set language: Error"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -287,7 +289,9 @@
     "Could not login.": "Kunne ikke logge ind.",
     "(Visible to Employees)": "(Synlig for medarbejderne)",
     "(Visible to Mechanics)": "(Synlig for mekanik)",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "Error setting language": "Fejlindstilling af sprog",
+    "Failed to set language: Error": "Kunne ikke indstille sprog: fejl"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -432,7 +436,9 @@
     "Could not login.": "Kunne ikke logge inn.",
     "(Visible to Employees)": "(Synlig for ansatte)",
     "(Visible to Mechanics)": "(Synlig for mekanikk)",
-    "Logout": "Logging"
+    "Logout": "Logging",
+    "Error setting language": "Feilsettingsspråk",
+    "Failed to set language: Error": "Kunne ikke angi språk: feil"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -577,6 +583,8 @@
     "Could not login.": "Kunde inte logga in.",
     "(Visible to Employees)": "(Synlig för anställda)",
     "(Visible to Mechanics)": "(Synlig för mekanik)",
-    "Logout": "Utloggning"
+    "Logout": "Utloggning",
+    "Error setting language": "Felinställning språk",
+    "Failed to set language: Error": "Det gick inte att ställa in språk: fel"
   }
 }
