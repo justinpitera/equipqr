@@ -50,7 +50,6 @@
     "File Uploader": "File Uploader",
     "You uploaded more than the maximum allowed files, only 4 can be uploaded at a time.": "You uploaded more than the maximum allowed files, only 4 can be uploaded at a time.",
     "[ServiceWorker]": "[ServiceWorker]",
-    "Aviation Management Panel": "Aviation Management Panel",
     "Version": "Version",
     "Status": "Status",
     "Failed to get app version": "Failed to get app version",
@@ -128,7 +127,16 @@
     "Set Role to Mechanic": "Set Role to Mechanic",
     "Set Role to Employee": "Set Role to Employee",
     "Choose a role below to simulate different user experiences": "Choose a role below to simulate different user experiences",
-    "Set User Role for Testing": "Set User Role for Testing"
+    "Set User Role for Testing": "Set User Role for Testing",
+    "On": "On",
+    "Off": "Off",
+    "Failed to get information: Request timed out after 5s": "Failed to get information: Request timed out after 5s",
+    "Provide a detailed explanation of the issue": "Provide a detailed explanation of the issue",
+    "Enter your 3-letters name": "Enter your 3-letters name",
+    "master": "master",
+    "Failed to get information: TypeError: Failed to fetch": "Failed to get information: TypeError: Failed to fetch",
+    "Version:": "Version:",
+    "Aviation Failure Reporting": "Aviation Failure Reporting"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -181,7 +189,6 @@
     "File Uploader": "Fil uploader",
     "You uploaded more than the maximum allowed files, only 4 can be uploaded at a time.": "Du uploadede mere end de maksimale tilladte filer, kun 4 kan uploades ad gangen.",
     "[ServiceWorker]": "[ServiceWorker]",
-    "Aviation Management Panel": "Luftfartsstyringspanel",
     "Version": "Version",
     "Status": "Status",
     "Failed to get app version": "Kunne ikke få appversion",
@@ -259,7 +266,16 @@
     "Set Role to Mechanic": "Sæt rolle til mekaniker",
     "Set Role to Employee": "Sæt rolle til medarbejderen",
     "Choose a role below to simulate different user experiences": "Vælg en rolle nedenfor for at simulere forskellige brugeroplevelser",
-    "Set User Role for Testing": "Indstil brugerrolle til testning"
+    "Set User Role for Testing": "Indstil brugerrolle til testning",
+    "On": "På",
+    "Off": "Slukket",
+    "Failed to get information: Request timed out after 5s": "Kunne ikke få information: Anmod om tidsbestemt efter 5'ere",
+    "Provide a detailed explanation of the issue": "Give en detaljeret forklaring af problemet",
+    "Enter your 3-letters name": "Indtast dit 3-bogstavsnavn",
+    "master": "mestre",
+    "Failed to get information: TypeError: Failed to fetch": "Kunne ikke få information: TypeError: Kunne ikke hente",
+    "Version:": "Version:",
+    "Aviation Failure Reporting": "Rapportering af luftfartssvigt"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -312,7 +328,6 @@
     "File Uploader": "Filopplaster",
     "You uploaded more than the maximum allowed files, only 4 can be uploaded at a time.": "Du lastet opp mer enn de maksimale tillatte filene, bare 4 kan lastes opp om gangen.",
     "[ServiceWorker]": "[Serviceworker]",
-    "Aviation Management Panel": "Aviation Management Panel",
     "Version": "Versjon",
     "Status": "Status",
     "Failed to get app version": "Kunne ikke få appversjon",
@@ -390,7 +405,16 @@
     "Set Role to Mechanic": "Sett rolle til mekaniker",
     "Set Role to Employee": "Sett rolle til ansatt",
     "Choose a role below to simulate different user experiences": "Velg en rolle nedenfor for å simulere forskjellige brukeropplevelser",
-    "Set User Role for Testing": "Angi brukerrolle for testing"
+    "Set User Role for Testing": "Angi brukerrolle for testing",
+    "On": "På",
+    "Off": "Av",
+    "Failed to get information: Request timed out after 5s": "Kunne ikke få informasjon: Forespørsel tidsbestemt etter 5 -tallet",
+    "Provide a detailed explanation of the issue": "Gi en detaljert forklaring av problemet",
+    "Enter your 3-letters name": "Skriv inn ditt 3-bokstaver navn",
+    "master": "herre",
+    "Failed to get information: TypeError: Failed to fetch": "Kunne ikke få informasjon: Typeerror: Kunne ikke hente",
+    "Version:": "Versjon:",
+    "Aviation Failure Reporting": "Rapportering av luftfartssvikt"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -443,7 +467,6 @@
     "File Uploader": "Filuppladdare",
     "You uploaded more than the maximum allowed files, only 4 can be uploaded at a time.": "Du laddade upp mer än de maximala tillåtna filerna, endast 4 kan laddas upp åt gången.",
     "[ServiceWorker]": "[Servicearbetare]",
-    "Aviation Management Panel": "Flyghanteringspanel",
     "Version": "Version",
     "Status": "Status",
     "Failed to get app version": "Det gick inte att få appversion",
@@ -521,6 +544,15 @@
     "Set Role to Mechanic": "Ställ in roll till mekanikern",
     "Set Role to Employee": "Ställ in roll till anställd",
     "Choose a role below to simulate different user experiences": "Välj en roll nedan för att simulera olika användarupplevelser",
-    "Set User Role for Testing": "Ställ in användarroll för testning"
+    "Set User Role for Testing": "Ställ in användarroll för testning",
+    "On": "På",
+    "Off": "Av",
+    "Failed to get information: Request timed out after 5s": "Det gick inte att få information: Begär Timed ut efter 5 -talet",
+    "Provide a detailed explanation of the issue": "Ge en detaljerad förklaring av frågan",
+    "Enter your 3-letters name": "Ange ditt 3-bokstavsnamn",
+    "master": "bemästra",
+    "Failed to get information: TypeError: Failed to fetch": "Det gick inte att få information: TypeError: Det gick inte att hämta",
+    "Version:": "Version:",
+    "Aviation Failure Reporting": "Rapportering av flygfel"
   }
 }

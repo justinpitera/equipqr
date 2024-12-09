@@ -4,7 +4,7 @@
     import { Button, Drawer } from "flowbite-svelte";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
-    import { langChecker, languages, translations } from "$lib/locales";
+    import { defaultLang, langChecker, languages, translations } from "$lib/locales";
 
     const { isSettingsHidden, notificationsEnabled, selectedLanguage } =
         homePageStore;
@@ -21,7 +21,8 @@
 
     const resetSettings = () => {
         notificationsEnabled.set(true);
-        selectedLanguage.set("en");
+        selectedLanguage.set(defaultLang);
+        localStorage.setItem("savedLang", defaultLang);
         notify(
             "Settings Reset",
             "Settings have been reset to defaults.",

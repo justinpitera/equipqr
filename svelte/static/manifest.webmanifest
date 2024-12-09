@@ -1,8 +1,8 @@
 {
-    "name": "Aviation Management Panel",
+    "name": "Aviation Failure Reporting",
     "short_name": "Aviation Panel",
     "start_url": "./",
-    "description": "Aviation Management Panel",
+    "description": "Aviation Failure Reporting",
     "display": "standalone",
     "lang": "en",
     "scope": "./",

@@ -70,6 +70,7 @@
 
   const { hideGSEDetail } = detailsDrawerStore;
   const {
+    employee_name,
     issue_description,
     operable,
     selected_gate_type,
@@ -80,22 +81,18 @@
 
   async function handleReportFormSubmit(event: Event): Promise<void> {
     event.preventDefault();
-    const form = event.target as HTMLFormElement;
     const formData = new FormData();
-    const employeeName =
-      (form.querySelector("#employee-name") as HTMLTextAreaElement)?.value ||
-      "";
     const isOperable = $operable === "yes";
     // Validate required fields
     const errors: string[] = [];
-    if (!employeeName.trim()) {
+    if (!$employee_name.trim()) {
       errors.push("Employee name is required.");
-    } else if (employeeName.trim().length !== 3) {
+    } else if ($employee_name.trim().length !== 3) {
       errors.push("Employee name must be 3 letters long.");
     }
     if (!$issue_description.trim()) {
       errors.push("Issue description is required.");
-    } else if (employeeName.trim().length < 2) {
+    } else if ($employee_name.trim().length < 2) {
       errors.push("Issue description is too short.");
     }
     if ($operable === "") {
@@ -119,7 +116,7 @@
       return;
     }
     formData.append("gse_id", $qrCodeData || "Unknown");
-    formData.append("employee_name", employeeName);
+    formData.append("employee_name", $employee_name);
     formData.append("issue_description", $issue_description);
     formData.append("is_operable", String(isOperable));
     if (!isOperable) {
@@ -153,7 +150,9 @@
 </script>
 
 <div
-  class={`popup-backdrop fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center ${$showPopup ? "flex" : "hidden"}`}
+  class="popup-backdrop fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center {$showPopup
+    ? 'flex'
+    : 'hidden'}"
 >
   <div class="popup-content bg-white w-full h-full">
     <div class="flex items-center justify-between p-4 md:p-6">
@@ -255,9 +254,10 @@
           {t("Employee Name")}
         </label>
         <input
+          bind:value={$employee_name}
           id="employee-name"
           class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter your 3-letters name"
+          placeholder={t("Enter your 3-letters name")}
           maxlength="3"
         />
         <!-- Describe the issue: -->
@@ -288,7 +288,7 @@
           id="issue-description"
           rows="2"
           class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Provide a detailed explanation of the issue"
+          placeholder={t("Provide a detailed explanation of the issue")}
         ></textarea>
       </div>
       <!-- Operable: -->
@@ -458,7 +458,9 @@
               <div id="gallery" class="ignore-js">
                 {#each $mediaFiles as { url, type, deleteFile, handleClick }}
                   <div
-                    class={`gallery-item ignore-js select-none relative ${$wiggleModeEnabled ? "wiggle" : ""}`}
+                    class="gallery-item ignore-js select-none relative {$wiggleModeEnabled
+                      ? 'wiggle'
+                      : ''}"
                     onclick={handleClick}
                     onkeypress={handleClick}
                     onmousedown={startWiggle}
@@ -494,7 +496,9 @@
                     {/if}
                     <button
                       type="button"
-                      class={`delete-button ignore-js select-none ${$wiggleModeEnabled ? "flex" : "hidden"}`}
+                      class="delete-button ignore-js select-none {$wiggleModeEnabled
+                        ? 'flex'
+                        : 'hidden'}"
                       onclick={deleteFile}
                       aria-label="Delete Uploaded Item"
                     >

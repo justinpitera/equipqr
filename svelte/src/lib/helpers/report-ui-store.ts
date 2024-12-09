@@ -2,11 +2,13 @@ import { writable, type Writable } from "svelte/store";
 
 class ReportUIStore {
     constructor(
+        public employee_name: Writable<string> = writable(''),
         public issue_description: Writable<string> = writable(''),
         public operable: Writable<string> = writable(''),
         public selected_gate_type: Writable<string> = writable(''),
         public selected_gate_name: Writable<string> = writable(''),
         public is_gate_type_dropdown_open: Writable<boolean> = writable(false),
+        public showSuccessStamp: Writable<boolean> = writable(false),
         public gates: Writable<{ value: string; name: string }[]> = writable([]),
     ) { }
 }

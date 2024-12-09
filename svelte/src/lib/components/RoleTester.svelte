@@ -12,14 +12,22 @@
 
     const setRole = (role: string) => {
         userRole.set(role);
-        notify(t("Success"), t(`Role has been updated to ${role} successfully.`), "success");
+        notify(
+            "Success",
+            `Role has been updated to ${role} successfully.`,
+            "success",
+        );
         isAuthDrawerHidden.set(true);
     };
 </script>
 
 <div class="text-center mb-4">
-    <h4 class="text-xl font-semibold text-gray-800 dark:text-white">{t("Set User Role for Testing")}</h4>
-    <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">{t("Choose a role below to simulate different user experiences")}</p>
+    <h4 class="text-xl font-semibold text-gray-800 dark:text-white">
+        {t("Set User Role for Testing")}
+    </h4>
+    <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">
+        {t("Choose a role below to simulate different user experiences")}
+    </p>
 </div>
 
 <div class="grid gap-1 md:grid-cols-3">

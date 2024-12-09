@@ -1,5 +1,6 @@
 import { BACKEND_URL } from "$lib/config";
 import { notify } from "$lib/helpers/notify";
+import { t_global } from "$lib/locales";
 
 export async function getAppVersion() {
 	try {
@@ -11,7 +12,7 @@ export async function getAppVersion() {
         clearTimeout(timeout);
 		const response = await request.json();
 		console.log(
-			"%cAviation Management Panel",
+			"%cAviation Failure Reporting",
 			"font-size: 28px; color: #1e90ff; font-weight: bold; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);",
 		);
 		if (response.version)
@@ -32,9 +33,11 @@ export async function getAppVersion() {
 			);
 		}
 		notify(
-			"Aviation Management Panel",
-			`Version: ${response.version}\nStatus: ${response.status}`,
+			t_global("Aviation Failure Reporting"),
+			`${t_global('Version:')} ${response.version}\n${t_global('Status:')} ${response.status}`,
 			response.status === "healthy" ? "success" : "error",
+			5000,
+			true
 		);
 	} catch (e) {
 		console.error(
@@ -42,7 +45,9 @@ export async function getAppVersion() {
 			"color: red; font-size: 18px; font-weight: bold;",
 			e,
 		);
-		notify("Error fetching status", `Failed to get app version: ${e}`, "error");
+		notify(t_global("Error fetching status"), `${t_global('Failed to get app version:')} ${e}`, "error",
+			5000,
+			true);
 	}
 }
 
