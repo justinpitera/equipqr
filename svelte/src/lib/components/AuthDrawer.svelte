@@ -122,7 +122,13 @@
                     </div>
 
                     <div class="form-footer mt-6">
-                        <button type="submit" class="btn">{t("Submit")}</button>
+                        <button
+                            type="submit"
+                            class="btn"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});">{t("Submit")}</button
+                        >
                     </div>
                 </form>
             </div>
