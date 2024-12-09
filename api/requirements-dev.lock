@@ -31,6 +31,10 @@ billiard==4.2.1
 black==24.10.0
 celery==5.4.0
     # via api
+celery-stubs==0.1.3
+    # via api
+celery-types==0.22.0
+    # via api
 certifi==2024.8.30
     # via minio
     # via requests
@@ -59,25 +63,35 @@ cryptography==43.0.3
     # via pyjwt
 dictdiffer==0.9.0
     # via aerich
+dnspython==2.7.0
+    # via email-validator
+email-validator==2.2.0
+    # via pydantic
 granian==1.6.4
     # via api
 idna==3.10
     # via anyio
+    # via email-validator
     # via requests
 iso8601==2.1.0
     # via tortoise-orm
+itsdangerous==2.2.0
+    # via api
 kombu==5.4.2
     # via celery
 loguru==0.7.2
     # via api
 minio==7.2.12
     # via api
+mypy==1.13.0
+    # via celery-stubs
 mypy-extensions==1.0.0
     # via black
+    # via mypy
 numpy==2.1.3
     # via pandas
     # via pandas-stubs
-orjson==3.10.11
+orjson==3.10.12
     # via api
 packaging==24.2
     # via black
@@ -97,12 +111,15 @@ pycparser==2.22
     # via cffi
 pycryptodome==3.21.0
     # via minio
-pydantic==2.10.1
+pydantic==2.10.3
     # via aerich
+    # via api
     # via tortoise-orm
 pydantic-core==2.27.1
     # via pydantic
 pyjwt==2.10.0
+    # via api
+pyotp==2.9.0
     # via api
 pypika-tortoise==0.2.2
     # via tortoise-orm
@@ -141,7 +158,10 @@ types-pytz==2024.2.0.20241003
     # via pandas-stubs
 typing-extensions==4.12.2
     # via aiosqlite
+    # via celery-stubs
+    # via celery-types
     # via minio
+    # via mypy
     # via pydantic
     # via pydantic-core
 tzdata==2024.2

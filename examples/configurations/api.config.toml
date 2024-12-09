@@ -8,7 +8,8 @@
 mode = "production"                                             # Set the application mode ("development" or "production").
 address = "0.0.0.0"                                             # The address to bind the server to (0.0.0.0 for all interfaces).
 port = 7878                                                     # Port on which the backend API will listen.
-cert_path="../private/certificates/example_cert_path"           # Path to SSL certificate bundle (must contain a certificate and key file).
+domain = ""                                                     # Domain under which the API will run under.
+cert_path = "../private/certificates/example_cert_path"         # Path to SSL certificate bundle (must contain a certificate and key file).
 
 [api.rate_limiter]
 enabled = false   # Whether to enforce rate limiting policies defined in specified configuration path (not enforced if `mode="development"`.
@@ -45,6 +46,7 @@ allow_headers = ["*"]                            # List of allowed headers. Use 
 # --------------------------------------------------------------------
 [auth]
 mode = "magic"
+master = "example@example.com"
 
 [auth.magic]
 restricted_domains = [

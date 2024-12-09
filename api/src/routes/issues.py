@@ -14,7 +14,7 @@ Authors:
 
 # Standard
 from uuid import UUID, uuid4
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 # Third-party
 from pydantic import BaseModel, ValidationError
@@ -29,6 +29,7 @@ from colorama import Fore, Style
 # Local
 from src.models import GroundSupportEquiptment, Issue, IssueAttachment
 from src.tasks import upload_attachments_to_minio
+    
 
 async def details_request(request: Request) -> JSONResponse:
     """POST route to handle requests to the database for GSE."""
@@ -75,14 +76,56 @@ async def details_request(request: Request) -> JSONResponse:
         ]
 
         def serialize_field(value: str | datetime | None) -> str | None:
-            """Serializes only datetime fields. Returns other values as-is."""
+            """Serializes datetime fields to ISO format. Returns other values as-is."""
             if isinstance(value, datetime):
                 return value.isoformat()
             return value
 
-        response_data: dict[str, str | None] = {
+        def serialize_issue(issue: Issue) -> dict[str, str | None]:
+            """Serializes an issue instance into a dictionary."""
+            return {
+                "id": str(issue.id),
+                "gse_id": issue.gse_id,
+                "issue_description": issue.issue_description,
+                "reported_at": serialize_field(issue.reported_at),
+                "attachments": None if issue.attachments is None else "Attachments are present",
+            }
+
+        # Fetch all issues for the given GSE ID
+        issues: list[Issue] = await Issue.filter(gse_id=gse_details_request_data.gse_id).all()
+        
+        logger.info(f"Successfully fetched {len(issues)} issues from the database for {gse_details_request_data.gse_id}")
+
+        # Get the most recent issue if available and within the last 5 hours
+        most_recent_issue: Issue | None = (
+            max(issues, key=lambda issue: issue.reported_at) 
+            if issues and max(issues, key=lambda issue: issue.reported_at).reported_at >= datetime.now(tz=timezone.utc) - timedelta(hours=5) 
+            else None
+        )
+
+        # Fetch and serialize attachments for the most recent issue
+        attachment_ids: list[str] | None = (
+            [str(attachment.id) for attachment in await IssueAttachment.filter(issue=most_recent_issue)] 
+            if most_recent_issue else None
+        )
+
+        # Serialize most recent issue including attachments
+        serialized_most_recent_issue: dict[str, str | None] | None = (
+            {
+                **serialize_issue(issue=most_recent_issue),
+                "attachments": ", ".join(attachment_ids) if attachment_ids else None
+            } if most_recent_issue else None
+        )
+
+        logger.info(f"Recent issue for {gse_details_request_data.gse_id} {"discovered, including in response details..." if most_recent_issue else "not found..."}")
+
+        # Serialize GSE model fields
+        response_data: dict[str, str | None | bool | dict[str, str | None]] = {
             field: serialize_field(value=getattr(fetched_gse_model, field, None)) for field in fields_to_include
         }
+        response_data["issue_count"] = str(len(issues))
+        response_data["most_recent_issue"] = serialized_most_recent_issue
+
         logger.success(f"{Fore.GREEN}🎉 Successfully fetched GSE details for ID: {gse_details_request_data.gse_id}{Style.RESET_ALL}")
         
         return JSONResponse(status_code=200, content=response_data)
