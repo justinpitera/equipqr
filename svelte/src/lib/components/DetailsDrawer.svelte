@@ -124,7 +124,6 @@
     id="gse-details-drawer"
     placement="bottom"
     bind:hidden={$hideGSEDetail}
-    on:close={() => hideGSEDetail.set(true)}
     backdrop={true}
     class="p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg"
     width="w-full"

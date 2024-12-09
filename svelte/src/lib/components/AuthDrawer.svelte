@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { ArrowLeft } from "lucide-svelte";
+    import { ArrowLeft, LogOut } from "lucide-svelte";
     import { Button, Drawer, Spinner } from "flowbite-svelte";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";
@@ -7,7 +7,7 @@
     import { sineIn } from "svelte/easing";
     import RoleTester from "./RoleTester.svelte";
     import { writable } from "svelte/store";
-    import { login } from "$lib/helpers/server-requests";
+    import { login, logout } from "$lib/helpers/server-requests";
 
     let email = "";
     let isLoading = writable(false);
@@ -53,7 +53,7 @@
     id="auth-drawer"
     placement="bottom"
     bind:hidden={$isAuthDrawerHidden}
-    on:close={() => isAuthDrawerHidden.set(true)}
+    activateClickOutside={!$isLoading}
     backdrop={true}
     class="p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg"
     width="w-full"
@@ -75,7 +75,7 @@
         </button>
     </div>
 
-    <div class={$isLoading ? "hidden" : ""}><RoleTester /></div>
+    <div class={!$isLoggedIn || $isLoading ? "hidden" : ""}><RoleTester /></div>
 
     <div class="mt-6 {$isLoggedIn || $isLoading ? 'hidden' : ''}">
         <div class="flex flex-col items-center">
@@ -124,12 +124,22 @@
         </div>
     </div>
 
-    <div class="mt-6 flex {$isLoading ? 'hidden' : ''}">
+    <div class="mt-6 flex {$isLoading ? 'hidden' : ''} justify-between">
         <Button
-            on:click={() => isAuthDrawerHidden.set(true)}
-            class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2"
+            on:click={async () => {
+                isLoading.set(true);
+                const didLogout = await logout();
+                if (window.location.hostname === 'localhost') return location.reload();
+                if (didLogout) {
+                    location.reload();
+                } else {
+                    isLoading.set(false);
+                }
+            }}
+            class="bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2{!$isLoggedIn ? ' hidden' : ''}"
         >
-            Close
+            Logout
+            <LogOut class="w-4 h-4 ml-2" />
         </Button>
     </div>
 </Drawer>

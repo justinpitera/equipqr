@@ -124,3 +124,29 @@ export async function login(email: string): Promise<{ token: string } | undefine
 	}
 	return undefined;
 }
+
+export async function logout(): Promise<{ token: string } | undefined> {
+	try {
+		document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			signal: controller.signal,
+		});
+		clearTimeout(timeout);
+		if (!response.ok) throw new Error(`Failed to log out: ${response.statusText}`);
+		return response.json();
+	} catch (e) {
+		console.error(
+			"%cError logging out",
+			"color: red; font-size: 18px; font-weight: bold;",
+			e,
+		);
+		notify("Error logging out", `Failed to log out: ${e}`, "error");
+	}
+	return undefined;
+}

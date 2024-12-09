@@ -1,6 +1,7 @@
-import { defaultLang, type LanguageKeys } from "$lib/locales";
+import { type LanguageKeys } from "$lib/locales";
 import { writable, type Writable } from "svelte/store";
 import { getCookie } from "./cookies";
+import { defaultLang } from "$lib/config";
 
 class HomePageStore {
     constructor(

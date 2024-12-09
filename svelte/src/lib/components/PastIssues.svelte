@@ -65,7 +65,6 @@
     id="past-issues-drawer"
     placement="right"
     bind:hidden={$isPastIssuesForSpecificIDHidden}
-    on:close={() => isPastIssuesForSpecificIDHidden.set(true)}
     backdrop={true}
     class="p-6 md:p-8 bg-white rounded-lg shadow-lg"
     width="w-80"

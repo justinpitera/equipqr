@@ -4,12 +4,8 @@
     import { Button, Drawer } from "flowbite-svelte";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
-    import {
-        defaultLang,
-        langChecker,
-        languages,
-        translations,
-    } from "$lib/locales";
+    import { langChecker, languages, translations } from "$lib/locales";
+    import { defaultLang } from "$lib/config";
 
     const { isSettingsHidden, notificationsEnabled, selectedLanguage } =
         homePageStore;
@@ -47,7 +43,6 @@
     id="settings-drawer"
     placement="bottom"
     bind:hidden={$isSettingsHidden}
-    on:close={() => isSettingsHidden.set(true)}
     backdrop={true}
     class="p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg"
     width="w-full"
@@ -81,7 +76,10 @@
                     type="checkbox"
                     bind:checked={$notificationsEnabled}
                     onchange={() => {
-                        localStorage.setItem("notificationsEnabled", $notificationsEnabled ? "true" : "false");
+                        localStorage.setItem(
+                            "notificationsEnabled",
+                            $notificationsEnabled ? "true" : "false",
+                        );
                     }}
                 />
                 <span class="slider round"></span>

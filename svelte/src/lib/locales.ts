@@ -1,7 +1,7 @@
 import locales from '$lib/locales.json'
+import { defaultLang } from './config';
 import { homePageStore } from './helpers/homepage';
 
-export const defaultLang = 'en';
 export type LanguageKeys = "en" | "da" | "no" | "sv";
 export const languages = [
   { code: "en", label: "English" },

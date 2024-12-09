@@ -56,7 +56,6 @@
     id="issue-history-drawer"
     placement="right"
     bind:hidden={$isIssuesHistoryHidden}
-    on:close={() => isIssuesHistoryHidden.set(true)}
     backdrop={true}
     class="p-6 md:p-8 bg-white rounded-lg shadow-lg"
     width="w-full"
