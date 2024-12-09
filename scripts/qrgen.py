@@ -1,3 +1,5 @@
+# python qrgen.py ../api/database.csv ./logo.png ./star.png
+
 import os
 import sys
 import pandas as pd
@@ -12,19 +14,19 @@ def mm_to_pixels(mm, dpi=300):
         pixels += 1
     return pixels
 
-def convert_logo_to_black(logo_path):
+def resize_logo(logo_path):
     try:
         logo = Image.open(logo_path).convert("RGBA")
-        logo_black = logo.point(lambda p: 0 if p < 128 else 255)
-        logo_black = logo_black.convert("RGBA")
-        logo_width, logo_height = logo_black.size
-        logo_black = logo_black.resize((logo_width // 2, logo_height // 2))
-        return logo_black
+        logo_resized = logo.point(lambda p: 0 if p < 128 else 255)
+        logo_resized = logo_resized.convert("RGBA")
+        logo_width, logo_height = logo_resized.size
+        logo_resized = logo_resized.resize((logo_width // 3, logo_height // 3))
+        return logo_resized
     except Exception as e:
         print(f"Error converting logo to black: {e}")
         return None
 
-def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_black, embed_logo_path, output_dir="../qr_codes"):
+def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_resized, embed_logo_path, output_dir="../qr_codes"):
     try:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -57,17 +59,17 @@ def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_black, embe
         draw.line([(label_height + 20, line_y), (label_width, line_y)], fill="black", width=5)
         draw.text((label_height + 20, line_y), old_gse_id_value, fill="black", font=font)
 
-        logo_width, logo_height = logo_black.size
+        logo_width, logo_height = logo_resized.size
         canvas_width, canvas_height = canvas.size
         logo_position = (canvas_width - logo_width - 20, canvas_height - logo_height - 20)
-        canvas.paste(logo_black, logo_position, logo_black)
+        canvas.paste(logo_resized, logo_position, logo_resized)
 
         output_path = os.path.join(output_dir, f"{gse_id_value}.png")
         canvas.save(output_path, "PNG")
     except Exception as e:
         print(f"Error generating QR Code for {gse_id_value}: {e}")
 
-def generate_qr_codes_from_csv(input_csv, logo_black, embed_logo_path):
+def generate_qr_codes_from_csv(input_csv, logo_resized, embed_logo_path):
     try:
         df = pd.read_csv(input_csv)
         if 'gse_id' not in df.columns or 'old_gse_id' not in df.columns:
@@ -77,7 +79,7 @@ def generate_qr_codes_from_csv(input_csv, logo_black, embed_logo_path):
         for _, row in tqdm(gse_ids.iterrows(), desc="Generating QR codes", unit="QR", ncols=100):
             gse_id = row['gse_id']
             old_gse_id = row['old_gse_id']
-            generate_qr_code_with_label(gse_id, old_gse_id, logo_black, embed_logo_path)
+            generate_qr_code_with_label(gse_id, old_gse_id, logo_resized, embed_logo_path)
         print("QR code generation complete.")
     except Exception as e:
         print(f"Error processing CSV file: {e}")
@@ -99,13 +101,13 @@ def main():
         print(f"❌ Embed logo file not found: {embed_logo_path}")
         sys.exit(1)
 
-    logo_black = convert_logo_to_black(logo_path)
+    logo_resized = resize_logo(logo_path)
 
-    if logo_black is None:
+    if logo_resized is None:
         print("❌ Failed to load and convert logo to black. Exiting.")
         sys.exit(1)
 
-    generate_qr_codes_from_csv(input_csv, logo_black, embed_logo_path)
+    generate_qr_codes_from_csv(input_csv, logo_resized, embed_logo_path)
 
 if __name__ == "__main__":
     main()
