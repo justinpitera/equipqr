@@ -162,7 +162,8 @@
     "View Attachment": "View Attachment",
     "Reported At:": "Reported At:",
     "Description:": "Description:",
-    "Issue ID:": "Issue ID:"
+    "Issue ID:": "Issue ID:",
+    "TypeError: Failed to fetch": "TypeError: Failed to fetch"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -327,7 +328,8 @@
     "View Attachment": "Se vedhæftning",
     "Reported At:": "Rapporteret på:",
     "Description:": "Beskrivelse:",
-    "Issue ID:": "Problem -ID:"
+    "Issue ID:": "Problem -ID:",
+    "TypeError: Failed to fetch": "TypeError: Kunne ikke hente"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -492,7 +494,8 @@
     "View Attachment": "Vis vedlegg",
     "Reported At:": "Rapportert på:",
     "Description:": "Beskrivelse:",
-    "Issue ID:": "Utgave ID:"
+    "Issue ID:": "Utgave ID:",
+    "TypeError: Failed to fetch": "Typeerror: Kunne ikke hente"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -657,6 +660,7 @@
     "View Attachment": "Visa bilaga",
     "Reported At:": "Rapporterad på:",
     "Description:": "Beskrivning:",
-    "Issue ID:": "Utgivnings -ID:"
+    "Issue ID:": "Utgivnings -ID:",
+    "TypeError: Failed to fetch": "TypeError: Det gick inte att hämta"
   }
 }
