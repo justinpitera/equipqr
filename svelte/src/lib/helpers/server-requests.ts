@@ -76,7 +76,8 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 	return undefined
 }
 
-export async function submitIssue(formData: FormData, loadingFunctionBefore: () => Promise<void>) {
+export async function submitIssue(formData: FormData, loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<string | undefined> {
+	loadingFunctionBefore();
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 240s'), 240000);
@@ -86,17 +87,16 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
-
 		if (response.ok) {
 			const data = await response.json();
-			console.log("Status Code:", response.status);
-			console.log("Response Data:", data);
+			return data;
 		} else {
 			console.error("Error submitting the issue:", response.statusText);
 		}
 	} catch (error) {
 		console.error("An error occurred:", error);
 	}
+	loadingFunctionAfter();
 }
 
 export async function setLanguage(language: string): Promise<{ token: string } | undefined> {

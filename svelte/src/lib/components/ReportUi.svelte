@@ -129,9 +129,20 @@
       formData.append("attachments", file.file, file.file.name);
     });
     // Send the data via fetch
-    submitIssue(formData, async () => {
-      console.log("loading...");
-    });
+    const response = await submitIssue(
+      formData,
+      () => {
+        showLoader.set(true);
+      },
+      () => {
+        showLoader.set(false);
+      },
+    );
+    if (response) {
+      notify("Success", "success", "success");
+    } else {
+      notify("Success", "success", "error");
+    }
   }
 
   const handleWindowClick = (event: MouseEvent) => {
