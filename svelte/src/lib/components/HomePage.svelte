@@ -67,7 +67,7 @@
             class="m-auto mt-2"
         />
         <h1
-            class="text-3xl font-semibold text-gray-800 dark:text-white{$isLoggedIn
+            class="text-3xl font-semibold text-gray-800 dark:text-white{!$isLoggedIn
                 ? ' hidden'
                 : ''}"
         >
@@ -75,7 +75,7 @@
             {t($userRole)}!
         </h1>
         <p
-            class="text-lg text-gray-600 dark:text-gray-400 mt-2{$isLoggedIn
+            class="text-lg text-gray-600 dark:text-gray-400 mt-2{!$isLoggedIn
                 ? ' hidden'
                 : ''}"
         >

@@ -8,7 +8,7 @@
     import { defaultLang } from "$lib/config";
     import { setLanguage } from "$lib/helpers/server-requests";
 
-    const { isSettingsHidden, notificationsEnabled, selectedLanguage } =
+    const { isSettingsHidden, notificationsEnabled, selectedLanguage, isLoggedIn } =
         homePageStore;
 
     function t(key: string): string {
@@ -24,7 +24,7 @@
     const resetSettings = () => {
         notificationsEnabled.set(true);
         localStorage.setItem("notificationsEnabled", "true");
-        if ($selectedLanguage !== defaultLang) setLanguage(defaultLang);
+        if ($isLoggedIn && $selectedLanguage !== defaultLang) setLanguage(defaultLang);
         selectedLanguage.set(defaultLang);
         localStorage.setItem("savedLang", defaultLang);
         notify(
