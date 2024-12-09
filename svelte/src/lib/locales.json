@@ -147,7 +147,8 @@
     "Failed to set language: Error": "Failed to set language: Error",
     "Gate Type": "Gate Type",
     "Choose a Gate Name": "Choose a Gate Name",
-    "Choose a Gate Type": "Choose a Gate Type"
+    "Choose a Gate Type": "Choose a Gate Type",
+    "Failed to get app version:": "Failed to get app version:"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -297,7 +298,8 @@
     "Failed to set language: Error": "Kunne ikke indstille sprog: fejl",
     "Gate Type": "Gate Type",
     "Choose a Gate Name": "Vælg et portnavn",
-    "Choose a Gate Type": "Vælg en porttype"
+    "Choose a Gate Type": "Vælg en porttype",
+    "Failed to get app version:": "Kunne ikke få appversion:"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -447,7 +449,8 @@
     "Failed to set language: Error": "Kunne ikke angi språk: feil",
     "Gate Type": "Porttype",
     "Choose a Gate Name": "Velg et portnavn",
-    "Choose a Gate Type": "Velg en porttype"
+    "Choose a Gate Type": "Velg en porttype",
+    "Failed to get app version:": "Kunne ikke få appversjon:"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -597,6 +600,7 @@
     "Failed to set language: Error": "Det gick inte att ställa in språk: fel",
     "Gate Type": "Grindtyp",
     "Choose a Gate Name": "Välj ett grindnamn",
-    "Choose a Gate Type": "Välj en grindtyp"
+    "Choose a Gate Type": "Välj en grindtyp",
+    "Failed to get app version:": "Det gick inte att få appversion:"
   }
 }
