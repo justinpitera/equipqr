@@ -96,8 +96,6 @@ export async function loadQRScanner(forceDebug?: string) {
 		qrScannerStore.showPopup.set(true);
 		document.getElementById("qrScanner")?.classList.add("hidden");
 		const gseDetails = await getGSEDetails(result);
-		console.warn("gseDetails most_recent_issue", gseDetails?.most_recent_issue)
-		console.warn("gseDetails issue_count", gseDetails?.issue_count)
 		if (gseDetails) {
 			qrScannerStore.detectedGSE.set(gseDetails);
 			if (gseDetails.error && gseDetails.details) {

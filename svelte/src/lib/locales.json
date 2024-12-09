@@ -155,7 +155,14 @@
     "Request timed out after 5s": "Request timed out after 5s",
     "Failed to set language: Request timed out after 5s": "Failed to set language: Request timed out after 5s",
     "Failed to set language: TypeError: Failed to fetch": "Failed to set language: TypeError: Failed to fetch",
-    "Dark Mode": "Dark Mode"
+    "Dark Mode": "Dark Mode",
+    "No recent issues found for this GSE.": "No recent issues found for this GSE.",
+    "Most Recent Issue": "Most Recent Issue",
+    "Attachments:": "Attachments:",
+    "View Attachment": "View Attachment",
+    "Reported At:": "Reported At:",
+    "Description:": "Description:",
+    "Issue ID:": "Issue ID:"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -313,7 +320,14 @@
     "Request timed out after 5s": "Anmod om tidsbestemt ud efter 5s",
     "Failed to set language: Request timed out after 5s": "Kunne ikke indstille sprog: Anmod om tidsbestemt efter 5'erne",
     "Failed to set language: TypeError: Failed to fetch": "Kunne ikke indstille sprog: TypeError: Kunne ikke hente",
-    "Dark Mode": "Mørk tilstand"
+    "Dark Mode": "Mørk tilstand",
+    "No recent issues found for this GSE.": "Ingen nylige problemer fundet for denne GSE.",
+    "Most Recent Issue": "Den seneste udgave",
+    "Attachments:": "Vedhæftede filer:",
+    "View Attachment": "Se vedhæftning",
+    "Reported At:": "Rapporteret på:",
+    "Description:": "Beskrivelse:",
+    "Issue ID:": "Problem -ID:"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -471,7 +485,14 @@
     "Request timed out after 5s": "Be om tidsavbrudd etter 5 -tallet",
     "Failed to set language: Request timed out after 5s": "Kunne ikke angi språk: Be om tidsbestemt etter 5 -tallet",
     "Failed to set language: TypeError: Failed to fetch": "Kunne ikke sette språk: typeerror: Kunne ikke hente",
-    "Dark Mode": "Mørk modus"
+    "Dark Mode": "Mørk modus",
+    "No recent issues found for this GSE.": "Ingen nylige problemer funnet for denne GSE.",
+    "Most Recent Issue": "Den siste utgaven",
+    "Attachments:": "Vedlegg:",
+    "View Attachment": "Vis vedlegg",
+    "Reported At:": "Rapportert på:",
+    "Description:": "Beskrivelse:",
+    "Issue ID:": "Utgave ID:"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -629,6 +650,13 @@
     "Request timed out after 5s": "Begär tidpunkten efter 5 -talet",
     "Failed to set language: Request timed out after 5s": "Det gick inte att ställa in språk: Begär tidsinställd efter 5s",
     "Failed to set language: TypeError: Failed to fetch": "Det gick inte att ställa in språk: TypeError: Det gick inte att hämta",
-    "Dark Mode": "Mörkt läge"
+    "Dark Mode": "Mörkt läge",
+    "No recent issues found for this GSE.": "Inga senaste frågor hittades för denna GSE.",
+    "Most Recent Issue": "Senaste utgåvan",
+    "Attachments:": "Bilagor:",
+    "View Attachment": "Visa bilaga",
+    "Reported At:": "Rapporterad på:",
+    "Description:": "Beskrivning:",
+    "Issue ID:": "Utgivnings -ID:"
   }
 }

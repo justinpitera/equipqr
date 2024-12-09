@@ -298,7 +298,9 @@
               rounded
               class="w-6 h-6 ms-2 p-0 font-semibold text-primary-800 bg-white dark:text-primary-800 dark:bg-white"
             >
-              {formatNumber(100)}
+              {$detectedGSE?.issue_count
+                ? formatNumber(parseInt($detectedGSE.issue_count))
+                : "0"}
             </Badge>
           </Button>
         </div>
@@ -610,6 +612,48 @@
       >
         {t("Submit Issue")}
       </button>
+      <div
+        class="mt-6 p-4 bg-gray-100 rounded-lg shadow-md dark:bg-gray-800"
+        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+      >
+        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+          {t("Most Recent Issue")}
+        </h3>
+        {#if $detectedGSE && $detectedGSE.most_recent_issue}
+          <div class="mt-4 space-y-2">
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              <strong>{t("Issue ID:")}</strong>
+              {$detectedGSE.most_recent_issue.id}
+            </p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              <strong>{t("Description:")}</strong>
+              {$detectedGSE.most_recent_issue.issue_description}
+            </p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              <strong>{t("Reported At:")}</strong>
+              {$detectedGSE.most_recent_issue.reported_at}
+            </p>
+            {#if $detectedGSE.most_recent_issue.attachments}
+              <div class="mt-2">
+                <strong class="text-sm text-gray-700 dark:text-gray-300"
+                  >{t("Attachments:")}</strong
+                >
+                <a
+                  href={$detectedGSE.most_recent_issue.attachments}
+                  target="_blank"
+                  class="text-blue-500 hover:underline"
+                >
+                  {t("View Attachment")}
+                </a>
+              </div>
+            {/if}
+          </div>
+        {:else}
+          <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            {t("No recent issues found for this GSE.")}
+          </p>
+        {/if}
+      </div>
     </form>
   </div>
 </div>
