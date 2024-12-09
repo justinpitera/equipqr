@@ -5,7 +5,7 @@
     const { flashlightOn, flashlightDisabled } = qrScannerStore;
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
-    const { startQRScanner, selectedLanguage } = homePageStore;
+    const { startQRScanner, selectedLanguage, darkModeEnabled } = homePageStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -17,6 +17,7 @@
 <div
     id="qrScanner"
     class="relative w-full h-screen flex items-center justify-center bg-black"
+    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
 >
     <div
         class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
