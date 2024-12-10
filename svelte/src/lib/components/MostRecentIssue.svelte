@@ -58,7 +58,14 @@
             minutes > 0 ? `${minutes} minute${minutes > 1 ? "s" : ""}` : "",
             seconds > 0 ? `${seconds} second${seconds > 1 ? "s" : ""}` : "",
         ];
-        const timeAgoOutput = parts.filter(Boolean).join(", ");
+        const timeAgoOutput = parts
+            .filter(Boolean)
+            .reduce((acc, part, index, array) => {
+                if (index === array.length - 1 && array.length > 1) {
+                    return `${acc} and ${part}`;
+                }
+                return acc ? `${acc}, ${part}` : part;
+            }, "");
         return timeAgoOutput ? `${timeAgoOutput} ago` : "just now";
     }
 
@@ -173,8 +180,10 @@
                     onclick={selectIssue}
                     style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 >
-                    <Copy class="h-5 w-5 text-gray-800"
-                    style="filter: invert(1);" />
+                    <Copy
+                        class="h-5 w-5 text-gray-800"
+                        style="filter: invert(1);"
+                    />
                     Copy
                 </Button>
                 <p class="text-sm text-gray-700 dark:text-gray-300">
