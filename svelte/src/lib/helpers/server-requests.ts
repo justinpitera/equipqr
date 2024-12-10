@@ -164,7 +164,7 @@ export async function logout(): Promise<{ token: string } | undefined> {
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
-		if (!response.ok) throw new Error(`Failed to log out: ${response.statusText}`);
+		if (!response.ok) throw new Error(response.statusText);
 		return response.json();
 	} catch (e) {
 		console.error(

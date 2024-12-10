@@ -140,13 +140,15 @@
             on:click={async () => {
                 isLoading.set(true);
                 const didLogout = await logout();
-                if (window.location.hostname === "localhost")
-                    return location.reload();
-                if (didLogout) {
-                    location.reload();
-                } else {
-                    isLoading.set(false);
-                }
+                if (!didLogout) isLoading.set(false);
+                location.reload();
+                // if (window.location.hostname === "localhost")
+                //     return location.reload();
+                // if (didLogout) {
+                //     location.reload();
+                // } else {
+                //     isLoading.set(false);
+                // }
             }}
             class="bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2{!$isLoggedIn
                 ? ' hidden'
