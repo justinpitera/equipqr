@@ -95,8 +95,6 @@
                     $detectedGSE.most_recent_issue.reported_at,
                 );
                 await tick();
-            } else {
-                clearInterval(interval);
             }
         }, 1000);
 
