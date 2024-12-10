@@ -87,7 +87,7 @@
 
     <div class="grid gap-5 md:grid-cols-3">
         {#if $isLoggedIn}
-        <!-- Master: Account Management & Role Assignment -->
+            <!-- Master: Account Management & Role Assignment -->
             {#if $userRole === "master"}
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
@@ -149,9 +149,7 @@
                 <div class="card-content">
                     <Clipboard
                         class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
-                        style="filter: invert({$darkModeEnabled
-                            ? '1'
-                            : '0'});"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
                         {t("Report Failure or Malfunction")}
