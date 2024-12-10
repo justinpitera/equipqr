@@ -7,17 +7,24 @@
     const { detectedGSE } = qrScannerStore;
     // File upload utilities
     import { fileUploadStore } from "$lib/helpers/file-upload";
-    const { fullscreenViewer, fullscreenImage, fullscreenVideo, isFullScreenMode } =
-        fileUploadStore;
+    const {
+        fullscreenViewer,
+        fullscreenImage,
+        fullscreenVideo,
+        isFullScreenMode,
+    } = fileUploadStore;
     // Details Drawer utilities
     import { BACKEND_URL, DEBUG_MODE } from "$lib/config";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
     import { Drawer } from "flowbite-svelte";
-    import { ArrowLeft } from "lucide-svelte";
+    import { ArrowLeft, Copy } from "lucide-svelte";
     import { writable } from "svelte/store";
+    import { reportUIStore } from "$lib/helpers/report-ui-store";
+    import Button from "./ui/button/button.svelte";
     const { selectedLanguage, darkModeEnabled, isRecentIssueDrawerHidden } =
         homePageStore;
+    const { issue_description } = reportUIStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -91,6 +98,28 @@
         timeAgo = calculateTimeAgo($detectedGSE.most_recent_issue.reported_at);
     }
 
+    const selectIssue = (): void => {
+        isRecentIssueDrawerHidden.set(true);
+        if ($detectedGSE?.most_recent_issue?.issue_description)
+            issue_description.set(
+                $detectedGSE.most_recent_issue.issue_description,
+            );
+        // operable.set(issue.is_operable.toLowerCase());
+        // if (issue.gate_type) {
+        //     const gate_type = issue.gate_type.toLowerCase();
+        //     selected_gate_type.set(gate_type);
+        //     if (issue.gate_name) {
+        //         build_gate_options(gate_type, issue.gate_name);
+        //         selected_gate_name.set(issue.gate_name);
+        //     } else {
+        //         selected_gate_name.set("");
+        //         build_gate_options(gate_type);
+        //     }
+        // } else {
+        //     selected_gate_type.set("");
+        // }
+    };
+
     onMount(() => {
         interval = setInterval(async () => {
             if ($detectedGSE?.most_recent_issue?.reported_at) {
@@ -140,6 +169,14 @@
                     <strong>{t("Description:")}</strong><br />
                     {$detectedGSE.most_recent_issue.issue_description}
                 </p>
+                <Button
+                    onclick={selectIssue}
+                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                >
+                    <Copy class="h-5 w-5 text-gray-800"
+                    style="filter: invert(1);" />
+                    Copy
+                </Button>
                 <p class="text-sm text-gray-700 dark:text-gray-300">
                     <strong>{t("Reported At:")}</strong><br />
                     {new Date(
