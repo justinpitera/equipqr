@@ -337,7 +337,7 @@
       onsubmit={handleReportFormSubmit}
     >
       <!-- Most recent issues: -->
-      <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow-md dark:bg-gray-800">
+      <div class="mt-2 p-4 bg-gray-100 rounded-lg shadow-md dark:bg-gray-800">
         <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
           {t("Most Recent Issue")}
         </h3>
