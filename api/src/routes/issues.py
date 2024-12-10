@@ -105,11 +105,14 @@ async def details_request(request: Request) -> JSONResponse:
 
         # Fetch and serialize attachments for the most recent issue
         attachment_ids: list[str] | None = (
-            [str(attachment.id) for attachment in await IssueAttachment.filter(issue=most_recent_issue)] 
+            [
+                f"{'video' if attachment.file_type.startswith('video') else 'img'}:{attachment.id}"
+                for attachment in await IssueAttachment.filter(issue=most_recent_issue)
+            ]
             if most_recent_issue else None
         )
 
-        # Serialize most recent issue including attachments
+        # Serialize most recent issue including categorized attachments
         serialized_most_recent_issue: dict[str, str | None] | None = (
             {
                 **serialize_issue(issue=most_recent_issue),
@@ -217,6 +220,7 @@ async def submit_issue(request: Request) -> JSONResponse:
             )
             for attachment in attachments:
                 attachment_id: UUID = uuid4()
+                attachment["attachment_id"] = str(attachment_id)
                 _ = await IssueAttachment.create(
                     id=attachment_id,
                     issue=issue,
@@ -232,7 +236,7 @@ async def submit_issue(request: Request) -> JSONResponse:
         try:
             tasks: list[dict[str, str | bytes | int | None]] = [
                 {
-                    "attachment_id": str(uuid4()),
+                    "attachment_id": att["attachment_id"],
                     "file_stream": att["file_content"],
                     "content_length": len(att["file_content"]) if att["file_content"] is not None else 0,
                     "content_type": att["content_type"],

@@ -117,7 +117,7 @@ def init_asgi() -> Starlette:
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/set-token", route=set_token, methods=["GET"])
 
     # Media
-    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/media/issue", route=fetch_issue_attachment, methods=["GET"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/media/attachment", route=fetch_issue_attachment, methods=["GET"])
     
     # Index    
     _ASGI.mount(path="/", app=StaticFiles(directory="web", html=True), name="_app")
