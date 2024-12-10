@@ -232,6 +232,9 @@ const viteConfig = {
 			logEvent("info", "Vite build completed");
 		},
 	},
+	optimizeDeps: {
+		exclude: ['vite', 'svelte'] // haha wtf
+	}
 };
 
 export default viteConfig;
