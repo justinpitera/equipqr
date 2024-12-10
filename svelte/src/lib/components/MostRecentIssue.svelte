@@ -4,7 +4,7 @@
     import { disableContextMenu } from "$lib/helpers/basics";
     // QR Scanner utilities
     import { qrScannerStore } from "$lib/helpers/camera";
-    const { detectedGSE } = qrScannerStore;
+    const { detectedGSE, isAutoOpenMostRecentIssue } = qrScannerStore;
     // File upload utilities
     import { fileUploadStore } from "$lib/helpers/file-upload";
     const {
@@ -17,14 +17,15 @@
     import { BACKEND_URL, DEBUG_MODE } from "$lib/config";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
-    import { Drawer } from "flowbite-svelte";
+    import { Checkbox, Drawer } from "flowbite-svelte";
     import { ArrowLeft, Copy } from "lucide-svelte";
-    import { writable } from "svelte/store";
     import { reportUIStore } from "$lib/helpers/report-ui-store";
     import Button from "./ui/button/button.svelte";
+    import { detailsDrawerStore } from "$lib/helpers/details";
     const { selectedLanguage, darkModeEnabled, isRecentIssueDrawerHidden } =
         homePageStore;
     const { issue_description } = reportUIStore;
+    const { hideGSEDetail } = detailsDrawerStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -69,7 +70,6 @@
         return timeAgoOutput ? `${timeAgoOutput} ago` : "just now";
     }
 
-    const isFullScreen = writable(false);
     function handleAttachmentClick(url: string, type: "video" | "img") {
         if (!$fullscreenVideo || !$fullscreenImage || !$fullscreenViewer)
             return;
@@ -100,6 +100,18 @@
             );
         }
     }
+
+    const toggleAutoOpenRecentIssue = (event: Event) => {
+        isAutoOpenMostRecentIssue.set(
+            ((event as CustomEvent<boolean>).target as HTMLInputElement)
+                .checked,
+        );
+        if (typeof window !== "undefined")
+            localStorage.setItem(
+                "autoOpenMostRecentIssue",
+                String($isAutoOpenMostRecentIssue),
+            );
+    };
 
     $: if ($detectedGSE?.most_recent_issue?.reported_at) {
         timeAgo = calculateTimeAgo($detectedGSE.most_recent_issue.reported_at);
@@ -148,7 +160,7 @@
     backdrop={true}
     class="p-6 md:p-8 bg-white rounded-lg shadow-lg"
     width="w-full"
-    activateClickOutside={$isFullScreenMode ? false : true}
+    activateClickOutside={!$hideGSEDetail || $isFullScreenMode ? false : true}
 >
     <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold text-gray-800">
@@ -250,5 +262,31 @@
                 {t("No recent issues found for this GSE.")}
             </p>
         {/if}
+        <div class="mt-6 flex justify-between">
+            <div class="flex items-center space-x-4">
+                <label for="toggle" class="text-lg">{t("Auto Open:")}</label>
+                <Checkbox
+                    id="toggle"
+                    class="mt-1"
+                    checked={$isAutoOpenMostRecentIssue}
+                    on:change={toggleAutoOpenRecentIssue}
+                    color="blue"
+                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                >
+                    {#if $isAutoOpenMostRecentIssue}
+                        {t("On")}
+                    {:else}
+                        {t("Off")}
+                    {/if}
+                </Checkbox>
+            </div>
+            <Button
+                onclick={() => isRecentIssueDrawerHidden.set(true)}
+                class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            >
+                {t("Close")}
+            </Button>
+        </div>
     </div>
 </Drawer>

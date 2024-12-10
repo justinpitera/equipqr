@@ -20,15 +20,21 @@ class QRScannerStore {
 		public qrCodeData: Writable<string | null> = writable(null),
 		public showPopup: Writable<boolean> = writable(false),
 		public detectedGSE: Writable<GSEDetails | null> = writable(null),
-		public isAutoOpen: Writable<boolean> = writable(typeof window !== "undefined" ? localStorage?.getItem("autoOpen") === "true" : false),
+		public isAutoOpenIssueDetails: Writable<boolean> = writable(typeof window !== "undefined" ? localStorage?.getItem("autoOpenIssueDetails") === "true" : false),
+		public isAutoOpenMostRecentIssue: Writable<boolean> = writable(typeof window !== "undefined" ? localStorage?.getItem("autoOpenMostRecentIssue") === "true" : false),
 	) { }
 }
 
 export const qrScannerStore = new QRScannerStore();
 
-let isAutoOpen: boolean = typeof window !== "undefined" ? localStorage?.getItem("autoOpen") === "true" : false;
-qrScannerStore.isAutoOpen.subscribe((value) => {
-	isAutoOpen = value;
+let isAutoOpenIssueDetails: boolean = typeof window !== "undefined" ? localStorage?.getItem("autoOpenIssueDetails") === "true" : false;
+qrScannerStore.isAutoOpenIssueDetails.subscribe((value) => {
+	isAutoOpenIssueDetails = value;
+});
+
+let isAutoOpenMostRecentIssue: boolean = typeof window !== "undefined" ? localStorage?.getItem("autoOpenMostRecentIssue") === "true" : false;
+qrScannerStore.isAutoOpenMostRecentIssue.subscribe((value) => {
+	isAutoOpenMostRecentIssue = value;
 });
 
 const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
@@ -100,8 +106,9 @@ export async function loadQRScanner(forceDebug?: string) {
 			qrScannerStore.detectedGSE.set(gseDetails);
 			if (gseDetails.error && gseDetails.details) {
 				notify(gseDetails.error, gseDetails.details, "error")
-			} else if (isAutoOpen) {
-				detailsDrawerStore.hideGSEDetail.set(false);
+			} else {
+				if (isAutoOpenIssueDetails) detailsDrawerStore.hideGSEDetail.set(false);
+				if (isAutoOpenMostRecentIssue) homePageStore.isRecentIssueDrawerHidden.set(false);
 			}
 		} else {
 			qrScannerStore.detectedGSE.set(null);
@@ -121,49 +128,49 @@ export async function loadQRScanner(forceDebug?: string) {
 }
 
 export async function destroyScanner() {
-    // Turn off the flashlight
-    qrScannerStore.flashlightOn.set(false);
+	// Turn off the flashlight
+	qrScannerStore.flashlightOn.set(false);
 
-    // Stop the video track
-    if (videoTrack) {
-        videoTrack.stop();
-        videoTrack = null;
-    }
+	// Stop the video track
+	if (videoTrack) {
+		videoTrack.stop();
+		videoTrack = null;
+	}
 
-    // Cleanup the video element
-    if (videoElement) {
-        videoElement.pause();
-        videoElement.src = ""; // Detach the stream
-        videoElement.srcObject = null; // Detach the stream
-        videoElement.remove(); // Remove from the DOM
-        videoElement = null; // Nullify reference
-    }
+	// Cleanup the video element
+	if (videoElement) {
+		videoElement.pause();
+		videoElement.src = ""; // Detach the stream
+		videoElement.srcObject = null; // Detach the stream
+		videoElement.remove(); // Remove from the DOM
+		videoElement = null; // Nullify reference
+	}
 
-    // Stop all tracks in the torch stream (if any)
-    if (torchInfo.stream) {
-        torchInfo.stream.getTracks().forEach((track) => track.stop());
-        torchInfo.stream = undefined;
-    }
+	// Stop all tracks in the torch stream (if any)
+	if (torchInfo.stream) {
+		torchInfo.stream.getTracks().forEach((track) => track.stop());
+		torchInfo.stream = undefined;
+	}
 
-    // Hide and clear the canvas
-    const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-    if (canvasElement) {
-        canvasElement.hidden = true;
-        const canvas = canvasElement.getContext("2d", { willReadFrequently: true });
-        if (canvas) {
-            canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        }
-    }
+	// Hide and clear the canvas
+	const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
+	if (canvasElement) {
+		canvasElement.hidden = true;
+		const canvas = canvasElement.getContext("2d", { willReadFrequently: true });
+		if (canvas) {
+			canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
+		}
+	}
 
-    const loadingMessage = document.getElementById("loadingMessage");
-    if (loadingMessage) {
-        loadingMessage.hidden = false;
-        loadingMessage.textContent = "🎥 Loading Camera...";
-    }
+	const loadingMessage = document.getElementById("loadingMessage");
+	if (loadingMessage) {
+		loadingMessage.hidden = false;
+		loadingMessage.textContent = "🎥 Loading Camera...";
+	}
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+	const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 	stream.getTracks().forEach((track) => track.stop());
-    const devices = await navigator.mediaDevices.enumerateDevices();
+	const devices = await navigator.mediaDevices.enumerateDevices();
 	const activeStreams = devices.filter((device) => device.kind === "videoinput");
 	console.log("Active video streams:", activeStreams);
 }

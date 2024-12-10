@@ -12,7 +12,7 @@
     // Utilities
     // QR Scanner utilities
     import { qrScannerStore } from "$lib/helpers/camera";
-    const { qrCodeData, detectedGSE, isAutoOpen } = qrScannerStore;
+    const { qrCodeData, detectedGSE, isAutoOpenIssueDetails } = qrScannerStore;
     // Details Drawer utilities
     import { detailsDrawerStore } from "$lib/helpers/details";
     const { hideGSEDetail } = detailsDrawerStore;
@@ -110,16 +110,17 @@
         return match ? match[1] : "0"; // Default to "0" if no match is found
     };
 
-    const toggleAutoOpen = (event: Event) => {
-        isAutoOpen.set(
+    const toggleAutoOpenIssueDetails = (event: Event) => {
+        isAutoOpenIssueDetails.set(
             ((event as CustomEvent<boolean>).target as HTMLInputElement)
                 .checked,
         );
         if (typeof window !== "undefined")
-            localStorage.setItem("autoOpen", String($isAutoOpen));
+            localStorage.setItem("autoOpenIssueDetails", String($isAutoOpenIssueDetails));
     };
 </script>
 
+<!-- activateClickOutside={!$isRecentIssueDrawerHidden ? false : true} -->
 <Drawer
     id="gse-details-drawer"
     placement="bottom"
@@ -405,12 +406,12 @@
             <Checkbox
                 id="toggle"
                 class="mt-1"
-                checked={$isAutoOpen}
-                on:change={toggleAutoOpen}
+                checked={$isAutoOpenIssueDetails}
+                on:change={toggleAutoOpenIssueDetails}
                 color="blue"
                 style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
-                {#if $isAutoOpen}
+                {#if $isAutoOpenIssueDetails}
                     {t("On")}
                 {:else}
                     {t("Off")}
