@@ -87,8 +87,8 @@
 
     <div class="grid gap-5 md:grid-cols-3">
         {#if $isLoggedIn}
+        <!-- Master: Account Management & Role Assignment -->
             {#if $userRole === "master"}
-                <!-- Master: Account Management & Role Assignment -->
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={toggleSettings}
@@ -138,41 +138,36 @@
                 </div>
             {/if}
 
-            {#if $userRole === "employee" || $userRole === "master"}
-                <!-- Employee: Report Failures -->
-                <div
-                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={startQRCode}
-                    onkeypress={startQRCode}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <Clipboard
-                            class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("Report Failure or Malfunction")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "Scan QR codes and submit issues related to failures or malfunctions.",
-                            )}
-                            {#if $userRole === "master"}
-                                <b>{" "}{t("(Visible to Employees)")}</b>
-                            {/if}
-                        </div>
+            <!-- Report Failures -->
+            <div
+                class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                onclick={startQRCode}
+                onkeypress={startQRCode}
+                tabindex="0"
+                role="button"
+            >
+                <div class="card-content">
+                    <Clipboard
+                        class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
+                        style="filter: invert({$darkModeEnabled
+                            ? '1'
+                            : '0'});"
+                    />
+                    <div class="card-title mt-3 text-xl font-semibold">
+                        {t("Report Failure or Malfunction")}
+                    </div>
+                    <div
+                        class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                    >
+                        {t(
+                            "Scan QR codes and submit issues related to failures or malfunctions.",
+                        )}
                     </div>
                 </div>
-            {/if}
+            </div>
 
+            <!-- Mechanic: View & Edit Items, View Issues, Print QR Codes -->
             {#if $userRole === "mechanic" || $userRole === "master"}
-                <!-- Mechanic: View & Edit Items, View Issues, Print QR Codes -->
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={startQRCode}
