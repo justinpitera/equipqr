@@ -7,7 +7,7 @@
     const { detectedGSE } = qrScannerStore;
     // File upload utilities
     import { fileUploadStore } from "$lib/helpers/file-upload";
-    const { fullscreenViewer, fullscreenImage, fullscreenVideo } =
+    const { fullscreenViewer, fullscreenImage, fullscreenVideo, isFullScreenMode } =
         fileUploadStore;
     // Details Drawer utilities
     import { BACKEND_URL, DEBUG_MODE } from "$lib/config";
@@ -15,6 +15,7 @@
     import { langChecker, translations } from "$lib/locales";
     import { Drawer } from "flowbite-svelte";
     import { ArrowLeft } from "lucide-svelte";
+    import { writable } from "svelte/store";
     const { selectedLanguage, darkModeEnabled, isRecentIssueDrawerHidden } =
         homePageStore;
 
@@ -54,11 +55,13 @@
         return timeAgoOutput ? `${timeAgoOutput} ago` : "just now";
     }
 
+    const isFullScreen = writable(false);
     function handleAttachmentClick(url: string, type: "video" | "img") {
         if (!$fullscreenVideo || !$fullscreenImage || !$fullscreenViewer)
             return;
         $fullscreenViewer.classList.remove("hidden");
         $fullscreenViewer.classList.add("flex");
+        isFullScreenMode.set(true);
         if (type === "img") {
             $fullscreenImage.src = url;
             $fullscreenImage.classList.remove("hidden");
@@ -109,6 +112,7 @@
     backdrop={true}
     class="p-6 md:p-8 bg-white rounded-lg shadow-lg"
     width="w-full"
+    activateClickOutside={$isFullScreenMode ? false : true}
 >
     <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold text-gray-800">

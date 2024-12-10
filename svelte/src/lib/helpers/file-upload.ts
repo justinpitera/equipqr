@@ -10,6 +10,7 @@ class FileUploadStore {
     public fullscreenImage: Writable<HTMLImageElement | null> = writable(null),
     public fullscreenVideo: Writable<HTMLVideoElement | null> = writable(null),
     public wiggleModeJustPressed: Writable<boolean> = writable(false),
+    public isFullScreenMode: Writable<boolean> = writable(false),
     public wiggleModeEnabled: Writable<boolean> = writable(false),
     public isDragging: Writable<boolean> = writable(false),
     public pressTimer: Writable<NodeJS.Timeout> = writable(),
@@ -153,4 +154,5 @@ export const closeFullscreen = () => {
   fullscreenViewer.classList.remove("flex");
   fullscreenImage.src = "";
   fullscreenVideo.src = "";
+  fileUploadStore.isFullScreenMode.set(false);
 };
