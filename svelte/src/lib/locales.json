@@ -159,12 +159,12 @@
     "No recent issues found for this GSE.": "No recent issues found for this GSE.",
     "Most Recent Issue": "Most Recent Issue",
     "Attachments:": "Attachments:",
-    "View Attachment": "View Attachment",
     "Reported At:": "Reported At:",
     "Description:": "Description:",
     "Issue ID:": "Issue ID:",
     "TypeError: Failed to fetch": "TypeError: Failed to fetch",
-    "success": "success"
+    "success": "success",
+    "Recent Issue": "Recent Issue"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -326,12 +326,12 @@
     "No recent issues found for this GSE.": "Ingen nylige problemer fundet for denne GSE.",
     "Most Recent Issue": "Den seneste udgave",
     "Attachments:": "Vedhæftede filer:",
-    "View Attachment": "Se vedhæftning",
     "Reported At:": "Rapporteret på:",
     "Description:": "Beskrivelse:",
     "Issue ID:": "Problem -ID:",
     "TypeError: Failed to fetch": "TypeError: Kunne ikke hente",
-    "success": "succes"
+    "success": "succes",
+    "Recent Issue": "Seneste udgave"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -493,12 +493,12 @@
     "No recent issues found for this GSE.": "Ingen nylige problemer funnet for denne GSE.",
     "Most Recent Issue": "Den siste utgaven",
     "Attachments:": "Vedlegg:",
-    "View Attachment": "Vis vedlegg",
     "Reported At:": "Rapportert på:",
     "Description:": "Beskrivelse:",
     "Issue ID:": "Utgave ID:",
     "TypeError: Failed to fetch": "Typeerror: Kunne ikke hente",
-    "success": "suksess"
+    "success": "suksess",
+    "Recent Issue": "Nylig utgave"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -660,11 +660,11 @@
     "No recent issues found for this GSE.": "Inga senaste frågor hittades för denna GSE.",
     "Most Recent Issue": "Senaste utgåvan",
     "Attachments:": "Bilagor:",
-    "View Attachment": "Visa bilaga",
     "Reported At:": "Rapporterad på:",
     "Description:": "Beskrivning:",
     "Issue ID:": "Utgivnings -ID:",
     "TypeError: Failed to fetch": "TypeError: Det gick inte att hämta",
-    "success": "framgång"
+    "success": "framgång",
+    "Recent Issue": "Nyuttalande"
   }
 }

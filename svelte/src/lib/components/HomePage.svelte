@@ -92,7 +92,7 @@
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={toggleSettings}
-                    onkeydown={toggleSettings}
+                    onkeypress={toggleSettings}
                     tabindex="0"
                     role="button"
                 >
@@ -143,7 +143,7 @@
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={startQRCode}
-                    onkeydown={startQRCode}
+                    onkeypress={startQRCode}
                     tabindex="0"
                     role="button"
                 >
@@ -176,7 +176,7 @@
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={startQRCode}
-                    onkeydown={startQRCode}
+                    onkeypress={startQRCode}
                     tabindex="0"
                     role="button"
                 >
@@ -231,7 +231,7 @@
                     <div
                         class="card-content"
                         onclick={() => isIssuesHistoryHidden.set(false)}
-                        onkeydown={() => isIssuesHistoryHidden.set(false)}
+                        onkeypress={() => isIssuesHistoryHidden.set(false)}
                         tabindex="0"
                         role="button"
                     >
@@ -263,7 +263,7 @@
             <div
                 class="card-content"
                 onclick={toggleSettings}
-                onkeydown={toggleSettings}
+                onkeypress={toggleSettings}
                 tabindex="0"
                 role="button"
             >

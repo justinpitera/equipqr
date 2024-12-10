@@ -25,7 +25,7 @@
             startQRScanner.set(false);
             await destroyScanner();
         }}
-        onkeydown={async () => {
+        onkeypress={async () => {
             startQRScanner.set(false);
             await destroyScanner();
         }}

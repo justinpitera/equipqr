@@ -248,15 +248,14 @@ body {
 
 #gallery {
   min-width: fit-content;
-  height: 117px;
+  height: fit-content;
   gap: 15px;
   padding-right: 15px;
   padding-left: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   display: flex;
   flex-wrap: nowrap;
   overflow: hidden;
-  align-items: flex-end;
 }
 
 #gallery-container {
@@ -272,6 +271,7 @@ body {
   height: fit-content;
   max-height: 100px;
   max-width: 100px;
+  min-height: fit-content;
 }
 
 #gallery img,
