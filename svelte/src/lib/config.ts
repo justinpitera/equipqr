@@ -2,6 +2,6 @@ export const DEBUG_MODE = typeof window !== 'undefined' ? location.hostname === 
 
 export const defaultLang = 'en';
 
-export const BACKEND_URL = 'https://preview.pitera.co:7878'; // empty in production
+export const BACKEND_URL = 'https://preview.pitera.co:7878'; // empty in production - WITHOUT SLASH AT THE END
 
 export const maxFiles = 4;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy, onMount, tick } from "svelte";
   // Icons and components
   import {
     Image,
@@ -49,8 +50,7 @@
   const { closeReportHidden } = cancelReportStore;
   // Details Drawer utilities
   import { detailsDrawerStore } from "$lib/helpers/details";
-  import { onDestroy, onMount } from "svelte";
-  import { maxFiles } from "$lib/config";
+  import { BACKEND_URL, DEBUG_MODE, maxFiles } from "$lib/config";
   import { submitIssue } from "$lib/helpers/server-requests";
   import { ChevronDownOutline } from "flowbite-svelte-icons";
   import { notify } from "$lib/helpers/notify";
@@ -60,8 +60,12 @@
     reportUIStore,
   } from "$lib/helpers/report-ui-store";
   import { langChecker, translations } from "$lib/locales";
-  const { selectedLanguage, isPastIssuesForSpecificIDHidden, darkModeEnabled } =
-    homePageStore;
+  const {
+    selectedLanguage,
+    isPastIssuesForSpecificIDHidden,
+    darkModeEnabled,
+    hideTip,
+  } = homePageStore;
 
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];
@@ -153,9 +157,62 @@
     }
   };
 
+  let interval: NodeJS.Timeout;
+  let timeAgo = "";
+  function calculateTimeAgo(reportedAt: string): string {
+    const now = new Date();
+    const reportedDate = new Date(reportedAt);
+    const diff = Math.max(0, now.getTime() - reportedDate.getTime());
+    const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+    const months = Math.floor(
+      (diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
+    );
+    const days = Math.floor(
+      (diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
+    );
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    const parts = [
+      years > 0 ? `${years} year${years > 1 ? "s" : ""}` : "",
+      months > 0 ? `${months} month${months > 1 ? "s" : ""}` : "",
+      days > 0 ? `${days} day${days > 1 ? "s" : ""}` : "",
+      hours > 0 ? `${hours} hour${hours > 1 ? "s" : ""}` : "",
+      minutes > 0 ? `${minutes} minute${minutes > 1 ? "s" : ""}` : "",
+      seconds > 0 ? `${seconds} second${seconds > 1 ? "s" : ""}` : "",
+    ];
+    const timeAgoOutput = parts.filter(Boolean).join(", ");
+    return timeAgoOutput ? `${timeAgoOutput} ago` : "just now";
+  }
+
+  $: if ($detectedGSE?.most_recent_issue?.reported_at) {
+    timeAgo = calculateTimeAgo($detectedGSE.most_recent_issue.reported_at);
+  }
+
   onMount(() => {
+    const tip_times = localStorage.getItem("hideTipNextTime");
+    let final_tip_times = 0;
+    if (tip_times) {
+      const parsedTipTimes = Number.parseInt(tip_times);
+      if (parsedTipTimes) final_tip_times = parsedTipTimes;
+    }
+    if (final_tip_times >= 3) {
+      const tooltip1 = document.getElementById("tip-tooltip");
+      if (tooltip1) tooltip1.remove();
+      hideTip.set(true);
+    }
     if (typeof window !== "undefined")
       document.addEventListener("click", handleWindowClick);
+    interval = setInterval(async () => {
+      if ($detectedGSE?.most_recent_issue?.reported_at) {
+        timeAgo = calculateTimeAgo($detectedGSE.most_recent_issue.reported_at);
+        await tick();
+      } else {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
   });
   onDestroy(() => {
     if (typeof window !== "undefined")
@@ -186,12 +243,27 @@
         class="flex flex-col items-center"
         onclick={() => {
           hideGSEDetail.set(false);
-          const tooltip1 = document.getElementById("example-tooltip-1");
-          if (tooltip1) tooltip1.remove();
+          const tooltip1 = document.getElementById("tip-tooltip");
+          if (tooltip1) {
+            tooltip1.remove();
+            const tip_times = localStorage.getItem("hideTipNextTime");
+            let final_tip_times = 0;
+            if (tip_times) {
+              const parsedTipTimes = Number.parseInt(tip_times);
+              if (parsedTipTimes) final_tip_times = parsedTipTimes;
+            }
+            if (final_tip_times <= 3) {
+              final_tip_times += 1;
+              localStorage.setItem(
+                "hideTipNextTime",
+                final_tip_times.toString(),
+              );
+            }
+          }
         }}
         onkeydown={() => {
           hideGSEDetail.set(false);
-          const tooltip1 = document.getElementById("example-tooltip-1");
+          const tooltip1 = document.getElementById("tip-tooltip");
           if (tooltip1) tooltip1.remove();
         }}
         role="button"
@@ -218,17 +290,19 @@
           {/if}
         </div>
       </div>
-      <Tooltip
-        id="example-tooltip-1"
-        class="z-20 max-w-[300px]"
-        type="dark"
-        triggeredBy="#header-label"
-        placement="bottom"
-        open={true}
-        >{t(
-          "Tip: Click here to view more information about the scanned unit",
-        )}</Tooltip
-      >
+      {#if !$hideTip}
+        <Tooltip
+          id="tip-tooltip"
+          class="z-20 max-w-[300px]"
+          type="dark"
+          triggeredBy="#header-label"
+          placement="bottom"
+          open={true}
+          >{t(
+            "Tip: Click here to view more information about the scanned unit",
+          )}</Tooltip
+        >
+      {/if}
       <Avatar
         id="manu-logo"
         src="/images/kalmar.png"
@@ -262,56 +336,159 @@
       id="malfunction-report-form"
       onsubmit={handleReportFormSubmit}
     >
-      <div>
-        <!-- Employee Name: -->
-        <label
-          for="employee-name"
-          class="block text-sm font-medium text-gray-700 mb-1"
-        >
-          {t("Employee Name")}
-        </label>
-        <input
-          bind:value={$employee_name}
-          id="employee-name"
-          class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder={t("Enter your 3-letters name")}
-          maxlength="3"
-          required
-        />
-        <!-- Describe the issue: -->
-        <div class="flex items-center justify-between mb-1 mt-2">
-          <label
-            for="issue-description"
-            class="block text-sm font-medium text-gray-700"
-          >
-            {t("Describe the Issue")}
-          </label>
-          <Button
-            class="p-1 pr-3 pl-3 flex items-center"
-            onclick={() => {
-              isPastIssuesForSpecificIDHidden.set(false);
-            }}
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-          >
-            {t("Past Issues")}
-            <Badge
-              rounded
-              class="w-6 h-6 ms-2 p-0 font-semibold text-primary-800 bg-white dark:text-primary-800 dark:bg-white"
-            >
-              {$detectedGSE?.issue_count
-                ? formatNumber(parseInt($detectedGSE.issue_count))
-                : "0"}
-            </Badge>
-          </Button>
-        </div>
-        <textarea
-          bind:value={$issue_description}
-          id="issue-description"
-          rows="2"
-          class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder={t("Provide a detailed explanation of the issue")}
-        ></textarea>
+      <!-- Most recent issues: -->
+      <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow-md dark:bg-gray-800">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+          {t("Most Recent Issue")}
+        </h3>
+        {#if $detectedGSE && $detectedGSE.most_recent_issue}
+          <div class="mt-4 space-y-2">
+            {#if DEBUG_MODE}
+              <p class="text-sm text-gray-700 dark:text-gray-300">
+                <strong>{t("Issue ID:")}</strong>
+                {$detectedGSE.most_recent_issue.id}
+              </p>
+            {/if}
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              <strong>{t("Description:")}</strong>
+              {$detectedGSE.most_recent_issue.issue_description}
+            </p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              <strong>{t("Reported At:")}</strong>
+              {new Date(
+                $detectedGSE.most_recent_issue.reported_at,
+              ).toLocaleString()}
+              <span>({timeAgo})</span>
+            </p>
+            {#if $detectedGSE.most_recent_issue.attachments}
+              <hr class="my-4" />
+              <div class="mt-2">
+                <strong class="text-sm text-gray-700 dark:text-gray-300"
+                  >{t("Attachments:")}</strong
+                >
+                {#each $detectedGSE.most_recent_issue.attachments.split(", ") as attachment, index}
+                  <a
+                    href={`${BACKEND_URL}/api/media/attachment?id=${attachment}`}
+                    target="_blank"
+                    class="text-blue-500 hover:underline"
+                  >
+                    {t("View Attachment")}
+                    {index + 1}
+                  </a>
+                  {#if index < $detectedGSE.most_recent_issue.attachments.length - 1}
+                    ,
+                  {/if}
+                {/each}
+                <div
+                  id="gallery-container"
+                  class="ignore-js"
+                  style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                >
+                  <div id="gallery" class="ignore-js">
+                    {#each $detectedGSE.most_recent_issue.attachments.split(", ") as attachment, index}
+                      <div
+                        role="button"
+                        tabindex="0"
+                        class="gallery-item ignore-js select-none relative"
+                      >
+                        <img
+                          src={`${BACKEND_URL}/api/media/attachment?id=${attachment}`}
+                          alt="media"
+                          class="disableSave ignore-js"
+                          draggable="false"
+                          oncontextmenu={disableContextMenu}
+                        />
+                      </div>
+                    {/each}
+                    {#each $detectedGSE.most_recent_issue.attachments.split(", ") as attachment, index}
+                      <div
+                        role="button"
+                        tabindex="0"
+                        class="gallery-item ignore-js select-none relative"
+                      >
+                        <img
+                          src={`${BACKEND_URL}/api/media/attachment?id=${attachment}`}
+                          alt="media"
+                          class="disableSave ignore-js"
+                          draggable="false"
+                          oncontextmenu={disableContextMenu}
+                        />
+                      </div>
+                    {/each}
+                    {#each $detectedGSE.most_recent_issue.attachments.split(", ") as attachment, index}
+                      <div
+                        role="button"
+                        tabindex="0"
+                        class="gallery-item ignore-js select-none relative"
+                      >
+                        <img
+                          src={`${BACKEND_URL}/api/media/attachment?id=${attachment}`}
+                          alt="media"
+                          class="disableSave ignore-js"
+                          draggable="false"
+                          oncontextmenu={disableContextMenu}
+                        />
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+              </div>
+            {/if}
+          </div>
+        {:else}
+          <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            {t("No recent issues found for this GSE.")}
+          </p>
+        {/if}
       </div>
+      <!-- Employee Name: -->
+      <label
+        for="employee-name"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
+        {t("Employee Name")}
+      </label>
+      <input
+        bind:value={$employee_name}
+        id="employee-name"
+        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder={t("Enter your 3-letters name")}
+        maxlength="3"
+        required
+      />
+      <!-- Describe the issue: -->
+      <div class="flex items-center justify-between mb-1 mt-2">
+        <label
+          for="issue-description"
+          class="block text-sm font-medium text-gray-700"
+        >
+          {t("Describe the Issue")}
+        </label>
+        <Button
+          class="p-1 pr-3 pl-3 flex items-center"
+          onclick={() => {
+            isPastIssuesForSpecificIDHidden.set(false);
+          }}
+          style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+        >
+          {t("Past Issues")}
+          <Badge
+            rounded
+            class="w-6 h-6 ms-2 p-0 font-semibold text-primary-800 bg-white dark:text-primary-800 dark:bg-white"
+          >
+            {$detectedGSE?.issue_count
+              ? formatNumber(parseInt($detectedGSE.issue_count))
+              : "0"}
+          </Badge>
+        </Button>
+      </div>
+      <textarea
+        bind:value={$issue_description}
+        id="issue-description"
+        rows="2"
+        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder={t("Provide a detailed explanation of the issue")}
+      ></textarea>
       <!-- Operable: -->
       <div style="margin-top: 0.5rem;">
         <label
@@ -612,48 +789,6 @@
       >
         {t("Submit Issue")}
       </button>
-      <div
-        class="mt-6 p-4 bg-gray-100 rounded-lg shadow-md dark:bg-gray-800"
-        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-      >
-        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
-          {t("Most Recent Issue")}
-        </h3>
-        {#if $detectedGSE && $detectedGSE.most_recent_issue}
-          <div class="mt-4 space-y-2">
-            <p class="text-sm text-gray-700 dark:text-gray-300">
-              <strong>{t("Issue ID:")}</strong>
-              {$detectedGSE.most_recent_issue.id}
-            </p>
-            <p class="text-sm text-gray-700 dark:text-gray-300">
-              <strong>{t("Description:")}</strong>
-              {$detectedGSE.most_recent_issue.issue_description}
-            </p>
-            <p class="text-sm text-gray-700 dark:text-gray-300">
-              <strong>{t("Reported At:")}</strong>
-              {$detectedGSE.most_recent_issue.reported_at}
-            </p>
-            {#if $detectedGSE.most_recent_issue.attachments}
-              <div class="mt-2">
-                <strong class="text-sm text-gray-700 dark:text-gray-300"
-                  >{t("Attachments:")}</strong
-                >
-                <a
-                  href={$detectedGSE.most_recent_issue.attachments}
-                  target="_blank"
-                  class="text-blue-500 hover:underline"
-                >
-                  {t("View Attachment")}
-                </a>
-              </div>
-            {/if}
-          </div>
-        {:else}
-          <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-            {t("No recent issues found for this GSE.")}
-          </p>
-        {/if}
-      </div>
     </form>
   </div>
 </div>

@@ -9,6 +9,7 @@ class HomePageStore {
         public isSettingsHidden: Writable<boolean> = writable(true),
         public isAuthDrawerHidden: Writable<boolean> = writable(true),
         public isIssuesHistoryHidden: Writable<boolean> = writable(true),
+        public hideTip: Writable<boolean> = writable(false),
         public isPastIssuesForSpecificIDHidden: Writable<boolean> = writable(true),
         public startQRScanner: Writable<boolean> = writable(false),
         public notificationsEnabled: Writable<boolean> = writable(typeof window !== 'undefined' ? localStorage.getItem('notificationsEnabled') !== 'false' : true),

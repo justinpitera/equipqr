@@ -8,6 +8,9 @@ declare global {
 		deleteFile: (event: Event) => void;
 		handleClick: () => void;
 	}
+	interface MediaDetails {
+		
+	}
 	interface GSEDetails { // getGSEDetails - /api/gse/details
 		gse_id?: string;
 		old_gse_id?: string;
