@@ -71,7 +71,6 @@
     }
 
     function openAttachment(attachment: string) {
-        console.log(attachment);
         if (attachment.split("img:")[1]) {
             handleAttachmentClick(
                 `${BACKEND_URL}/api/media/attachment?id=${attachment.split("img:")[1]}`,
@@ -149,7 +148,8 @@
                 {#if $detectedGSE.most_recent_issue.attachments}
                     <hr class="my-4" />
                     <div class="mt-2">
-                        <strong class="text-sm text-gray-700 dark:text-gray-300 mb-3 block"
+                        <strong
+                            class="text-sm text-gray-700 dark:text-gray-300 mb-3 block"
                             >{t("Attachments:")}</strong
                         >
                         <div

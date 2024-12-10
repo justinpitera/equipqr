@@ -605,7 +605,7 @@
           class="fixed inset-0 bg-black bg-opacity-90 items-center justify-center select-none hidden"
           onclick={closeFullscreen}
           onkeypress={closeFullscreen}
-          style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+          style="z-index: 100; filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
           <button
             id="closeButton"
