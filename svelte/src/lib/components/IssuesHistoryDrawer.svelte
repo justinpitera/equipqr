@@ -857,7 +857,7 @@
                     </div>
                     <!-- Description: -->
                     <p class="text-sm font-bold">{t("Issue Description:")}</p>
-                    <p class="text-sm">{issue.issue}</p>
+                    <p class="text-sm max-w-[80%]">{issue.issue}</p>
                     <!-- Status -->
                     <div class="flex items-center mt-0"></div>
                     <!-- Progress bar -->
