@@ -7,6 +7,10 @@
         Modal,
         Search,
         Tooltip,
+        Datepicker,
+        Textarea,
+        Label,
+        CloseButton,
     } from "flowbite-svelte";
     import {
         Trash2,
@@ -29,13 +33,16 @@
     import {
         CheckOutline,
         ChevronDownOutline,
+        EnvelopeOpenOutline,
         ExclamationCircleOutline,
+        InfoCircleSolid,
         MicrophoneSolid,
     } from "flowbite-svelte-icons";
     import { onDestroy, onMount, tick } from "svelte";
     import { DEBUG_MODE } from "$lib/config";
     import { delete_issue } from "$lib/helpers/server-requests";
     import { gate_types } from "$lib/helpers/report-ui-store";
+    import { sineIn } from "svelte/easing";
     const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled } =
         homePageStore;
 
@@ -77,6 +84,7 @@
     const issuesPerPage = 20;
     let isLoading = $state(false);
     let multiSelectMode = $state(false);
+    let editIssue = $state("");
     let showScrollUp = $state(false);
     let searchDropdownOpen = $state(false);
     let filterDropdownOpen = $state(false);
@@ -139,6 +147,7 @@
         selectedCategory = search_categories[0];
         selectedFilter = filter_by_operable_categories[0];
         searchQuery = "";
+        editIssue = "";
         searchDropdownOpen = false;
         filterDropdownOpen = false;
         isListening = false;
@@ -230,13 +239,15 @@
             issues = generateIssues(44);
             if (selectedFilter.label !== "Operable/Not Operable") {
                 if (selectedFilter.label === "Operable") {
-                    issues = issues.filter((issue) => issue.operable === 'Yes');
+                    issues = issues.filter((issue) => issue.operable === "Yes");
                 } else if (selectedFilter.label === "Not Operable") {
-                    issues = issues.filter((issue) => issue.operable === 'No');
+                    issues = issues.filter((issue) => issue.operable === "No");
                 }
             }
             if (selectedCategory.label !== "All categories") {
-                issues = issues.filter((issue) => issue.status === selectedCategory.label);
+                issues = issues.filter(
+                    (issue) => issue.status === selectedCategory.label,
+                );
             }
             isLoading = false;
         }, 1200);
@@ -301,7 +312,11 @@
     function handleEdit(event: Event, issue: HistoryIssue) {
         event.stopPropagation();
         console.log("Edit Issue", issue);
-        alert("Edit WIP");
+        if (editIssue !== "" && editIssue === issue.id.toString()) {
+            editIssue = "";
+        } else {
+            editIssue = issue.id.toString();
+        }
     }
 
     function startVoiceSearch() {
@@ -355,19 +370,26 @@
     function calculateTimeAgo(reportedAt: string): string {
         const now = new Date();
         const reportedDate = new Date(reportedAt);
-        const diff = Math.max(0, now.getTime() - reportedDate.getTime());
-        const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+        const diff = reportedDate.getTime() - now.getTime();
+        const isFuture = diff > 0;
+
+        const absoluteDiff = Math.abs(diff);
+        const years = Math.floor(absoluteDiff / (1000 * 60 * 60 * 24 * 365));
         const months = Math.floor(
-            (diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
+            (absoluteDiff % (1000 * 60 * 60 * 24 * 365)) /
+                (1000 * 60 * 60 * 24 * 30),
         );
         const days = Math.floor(
-            (diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
+            (absoluteDiff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
         );
         const hours = Math.floor(
-            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+            (absoluteDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
         );
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        const minutes = Math.floor(
+            (absoluteDiff % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const seconds = Math.floor((absoluteDiff % (1000 * 60)) / 1000);
+
         const parts = [
             years > 0 ? `${years}y` : "",
             months > 0 ? `${months}m` : "",
@@ -376,7 +398,8 @@
             minutes > 0 ? `${minutes}m` : "",
             seconds > 0 ? `${seconds}s` : "",
         ];
-        const timeAgoOutput = parts
+
+        const timeString = parts
             .filter(Boolean)
             .reduce((acc, part, index, array) => {
                 if (index === array.length - 1 && array.length > 1) {
@@ -384,7 +407,12 @@
                 }
                 return acc ? `${acc}, ${part}` : part;
             }, "");
-        return timeAgoOutput ? `${timeAgoOutput} left` : "Calculating...";
+
+        if (!timeString) {
+            return "Calculating...";
+        }
+
+        return isFuture ? `${timeString} left` : `${timeString} ago`;
     }
 
     onMount(() => {
@@ -408,7 +436,53 @@
     });
     issues = generateIssues(44);
     let deleteIssuePopup = $state(false);
+    let leaveCommentDrawerHidden = $state(true);
+    let transitionParams = {
+        x: -320,
+        duration: 200,
+        easing: sineIn,
+    };
 </script>
+
+<Drawer
+    id="leave-comment-drawer"
+    transitionType="fly"
+    {transitionParams}
+    backdrop={true}
+    style="z-index: 60;"
+    placement="bottom"
+    bind:hidden={leaveCommentDrawerHidden}
+>
+    <div class="flex items-center">
+        <h5
+            id="drawer-label"
+            class="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
+        >
+            <InfoCircleSolid class="w-5 h-5 me-2.5" />Leave a comment
+        </h5>
+        <CloseButton
+            on:click={() => (leaveCommentDrawerHidden = true)}
+            class="mb-4 dark:text-white"
+        />
+    </div>
+    <form action="#" class="mb-6">
+        <div class="mb-6">
+            <Label for="message" class="mb-2">Your message</Label>
+            <Textarea
+                id="message"
+                placeholder="Your message..."
+                value="This is an example note that was already put here for testing purposes..."
+                rows={4}
+                name="message"
+            />
+        </div>
+        <Button
+            type="submit"
+            class="w-full"
+            on:click={() => (leaveCommentDrawerHidden = true)}>Send message</Button
+        >
+    </form>
+</Drawer>
 
 <Drawer
     id="issue-history-drawer"
@@ -940,6 +1014,31 @@
                                                 $darkModeEnabled
                                                     ? '1'
                                                     : '0'});"
+                                                onclick={() => {
+                                                    if (
+                                                        editIssue !==
+                                                        issue.id.toString()
+                                                    )
+                                                        return;
+                                                    issues = issues.map(
+                                                        (single_issue) => {
+                                                            if (
+                                                                issue.id ===
+                                                                single_issue.id
+                                                            ) {
+                                                                single_issue.status =
+                                                                    status;
+                                                            }
+                                                            return single_issue;
+                                                        },
+                                                    );
+                                                    console.warn(
+                                                        "WIP tell server",
+                                                    );
+                                                }}
+                                                onkeypress={() => {}}
+                                                tabindex="0"
+                                                role="button"
                                             >
                                                 {#if statuses[status].icon === "OctagonAlert"}
                                                     <OctagonAlert
@@ -1027,6 +1126,38 @@
                     <!-- Spacer -->
                     <hr class="mb-2 mt-2 w-[80%] m-auto" />
                     <!-- Edit Delete -->
+                    {#if editIssue === issue.id.toString()}
+                        <div class="text-black mb-2">
+                            <Datepicker
+                                inline
+                                showActionButtons
+                                autohide={false}
+                                on:clear={() => {}}
+                                on:apply={(event) => {
+                                    issues = issues.map((single_issue) => {
+                                        if (issue.id === single_issue.id) {
+                                            single_issue.estimated_date =
+                                                event.detail
+                                                    ? event.detail.toLocaleDateString()
+                                                    : undefined;
+                                        }
+                                        return single_issue;
+                                    });
+                                    console.warn("WIP tell server");
+                                    editIssue = "";
+                                }}
+                                on:click={(event) => {
+                                    console.log(event.target);
+                                }}
+                                color="blue"
+                                dateFormat={{
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "2-digit",
+                                }}
+                            />
+                        </div>
+                    {/if}
                     <div class="flex gap-2">
                         <Button
                             class="bg-blue-600 w-full"
@@ -1035,21 +1166,31 @@
                                 ? '1'
                                 : '0'});"
                         >
-                            <Edit class="h-5 w-5" />
+                            <Edit class="h-5 w-5 mr-2" />
                             Edit
                         </Button>
                         <Button
-                            class="bg-red-600 w-full"
+                            class="bg-red-600 hover:bg-red-800 w-full"
                             onclick={(event: Event) =>
                                 handleDelete(event, issue)}
                             style="filter: invert({$darkModeEnabled
                                 ? '1'
                                 : '0'});"
                         >
-                            <Trash2 class="h-5 w-5" />
-                            Delete
+                            <Trash2 class="h-5 w-5 mr-2" />
+                            Close Case
                         </Button>
                     </div>
+                    <Button
+                        class="bg-green-600 hover:bg-green-800 w-full mt-2"
+                        onclick={(event: Event) => {
+                            leaveCommentDrawerHidden = false;
+                        }}
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                    >
+                        <EnvelopeOpenOutline class="h-5 w-5 mr-2" />
+                        Leave a Comment
+                    </Button>
                 </div>
             {/each}
             <!-- Page Buttons Bottom -->
