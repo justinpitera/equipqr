@@ -240,6 +240,7 @@ body {
 #auth-drawer,
 #drawer-example {
   margin: auto;
+  left: 0;
 }
 * {
   scrollbar-width: thin;

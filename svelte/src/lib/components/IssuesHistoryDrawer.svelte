@@ -165,6 +165,8 @@
             "Overheating",
             "Software crash",
             "Unresponsive buttons",
+            "Broken screen Broken screen Broken screen Broken screen",
+            "Battery not charging Battery not charging Battery not charging Battery not charging Battery not charging",
         ];
         const randomGSEIDs = [
             "AH 10001",
