@@ -30,6 +30,7 @@
     } from "flowbite-svelte-icons";
     import { onDestroy } from "svelte";
     import { DEBUG_MODE } from "$lib/config";
+    import { delete_issue } from "$lib/helpers/server-requests";
     const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled } =
         homePageStore;
 
@@ -216,11 +217,14 @@
     function handleDelete(event: Event, issue: HistoryIssue) {
         event.stopPropagation();
         console.log("Delete Issue", issue);
+        delete_issue([issue.gse_id]);
+        alert("Delete WIP");
     }
 
     function handleEdit(event: Event, issue: HistoryIssue) {
         event.stopPropagation();
         console.log("Edit Issue", issue);
+        alert("Edit WIP");
     }
 
     function startVoiceSearch() {

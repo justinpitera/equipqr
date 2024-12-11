@@ -151,6 +151,32 @@ export async function login(email: string): Promise<{ token: string } | undefine
 	return undefined;
 }
 
+export async function delete_issue(ids: string[]) {
+	try {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const response = await fetch(`${BACKEND_URL}/api/issues/delete`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ ids }),
+			signal: controller.signal,
+		});
+		clearTimeout(timeout);
+		if (!response.ok) throw new Error(response.statusText);
+		const output = response.json();
+		console.log(output)
+	} catch (e) {
+		console.error(
+			"%cError deleting issue",
+			"color: red; font-size: 18px; font-weight: bold;",
+			e,
+		);
+		notify("Error deleting issue", `Failed to delete issue: ${e}`, "error");
+	}
+}
+
 export async function logout(): Promise<{ token: string } | undefined> {
 	try {
 		document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";

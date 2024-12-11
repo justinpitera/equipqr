@@ -16,7 +16,7 @@ class HomePageStore {
         public notificationsEnabled: Writable<boolean> = writable(typeof window !== 'undefined' ? localStorage.getItem('notificationsEnabled') !== 'false' : true),
         public darkModeEnabled: Writable<boolean> = writable(typeof window !== 'undefined' ? localStorage.getItem('darkModeEnabled') === 'true' : false),
         public selectedLanguage: Writable<LanguageKeys> = writable((typeof window !== 'undefined' ? (localStorage.getItem('savedLang') || defaultLang) : defaultLang) as LanguageKeys),
-        public userRole: Writable<string> = writable("employee"),
+        public userRole: Writable<string> = writable(typeof window !== 'undefined' ? getCookie('role') : "employee"),
         public debugMode: Writable<boolean> = writable(false),
         public qrScannerSound: Writable<boolean> = writable(true),
     ) { }
