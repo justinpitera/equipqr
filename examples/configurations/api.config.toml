@@ -11,6 +11,11 @@ port = 7878                                                     # Port on which 
 domain = ""                                                     # Domain under which the API will run under.
 cert_path = "../private/certificates/example_cert_path"         # Path to SSL certificate bundle (must contain a certificate and key file).
 
+[api.performance]
+workers=8
+threads=8
+blocking_threads=4
+
 [api.rate_limiter]
 enabled = false   # Whether to enforce rate limiting policies defined in specified configuration path (not enforced if `mode="development"`.
 policy_path = "../private/configurations/example_rate_limiter.config.json"

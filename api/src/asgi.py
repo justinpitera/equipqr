@@ -14,6 +14,7 @@ from collections.abc import AsyncGenerator
 from uuid import uuid4
 
 # Third-party
+from src.routes.issues import delete_issues
 from starlette.applications import Starlette
 from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
@@ -110,7 +111,10 @@ def init_asgi() -> Starlette:
     
     # GroundSupportEquiptment (GSEs) related
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/details", route=details_request, methods=["POST"])
+
+    # Issues
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/submit", route=submit_issue, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/delete", route=delete_issues, methods=["POST"])
     
     # Authentication
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/auth", route=auth_user, methods=["POST"])

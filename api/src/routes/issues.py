@@ -29,11 +29,11 @@ from colorama import Fore, Style
 # Local
 from src.models import GroundSupportEquiptment, Issue, IssueAttachment
 from src.tasks import upload_attachments_to_minio
-    
+
 
 async def details_request(request: Request) -> JSONResponse:
     """POST route to handle requests to the database for GSE."""
-
+    
     class _GSEDetailsRequest(BaseModel):
         """Pydantic validation model for incoming GSE detail requests."""
         gse_id: str
@@ -265,3 +265,77 @@ async def submit_issue(request: Request) -> JSONResponse:
     except Exception as e:
         logger.critical(f"🔥 Unexpected error occurred: {e}")
         raise HTTPException(status_code=500, detail="Failed to submit issue.")
+
+
+async def delete_issues(request: Request) -> JSONResponse:
+    """POST route to delete issue, given its issue_id"""
+
+    class _DeleteIssuesRequest(BaseModel):
+        """Pydantic validation model for incoming requests to delete issues based on their id."""
+        ids: list[str]
+
+    try:
+        logger.info(f"{Fore.CYAN}📥 Received request to delete issues{Style.RESET_ALL}")
+        body: dict[str, list[str]] = await request.json()
+        logger.debug(f"{Fore.LIGHTBLUE_EX}🔍 Request body: {body}{Style.RESET_ALL}")
+
+        delete_issues_request: _DeleteIssuesRequest = _DeleteIssuesRequest(**body)
+        logger.info(f"{Fore.GREEN}✅ Validation successful for Issue IDs: {delete_issues_request.ids}{Style.RESET_ALL}")
+
+        # Query the database for the specified Issue IDs
+        logger.info(f"{Fore.YELLOW}🛠️ Querying database for Issue IDs: {delete_issues_request.ids}{Style.RESET_ALL}")
+        fetched_issues: list[Issue] = await Issue.filter(id__in=delete_issues_request.ids).all()
+
+        if not fetched_issues:
+            logger.warning(f"{Fore.RED}❌ No issues found for the provided IDs: {delete_issues_request.ids}{Style.RESET_ALL}")
+            return JSONResponse(
+                status_code=404,
+                content={"error": "None of the requested issues could be found."}
+            )
+
+        fetched_issues_ids: set[str] = {str(issue.id) for issue in fetched_issues}
+        not_found_ids: list[str] = list(set(delete_issues_request.ids) - fetched_issues_ids)
+
+        # Log missing IDs before deletion
+        if not_found_ids:
+            logger.warning(f"{Fore.RED}⚠️ The following IDs were not found and will not be deleted: {not_found_ids}{Style.RESET_ALL}")
+
+        # Delete the fetched issues
+        logger.info(f"{Fore.GREEN}✅ Deleting fetched issues: {list(fetched_issues_ids)}{Style.RESET_ALL}")
+        await Issue.filter(id__in=fetched_issues_ids).delete()
+
+        logger.info(f"{Fore.GREEN}✅ Successfully deleted requested issues.{Style.RESET_ALL}")
+        response_content = {"message": "Issues deleted successfully.", "deleted_ids": list(fetched_issues_ids)}
+        if not_found_ids:
+            response_content["not_found_ids"] = not_found_ids
+            return JSONResponse(status_code=207, content=response_content)
+
+        return JSONResponse(status_code=200, content=response_content)
+
+    except ValidationError as e:
+        logger.error(f"{Fore.RED}🚨 Validation Error: {e}{Style.RESET_ALL}")
+        return JSONResponse(
+            status_code=422,
+            content={
+                "error": "Validation error",
+                "details": e.errors()
+            }
+        )
+    except OperationalError as e:
+        logger.critical(f"{Fore.MAGENTA}💥 Database operation failed: {e}{Style.RESET_ALL}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "Database operation failed",
+                "details": str(e)
+            }
+        )
+    except Exception as e:
+        logger.exception(f"{Fore.RED}🔥 Unexpected error occurred: {e}{Style.RESET_ALL}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "Unexpected error occurred",
+                "details": str(e)
+            }
+        )

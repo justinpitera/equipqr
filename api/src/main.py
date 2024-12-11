@@ -63,7 +63,8 @@ async def _main() -> None:
         port=int(API_CONFIG["api"]["port"]),
         ssl_cert=ssl_cert,
         ssl_key=ssl_key,
-        process_name="aviator_fjelmelings"
+        process_name="aviator_fjelmelings",
+        pid_file=Path("./.pid")
     )
     _GRANIAN_SERVER.serve()
 
@@ -71,7 +72,7 @@ async def _main() -> None:
 if __name__ == "__main__":
     try:
         print(API_STARTUP_MESSAGE)
-        asyncio.run(_main())
+        asyncio.run(main=_main())
     except (asyncio.CancelledError, KeyboardInterrupt):
         pass
     finally:
