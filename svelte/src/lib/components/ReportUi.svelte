@@ -78,7 +78,7 @@
 
   const { hideGSEDetail } = detailsDrawerStore;
   const {
-    employee_name,
+    worker_id,
     issue_description,
     operable,
     selected_gate_type,
@@ -93,14 +93,14 @@
     const isOperable = $operable === "yes";
     // Validate required fields
     const errors: string[] = [];
-    if (!$employee_name.trim()) {
+    if (!$worker_id.trim()) {
       errors.push("Employee name is required.");
-    } else if ($employee_name.trim().length !== 3) {
+    } else if ($worker_id.trim().length !== 3) {
       errors.push("Employee name must be 3 letters long.");
     }
     if (!$issue_description.trim()) {
       errors.push("Issue description is required.");
-    } else if ($employee_name.trim().length < 2) {
+    } else if ($worker_id.trim().length < 2) {
       errors.push("Issue description is too short.");
     }
     if ($operable === "") {
@@ -124,7 +124,7 @@
       return;
     }
     formData.append("gse_id", $qrCodeData || "Unknown");
-    formData.append("employee_name", $employee_name);
+    formData.append("worker_id", $worker_id);
     formData.append("issue_description", $issue_description);
     formData.append("is_operable", String(isOperable));
     if (!isOperable) {
@@ -262,7 +262,7 @@
         <Tooltip
           id="tip-tooltip"
           class="z-20 max-w-[300px]"
-          type="dark"
+          type="light"
           triggeredBy="#header-label"
           placement="bottom"
           open={true}
@@ -280,7 +280,7 @@
       />
       <Tooltip
         class="z-20"
-        type="dark"
+        type="light"
         triggeredBy="#manu-logo"
         placement="left"
         trigger="click">Kalmar</Tooltip
@@ -313,7 +313,7 @@
         {t("Employee Name")}
       </label>
       <input
-        bind:value={$employee_name}
+        bind:value={$worker_id}
         id="employee-name"
         class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder={t("Enter your 3-letters name")}

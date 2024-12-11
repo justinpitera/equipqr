@@ -27,7 +27,7 @@
 
     let issues: Issue[] = Array.from({ length: 20 }, (_, i) => ({
         gse_id: i + 1,
-        employee_name: `Employee ${i + 1}`,
+        worker_id: `Employee ${i + 1}`,
         issue_description: `Issue description ${i + 1}`,
         is_operable: i % 2 === 0 ? "Yes" : "No",
         date: Date.now(),
@@ -105,7 +105,7 @@
             >
                 <!-- Issue Details -->
                 <div>
-                    <h3 class="text-md font-semibold">{issue.employee_name}</h3>
+                    <h3 class="text-md font-semibold">{issue.worker_id}</h3>
                     <p class="text-sm text-gray-500 flex items-center">
                         {t("Operable:")}
                         {#if issue.is_operable.toLowerCase() === "yes"}

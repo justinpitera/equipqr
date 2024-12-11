@@ -165,7 +165,10 @@
     "success": "success",
     "Recent Issue": "Recent Issue",
     "Previous": "Previous",
-    "Next": "Next"
+    "Next": "Next",
+    "Employee Name:": "Employee Name:",
+    "Issue Description:": "Issue Description:",
+    "Failed to delete issue: Error": "Failed to delete issue: Error"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -333,7 +336,10 @@
     "success": "succes",
     "Recent Issue": "Seneste udgave",
     "Previous": "Tidligere",
-    "Next": "Næste"
+    "Next": "Næste",
+    "Employee Name:": "Medarbejdernavn:",
+    "Issue Description:": "Udgave Beskrivelse:",
+    "Failed to delete issue: Error": "Kunne ikke slette problemet: Fejl"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -501,7 +507,10 @@
     "success": "suksess",
     "Recent Issue": "Nylig utgave",
     "Previous": "Tidligere",
-    "Next": "NESTE"
+    "Next": "NESTE",
+    "Employee Name:": "Ansattes navn:",
+    "Issue Description:": "Problembeskrivelse:",
+    "Failed to delete issue: Error": "Kunne ikke slette problemet: feil"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -669,6 +678,9 @@
     "success": "framgång",
     "Recent Issue": "Nyuttalande",
     "Previous": "Tidigare",
-    "Next": "Nästa"
+    "Next": "Nästa",
+    "Employee Name:": "Anställdas namn:",
+    "Issue Description:": "Utgivningsbeskrivning:",
+    "Failed to delete issue: Error": "Det gick inte att ta bort problemet: fel"
   }
 }

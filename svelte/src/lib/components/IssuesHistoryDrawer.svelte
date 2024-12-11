@@ -5,6 +5,7 @@
         Dropdown,
         DropdownItem,
         Search,
+        Tooltip,
     } from "flowbite-svelte";
     import {
         Trash2,
@@ -20,6 +21,7 @@
         X,
         ArrowRight,
         ArrowUp,
+        Plane,
     } from "lucide-svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
@@ -31,6 +33,7 @@
     import { onDestroy } from "svelte";
     import { DEBUG_MODE } from "$lib/config";
     import { delete_issue } from "$lib/helpers/server-requests";
+    import { gate_types } from "$lib/helpers/report-ui-store";
     const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled } =
         homePageStore;
 
@@ -74,7 +77,7 @@
     let multiSelectMode = $state(false);
     let showScrollUp = $state(false);
     let searchDropdownOpen = $state(false);
-    let clickTimer: NodeJS.Timeout | undefined;
+    let clickTimer: NodeJS.Timeout | undefined = undefined;
 
     const search_categories: {
         label: string;
@@ -147,21 +150,40 @@
         ];
         const randomStatuses = Object.keys(statuses) as Status[];
 
-        return Array.from({ length: count }, (_, i) => ({
-            id: i + 1,
-            gse_id: randomGSEIDs[
-                Math.floor(Math.random() * randomGSEIDs.length)
-            ],
-            name: randomNames[Math.floor(Math.random() * randomNames.length)],
-            issue: randomIssues[
-                Math.floor(Math.random() * randomIssues.length)
-            ],
-            operable: Math.random() > 0.5 ? "Yes" : "No",
-            files: [],
-            status: randomStatuses[
-                Math.floor(Math.random() * randomStatuses.length)
-            ],
-        }));
+        return Array.from({ length: count }, (_, i) => {
+            const operable = Math.random() > 0.5 ? "Yes" : "No";
+            const show_gate = operable === "No";
+            const gate_keys = show_gate ? Object.keys(gate_types) : [];
+            const selected_gate_type = show_gate
+                ? gate_keys[Math.floor(Math.random() * gate_keys.length)]
+                : "";
+            return {
+                id: i + 1,
+                gse_id: randomGSEIDs[
+                    Math.floor(Math.random() * randomGSEIDs.length)
+                ],
+                name: randomNames[
+                    Math.floor(Math.random() * randomNames.length)
+                ],
+                issue: randomIssues[
+                    Math.floor(Math.random() * randomIssues.length)
+                ],
+                operable,
+                gate_type: show_gate ? selected_gate_type : undefined,
+                gate_name: show_gate
+                    ? gate_types[selected_gate_type][
+                          Math.floor(
+                              Math.random() *
+                                  gate_types[selected_gate_type].length,
+                          )
+                      ]
+                    : undefined,
+                files: [],
+                status: randomStatuses[
+                    Math.floor(Math.random() * randomStatuses.length)
+                ],
+            };
+        });
     }
 
     $effect(() => {
@@ -197,19 +219,22 @@
     }
 
     function toggleSelect(issue: HistoryIssue) {
-        console.log("Viewing issue details:", issue);
+        // console.log("Viewing issue details:", issue);
     }
 
     function startMultiSelect() {
+        if (multiSelectMode) return;
+        stopMultiSelect();
         clickTimer = setTimeout(() => {
             multiSelectMode = true;
         }, 800);
     }
 
     function stopMultiSelect() {
+        if (multiSelectMode) return;
         if (clickTimer) {
-            clickTimer = undefined;
             clearTimeout(clickTimer);
+            clickTimer = undefined;
             multiSelectMode = false;
         }
     }
@@ -301,7 +326,9 @@
         >
             <ArrowLeft class="h-6 w-6 text-gray-800" />
         </button>
-        <h2 class="text-xl font-bold text-gray-800">{t("Issues History")}</h2>
+        <h2 class="text-xl font-bold text-gray-800 mr-2">
+            {t("Issues History")}
+        </h2>
     </div>
 
     {#if showScrollUp}
@@ -411,7 +438,7 @@
         >
             <!-- Search -->
 
-            <form class="pr-[5px] pt-3">
+            <form class="pr-[5px] pt-2">
                 <Search
                     size="md"
                     class="rounded-none py-2.5"
@@ -431,6 +458,7 @@
                 <div class="relative w-full">
                     <Button
                         class="mt-2 whitespace-nowrap border w-full border-primary-700"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >
                         <div class="flex items-center mt-0">
                             {#if selectCategory.icon === "OctagonAlert"}
@@ -454,7 +482,7 @@
                         classContainer="w-80"
                         bind:open={searchDropdownOpen}
                     >
-                        {#each search_categories as category}
+                        {#each search_categories as category, index}
                             <DropdownItem
                                 onclick={() => {
                                     selectCategory = category;
@@ -464,7 +492,13 @@
                                     ? "underline"
                                     : ""}
                             >
-                                <div class="flex items-center mt-0">
+                                <div
+                                    class="flex items-center mt-0"
+                                    style="filter: invert({index > 0 &&
+                                    $darkModeEnabled
+                                        ? '1'
+                                        : '0'});"
+                                >
                                     {#if category.icon === "OctagonAlert"}
                                         <OctagonAlert
                                             class="h-5 w-5 mr-2 text-{statuses[
@@ -529,6 +563,7 @@
                         onclick={() => changePage(false)}
                         disabled={isLoading || currentPage === 1}
                         class="btn"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >
                         <ArrowLeft class="h-5 w-5" />
                     </Button>
@@ -537,6 +572,7 @@
                         disabled={isLoading ||
                             currentPage * issuesPerPage >= issues.length}
                         class="btn"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >
                         <ArrowRight class="h-5 w-5" />
                     </Button>
@@ -556,28 +592,60 @@
                     ontouchstart={startMultiSelect}
                     ontouchend={stopMultiSelect}
                 >
-                    <div class="flex justify-between">
-                        <h3 class="text-lg font-semibold">{issue.name}</h3>
-                        {#if issue.gse_id}
+                    {#if issue.gse_id}
+                        <div
+                            class="font-medium h-fit inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        >
+                            {issue.gse_id}
+                        </div>
+                    {/if}
+                    {#if issue.gate_type && issue.gate_name}
+                        <div
+                            class="flex absolute top-2 right-2 items-center bg-yellow-300 border-2 border-navy-800 rounded-md px-2 py-1 ml-3 text-navy-900 shadow-sm"
+                            style="width: fit-content; min-width: fit-content;filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        >
+                            <!-- Airplane Icon -->
                             <div
-                                class="font-medium relative top-8 right-[-5px] inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
+                                class="flex-shrink-0 rounded-md bg-yellow-400 p-1"
+                            >
+                                <Plane class="h-3 w-3 text-navy-800" />
+                            </div>
+                            <!-- Gate Info -->
+                            <div class="ml-2 text-xs font-bold">
+                                <p>{issue.gate_type}</p>
+                                <p>{issue.gate_name}</p>
+                            </div>
+                        </div>
+                    {/if}
+                    <div class="flex gap-1 mt-2">
+                        <p class="text-sm font-bold">{t("Employee Name:")}</p>
+                        <p class="text-sm">{issue.name}</p>
+                    </div>
+                    <div class="text-sm flex items-center">
+                        <p class="text-sm font-bold">{t("Operable:")}</p>
+                        {#if issue.operable.toLowerCase() === "yes"}
+                            <CheckOutline
+                                class="ml-2 h-4 w-4 text-green-500"
                                 style="filter: invert({$darkModeEnabled
                                     ? '1'
                                     : '0'});"
-                            >
-                                {issue.gse_id}
-                            </div>
+                            />
+                        {:else}
+                            <X
+                                class="ml-2 h-4 w-4 text-red-500"
+                                style="filter: invert({$darkModeEnabled
+                                    ? '1'
+                                    : '0'});"
+                            />
                         {/if}
                     </div>
-                    <p class="text-gray-600">{issue.issue}</p>
-                    <p class="text-sm text-gray-500 flex items-center">
-                        {t("Operable:")}
-                        {#if issue.operable.toLowerCase() === "yes"}
-                            <CheckOutline class="ml-2 h-4 w-4 text-green-500" />
-                        {:else}
-                            <X class="ml-2 h-4 w-4 text-red-500" />
-                        {/if}
-                    </p>
+                    <p class="text-sm font-bold">{t("Issue Description:")}</p>
+                    <p class="text-sm">{issue.issue}</p>
                     <!-- Status -->
                     <div class="flex items-center mt-0"></div>
                     <!-- Progress bar -->
@@ -585,6 +653,9 @@
                         <div class="relative">
                             <div
                                 class="flex m-auto w-fit text-center items-center mb-2"
+                                style="filter: invert({$darkModeEnabled
+                                    ? '1'
+                                    : '0'});"
                             >
                                 {#if statuses[issue.status].icon === "OctagonAlert"}
                                     <OctagonAlert
@@ -644,11 +715,23 @@
                                                     ? `bg-${statuses[status].color}-500`
                                                     : "bg-gray-200"
                                             }`}
+                                            style="filter: invert({(index ===
+                                                statusKeys.indexOf(
+                                                    issue.status,
+                                                ) ||
+                                                index <
+                                                    statusKeys.indexOf(
+                                                        issue.status,
+                                                    )) &&
+                                            $darkModeEnabled
+                                                ? '1'
+                                                : '0'});"
                                         ></div>
                                         <div
                                             class="mt-4 flex flex-col items-center"
                                         >
                                             <div
+                                                id="issue-{issue.id}-icon-{index}"
                                                 class={`p-3 rounded-full transition-all duration-300 ${
                                                     index ===
                                                         statusKeys.indexOf(
@@ -661,6 +744,17 @@
                                                         ? `bg-${statuses[status].color}-500 text-white`
                                                         : "bg-gray-200 text-gray-500"
                                                 }`}
+                                                style="filter: invert({(index ===
+                                                    statusKeys.indexOf(
+                                                        issue.status,
+                                                    ) ||
+                                                    index <
+                                                        statusKeys.indexOf(
+                                                            issue.status,
+                                                        )) &&
+                                                $darkModeEnabled
+                                                    ? '1'
+                                                    : '0'});"
                                             >
                                                 {#if statuses[status].icon === "OctagonAlert"}
                                                     <OctagonAlert
@@ -684,42 +778,46 @@
                                                     />
                                                 {/if}
                                             </div>
-                                            <span
-                                                class={`mt-2 text-sm font-medium text-center transition-all duration-300 ${
-                                                    index ===
-                                                        statusKeys.indexOf(
-                                                            issue.status,
-                                                        ) ||
-                                                    index <
-                                                        statusKeys.indexOf(
-                                                            issue.status,
-                                                        )
-                                                        ? `text-${statuses[status].color}-500`
-                                                        : "text-gray-500"
-                                                }`}
+                                            <Tooltip
+                                                class="z-20"
+                                                type="light"
+                                                triggeredBy="#issue-{issue.id}-icon-{index}"
+                                                placement="top"
+                                                trigger="click"
+                                                >{statuses[status]
+                                                    .label}</Tooltip
                                             >
-                                                {statuses[status].label}
-                                            </span>
                                         </div>
                                     </div>
                                 {/each}
                             </div>
                         </div>
                     </div>
+                    <!-- Spacer -->
+                    <hr class="mb-2 mt-2 w-[80%] m-auto" />
                     <!-- Edit Delete -->
-                    <div class="flex gap-2 absolute top-4 right-2">
-                        <button
-                            class="text-blue-600"
-                            onclick={(event) => handleEdit(event, issue)}
+                    <div class="flex gap-2">
+                        <Button
+                            class="bg-blue-600 w-full"
+                            onclick={(event: Event) => handleEdit(event, issue)}
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         >
                             <Edit class="h-5 w-5" />
-                        </button>
-                        <button
-                            class="text-red-600"
-                            onclick={(event) => handleDelete(event, issue)}
+                            Edit
+                        </Button>
+                        <Button
+                            class="bg-red-600 w-full"
+                            onclick={(event: Event) =>
+                                handleDelete(event, issue)}
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         >
                             <Trash2 class="h-5 w-5" />
-                        </button>
+                            Delete
+                        </Button>
                     </div>
                 </div>
             {/each}
@@ -740,6 +838,7 @@
                         onclick={() => changePage(false)}
                         disabled={isLoading || currentPage === 1}
                         class="btn"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >
                         <ArrowLeft class="h-5 w-5" />
                     </Button>
@@ -748,6 +847,7 @@
                         disabled={isLoading ||
                             currentPage * issuesPerPage >= issues.length}
                         class="btn"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >
                         <ArrowRight class="h-5 w-5" />
                     </Button>

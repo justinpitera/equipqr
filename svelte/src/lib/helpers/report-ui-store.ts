@@ -2,7 +2,7 @@ import { writable, type Writable } from "svelte/store";
 
 class ReportUIStore {
     constructor(
-        public employee_name: Writable<string> = writable(''),
+        public worker_id: Writable<string> = writable(''),
         public issue_description: Writable<string> = writable(''),
         public operable: Writable<string> = writable(''),
         public selected_gate_type: Writable<string> = writable(''),
@@ -50,7 +50,6 @@ export function build_gate_options(gate: string, forceSelect?: string) {
                     i += 1;
                 }
             }
-
         }
     }, 10);
 }

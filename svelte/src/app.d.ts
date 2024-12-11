@@ -41,7 +41,7 @@ declare global {
 	}
 	interface Issue {
 		gse_id: number;
-		employee_name: string;
+		worker_id: string;
 		issue_description: string;
 		is_operable: string;
 		gate_type?: string;
@@ -55,6 +55,8 @@ declare global {
         operable: string;
         files: string[];
         status: string;
+		gate_type?: string;
+		gate_name?: string;
     }
 	/* Progress bar */
 	interface StatusConfig {
