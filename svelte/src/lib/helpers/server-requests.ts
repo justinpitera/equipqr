@@ -103,6 +103,32 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 		console.error("An error occurred:", error);
 	}
 	loadingFunctionAfter();
+	return undefined;
+}
+
+export async function getIssues(loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<string | undefined> {
+	loadingFunctionBefore();
+	try {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 10s'), 10000);
+		const response = await fetch(`${BACKEND_URL}/api/gse/issues/fetch`, {
+			method: "POST",
+			signal: controller.signal,
+		});
+		clearTimeout(timeout);
+		if (response.ok) {
+			const data = await response.json();
+			if (debug_routes) console.log("getIssues", data)
+			loadingFunctionAfter();
+			return data;
+		} else {
+			console.error("Error submitting the issue:", response.statusText);
+		}
+	} catch (error) {
+		console.error("An error occurred:", error);
+	}
+	loadingFunctionAfter();
+	return undefined;
 }
 
 export async function setLanguage(language: string): Promise<{ token: string } | undefined> {

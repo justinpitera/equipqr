@@ -40,7 +40,7 @@
     } from "flowbite-svelte-icons";
     import { onDestroy, onMount, tick } from "svelte";
     import { DEBUG_MODE } from "$lib/config";
-    import { delete_issue } from "$lib/helpers/server-requests";
+    import { delete_issue, getIssues } from "$lib/helpers/server-requests";
     import { gate_types } from "$lib/helpers/report-ui-store";
     import { sineIn } from "svelte/easing";
     const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled } =
@@ -226,13 +226,14 @@
         });
     }
 
-    function simulateLoading() {
-        isLoading = true;
-        setTimeout(() => {
-            issues = generateIssues(44);
-            isLoading = false;
-        }, 1200);
-    }
+    // function simulateLoading() {
+    //     isLoading = true;
+    //     setTimeout(() => {
+    //         issues = generateIssues(44);
+    //         isLoading = false;
+    //     }, 1200);
+    // }
+
     function simulateLoadingWithFilters() {
         isLoading = true;
         setTimeout(() => {
@@ -252,11 +253,31 @@
             isLoading = false;
         }, 1200);
     }
+
     $effect(() => {
-        if ($isIssuesHistoryHidden) {
-            simulateLoading();
+        if (!$isIssuesHistoryHidden) {
+            // simulateLoading();
+            getIssues(
+                () => {
+                    isLoading = true;
+                },
+                () => {
+                    isLoading = false;
+                },
+            ).then((returned_issues) => {
+                console.log("returned_issues", returned_issues);
+            });
         }
     });
+
+    // issues = generateIssues(44);
+    let deleteIssuePopup = $state(false);
+    let leaveCommentDrawerHidden = $state(true);
+    let transitionParams = {
+        x: -320,
+        duration: 200,
+        easing: sineIn,
+    };
 
     function getIssuesForPage(page: number) {
         const start = (page - 1) * issuesPerPage;
@@ -434,14 +455,6 @@
         stopVoiceSearch();
         if (!DEBUG_MODE) isIssuesHistoryHidden.set(true);
     });
-    issues = generateIssues(44);
-    let deleteIssuePopup = $state(false);
-    let leaveCommentDrawerHidden = $state(true);
-    let transitionParams = {
-        x: -320,
-        duration: 200,
-        easing: sineIn,
-    };
 </script>
 
 <Drawer
@@ -479,7 +492,8 @@
         <Button
             type="submit"
             class="w-full"
-            on:click={() => (leaveCommentDrawerHidden = true)}>Send message</Button
+            on:click={() => (leaveCommentDrawerHidden = true)}
+            >Send message</Button
         >
     </form>
 </Drawer>
