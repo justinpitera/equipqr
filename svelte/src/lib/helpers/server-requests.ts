@@ -94,6 +94,7 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 		if (response.ok) {
 			const data = await response.json();
 			if (debug_routes) console.log("submitIssue", data)
+			loadingFunctionAfter();
 			return data;
 		} else {
 			console.error("Error submitting the issue:", response.statusText);

@@ -27,7 +27,7 @@
   // Utilities
   import { disableContextMenu, formatNumber } from "$lib/helpers/basics";
   // QR Scanner utilities
-  import { qrScannerStore } from "$lib/helpers/camera";
+  import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
   const { qrCodeData, showPopup, showLoader, detectedGSE } = qrScannerStore;
   // File upload utilities
   import {
@@ -51,7 +51,7 @@
   const { closeReportHidden } = cancelReportStore;
   // Details Drawer utilities
   import { detailsDrawerStore } from "$lib/helpers/details";
-  import { maxFiles } from "$lib/config";
+  import { DEBUG_MODE, maxFiles } from "$lib/config";
   import { submitIssue } from "$lib/helpers/server-requests";
   import { ChevronDownOutline } from "flowbite-svelte-icons";
   import { notify } from "$lib/helpers/notify";
@@ -145,10 +145,19 @@
         showLoader.set(false);
       },
     );
+    console.log("submitIssue Response:", response);
     if (response) {
-      notify("Success", "success", "success");
+      notify("Success", "The issue was submitted successfully", "success");
+      $closeReportHidden = true;
+      showPopup.set(false);
+      document.getElementById("qrScanner")?.classList.remove("hidden");
+      if (DEBUG_MODE) {
+        homePageStore.startQRScanner.set(false);
+      } else {
+        loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
+      }
     } else {
-      notify("Success", "success", "error");
+      notify("Error", "Failed to submit the issue", "error");
     }
   }
 
@@ -352,6 +361,7 @@
         rows="2"
         class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder={t("Provide a detailed explanation of the issue")}
+        required
       ></textarea>
       <!-- Operable: -->
       <div style="margin-top: 0.5rem;">

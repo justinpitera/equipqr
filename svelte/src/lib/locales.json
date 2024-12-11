@@ -170,7 +170,8 @@
     "Issue Description:": "Issue Description:",
     "Failed to delete issue: Error": "Failed to delete issue: Error",
     "Error deleting issue": "Error deleting issue",
-    "Failed to delete issue: TypeError: Failed to fetch": "Failed to delete issue: TypeError: Failed to fetch"
+    "Failed to delete issue: TypeError: Failed to fetch": "Failed to delete issue: TypeError: Failed to fetch",
+    "Failed to submit the issue": "Failed to submit the issue"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -343,7 +344,8 @@
     "Issue Description:": "Udgave Beskrivelse:",
     "Failed to delete issue: Error": "Kunne ikke slette problemet: Fejl",
     "Error deleting issue": "Fejl sletning af problemet",
-    "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette problemet: TypeError: Kunne ikke hente"
+    "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette problemet: TypeError: Kunne ikke hente",
+    "Failed to submit the issue": "Kunne ikke indsende problemet"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -516,7 +518,8 @@
     "Issue Description:": "Problembeskrivelse:",
     "Failed to delete issue: Error": "Kunne ikke slette problemet: feil",
     "Error deleting issue": "Feil sletting av problemet",
-    "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette utgaven: Typeerror: Kunne ikke hente"
+    "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette utgaven: Typeerror: Kunne ikke hente",
+    "Failed to submit the issue": "Kunne ikke sende inn saken"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -689,6 +692,7 @@
     "Issue Description:": "Utgivningsbeskrivning:",
     "Failed to delete issue: Error": "Det gick inte att ta bort problemet: fel",
     "Error deleting issue": "Problem med fel radering",
-    "Failed to delete issue: TypeError: Failed to fetch": "Det gick inte att ta bort problemet: TypeError: Det gick inte att hämta"
+    "Failed to delete issue: TypeError: Failed to fetch": "Det gick inte att ta bort problemet: TypeError: Det gick inte att hämta",
+    "Failed to submit the issue": "Det gick inte att lämna in problemet"
   }
 }
