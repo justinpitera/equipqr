@@ -55,6 +55,7 @@ declare global {
         operable: string;
         files: string[];
         status: string;
+        estimated_date?: string;
 		gate_type?: string;
 		gate_name?: string;
     }

@@ -168,7 +168,9 @@
     "Next": "Next",
     "Employee Name:": "Employee Name:",
     "Issue Description:": "Issue Description:",
-    "Failed to delete issue: Error": "Failed to delete issue: Error"
+    "Failed to delete issue: Error": "Failed to delete issue: Error",
+    "Error deleting issue": "Error deleting issue",
+    "Failed to delete issue: TypeError: Failed to fetch": "Failed to delete issue: TypeError: Failed to fetch"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -339,7 +341,9 @@
     "Next": "Næste",
     "Employee Name:": "Medarbejdernavn:",
     "Issue Description:": "Udgave Beskrivelse:",
-    "Failed to delete issue: Error": "Kunne ikke slette problemet: Fejl"
+    "Failed to delete issue: Error": "Kunne ikke slette problemet: Fejl",
+    "Error deleting issue": "Fejl sletning af problemet",
+    "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette problemet: TypeError: Kunne ikke hente"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -510,7 +514,9 @@
     "Next": "NESTE",
     "Employee Name:": "Ansattes navn:",
     "Issue Description:": "Problembeskrivelse:",
-    "Failed to delete issue: Error": "Kunne ikke slette problemet: feil"
+    "Failed to delete issue: Error": "Kunne ikke slette problemet: feil",
+    "Error deleting issue": "Feil sletting av problemet",
+    "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette utgaven: Typeerror: Kunne ikke hente"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -681,6 +687,8 @@
     "Next": "Nästa",
     "Employee Name:": "Anställdas namn:",
     "Issue Description:": "Utgivningsbeskrivning:",
-    "Failed to delete issue: Error": "Det gick inte att ta bort problemet: fel"
+    "Failed to delete issue: Error": "Det gick inte att ta bort problemet: fel",
+    "Error deleting issue": "Problem med fel radering",
+    "Failed to delete issue: TypeError: Failed to fetch": "Det gick inte att ta bort problemet: TypeError: Det gick inte att hämta"
   }
 }

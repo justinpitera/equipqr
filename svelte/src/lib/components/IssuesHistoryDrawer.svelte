@@ -4,6 +4,7 @@
         Drawer,
         Dropdown,
         DropdownItem,
+        Modal,
         Search,
         Tooltip,
     } from "flowbite-svelte";
@@ -28,9 +29,10 @@
     import {
         CheckOutline,
         ChevronDownOutline,
+        ExclamationCircleOutline,
         MicrophoneSolid,
     } from "flowbite-svelte-icons";
-    import { onDestroy } from "svelte";
+    import { onDestroy, onMount, tick } from "svelte";
     import { DEBUG_MODE } from "$lib/config";
     import { delete_issue } from "$lib/helpers/server-requests";
     import { gate_types } from "$lib/helpers/report-ui-store";
@@ -72,11 +74,12 @@
     let issuesScroller: HTMLElement;
     let issues: HistoryIssue[] = $state([]);
     let currentPage = $state(1);
-    const issuesPerPage = 50;
+    const issuesPerPage = 20;
     let isLoading = $state(false);
     let multiSelectMode = $state(false);
     let showScrollUp = $state(false);
     let searchDropdownOpen = $state(false);
+    let filterDropdownOpen = $state(false);
     let clickTimer: NodeJS.Timeout | undefined = undefined;
 
     const search_categories: {
@@ -88,6 +91,25 @@
             label: "All categories",
         },
     ];
+    const filter_by_operable_categories: {
+        label: string;
+        icon?: string;
+        color?: string;
+    }[] = [
+        {
+            label: "Operable/Not Operable",
+        },
+        {
+            label: "Not Operable",
+            icon: "x",
+            color: "red",
+        },
+        {
+            label: "Operable",
+            icon: "check",
+            color: "green",
+        },
+    ];
     for (const status in statuses) {
         search_categories.push({
             label: statuses[status].label,
@@ -96,7 +118,8 @@
         });
     }
 
-    let selectCategory = $state(search_categories[0]);
+    let selectedCategory = $state(search_categories[0]);
+    let selectedFilter = $state(filter_by_operable_categories[0]);
     let searchQuery = $state("");
     let isListening = $state(false);
     // @ts-ignore
@@ -113,9 +136,11 @@
     let translateY = $state(0);
 
     function resetDrawer() {
-        selectCategory = search_categories[0];
+        selectedCategory = search_categories[0];
+        selectedFilter = filter_by_operable_categories[0];
         searchQuery = "";
         searchDropdownOpen = false;
+        filterDropdownOpen = false;
         isListening = false;
         startY = 0;
         currentY = 0;
@@ -169,6 +194,10 @@
                     Math.floor(Math.random() * randomIssues.length)
                 ],
                 operable,
+                estimated_date:
+                    Math.random() * 1000 > 500
+                        ? new Date(Date.now() - 78000).toLocaleDateString()
+                        : undefined,
                 gate_type: show_gate ? selected_gate_type : undefined,
                 gate_name: show_gate
                     ? gate_types[selected_gate_type][
@@ -186,13 +215,33 @@
         });
     }
 
+    function simulateLoading() {
+        isLoading = true;
+        setTimeout(() => {
+            issues = generateIssues(44);
+            isLoading = false;
+        }, 1200);
+    }
+    function simulateLoadingWithFilters() {
+        isLoading = true;
+        setTimeout(() => {
+            issues = generateIssues(44);
+            if (selectedFilter.label !== "Operable/Not Operable") {
+                if (selectedFilter.label === "Operable") {
+                    issues = issues.filter((issue) => issue.operable === 'Yes');
+                } else if (selectedFilter.label === "Not Operable") {
+                    issues = issues.filter((issue) => issue.operable === 'No');
+                }
+            }
+            if (selectedCategory.label !== "All categories") {
+                issues = issues.filter((issue) => issue.status === selectedCategory.label);
+            }
+            isLoading = false;
+        }, 1200);
+    }
     $effect(() => {
         if ($isIssuesHistoryHidden) {
-            isLoading = true;
-            setTimeout(() => {
-                issues = generateIssues(150);
-                isLoading = false;
-            }, 1200);
+            simulateLoading();
         }
     });
 
@@ -224,26 +273,27 @@
 
     function startMultiSelect() {
         if (multiSelectMode) return;
-        stopMultiSelect();
-        clickTimer = setTimeout(() => {
-            multiSelectMode = true;
-        }, 800);
+        // stopMultiSelect();
+        // clickTimer = setTimeout(() => {
+        //     multiSelectMode = true;
+        // }, 800);
     }
 
     function stopMultiSelect() {
         if (multiSelectMode) return;
-        if (clickTimer) {
-            clearTimeout(clickTimer);
-            clickTimer = undefined;
-            multiSelectMode = false;
-        }
+        // if (clickTimer) {
+        //     clearTimeout(clickTimer);
+        //     clickTimer = undefined;
+        //     multiSelectMode = false;
+        // }
     }
 
+    let delete_issue_id_confirm = "";
     function handleDelete(event: Event, issue: HistoryIssue) {
         event.stopPropagation();
         console.log("Delete Issue", issue);
-        delete_issue([issue.gse_id]);
-        alert("Delete WIP");
+        deleteIssuePopup = true;
+        delete_issue_id_confirm = issue.id.toString();
     }
 
     function handleEdit(event: Event, issue: HistoryIssue) {
@@ -298,12 +348,64 @@
         return Math.round(((currentIndex + 1) / totalSteps) * 100);
     };
 
+    let interval: NodeJS.Timeout;
+    let timeAgo: string[] = $state([]);
+    function calculateTimeAgo(reportedAt: string): string {
+        const now = new Date();
+        const reportedDate = new Date(reportedAt);
+        const diff = Math.max(0, now.getTime() - reportedDate.getTime());
+        const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+        const months = Math.floor(
+            (diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
+        );
+        const days = Math.floor(
+            (diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
+        );
+        const hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        const parts = [
+            years > 0 ? `${years}y` : "",
+            months > 0 ? `${months}m` : "",
+            days > 0 ? `${days}d` : "",
+            hours > 0 ? `${hours}h` : "",
+            minutes > 0 ? `${minutes}m` : "",
+            seconds > 0 ? `${seconds}s` : "",
+        ];
+        const timeAgoOutput = parts
+            .filter(Boolean)
+            .reduce((acc, part, index, array) => {
+                if (index === array.length - 1 && array.length > 1) {
+                    return `${acc} and ${part}`;
+                }
+                return acc ? `${acc}, ${part}` : part;
+            }, "");
+        return timeAgoOutput ? `${timeAgoOutput} left` : "Calculating...";
+    }
+
+    onMount(() => {
+        interval = setInterval(async () => {
+            timeAgo = [];
+            for (const issue of issues) {
+                if (issue.estimated_date) {
+                    timeAgo.push(calculateTimeAgo(issue.estimated_date));
+                } else {
+                    timeAgo.push("Not Set");
+                }
+            }
+            await tick();
+        }, 1000);
+        return () => clearInterval(interval);
+    });
     onDestroy(() => {
         resetDrawer();
         stopVoiceSearch();
         if (!DEBUG_MODE) isIssuesHistoryHidden.set(true);
     });
-    issues = generateIssues(150);
+    issues = generateIssues(44);
+    let deleteIssuePopup = $state(false);
 </script>
 
 <Drawer
@@ -315,6 +417,47 @@
     width="w-full"
     activateClickOutside={false}
 >
+    <Modal bind:open={deleteIssuePopup} size="xs" autoclose>
+        <div class="text-center">
+            <ExclamationCircleOutline
+                class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            />
+            <h3
+                class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400"
+            >
+                Are you sure you want to delete this issue?
+            </h3>
+            <Button
+                onclick={async () => {
+                    isLoading = true;
+                    deleteIssuePopup = false;
+                    await delete_issue([delete_issue_id_confirm]);
+                    issues = issues.filter(
+                        (single_issue) =>
+                            single_issue.id.toString() !==
+                            delete_issue_id_confirm,
+                    );
+                    isLoading = false;
+                    delete_issue_id_confirm = "";
+                }}
+                color="red"
+                class="me-2"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                >Yes, I'm sure</Button
+            >
+            <Button
+                onclick={() => {
+                    delete_issue_id_confirm = "";
+                    deleteIssuePopup = false;
+                }}
+                color="alternative"
+                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                >No, cancel</Button
+            >
+        </div>
+    </Modal>
+
     <div class="flex items-center justify-between border-b">
         <button
             type="button"
@@ -455,25 +598,26 @@
                         <MicrophoneSolid class="w-5 h-5 me-2" />
                     </button>
                 </Search>
+                <!-- Categories: -->
                 <div class="relative w-full">
                     <Button
                         class="mt-2 whitespace-nowrap border w-full border-primary-700"
                         style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >
                         <div class="flex items-center mt-0">
-                            {#if selectCategory.icon === "OctagonAlert"}
+                            {#if selectedCategory.icon === "OctagonAlert"}
                                 <OctagonAlert class="h-5 w-5 mr-2" />
-                            {:else if selectCategory.icon === "Cog"}
+                            {:else if selectedCategory.icon === "Cog"}
                                 <Cog class="h-5 w-5 mr-2" />
-                            {:else if selectCategory.icon === "Loader"}
+                            {:else if selectedCategory.icon === "Loader"}
                                 <Loader class="h-5 w-5 mr-2" />
-                            {:else if selectCategory.icon === "KeyRound"}
+                            {:else if selectedCategory.icon === "KeyRound"}
                                 <KeyRound class="h-5 w-5 mr-2" />
-                            {:else if selectCategory.icon === "CircleCheckBig"}
+                            {:else if selectedCategory.icon === "CircleCheckBig"}
                                 <CircleCheckBig class="h-5 w-5 mr-2" />
                             {/if}
                             <span class="font-semibold">
-                                {selectCategory.label}
+                                {selectedCategory.label}
                             </span>
                         </div>
                         <ChevronDownOutline class="w-4 h-4 ms-1" />
@@ -485,10 +629,11 @@
                         {#each search_categories as category, index}
                             <DropdownItem
                                 onclick={() => {
-                                    selectCategory = category;
+                                    selectedCategory = category;
                                     searchDropdownOpen = false;
+                                    simulateLoadingWithFilters();
                                 }}
-                                class={selectCategory.label === category.label
+                                class={selectedCategory.label === category.label
                                     ? "underline"
                                     : ""}
                             >
@@ -540,6 +685,65 @@
                         {/each}
                     </Dropdown>
                 </div>
+                <!-- Filter by Operable: -->
+                <div class="relative w-full">
+                    <Button
+                        class="mt-2 whitespace-nowrap border w-full border-primary-700"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                    >
+                        <div class="flex items-center mt-0">
+                            {#if selectedFilter.icon === "check"}
+                                <CheckOutline
+                                    class="h-5 w-5 mr-2 text-green-500"
+                                />
+                            {:else if selectedFilter.icon === "x"}
+                                <X class="h-5 w-5 mr-2 text-red-500" />
+                            {/if}
+                            <span class="font-semibold">
+                                {selectedFilter.label}
+                            </span>
+                        </div>
+                        <ChevronDownOutline class="w-4 h-4 ms-1" />
+                    </Button>
+                    <Dropdown
+                        classContainer="w-80"
+                        bind:open={filterDropdownOpen}
+                    >
+                        {#each filter_by_operable_categories as filter, index}
+                            <DropdownItem
+                                onclick={() => {
+                                    selectedFilter = filter;
+                                    filterDropdownOpen = false;
+                                    simulateLoadingWithFilters();
+                                }}
+                                class={selectedFilter.label === filter.label
+                                    ? "underline"
+                                    : ""}
+                            >
+                                <div
+                                    class="flex items-center mt-0"
+                                    style="filter: invert({index > 0 &&
+                                    $darkModeEnabled
+                                        ? '1'
+                                        : '0'});"
+                                >
+                                    {#if filter.icon === "check"}
+                                        <CheckOutline
+                                            class="h-5 w-5 mr-2 text-green-500"
+                                        />
+                                    {:else if filter.icon === "x"}
+                                        <X class="h-5 w-5 mr-2 text-red-500" />
+                                    {/if}
+                                    <span
+                                        class="text-{filter.color}-600 font-semibold"
+                                    >
+                                        {filter.label}
+                                    </span>
+                                </div>
+                            </DropdownItem>
+                        {/each}
+                    </Dropdown>
+                </div>
             </form>
             <!-- Page Buttons Top -->
             <div
@@ -579,9 +783,11 @@
                 </div>
             </div>
             <!-- Issues Loop -->
-            {#each getIssuesForPage(currentPage) as issue}
+            {#each getIssuesForPage(currentPage) as issue, issue_number}
                 <div
-                    class="p-4 border-b justify-between items-start issue-item relative select-none"
+                    class="p-4 border-b justify-between items-start issue-item relative select-none{deleteIssuePopup
+                        ? ''
+                        : ' hover:bg-black hover:text-white'}"
                     class:multiSelectMode
                     role="button"
                     tabindex="0"
@@ -592,6 +798,7 @@
                     ontouchstart={startMultiSelect}
                     ontouchend={stopMultiSelect}
                 >
+                    <!-- ID Tag -->
                     {#if issue.gse_id}
                         <div
                             class="font-medium h-fit inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
@@ -602,6 +809,7 @@
                             {issue.gse_id}
                         </div>
                     {/if}
+                    <!-- Gate: -->
                     {#if issue.gate_type && issue.gate_name}
                         <div
                             class="flex absolute top-2 right-2 items-center bg-yellow-300 border-2 border-navy-800 rounded-md px-2 py-1 ml-3 text-navy-900 shadow-sm"
@@ -616,7 +824,7 @@
                                 <Plane class="h-3 w-3 text-navy-800" />
                             </div>
                             <!-- Gate Info -->
-                            <div class="ml-2 text-xs font-bold">
+                            <div class="ml-2 text-xs font-bold text-black">
                                 <p>{issue.gate_type}</p>
                                 <p>{issue.gate_name}</p>
                             </div>
@@ -626,6 +834,7 @@
                         <p class="text-sm font-bold">{t("Employee Name:")}</p>
                         <p class="text-sm">{issue.name}</p>
                     </div>
+                    <!-- Operable -->
                     <div class="text-sm flex items-center">
                         <p class="text-sm font-bold">{t("Operable:")}</p>
                         {#if issue.operable.toLowerCase() === "yes"}
@@ -644,6 +853,7 @@
                             />
                         {/if}
                     </div>
+                    <!-- Description: -->
                     <p class="text-sm font-bold">{t("Issue Description:")}</p>
                     <p class="text-sm">{issue.issue}</p>
                     <!-- Status -->
@@ -651,51 +861,24 @@
                     <!-- Progress bar -->
                     <div class="mt-2 mb-1">
                         <div class="relative">
-                            <div
-                                class="flex m-auto w-fit text-center items-center mb-2"
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
-                            >
-                                {#if statuses[issue.status].icon === "OctagonAlert"}
-                                    <OctagonAlert
-                                        class="h-5 w-5 mr-2 text-{statuses[
-                                            issue.status
-                                        ].color}-600"
-                                    />
-                                {:else if statuses[issue.status].icon === "Cog"}
-                                    <Cog
-                                        class="h-5 w-5 mr-2 text-{statuses[
-                                            issue.status
-                                        ].color}-600"
-                                    />
-                                {:else if statuses[issue.status].icon === "Loader"}
-                                    <Loader
-                                        class="h-5 w-5 mr-2 text-{statuses[
-                                            issue.status
-                                        ].color}-600"
-                                    />
-                                {:else if statuses[issue.status].icon === "KeyRound"}
-                                    <KeyRound
-                                        class="h-5 w-5 mr-2 text-{statuses[
-                                            issue.status
-                                        ].color}-600"
-                                    />
-                                {:else if statuses[issue.status].icon === "CircleCheckBig"}
-                                    <CircleCheckBig
-                                        class="h-5 w-5 mr-2 text-{statuses[
-                                            issue.status
-                                        ].color}-600"
-                                    />
-                                {/if}
-                                <span
-                                    class={`text-lg font-semibold text-${statusKeys.indexOf(issue.status) >= 0 ? statuses[issue.status].color : "gray"}-500`}
+                            <div class="flex justify-between">
+                                <div
+                                    class="text-sm font-bold relative left-0 top-[2px]"
                                 >
-                                    {statuses[issue.status].label} - {calculateProgress(
-                                        statusKeys.indexOf(issue.status),
-                                        statusKeys.length,
-                                    )}%
-                                </span>
+                                    Estimated Time:
+                                </div>
+                                <span
+                                    class="text-xs font-bold absolute right-0 top-[-20px] border-b pb-1"
+                                    >{issue.estimated_date
+                                        ? issue.estimated_date
+                                        : ""}</span
+                                >
+                                <span
+                                    class="text-xs font-bold relative right-0 top-[3px]"
+                                    >{timeAgo[issue_number]
+                                        ? timeAgo[issue_number]
+                                        : "Calculating..."}</span
+                                >
                             </div>
                             <div class="flex">
                                 {#each statusKeys as status, index}
@@ -791,6 +974,52 @@
                                     </div>
                                 {/each}
                             </div>
+                            <div
+                                class="flex m-auto w-fit text-center items-center mt-2"
+                                style="filter: invert({$darkModeEnabled
+                                    ? '1'
+                                    : '0'});"
+                            >
+                                {#if statuses[issue.status].icon === "OctagonAlert"}
+                                    <OctagonAlert
+                                        class="h-5 w-5 mr-2 text-{statuses[
+                                            issue.status
+                                        ].color}-600"
+                                    />
+                                {:else if statuses[issue.status].icon === "Cog"}
+                                    <Cog
+                                        class="h-5 w-5 mr-2 text-{statuses[
+                                            issue.status
+                                        ].color}-600"
+                                    />
+                                {:else if statuses[issue.status].icon === "Loader"}
+                                    <Loader
+                                        class="h-5 w-5 mr-2 text-{statuses[
+                                            issue.status
+                                        ].color}-600"
+                                    />
+                                {:else if statuses[issue.status].icon === "KeyRound"}
+                                    <KeyRound
+                                        class="h-5 w-5 mr-2 text-{statuses[
+                                            issue.status
+                                        ].color}-600"
+                                    />
+                                {:else if statuses[issue.status].icon === "CircleCheckBig"}
+                                    <CircleCheckBig
+                                        class="h-5 w-5 mr-2 text-{statuses[
+                                            issue.status
+                                        ].color}-600"
+                                    />
+                                {/if}
+                                <span
+                                    class={`text-lg font-semibold text-${statusKeys.indexOf(issue.status) >= 0 ? statuses[issue.status].color : "gray"}-500`}
+                                >
+                                    {statuses[issue.status].label} - {calculateProgress(
+                                        statusKeys.indexOf(issue.status),
+                                        statusKeys.length,
+                                    )}%
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <!-- Spacer -->
@@ -858,6 +1087,7 @@
 </Drawer>
 
 <style>
+    /*
     .issue-item.multiSelectMode {
         background-color: rgba(0, 123, 255, 0.1);
     }
@@ -865,6 +1095,7 @@
     .issue-item.active {
         background-color: rgba(0, 123, 255, 0.3);
     }
+    */
     .btn {
         transition: background-color 0.3s;
     }

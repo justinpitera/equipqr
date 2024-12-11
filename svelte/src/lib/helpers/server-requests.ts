@@ -2,6 +2,8 @@ import { BACKEND_URL } from "$lib/config";
 import { notify } from "$lib/helpers/notify";
 import { t_global } from "$lib/locales";
 
+const debug_routes = false;
+
 export async function getAppVersion() {
 	try {
 		const controller = new AbortController();
@@ -11,6 +13,7 @@ export async function getAppVersion() {
 		});
 		clearTimeout(timeout);
 		const response = await request.json();
+		if (debug_routes) console.log("getAppVersion", response)
 		console.log(
 			"%cAviation Failure Reporting",
 			"font-size: 28px; color: #1e90ff; font-weight: bold; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);",
@@ -64,6 +67,7 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 		});
 		clearTimeout(timeout);
 		const response = await request.json();
+		if (debug_routes) console.log("getGSEDetails", response)
 		return response as GSEDetails;
 	} catch (e) {
 		console.error(
@@ -89,6 +93,7 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 		clearTimeout(timeout);
 		if (response.ok) {
 			const data = await response.json();
+			if (debug_routes) console.log("submitIssue", data)
 			return data;
 		} else {
 			console.error("Error submitting the issue:", response.statusText);
@@ -113,7 +118,9 @@ export async function setLanguage(language: string): Promise<{ token: string } |
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
-		return response.json();
+		const data = response.json();
+		if (debug_routes) console.log("setLanguage", data)
+		return data
 	} catch (e) {
 		console.error(
 			"%cError setting language",
@@ -139,7 +146,9 @@ export async function login(email: string): Promise<{ token: string } | undefine
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
-		return response.json();
+		const data = response.json();
+		if (debug_routes) console.log("login", data)
+		return data;
 	} catch (e) {
 		console.error(
 			"%cError logging in",
@@ -166,7 +175,7 @@ export async function delete_issue(ids: string[]) {
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
 		const output = response.json();
-		console.log(output)
+		if (debug_routes) console.log("delete_issue", output)
 	} catch (e) {
 		console.error(
 			"%cError deleting issue",
