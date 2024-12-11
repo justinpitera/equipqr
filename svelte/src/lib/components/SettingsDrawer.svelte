@@ -22,6 +22,7 @@
         if (!html) return;
         const invert = `invert(${$darkModeEnabled ? '1' : '0'})`;
         html.style.filter = invert;
+        html.style.background = $darkModeEnabled ? 'white' : '';
         for (const container of document.querySelectorAll('.toast-container')) {
             (container as HTMLElement).style.filter = invert;
         }
