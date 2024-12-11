@@ -110,7 +110,6 @@
     "Scan QR codes and submit issues related to failures or malfunctions.": "Scan QR codes and submit issues related to failures or malfunctions.",
     "Print QR Codes": "Print QR Codes",
     "View and print QR codes for items to manage their information.": "View and print QR codes for items to manage their information.",
-    "View & Edit Items": "View & Edit Items",
     "Add new items, edit existing ones, and view item details.": "Add new items, edit existing ones, and view item details.",
     "View Issues History": "View Issues History",
     "Track and resolve past issues with detailed logs.": "Track and resolve past issues with detailed logs.",
@@ -164,7 +163,9 @@
     "Issue ID:": "Issue ID:",
     "TypeError: Failed to fetch": "TypeError: Failed to fetch",
     "success": "success",
-    "Recent Issue": "Recent Issue"
+    "Recent Issue": "Recent Issue",
+    "Previous": "Previous",
+    "Next": "Next"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -277,7 +278,6 @@
     "Scan QR codes and submit issues related to failures or malfunctions.": "Scan QR -koder og indsend problemer relateret til fejl eller funktionsfejl.",
     "Print QR Codes": "Udskriv QR -koder",
     "View and print QR codes for items to manage their information.": "Se og udskriv QR -koder for varer til at administrere deres oplysninger.",
-    "View & Edit Items": "Se og rediger varer",
     "Add new items, edit existing ones, and view item details.": "Tilføj nye varer, rediger eksisterende og se vareoplysninger.",
     "View Issues History": "Se spørgsmål historien",
     "Track and resolve past issues with detailed logs.": "Spor og løse tidligere problemer med detaljerede logfiler.",
@@ -331,7 +331,9 @@
     "Issue ID:": "Problem -ID:",
     "TypeError: Failed to fetch": "TypeError: Kunne ikke hente",
     "success": "succes",
-    "Recent Issue": "Seneste udgave"
+    "Recent Issue": "Seneste udgave",
+    "Previous": "Tidligere",
+    "Next": "Næste"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -444,7 +446,6 @@
     "Scan QR codes and submit issues related to failures or malfunctions.": "Skann QR -koder og send inn problemer relatert til feil eller funksjonsfeil.",
     "Print QR Codes": "Skriv ut QR -koder",
     "View and print QR codes for items to manage their information.": "Vis og skriv ut QR -koder for elementer for å administrere informasjonen.",
-    "View & Edit Items": "Vis og redigere elementer",
     "Add new items, edit existing ones, and view item details.": "Legg til nye elementer, rediger eksisterende og se varedetaljer.",
     "View Issues History": "Se utsteder historie",
     "Track and resolve past issues with detailed logs.": "Spor og løse tidligere problemer med detaljerte logger.",
@@ -498,7 +499,9 @@
     "Issue ID:": "Utgave ID:",
     "TypeError: Failed to fetch": "Typeerror: Kunne ikke hente",
     "success": "suksess",
-    "Recent Issue": "Nylig utgave"
+    "Recent Issue": "Nylig utgave",
+    "Previous": "Tidligere",
+    "Next": "NESTE"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -611,7 +614,6 @@
     "Scan QR codes and submit issues related to failures or malfunctions.": "Skanna QR -koder och skicka problem relaterade till fel eller fel.",
     "Print QR Codes": "Skriv ut QR -koder",
     "View and print QR codes for items to manage their information.": "Visa och skriva ut QR -koder för objekt för att hantera sin information.",
-    "View & Edit Items": "Visa och redigera objekt",
     "Add new items, edit existing ones, and view item details.": "Lägg till nya objekt, redigera befintliga och visa objektinformation.",
     "View Issues History": "Visa problem med historien",
     "Track and resolve past issues with detailed logs.": "Spåra och lösa tidigare problem med detaljerade loggar.",
@@ -665,6 +667,8 @@
     "Issue ID:": "Utgivnings -ID:",
     "TypeError: Failed to fetch": "TypeError: Det gick inte att hämta",
     "success": "framgång",
-    "Recent Issue": "Nyuttalande"
+    "Recent Issue": "Nyuttalande",
+    "Previous": "Tidigare",
+    "Next": "Nästa"
   }
 }

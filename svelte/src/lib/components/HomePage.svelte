@@ -55,7 +55,7 @@
 </div>
 
 <main
-    class="container px-4 py-5 pt-2 min-h-screen bg-slate-100{$startQRScanner
+    class="container px-4 py-5 pt-2 min-h-screen bg-slate-100{$startQRScanner || !$isIssuesHistoryHidden
         ? ' hidden'
         : ''}"
 >
@@ -116,7 +116,13 @@
                     </div>
                 </div>
 
-                <div class="card p-4 pt-3 bg-white rounded-lg shadow-md">
+                <div
+                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => alert("WIP")}
+                    onkeypress={() => alert("WIP")}
+                    tabindex="0"
+                    role="button"
+                >
                     <div class="card-content">
                         <UserPlus
                             class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
@@ -133,6 +139,68 @@
                             {t(
                                 "Assign different roles to users: employee, mechanic, or other.",
                             )}
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
+            <!-- Mechanic: View Issues, Print QR Codes -->
+            {#if $userRole === "mechanic" || $userRole === "master"}
+                <div
+                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => isIssuesHistoryHidden.set(false)}
+                    onkeypress={() => isIssuesHistoryHidden.set(false)}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <FileText
+                            class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("View Issues History")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Track and resolve past issues with detailed logs.",
+                            )}
+                            {#if $userRole === "master"}
+                                <b>{" "}{t("(Visible to Mechanics)")}</b>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={startQRCode}
+                    onkeypress={startQRCode}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Camera
+                            class="w-12 h-12 mx-auto text-green-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Print QR Codes")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "View and print QR codes for items to manage their information.",
+                            )}
+                            {#if $userRole === "master"}
+                                <b>{" "}{t("(Visible to Mechanics)")}</b>
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -163,103 +231,16 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Mechanic: View & Edit Items, View Issues, Print QR Codes -->
-            {#if $userRole === "mechanic" || $userRole === "master"}
-                <div
-                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={startQRCode}
-                    onkeypress={startQRCode}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <Camera
-                            class="w-12 h-12 mx-auto text-green-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("Print QR Codes")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "View and print QR codes for items to manage their information.",
-                            )}
-                            {#if $userRole === "master"}
-                                <b>{" "}{t("(Visible to Mechanics)")}</b>
-                            {/if}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card p-4 pt-3 bg-white rounded-lg shadow-md">
-                    <div class="card-content">
-                        <Edit
-                            class="w-12 h-12 mx-auto text-orange-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("View & Edit Items")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "Add new items, edit existing ones, and view item details.",
-                            )}
-                            {#if $userRole === "master"}
-                                <b>{" "}{t("(Visible to Mechanics)")}</b>
-                            {/if}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card p-4 pt-3 bg-white rounded-lg shadow-md">
-                    <div
-                        class="card-content"
-                        onclick={() => isIssuesHistoryHidden.set(false)}
-                        onkeypress={() => isIssuesHistoryHidden.set(false)}
-                        tabindex="0"
-                        role="button"
-                    >
-                        <FileText
-                            class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("View Issues History")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "Track and resolve past issues with detailed logs.",
-                            )}
-                            {#if $userRole === "master"}
-                                <b>{" "}{t("(Visible to Mechanics)")}</b>
-                            {/if}
-                        </div>
-                    </div>
-                </div>
-            {/if}
         {/if}
 
-        <div class="card p-4 pt-3 bg-white rounded-lg shadow-md">
-            <div
-                class="card-content"
-                onclick={toggleSettings}
-                onkeypress={toggleSettings}
-                tabindex="0"
-                role="button"
-            >
+        <div
+            class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+            onclick={toggleSettings}
+            onkeypress={toggleSettings}
+            tabindex="0"
+            role="button"
+        >
+            <div class="card-content">
                 <Settings
                     class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
                     style="filter: invert({$darkModeEnabled ? '1' : '0'});"

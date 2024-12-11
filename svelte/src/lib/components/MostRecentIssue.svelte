@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, tick } from "svelte";
+    import { onDestroy, onMount, tick } from "svelte";
     // Utilities
     import { disableContextMenu } from "$lib/helpers/basics";
     // QR Scanner utilities
@@ -150,6 +150,9 @@
         }, 1000);
 
         return () => clearInterval(interval);
+    });
+    onDestroy(() => {
+        isRecentIssueDrawerHidden.set(true);
     });
 </script>
 

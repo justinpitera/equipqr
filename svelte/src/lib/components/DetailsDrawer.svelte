@@ -21,6 +21,7 @@
     import { sineIn } from "svelte/easing";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
+    import { onDestroy } from "svelte";
     const { selectedLanguage, darkModeEnabled } = homePageStore;
 
     function t(key: string): string {
@@ -34,6 +35,10 @@
         duration: 200,
         easing: sineIn,
     };
+
+    onDestroy(() => {
+        hideGSEDetail.set(true);
+    });
 
     const fuelIcons = {
         diesel: Fuel,

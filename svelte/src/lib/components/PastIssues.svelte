@@ -10,6 +10,7 @@
     } from "$lib/helpers/report-ui-store";
     const { isPastIssuesForSpecificIDHidden } = homePageStore;
     import { langChecker, translations } from "$lib/locales";
+    import { onDestroy } from "svelte";
     const { selectedLanguage, darkModeEnabled } = homePageStore;
 
     function t(key: string): string {
@@ -68,6 +69,9 @@
             }
         }
     };
+    onDestroy(() => {
+        isPastIssuesForSpecificIDHidden.set(true);
+    });
 </script>
 
 <!-- Past Issues Drawer -->

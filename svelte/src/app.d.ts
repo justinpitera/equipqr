@@ -8,9 +8,6 @@ declare global {
 		deleteFile: (event: Event) => void;
 		handleClick: () => void;
 	}
-	interface MediaDetails {
-		
-	}
 	interface GSEDetails { // getGSEDetails - /api/gse/details
 		gse_id?: string;
 		old_gse_id?: string;
@@ -49,6 +46,35 @@ declare global {
 		is_operable: string;
 		gate_type?: string;
 		gate_name?: string;
+	}
+    interface HistoryIssue {
+        id: number;
+        gse_id: string;
+        name: string;
+        issue: string;
+        operable: string;
+        files: string[];
+        status: string;
+    }
+	/* Progress bar */
+	interface StatusConfig {
+		label: string;
+		color: string;
+		icon: string;
+	}
+
+	interface ProgressStepProps {
+		label: string;
+		color: string;
+		iconName: string;
+		isActive?: boolean;
+		isCompleted?: boolean;
+		isLast?: boolean;
+	}
+
+	interface ProgressBarProps {
+		currentStatus: string;
+		statuses: Record<string, StatusConfig>;
 	}
 	namespace App {
 		// interface Error {}

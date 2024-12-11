@@ -7,6 +7,7 @@
     import { langChecker, languages, translations } from "$lib/locales";
     import { defaultLang } from "$lib/config";
     import { setLanguage } from "$lib/helpers/server-requests";
+    import { onDestroy } from "svelte";
 
     const {
         isSettingsHidden,
@@ -55,6 +56,9 @@
         duration: 200,
         easing: sineIn,
     };
+    onDestroy(() => {
+        isSettingsHidden.set(true);
+    });
 </script>
 
 <Drawer

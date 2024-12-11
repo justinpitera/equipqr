@@ -8,6 +8,7 @@
     import RoleTester from "./RoleTester.svelte";
     import { writable } from "svelte/store";
     import { login, logout } from "$lib/helpers/server-requests";
+    import { onDestroy } from "svelte";
 
     let email = "";
     let isLoading = writable(false);
@@ -30,6 +31,10 @@
         langChecker(key);
         return langTranslations?.[key] || key;
     }
+
+    onDestroy(() => {
+        isAuthDrawerHidden.set(true);
+    });
 
     async function handleSubmit(e: Event) {
         e.preventDefault();

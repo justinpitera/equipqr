@@ -12,6 +12,7 @@
   import { langChecker, translations } from "$lib/locales";
   const { closeReportHidden } = cancelReportStore;
   import { homePageStore } from "$lib/helpers/homepage";
+  import { onDestroy } from "svelte";
   const { selectedLanguage, darkModeEnabled } = homePageStore;
 
   function t(key: string): string {
@@ -19,6 +20,10 @@
     langChecker(key);
     return langTranslations?.[key] || key;
   }
+
+  onDestroy(() => {
+    closeReportHidden.set(true);
+  });
 </script>
 
 <Drawer
