@@ -8,8 +8,8 @@ Authors:
 """
 
 # Standard
-from email.policy import default
 from uuid import UUID
+from typing import TYPE_CHECKING
 
 # Third-party
 from tortoise.fields import (
@@ -17,12 +17,16 @@ from tortoise.fields import (
     Field,
     UUIDField,
     CharField,
+    ReverseRelation,
     CharEnumField,
 )
 from tortoise.models import Model
 
 # Local
 from src.enums import CrewMemberPositionEnum
+
+if TYPE_CHECKING:
+    from src.models import Issue
 
 
 class CrewMember(Model):
@@ -32,3 +36,4 @@ class CrewMember(Model):
     language_preference              : Field[str] = CharField(max_length=50, null=False)
     position                         : CrewMemberPositionEnum = CharEnumField(enum_type=CrewMemberPositionEnum, null=False)
     is_master                        : Field[bool] = BooleanField(default=False)
+    reported_issues                  : ReverseRelation["Issue"]

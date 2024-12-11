@@ -9,7 +9,7 @@ Authors:
 
 from src.routes.index import homepage
 from src.routes.health import get_status
-from src.routes.issues import details_request, submit_issue
+from src.routes.issues import delete_issues, details_request, submit_issue, fetch_issues
 from src.routes.auth import auth_user, set_token
 from src.routes.media import fetch_issue_attachment
 
@@ -18,6 +18,8 @@ __all__: list[str] = [
     "get_status",
     "details_request",
     "submit_issue",
+    "fetch_issues",
+    "delete_issues",
     "auth_user",
     "set_token",
     "fetch_issue_attachment",

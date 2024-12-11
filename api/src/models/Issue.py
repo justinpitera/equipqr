@@ -5,17 +5,20 @@ from uuid import UUID
 
 # Third-party
 from tortoise.models import Model
+from tortoise.fields.relational import ForeignKeyRelation
 from tortoise.fields import (
     CharField,
     DatetimeField,
     TextField,
     UUIDField,
     Field,
-    ReverseRelation
+    ReverseRelation,
 )
 
 if TYPE_CHECKING:
-    from src.models import IssueAttachment
+    from src.models import (
+        IssueAttachment,
+    )
 
 class Issue(Model):
     """Stores issues relating to GroundSupportEquiptment."""
@@ -23,4 +26,5 @@ class Issue(Model):
     gse_id                           : Field[str]      = CharField(max_length=255)
     issue_description                : Field[str]      = TextField()
     reported_at                      : Field[datetime] = DatetimeField(auto_now_add=True)
+    reported_by                      : Field[str]      = CharField(max_length=3)
     attachments                      : ReverseRelation["IssueAttachment"] | None = None

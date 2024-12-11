@@ -14,7 +14,6 @@ from collections.abc import AsyncGenerator
 from uuid import uuid4
 
 # Third-party
-from src.routes.issues import delete_issues
 from starlette.applications import Starlette
 from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
@@ -31,6 +30,8 @@ from src.routes import (
     get_status,
     details_request,
     submit_issue,
+    delete_issues,
+    fetch_issues,
     fetch_issue_attachment,
     auth_user,
     set_token,
@@ -115,6 +116,7 @@ def init_asgi() -> Starlette:
     # Issues
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/submit", route=submit_issue, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/delete", route=delete_issues, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/fetch", route=fetch_issues, methods=["POST"])
     
     # Authentication
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/auth", route=auth_user, methods=["POST"])

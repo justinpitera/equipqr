@@ -13,12 +13,15 @@ Authors:
 """
 
 # Standard
+from __future__ import annotations
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta, timezone
 
 # Third-party
-from pydantic import BaseModel, ValidationError
-from tortoise.exceptions import OperationalError
+from pydantic import BaseModel, ValidationError, Field, field_validator
+from tortoise.exceptions import OperationalError, DoesNotExist
+from tortoise.expressions import Q
+from tortoise.contrib.pydantic import PydanticModel, pydantic_model_creator # pyright: ignore
 from starlette.datastructures import FormData, UploadFile
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -29,6 +32,7 @@ from colorama import Fore, Style
 # Local
 from src.models import GroundSupportEquiptment, Issue, IssueAttachment
 from src.tasks import upload_attachments_to_minio
+from tortoise.queryset import QuerySet
 
 
 async def details_request(request: Request) -> JSONResponse:
@@ -169,14 +173,16 @@ async def submit_issue(request: Request) -> JSONResponse:
         gse_id: str
         is_operable: bool
         issue_description: str
+        worker_id: str
 
-    async def _extract_form_data() -> tuple[_IssueSubmission, list[dict[str, str | bytes | None]]]:
+    async def _extract_form_data() -> tuple[_IssueSubmission, list[dict[str, str | bytes | None]], str]:
         """Extract and validate form data."""
         try:
             form: FormData = await request.form()
 
             gse_id: str = str(form.get("gse_id", "")).strip()
             issue_description: str = str(form.get("issue_description", "")).strip()
+            worker_id: str = str(form.get("worker_id", "")).strip()
             is_operable_raw: UploadFile | str = form.get("is_operable", "false")
             is_operable: bool = str(is_operable_raw).strip().lower() == "true"
 
@@ -188,6 +194,7 @@ async def submit_issue(request: Request) -> JSONResponse:
                 gse_id=gse_id,
                 is_operable=is_operable,
                 issue_description=issue_description,
+                worker_id=worker_id
             )
 
             attachments: list[dict[str, str | bytes | None]] = [
@@ -199,7 +206,7 @@ async def submit_issue(request: Request) -> JSONResponse:
                 for _, value in form.multi_items() if isinstance(value, UploadFile)
             ]
             logger.info(f"📄 Extracted form data: {validated_data} and {len(attachments)} attachments.")
-            return validated_data, attachments    
+            return validated_data, attachments, worker_id
         except ValidationError as e:
             logger.error(f"❌ Validation error: {e}")
             raise HTTPException(
@@ -210,13 +217,14 @@ async def submit_issue(request: Request) -> JSONResponse:
             logger.error(f"❌ Error parsing form data: {e}")
             raise HTTPException(status_code=400, detail="Invalid form data.")
 
-    async def _save_issue_to_db(validated_data: _IssueSubmission, attachments: list[dict[str, str | bytes | None]]) -> UUID:
+    async def _save_issue_to_db(validated_data: _IssueSubmission, attachments: list[dict[str, str | bytes | None]], worker_id: str) -> UUID:
         """Save issue and attachment metadata to the database."""
         try:
             issue: Issue = await Issue.create(
                 id=uuid4(),
                 gse_id=validated_data.gse_id,
                 issue_description=validated_data.issue_description,
+                reported_by=worker_id,
             )
             for attachment in attachments:
                 attachment_id: UUID = uuid4()
@@ -251,8 +259,8 @@ async def submit_issue(request: Request) -> JSONResponse:
             raise HTTPException(status_code=500, detail="Failed to process attachments.")
 
     try:
-        validated_data, attachments = await _extract_form_data()
-        issue_id: UUID = await _save_issue_to_db(validated_data, attachments)
+        validated_data, attachments, worker_id = await _extract_form_data()
+        issue_id: UUID = await _save_issue_to_db(validated_data, attachments, worker_id=worker_id)
         await _queue_attachments(_=issue_id, attachments=attachments)
         logger.info("📬 Attachments queued and issue saved successfully!")
         return JSONResponse(
@@ -305,7 +313,7 @@ async def delete_issues(request: Request) -> JSONResponse:
         await Issue.filter(id__in=fetched_issues_ids).delete()
 
         logger.info(f"{Fore.GREEN}✅ Successfully deleted requested issues.{Style.RESET_ALL}")
-        response_content = {"message": "Issues deleted successfully.", "deleted_ids": list(fetched_issues_ids)}
+        response_content: dict[str, str | list[str]] = {"message": "Issues deleted successfully.", "deleted_ids": list(fetched_issues_ids)}
         if not_found_ids:
             response_content["not_found_ids"] = not_found_ids
             return JSONResponse(status_code=207, content=response_content)
@@ -339,3 +347,99 @@ async def delete_issues(request: Request) -> JSONResponse:
                 "details": str(e)
             }
         )
+        
+async def fetch_issues(request: Request) -> JSONResponse:
+
+    class _IssueFilters(BaseModel):
+        """Pydantic model to validate query parameters for fetching issues."""
+        reported_by: str | None = None
+        reported_at_start: str | None = None
+        reported_at_end: str | None = None
+        description: str | None = None
+        page: int = Field(default=1, ge=1)
+        page_size: int = Field(default=10, ge=1, le=100)
+
+        @field_validator("reported_at_start", "reported_at_end", mode="before")
+        @classmethod
+        def validate_date_format(cls, value: str | None) -> str | None:
+            if value:
+                try:
+                    datetime.fromisoformat(value)
+                except ValueError:
+                    raise ValueError("Invalid ISO 8601 date format.")
+            return value
+
+    try:
+        # Parse and validate query parameters
+        query_params: dict[str, int | str | None] = {
+            key: (int(value) if key in {"page", "page_size"} else str(value) if key in {"reported_by", "description"} else value)
+            for key, value in request.query_params.items()
+        }
+
+        filters: _IssueFilters = _IssueFilters(**query_params)
+
+        # Construct Tortoise query
+        query: Q = Q()
+        if filters.reported_by:
+            query &= Q(reported_by__email__icontains=filters.reported_by)
+        if filters.reported_at_start:
+            query &= Q(reported_at__gte=filters.reported_at_start)
+        if filters.reported_at_end:
+            query &= Q(reported_at__lte=filters.reported_at_end)
+        if filters.description:
+            query &= Q(issue_description__icontains=filters.description)
+
+        # Pagination
+        offset: int = (filters.page - 1) * filters.page_size
+        limit: int = filters.page_size
+
+        # Query database
+        issues_queryset = (
+            await Issue.filter(query)
+            .offset(offset)
+            .limit(limit)
+            .prefetch_related("attachments")
+        )
+
+        total_issues: int = await Issue.filter(query).count()
+
+        # Convert issues to plain dictionaries
+        issues_data = []
+        for issue in issues_queryset:
+            issues_data.append({
+                "id": str(issue.id),
+                "gse_id": str(issue.gse_id),
+                "issue_description": issue.issue_description,
+                "reported_at": str(issue.reported_at),
+                "reported_by": issue.reported_by,
+                "attachments": [
+                    {
+                        "id": str(attachment.id),
+                        "file_type": attachment.file_type,
+                        "uploaded_at": str(attachment.uploaded_at),
+                    }
+                    for attachment in issue.attachments
+                ],
+            })
+
+        # Build response
+        response: dict[str, int | list[dict]] = {
+            "total": total_issues,
+            "page": filters.page,
+            "page_size": filters.page_size,
+            "data": issues_data,
+        }
+
+        logger.info("Successfully fetched issues with filters: {}", query_params)
+        return JSONResponse(status_code=200, content=response)
+
+
+    except DoesNotExist:
+        logger.error("No issues found for the provided filters: {}", query_params)
+        return JSONResponse(status_code=404, content={"error": "No issues found."})
+    except ValueError as ve:
+        logger.error("Validation error: {}", str(ve))
+        return JSONResponse(status_code=422, content={"error": str(ve)})
+    except Exception as e:
+        logger.error("Validation error: {}", str(e))
+        return JSONResponse(status_code=500, content={"error": "Internal server error"})
