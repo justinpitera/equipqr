@@ -106,7 +106,23 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 	return undefined;
 }
 
-export async function getIssues(loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<string | undefined> {
+export async function getIssues(loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<{
+	data: {
+		id: string;
+		gse_id: string;
+		issue_description: string;
+		reported_at: string;
+		reported_by: string | undefined;
+		attachments: {
+			id: string;
+			file_type: string;
+			uploaded_at: string;
+		}[]
+	}[],
+	page: number,
+	page_size: number;
+	total: number;
+} | undefined> {
 	loadingFunctionBefore();
 	try {
 		const controller = new AbortController();

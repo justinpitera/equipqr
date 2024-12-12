@@ -48,12 +48,11 @@ declare global {
 		gate_name?: string;
 	}
     interface HistoryIssue {
-        id: number;
+        id: string;
         gse_id: string;
         name: string;
         issue: string;
         operable: string;
-        files: string[];
         status: string;
         estimated_date?: string;
 		gate_type?: string;

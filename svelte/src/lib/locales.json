@@ -171,7 +171,9 @@
     "Failed to delete issue: Error": "Failed to delete issue: Error",
     "Error deleting issue": "Error deleting issue",
     "Failed to delete issue: TypeError: Failed to fetch": "Failed to delete issue: TypeError: Failed to fetch",
-    "Failed to submit the issue": "Failed to submit the issue"
+    "Failed to submit the issue": "Failed to submit the issue",
+    "Could not find any past incidents, try again later...": "Could not find any past incidents, try again later...",
+    "Warning": "Warning"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -345,7 +347,9 @@
     "Failed to delete issue: Error": "Kunne ikke slette problemet: Fejl",
     "Error deleting issue": "Fejl sletning af problemet",
     "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette problemet: TypeError: Kunne ikke hente",
-    "Failed to submit the issue": "Kunne ikke indsende problemet"
+    "Failed to submit the issue": "Kunne ikke indsende problemet",
+    "Could not find any past incidents, try again later...": "Kunne ikke finde nogen tidligere hændelser, prøv igen senere ...",
+    "Warning": "Advarsel"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -519,7 +523,9 @@
     "Failed to delete issue: Error": "Kunne ikke slette problemet: feil",
     "Error deleting issue": "Feil sletting av problemet",
     "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette utgaven: Typeerror: Kunne ikke hente",
-    "Failed to submit the issue": "Kunne ikke sende inn saken"
+    "Failed to submit the issue": "Kunne ikke sende inn saken",
+    "Could not find any past incidents, try again later...": "Kunne ikke finne noen tidligere hendelser, prøv igjen senere ...",
+    "Warning": "Advarsel"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -693,6 +699,8 @@
     "Failed to delete issue: Error": "Det gick inte att ta bort problemet: fel",
     "Error deleting issue": "Problem med fel radering",
     "Failed to delete issue: TypeError: Failed to fetch": "Det gick inte att ta bort problemet: TypeError: Det gick inte att hämta",
-    "Failed to submit the issue": "Det gick inte att lämna in problemet"
+    "Failed to submit the issue": "Det gick inte att lämna in problemet",
+    "Could not find any past incidents, try again later...": "Kunde inte hitta några tidigare incidenter, försök igen senare ...",
+    "Warning": "Varning"
   }
 }
