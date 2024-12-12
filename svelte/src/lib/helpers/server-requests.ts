@@ -106,7 +106,7 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 	return undefined;
 }
 
-export async function getIssues(loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<{
+export async function getIssues(page: number | undefined, loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<{
 	data: {
 		id: string;
 		gse_id: string;
@@ -129,6 +129,9 @@ export async function getIssues(loadingFunctionBefore: () => void, loadingFuncti
 		const timeout = setTimeout(() => controller.abort('Request timed out after 10s'), 10000);
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/fetch`, {
 			method: "POST",
+			body: JSON.stringify({
+				page,
+			}),
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);

@@ -19,6 +19,7 @@ class HomePageStore {
         public userRole: Writable<string> = writable(typeof window !== 'undefined' ? getCookie('role') : "employee"),
         public debugMode: Writable<boolean> = writable(false),
         public qrScannerSound: Writable<boolean> = writable(true),
+        public issues: Writable<HistoryIssue[]> = writable([]),
     ) { }
 }
 

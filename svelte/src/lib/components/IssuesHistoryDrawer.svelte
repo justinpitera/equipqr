@@ -44,7 +44,7 @@
     import { gate_types } from "$lib/helpers/report-ui-store";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
-    const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled } =
+    const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled, issues } =
         homePageStore;
 
     function t(key: string): string {
@@ -77,10 +77,7 @@
     };
     const statusKeys = Object.keys(statuses);
 
-    type Status = keyof typeof statuses;
-
     let issuesScroller: HTMLElement;
-    let issues: HistoryIssue[] = $state([]);
     let currentPage = $state(1);
     let totalPages = $state(1); // Math.ceil(issues.length / issuesPerPage)
     let issuesPerPage = $state(10);
@@ -162,7 +159,7 @@
         shouldRefresh = false;
         isRefreshing = false;
         translateY = 0;
-        issues = [];
+        issues.set([]);
         currentPage = 1;
         isLoading = false;
         showScrollUp = false;
@@ -171,6 +168,7 @@
 
     async function loadPage(page?: number) {
         const returned_issues = await getIssues(
+            page,
             () => {
                 isLoading = true;
             },
@@ -183,7 +181,7 @@
             issuesPerPage = returned_issues.page_size;
             currentPage = returned_issues.page;
             totalPages = Math.ceil(returned_issues.total / issuesPerPage);
-            issues = returned_issues.data.map((returned_issue) => {
+            const new_issues = returned_issues.data.map((returned_issue) => {
                 return {
                     id: returned_issue.id, //number
                     gse_id: returned_issue.gse_id, //string
@@ -200,31 +198,40 @@
                     // gate_name: returned_issue.gate_name ? returned_issue.gate_name : undefined, //string
                 } as HistoryIssue;
             });
+            isLoading = false;
+            issues.set(new_issues);
+            return new_issues;
         } else {
             notify(
                 "Warning",
                 "Could not find any past incidents, try again later...",
                 "warning",
             );
+            isLoading = false;
+            return $issues;
         }
-        isLoading = false;
-        return issues;
     }
 
     function simulateLoadingWithFilters() {
         isLoading = true;
         setTimeout(() => {
-            alert("Filters are not supported yet")
+            alert("Filters are not supported yet");
             if (selectedFilter.label !== "Operable/Not Operable") {
                 if (selectedFilter.label === "Operable") {
-                    issues = issues.filter((issue) => issue.operable === "Yes");
+                    issues.set(
+                        $issues.filter((issue) => issue.operable === "Yes"),
+                    );
                 } else if (selectedFilter.label === "Not Operable") {
-                    issues = issues.filter((issue) => issue.operable === "No");
+                    issues.set(
+                        $issues.filter((issue) => issue.operable === "No"),
+                    );
                 }
             }
             if (selectedCategory.label !== "All categories") {
-                issues = issues.filter(
-                    (issue) => issue.status === selectedCategory.label,
+                issues.set(
+                    $issues.filter(
+                        (issue) => issue.status === selectedCategory.label,
+                    ),
                 );
             }
             isLoading = false;
@@ -235,7 +242,6 @@
         if (!$isIssuesHistoryHidden) loadPage();
     });
 
-    loadPage();
     let deleteIssuePopup = $state(false);
     let leaveCommentDrawerHidden = $state(true);
     let transitionParams = {
@@ -250,7 +256,7 @@
             issuesScroller.scrollTo({ top: 0, behavior: "instant" });
         }, 100);
         isLoading = true;
-        const totalPages = Math.ceil(issues.length / issuesPerPage);
+        const totalPages = Math.ceil($issues.length / issuesPerPage);
         if (next) {
             currentPage = Math.min(totalPages, currentPage + 1);
         } else {
@@ -396,7 +402,7 @@
     onMount(() => {
         interval = setInterval(async () => {
             timeAgo = [];
-            for (const issue of issues) {
+            for (const issue of $issues) {
                 if (issue.estimated_date) {
                     timeAgo.push(calculateTimeAgo(issue.estimated_date));
                 } else {
@@ -480,10 +486,12 @@
                     isLoading = true;
                     deleteIssuePopup = false;
                     await delete_issue([delete_issue_id_confirm]);
-                    issues = issues.filter(
-                        (single_issue) =>
-                            single_issue.id.toString() !==
-                            delete_issue_id_confirm,
+                    issues.set(
+                        $issues.filter(
+                            (single_issue) =>
+                                single_issue.id.toString() !==
+                                delete_issue_id_confirm,
+                        ),
                     );
                     isLoading = false;
                     delete_issue_id_confirm = "";
@@ -797,10 +805,10 @@
                 class="pt-4 flex justify-between p-5 pr-3 pl-3 items-center border-b"
             >
                 <span class="text-sm text-gray-500">
-                    {#if issues.length > 0}
+                    {#if $issues.length > 0}
                         Page {currentPage} of {totalPages}
                         <br />
-                        Results: {issues.length}
+                        Results: {$issues.length}
                     {/if}
                 </span>
                 {#if isLoading}
@@ -821,7 +829,7 @@
                     <Button
                         onclick={() => changePage(true)}
                         disabled={isLoading ||
-                            currentPage * issuesPerPage >= issues.length}
+                            currentPage * issuesPerPage >= $issues.length}
                         class="btn"
                         style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >
@@ -830,8 +838,8 @@
                 </div>
             </div>
             <!-- Issues Loop -->
-            {#await loadPage(currentPage) then rows}
-                {#each rows as issue, issue_number}
+            {#if $issues}
+                {#each $issues as issue, issue_number}
                     <div
                         class="p-4 border-b justify-between items-start issue-item relative select-none"
                         class:multiSelectMode
@@ -870,7 +878,9 @@
                                     <Plane class="h-3 w-3 text-navy-800" />
                                 </div>
                                 <!-- Gate Info -->
-                                <div class="ml-2 text-xs font-bold text-black">
+                                <div
+                                    class="ml-2 text-xs font-bold text-black"
+                                >
                                     <p>{issue.gate_type}</p>
                                     <p>{issue.gate_name}</p>
                                 </div>
@@ -884,7 +894,9 @@
                         </div>
                         <!-- Operable -->
                         <div class="text-sm flex items-center">
-                            <p class="text-sm font-bold">{t("Operable:")}</p>
+                            <p class="text-sm font-bold">
+                                {t("Operable:")}
+                            </p>
                             {#if issue.operable.toLowerCase() === "yes"}
                                 <CheckOutline
                                     class="ml-2 h-4 w-4 text-green-500"
@@ -994,18 +1006,21 @@
                                                             issue.id.toString()
                                                         )
                                                             return;
-                                                        issues = issues.map(
-                                                            (single_issue) => {
-                                                                if (
-                                                                    issue.id ===
-                                                                    single_issue.id
-                                                                ) {
-                                                                    console.log(issue.id, single_issue.id, single_issue.status, status)
-                                                                    single_issue.status =
-                                                                        status;
-                                                                }
-                                                                return single_issue;
-                                                            },
+                                                        issues.set(
+                                                            $issues.map(
+                                                                (
+                                                                    single_issue,
+                                                                ) => {
+                                                                    if (
+                                                                        issue.id ===
+                                                                        single_issue.id
+                                                                    ) {
+                                                                        single_issue.status =
+                                                                            status;
+                                                                    }
+                                                                    return single_issue;
+                                                                },
+                                                            ),
                                                         );
                                                         console.warn(
                                                             "WIP tell server",
@@ -1091,7 +1106,9 @@
                                         class={`text-lg font-semibold text-${statusKeys.indexOf(issue.status) >= 0 ? statuses[issue.status].color : "gray"}-500`}
                                     >
                                         {statuses[issue.status].label} - {calculateProgress(
-                                            statusKeys.indexOf(issue.status),
+                                            statusKeys.indexOf(
+                                                issue.status,
+                                            ),
                                             statusKeys.length,
                                         )}%
                                     </span>
@@ -1109,15 +1126,20 @@
                                     autohide={false}
                                     on:clear={() => {}}
                                     on:apply={(event) => {
-                                        issues = issues.map((single_issue) => {
-                                            if (issue.id === single_issue.id) {
-                                                single_issue.estimated_date =
-                                                    event.detail
-                                                        ? event.detail.toLocaleDateString()
-                                                        : undefined;
-                                            }
-                                            return single_issue;
-                                        });
+                                        issues.set(
+                                            $issues.map((single_issue) => {
+                                                if (
+                                                    issue.id ===
+                                                    single_issue.id
+                                                ) {
+                                                    single_issue.estimated_date =
+                                                        event.detail
+                                                            ? event.detail.toLocaleDateString()
+                                                            : undefined;
+                                                }
+                                                return single_issue;
+                                            }),
+                                        );
                                         console.warn("WIP tell server");
                                         editIssue = "";
                                     }}
@@ -1171,20 +1193,18 @@
                         </Button>
                     </div>
                 {/each}
-            {:catch}
-                <p>Could not load the next page...</p>
-            {/await}
+            {/if}
             <!-- Page Buttons Bottom -->
             <div
-                class="mt-8 flex justify-between p-5 pr-3 pl-3 pt-0 items-center{!isLoading && issues.length >
-                5
+                class="mt-8 flex justify-between p-5 pr-3 pl-3 pt-0 items-center{!isLoading &&
+                $issues.length > 5
                     ? ''
                     : ' hidden'}"
             >
                 <span class="text-sm text-gray-500">
                     Page {currentPage} of {totalPages}
                     <br />
-                    Results: {issues.length}
+                    Results: {$issues.length}
                 </span>
                 <div class="flex gap-2">
                     <Button
@@ -1198,7 +1218,7 @@
                     <Button
                         onclick={() => changePage(true)}
                         disabled={isLoading ||
-                            currentPage * issuesPerPage >= issues.length}
+                            currentPage * issuesPerPage >= $issues.length}
                         class="btn"
                         style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >
