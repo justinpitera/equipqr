@@ -438,6 +438,7 @@
     style="z-index: 60;"
     placement="bottom"
     bind:hidden={leaveCommentDrawerHidden}
+    class="drawer-box"
 >
     <div class="flex items-center">
         <h5
@@ -476,7 +477,7 @@
     placement="right"
     bind:hidden={$isIssuesHistoryHidden}
     backdrop={true}
-    class="p-6 md:p-8 bg-white rounded-lg shadow-lg overflow-y-hidden"
+    class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg overflow-y-hidden"
     width="w-full"
     activateClickOutside={false}
 >

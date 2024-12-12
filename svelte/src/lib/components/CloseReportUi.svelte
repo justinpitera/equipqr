@@ -33,6 +33,7 @@
   transitionType="fly"
   transitionParams={transitionParamsTop}
   bind:hidden={$closeReportHidden}
+  class="drawer-box"
 >
   <div class="flex items-center">
     <h5

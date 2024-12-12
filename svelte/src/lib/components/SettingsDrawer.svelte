@@ -67,7 +67,7 @@
     placement="bottom"
     bind:hidden={$isSettingsHidden}
     backdrop={true}
-    class="p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg"
+    class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg"
     width="w-full"
     transitionType="fly"
     transitionParams={transitionParamsBottom}

@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  overflow: hidden;
-  overscroll-behavior: none;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -79,15 +74,43 @@ html {
   }
 }
 
+html,
+body {
+  background: #000;
+}
+
+.drawer-box {
+  margin: auto;
+}
+
+@media screen and (min-width: 768px) {
+  .drawer-box {
+    left: 0;
+  }
+}
+
+.popup-content,
+.report-form-bg,
+.drawer-box,
+.container,
+body {
+  max-width: 768px !important;
+}
+
+body {
+  margin: auto;
+  position: relative;
+}
+
+html {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 @media (min-width: 600px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
-
-html,
-body {
-  background: #000;
 }
 
 .flashlight-btn {
@@ -193,26 +216,6 @@ body {
   grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
 }
 
-.popup-content,
-.report-form-bg,
-#settings-drawer,
-#past-issues-drawer,
-#issue-history-drawer,
-#leave-comment-drawer,
-#gse-details-drawer,
-#close-report-ui,
-#auth-drawer,
-.container,
-body,
-#drawer-example {
-  max-width: 768px !important;
-}
-
-body {
-  margin: auto;
-  position: relative;
-}
-
 .loader {
   display: flex;
   gap: 1rem;
@@ -246,17 +249,6 @@ body {
   }
 }
 
-#settings-drawer,
-#past-issues-drawer,
-#issue-history-drawer,
-#leave-comment-drawer,
-#gse-details-drawer,
-#close-report-ui,
-#auth-drawer,
-#drawer-example {
-  margin: auto;
-  left: 0;
-}
 * {
   scrollbar-width: thin;
   scrollbar-color: #003965 transparent;

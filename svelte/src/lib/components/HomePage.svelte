@@ -27,6 +27,7 @@
         userRole,
         selectedLanguage,
         darkModeEnabled,
+        qrPrintDrawerHidden,
     } = homePageStore;
 
     function t(key: string): string {
@@ -178,8 +179,8 @@
                 </div>
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={startQRCode}
-                    onkeypress={startQRCode}
+                    onclick={() => qrPrintDrawerHidden.set(false)}
+                    onkeypress={() => qrPrintDrawerHidden.set(false)}
                     tabindex="0"
                     role="button"
                 >

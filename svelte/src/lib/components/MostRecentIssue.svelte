@@ -161,7 +161,7 @@
     placement="bottom"
     bind:hidden={$isRecentIssueDrawerHidden}
     backdrop={true}
-    class="p-6 md:p-8 bg-white rounded-lg shadow-lg"
+    class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg"
     width="w-full"
     activateClickOutside={!$hideGSEDetail || $isFullScreenMode ? false : true}
 >
