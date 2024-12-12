@@ -15,6 +15,7 @@
   import HomePage from "$lib/components/HomePage.svelte";
   import PastIssues from "$lib/components/PastIssues.svelte";
   import { Spinner } from "flowbite-svelte";
+  import PrintDrawer from "$lib/components/PrintDrawer.svelte";
 
   onMount(() => {
     registerServiceWorker();
@@ -37,6 +38,7 @@
 {:else}
   <HomePage />
   <PastIssues />
+  <PrintDrawer />
   <DetailsDrawer />
   <NotifyUi />
   <CloseReportUi />

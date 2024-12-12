@@ -1,7 +1,6 @@
 <script lang="ts">
-    import { Drawer, Checkbox, Button, Badge } from "flowbite-svelte";
     import { onMount } from "svelte";
-    import { X } from "lucide-svelte";
+    import { Check, X } from "lucide-svelte";
     import {
         Table,
         TableBody,
@@ -9,23 +8,137 @@
         TableBodyRow,
         TableHead,
         TableHeadCell,
+        Chart,
+        Drawer,
+        Button,
+        Badge,
+        Card,
+        Checkbox,
     } from "flowbite-svelte";
     import { homePageStore } from "$lib/helpers/homepage";
+    import { equipment } from "$lib/helpers/equipment";
     const { qrPrintDrawerHidden } = homePageStore;
 
     let vehicles = [
-        { id: 1, name: "Vehicle 1" },
-        { id: 2, name: "Vehicle 2" },
-        { id: 3, name: "Vehicle 3" },
-        { id: 4, name: "Vehicle 4" },
+        {
+            id: 1,
+            name: "Baggage cart (BCT)",
+            manufacturer: "Acme",
+            model: "V2",
+            location: "BBP",
+            status: "Needs Maintenance",
+            fuelType: "Electric",
+            inUse: false,
+        },
+        {
+            id: 2,
+            name: "Ground power unit (GPU)",
+            manufacturer: "Delta",
+            model: "D3",
+            location: "CCP",
+            status: "Okay",
+            fuelType: "Gasoline",
+            inUse: true,
+        },
+        {
+            id: 3,
+            name: "Manual passenger stair (MPS)",
+            manufacturer: "Beta",
+            model: "B4",
+            location: "DDP",
+            status: "Faulty",
+            fuelType: "Diesel",
+            inUse: false,
+        },
+        {
+            id: 4,
+            name: "High loader (HIL)",
+            manufacturer: "Polar",
+            model: "GSH-1",
+            location: "AAP",
+            status: "Okay",
+            fuelType: "Diesel",
+            inUse: true,
+        },
     ];
+    const inUseCount = vehicles.filter((vehicle) => vehicle.inUse).length;
+    const notInUseCount = vehicles.length - inUseCount;
+    const options = {
+        series: [inUseCount, notInUseCount],
+        labels: ["In Use", "Not In Use"],
+        colors: ["#28a745", "#dc3545"], // Green and Red
+        chart: {
+            height: 320,
+            type: "donut",
+        },
+        stroke: {
+            colors: ["transparent"],
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    labels: {
+                        show: true,
+                        name: {
+                            show: true,
+                        },
+                        total: {
+                            showAlways: true,
+                            show: true,
+                            label: "Total Vehicles",
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: "18px",
+                            fontWeight: 600,
+                            formatter: function (w) {
+                                const sum = w.globals.seriesTotals.reduce(
+                                    (a: number, b: number) => a + b,
+                                    0,
+                                );
+                                return `${sum} vehicles`;
+                            },
+                        },
+                        value: {
+                            show: true,
+                            formatter: function (value: string) {
+                                return value + " vehicles";
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        tooltip: {
+            enabled: true,
+            y: {
+                formatter: function (value) {
+                    return `${value} vehicles`;
+                },
+            },
+        },
+        legend: {
+            position: "bottom",
+            labels: {
+                useSeriesColors: true,
+            },
+            itemMargin: {
+                horizontal: 10,
+                vertical: 5,
+            },
+            fontFamily: "Inter, sans-serif",
+        },
+    } as ApexCharts.ApexOptions;
 
-    let selectedVehicles = new Set<number>();
+    const getRandomImage = (vehicleName: string) => {
+        const matchingImage = equipment[vehicleName];
+        return matchingImage || "https://via.placeholder.com/150";
+    };
+
+    let selectedVehicles = $state(new Set<number>());
     let printQueue: {
         id: number;
         name: string;
         status: "pending" | "printing";
-    }[] = [];
+    }[] = $state([]);
 
     const toggleSelection = (id: number) => {
         if (selectedVehicles.has(id)) {
@@ -33,14 +146,17 @@
         } else {
             selectedVehicles.add(id);
         }
+        selectedVehicles = new Set(selectedVehicles); // Trigger reactivity
     };
 
     const selectAll = () => {
         vehicles.forEach((vehicle) => selectedVehicles.add(vehicle.id));
+        selectedVehicles = new Set(selectedVehicles); // Trigger reactivity
     };
 
     const deselectAll = () => {
         selectedVehicles.clear();
+        selectedVehicles = new Set(selectedVehicles); // Trigger reactivity
     };
 
     const printNow = () => {
@@ -54,24 +170,76 @@
             }
         });
         selectedVehicles.clear();
+        selectedVehicles = new Set(selectedVehicles); // Trigger reactivity
     };
 
     const cancelPrint = (id: number) => {
         printQueue = printQueue.filter((item) => item.id !== id);
     };
 
+    const exampleImageUrls = [
+        "/images/example_qr.png",
+        "/images/example_qr.png",
+        "/images/example_qr.png",
+        "/images/example_qr.png",
+    ];
+
+    let printEcoFriendly = $state(true);
+
+    const printImage = (url: string) => {
+        const printWindow = window.open("about:blank", "_new");
+        printWindow?.document.open();
+        printWindow?.document.write(
+            `<html><head><title>Print</title></head><body onload="window.print();" onafterprint="window.close()">
+        <img src="${url}" style="width:100%;height:auto;" />
+        </body></html>`,
+        );
+        printWindow?.document.close();
+    };
+
+    const printImages = (
+        pendingItems: {
+            id: number;
+            name: string;
+            status: "pending" | "printing";
+        }[],
+    ) => {
+        const printWindow = window.open("about:blank", "_new");
+        printWindow?.document.open();
+        let printBody =
+            '<html><head><title>Print</title></head><body onload="window.print();" onafterprint="window.close()">';
+        for (const pendingItem of pendingItems) {
+            pendingItem.status = "printing";
+            const imageUrl =
+                exampleImageUrls[pendingItem.id % exampleImageUrls.length];
+            printBody += `<img src="${imageUrl}" style="width:100%;height:auto;display:block;" />`;
+        }
+        printBody += "</body></html>";
+        printWindow?.document.write(printBody);
+        printWindow?.document.close();
+    };
+
     onMount(() => {
         const interval = setInterval(() => {
-            const pendingItem = printQueue.find(
-                (item) => item.status === "pending",
-            );
-            if (pendingItem) {
-                pendingItem.status = "printing";
-                setTimeout(() => {
+            if (printQueue.length === 0) return;
+            if (printEcoFriendly) {
+                printImages(printQueue);
+                printQueue = [];
+            } else {
+                const pendingItem = printQueue.find(
+                    (item) => item.status === "pending",
+                );
+                if (pendingItem) {
+                    pendingItem.status = "printing";
+                    const imageUrl =
+                        exampleImageUrls[
+                            pendingItem.id % exampleImageUrls.length
+                        ];
+                    printImage(imageUrl);
                     printQueue = printQueue.filter(
                         (item) => item.id !== pendingItem.id,
                     );
-                }, 1000);
+                }
             }
         }, 1000);
 
@@ -83,79 +251,164 @@
     id="qr-print-drawer"
     placement="bottom"
     backdrop={true}
-    style="z-index: 60;"
-    class="drawer-box p-6 bg-gray-100"
+    class="drawer-box p-6 bg-gray-100 fixed inset-0 z-50"
+    width="100"
     bind:hidden={$qrPrintDrawerHidden}
 >
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold">QR Code Printing</h2>
-        <Button
-            color="red"
-            size="sm"
-            onclick={() => qrPrintDrawerHidden.set(true)}>Close</Button
-        >
-    </div>
-
-    <div class="mb-4">
-        <h3 class="font-semibold mb-2">Vehicles</h3>
-        <div class="grid grid-cols-2 gap-4">
-            {#each vehicles as vehicle}
-                <Checkbox
-                    id={`vehicle-${vehicle.id}`}
-                    value={vehicle.id}
-                    checked={selectedVehicles.has(vehicle.id)}
-                    onchange={() => toggleSelection(vehicle.id)}
-                >
-                    {vehicle.name}
-                </Checkbox>
-            {/each}
-        </div>
-    </div>
-
-    <div class="flex items-center justify-between mb-4">
-        <span>{selectedVehicles.size} selected</span>
-        <div class="space-x-2">
-            <Button color="green" size="sm" onclick={selectAll}
-                >Select All</Button
+    {#if printQueue.length > 0}
+        <h3 class="font-semibold mb-2">Print Queue</h3>
+        <Table>
+            <TableHead>
+                <TableHeadCell>ID</TableHeadCell>
+                <TableHeadCell>Name</TableHeadCell>
+                <TableHeadCell>Status</TableHeadCell>
+                <TableHeadCell>Actions</TableHeadCell>
+            </TableHead>
+            <TableBody tableBodyClass="divide-y">
+                {#each printQueue as item}
+                    <TableBodyRow>
+                        <TableBodyCell>{item.id}</TableBodyCell>
+                        <TableBodyCell>{item.name}</TableBodyCell>
+                        <TableBodyCell>
+                            {#if item.status === "printing"}
+                                <Badge color="green">Printing</Badge>
+                            {:else}
+                                <Badge color="yellow">Pending</Badge>
+                            {/if}
+                        </TableBodyCell>
+                        <TableBodyCell>
+                            <Button
+                                color="red"
+                                size="xs"
+                                onclick={() => cancelPrint(item.id)}
+                            >
+                                <X class="w-4 h-4" />
+                            </Button>
+                        </TableBodyCell>
+                    </TableBodyRow>
+                {/each}
+            </TableBody>
+        </Table>
+    {:else}
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold">QR Code Printing</h2>
+            <Button
+                color="red"
+                size="sm"
+                onclick={() => qrPrintDrawerHidden.set(true)}>Close</Button
             >
-            <Button color="red" size="sm" onclick={deselectAll}
-                >Deselect All</Button
-            >
-            <Button color="blue" size="sm" onclick={printNow}>Print Now</Button>
         </div>
-    </div>
 
-    <h3 class="font-semibold mb-2">Print Queue</h3>
-    <Table>
-        <TableHead>
-            <TableHeadCell>ID</TableHeadCell>
-            <TableHeadCell>Name</TableHeadCell>
-            <TableHeadCell>Status</TableHeadCell>
-            <TableHeadCell>Actions</TableHeadCell>
-        </TableHead>
-        <TableBody tableBodyClass="divide-y">
-            {#each printQueue as item}
-                <TableBodyRow>
-                    <TableBodyCell>{item.id}</TableBodyCell>
-                    <TableBodyCell>{item.name}</TableBodyCell>
-                    <TableBodyCell>
-                        {#if item.status === "printing"}
-                            <Badge color="green">Printing</Badge>
-                        {:else}
-                            <Badge color="yellow">Pending</Badge>
-                        {/if}
-                    </TableBodyCell>
-                    <TableBodyCell>
-                        <Button
-                            color="red"
-                            size="xs"
-                            onclick={() => cancelPrint(item.id)}
+        <div class="mb-4">
+            <h3 class="font-semibold mb-2">Vehicles</h3>
+            <div
+                class="h-[calc(100vh-(104px+36px+16px+24px+24px+8px))] overflow-y-auto pb-3"
+            >
+                <div>
+                    <hr class="mt-2 mb-2" />
+                    <h3 class="text-xl font-semibold mb-4 text-center">
+                        Vehicle Usage
+                    </h3>
+                    <Chart {options} />
+                    <hr class="mt-2 mb-2" />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {#each vehicles as vehicle}
+                        <Card
+                            class="bg-white border border-gray-200 rounded-lg shadow-lg transition-all hover:shadow-xl p-6"
                         >
-                            <X class="w-4 h-4" />
-                        </Button>
-                    </TableBodyCell>
-                </TableBodyRow>
-            {/each}
-        </TableBody>
-    </Table>
+                            <div
+                                class="flex items-center relative w-fit m-auto"
+                            >
+                                <Checkbox
+                                    inline
+                                    class="border-2 border-blue-500 rounded-md absolute top-0 left-0"
+                                    checked={selectedVehicles.has(vehicle.id)}
+                                ></Checkbox>
+                                <img
+                                    src={getRandomImage(vehicle.name)}
+                                    alt={vehicle.name}
+                                    height="150"
+                                    width="150"
+                                    class="rounded-lg object-cover"
+                                />
+                            </div>
+                            <h4
+                                class="font-bold text-2xl text-gray-800 mb-2 text-center"
+                            >
+                                {vehicle.name}
+                            </h4>
+                            <div class="space-y-2 text-sm text-gray-600">
+                                <p>
+                                    <strong>Manufacturer:</strong>
+                                    {vehicle.manufacturer}
+                                </p>
+                                <p><strong>Model:</strong> {vehicle.model}</p>
+                                <p>
+                                    <strong>Location:</strong>
+                                    {vehicle.location}
+                                </p>
+                                <p><strong>Status:</strong> {vehicle.status}</p>
+                                <p>
+                                    <strong>Fuel Type:</strong>
+                                    {vehicle.fuelType}
+                                </p>
+                            </div>
+                            <div class="flex items-center mt-4 space-x-2">
+                                <strong class="text-sm">In Use:</strong>
+                                {#if vehicle.inUse}
+                                    <Check class="text-green-500" />
+                                {:else}
+                                    <X class="text-red-500" />
+                                {/if}
+                            </div>
+                            <Button
+                                color="blue"
+                                size="xs"
+                                class="mt-4 w-full py-2 rounded-lg text-white font-semibold hover:bg-blue-600 transition-colors"
+                                onclick={() => toggleSelection(vehicle.id)}
+                            >
+                                {selectedVehicles.has(vehicle.id)
+                                    ? "Deselect"
+                                    : "Select"}
+                            </Button>
+                        </Card>
+                    {/each}
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="fixed bottom-0 left-0 right-0 bg-gray-200 p-4 text-center pb-4 max-w-[768px] m-auto"
+        >
+            <div>
+                <Button
+                    color="green"
+                    size="sm"
+                    onclick={selectAll}
+                    class="px-4 py-2 rounded-full">Select All</Button
+                >
+                <Button
+                    color="red"
+                    size="sm"
+                    onclick={deselectAll}
+                    class="px-4 py-2 rounded-full">Deselect All</Button
+                >
+                <Button
+                    color="blue"
+                    size="sm"
+                    onclick={printNow}
+                    class="px-4 py-2 rounded-full">Print Now</Button
+                >
+            </div>
+            <div class="flex justify-between items-center mt-2">
+                <span class="text-lg font-semibold text-blue-600"
+                    >{selectedVehicles.size} selected</span
+                >
+                <Checkbox inline class="me-2" bind:checked={printEcoFriendly}
+                    >Eco Friendly</Checkbox
+                >
+            </div>
+        </div>
+    {/if}
 </Drawer>

@@ -263,7 +263,7 @@ export async function get_gates(airport_icao_code: string) {
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
-		const response = await fetch(`${BACKEND_URL}/api/locations`, {
+		const response = await fetch(`${BACKEND_URL}/api/locations/fetch`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
