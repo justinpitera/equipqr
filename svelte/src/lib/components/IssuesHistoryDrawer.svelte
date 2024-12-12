@@ -1161,7 +1161,7 @@
                         <hr class="mb-2 mt-2 w-[80%] m-auto" />
                         <!-- Edit Delete -->
                         {#if editIssue === issue.id.toString()}
-                            <div class="text-black mb-2 m-auto date-picker">
+                            <div class="text-black mb-2 flex date-picker">
                                 <Datepicker
                                     inline
                                     showActionButtons
