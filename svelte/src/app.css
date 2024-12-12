@@ -180,6 +180,14 @@ body {
   overflow-y: auto;
 }
 
+.date-picker .relative.inline-block {
+  margin: auto;
+}
+
+#datepicker-dropdown .grid-cols-7 {
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+}
+
 .popup-content,
 .report-form-bg,
 #settings-drawer,
