@@ -1,13 +1,7 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 declare global {
-	interface MediaFile {
-		file: File;
-		url: string;
-		type: string;
-		deleteFile: (event: Event) => void;
-		handleClick: () => void;
-	}
+	/* Issues */
 	interface GSEDetails { // getGSEDetails - /api/gse/details
 		gse_id?: string;
 		old_gse_id?: string;
@@ -33,13 +27,7 @@ declare global {
 		details?: string;
 		error?: string;
 	}
-	interface Equipment {
-		[key: string]: string;
-	}
-	interface CanvasRenderingContext2D extends CanvasRenderingContext2D {
-		willReadFrequently?: boolean;
-	}
-	interface Issue {
+	interface PastIssue {
 		gse_id: number;
 		worker_id: string;
 		issue_description: string;
@@ -47,17 +35,31 @@ declare global {
 		gate_type?: string;
 		gate_name?: string;
 	}
-    interface HistoryIssue {
-        id: string;
-        gse_id: string;
-        name: string;
-        issue: string;
-        operable: string;
-        status: string;
-        estimated_date?: string;
+	interface HistoryIssue {
+		id: string;
+		gse_id: string;
+		name: string;
+		issue: string;
+		operable: string;
+		status: string;
+		estimated_date?: string;
 		gate_type?: string;
 		gate_name?: string;
-    }
+	}
+	/*  */
+	interface MediaFile {
+		file: File;
+		url: string;
+		type: string;
+		deleteFile: (event: Event) => void;
+		handleClick: () => void;
+	}
+	interface Equipment {
+		[key: string]: string;
+	}
+	interface CanvasRenderingContext2D extends CanvasRenderingContext2D {
+		willReadFrequently?: boolean;
+	}
 	/* Progress bar */
 	interface StatusConfig {
 		label: string;

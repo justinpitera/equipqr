@@ -113,6 +113,7 @@ export async function getIssues(page: number | undefined, loadingFunctionBefore:
 		issue_description: string;
 		reported_at: string;
 		reported_by: string | undefined;
+		progress: string;
 		attachments: {
 			id: string;
 			file_type: string;
@@ -257,3 +258,31 @@ export async function logout(): Promise<{ token: string } | undefined> {
 	}
 	return undefined;
 }
+
+export async function get_gates(airport_icao_code: string) {
+	try {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const response = await fetch(`${BACKEND_URL}/api/locations`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ icao_code: airport_icao_code }),
+			signal: controller.signal,
+		});
+		clearTimeout(timeout);
+		if (!response.ok) throw new Error(response.statusText);
+		const output = response.json();
+		if (debug_routes) console.log("get_gates", output)
+	} catch (e) {
+		console.error(
+			"%cError retrieving gates",
+			"color: red; font-size: 18px; font-weight: bold;",
+			e,
+		);
+		notify("Error retrieving gates", `Failed to retrieve gates: ${e}`, "error");
+	}
+}
+
+get_gates('EKCH');

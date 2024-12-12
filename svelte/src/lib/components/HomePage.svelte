@@ -55,7 +55,8 @@
 </div>
 
 <main
-    class="container px-4 py-5 pt-2 h-screen overflow-y-auto bg-slate-100{$startQRScanner || !$isIssuesHistoryHidden
+    class="container px-4 py-5 pt-2 h-screen overflow-y-auto bg-slate-100{$startQRScanner ||
+    !$isIssuesHistoryHidden
         ? ' hidden'
         : ''}"
 >

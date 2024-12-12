@@ -25,7 +25,7 @@
         selected_gate_name,
     } = reportUIStore;
 
-    let issues: Issue[] = Array.from({ length: 20 }, (_, i) => ({
+    let issues: PastIssue[] = Array.from({ length: 20 }, (_, i) => ({
         gse_id: i + 1,
         worker_id: `Employee ${i + 1}`,
         issue_description: `Issue description ${i + 1}`,

@@ -173,7 +173,10 @@
     "Failed to delete issue: TypeError: Failed to fetch": "Failed to delete issue: TypeError: Failed to fetch",
     "Failed to submit the issue": "Failed to submit the issue",
     "Could not find any past incidents, try again later...": "Could not find any past incidents, try again later...",
-    "Warning": "Warning"
+    "Warning": "Warning",
+    "Failed to retrieve gates: Error": "Failed to retrieve gates: Error",
+    "Error retrieving gates": "Error retrieving gates",
+    "Failed to retrieve gates: Request timed out after 5s": "Failed to retrieve gates: Request timed out after 5s"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -349,7 +352,10 @@
     "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette problemet: TypeError: Kunne ikke hente",
     "Failed to submit the issue": "Kunne ikke indsende problemet",
     "Could not find any past incidents, try again later...": "Kunne ikke finde nogen tidligere hændelser, prøv igen senere ...",
-    "Warning": "Advarsel"
+    "Warning": "Advarsel",
+    "Failed to retrieve gates: Error": "Kunne ikke hente porte: fejl",
+    "Error retrieving gates": "Fejl hentning af porte",
+    "Failed to retrieve gates: Request timed out after 5s": "Kunne ikke hente porte: Anmod om tidsbestemt efter 5'erne"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -525,7 +531,10 @@
     "Failed to delete issue: TypeError: Failed to fetch": "Kunne ikke slette utgaven: Typeerror: Kunne ikke hente",
     "Failed to submit the issue": "Kunne ikke sende inn saken",
     "Could not find any past incidents, try again later...": "Kunne ikke finne noen tidligere hendelser, prøv igjen senere ...",
-    "Warning": "Advarsel"
+    "Warning": "Advarsel",
+    "Failed to retrieve gates: Error": "Kunne ikke hente porter: feil",
+    "Error retrieving gates": "Feil å hente porter",
+    "Failed to retrieve gates: Request timed out after 5s": "Kunne ikke hente porter: Be om tidsavbrudd etter 5S"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -701,6 +710,9 @@
     "Failed to delete issue: TypeError: Failed to fetch": "Det gick inte att ta bort problemet: TypeError: Det gick inte att hämta",
     "Failed to submit the issue": "Det gick inte att lämna in problemet",
     "Could not find any past incidents, try again later...": "Kunde inte hitta några tidigare incidenter, försök igen senare ...",
-    "Warning": "Varning"
+    "Warning": "Varning",
+    "Failed to retrieve gates: Error": "Det gick inte att hämta grindar: fel",
+    "Error retrieving gates": "Felhämtning av grindar",
+    "Failed to retrieve gates: Request timed out after 5s": "Det gick inte att hämta Gates: Begär Timed ut efter 5 -talet"
   }
 }
