@@ -169,65 +169,6 @@
         multiSelectMode = false;
     }
 
-    function generateIssues(count: number): HistoryIssue[] {
-        const randomNames = ["John", "Jane", "Alex", "Chris", "Taylor"];
-        const randomIssues = [
-            "Broken screen",
-            "Battery not charging",
-            "Overheating",
-            "Software crash",
-            "Unresponsive buttons",
-            "Broken screen Broken screen Broken screen Broken screen",
-            "Battery not charging Battery not charging Battery not charging Battery not charging Battery not charging",
-        ];
-        const randomGSEIDs = [
-            "AH 10001",
-            "CH 20005",
-            "BH 50006",
-            "DH 40004",
-            "RH 60003",
-        ];
-        const randomStatuses = Object.keys(statuses) as Status[];
-
-        return Array.from({ length: count }, (_, i) => {
-            const operable = Math.random() > 0.5 ? "Yes" : "No";
-            const show_gate = operable === "No";
-            const gate_keys = show_gate ? Object.keys(gate_types) : [];
-            const selected_gate_type = show_gate
-                ? gate_keys[Math.floor(Math.random() * gate_keys.length)]
-                : "";
-            return {
-                id: (i + 1).toString(),
-                gse_id: randomGSEIDs[
-                    Math.floor(Math.random() * randomGSEIDs.length)
-                ],
-                name: randomNames[
-                    Math.floor(Math.random() * randomNames.length)
-                ],
-                issue: randomIssues[
-                    Math.floor(Math.random() * randomIssues.length)
-                ],
-                operable,
-                estimated_date:
-                    Math.random() * 1000 > 500
-                        ? new Date(Date.now() - 78000).toLocaleDateString()
-                        : undefined,
-                gate_type: show_gate ? selected_gate_type : undefined,
-                gate_name: show_gate
-                    ? gate_types[selected_gate_type][
-                          Math.floor(
-                              Math.random() *
-                                  gate_types[selected_gate_type].length,
-                          )
-                      ]
-                    : undefined,
-                status: randomStatuses[
-                    Math.floor(Math.random() * randomStatuses.length)
-                ],
-            };
-        });
-    }
-
     async function loadPage(page?: number) {
         const returned_issues = await getIssues(
             () => {
@@ -260,7 +201,6 @@
                 } as HistoryIssue;
             });
         } else {
-            issues = generateIssues(44);
             notify(
                 "Warning",
                 "Could not find any past incidents, try again later...",
@@ -274,7 +214,7 @@
     function simulateLoadingWithFilters() {
         isLoading = true;
         setTimeout(() => {
-            issues = generateIssues(44);
+            alert("Filters are not supported yet")
             if (selectedFilter.label !== "Operable/Not Operable") {
                 if (selectedFilter.label === "Operable") {
                     issues = issues.filter((issue) => issue.operable === "Yes");
@@ -1060,6 +1000,7 @@
                                                                     issue.id ===
                                                                     single_issue.id
                                                                 ) {
+                                                                    console.log(issue.id, single_issue.id, single_issue.status, status)
                                                                     single_issue.status =
                                                                         status;
                                                                 }
