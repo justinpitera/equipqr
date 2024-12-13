@@ -318,3 +318,7 @@ html {
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
+
+#speech-btn.text-red svg {
+  fill: red;
+}

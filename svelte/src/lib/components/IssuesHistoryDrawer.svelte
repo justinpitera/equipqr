@@ -11,6 +11,7 @@
         Textarea,
         Label,
         CloseButton,
+        Select,
     } from "flowbite-svelte";
     import {
         Trash2,
@@ -40,7 +41,11 @@
     } from "flowbite-svelte-icons";
     import { onDestroy, onMount, tick } from "svelte";
     import { DEBUG_MODE } from "$lib/config";
-    import { delete_issue, getGSEDetails, getIssues } from "$lib/helpers/server-requests";
+    import {
+        delete_issue,
+        getGSEDetails,
+        getIssues,
+    } from "$lib/helpers/server-requests";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
     import { qrScannerStore } from "$lib/helpers/camera";
@@ -175,26 +180,28 @@
 
     async function openDetailsDrawer(issue: HistoryIssue) {
         qrScannerStore.qrCodeData.set(issue.gse_id);
-		const gseDetails = await getGSEDetails(issue.gse_id);
-		if (gseDetails) {
-			qrScannerStore.detectedGSE.set(gseDetails);
-			if (gseDetails.error && gseDetails.details) {
-				notify(gseDetails.error, gseDetails.details, "error")
-                qrScannerStore.qrCodeData.set('');
-			} else {
-				detailsDrawerStore.hideGSEDetail.set(false);
-				if (gseDetails.most_recent_issue) homePageStore.isRecentIssueDrawerHidden.set(false);
-			}
-		} else {
-			qrScannerStore.detectedGSE.set(null);
-			cancelReportStore.closeReportHidden.set(false);
-            qrScannerStore.qrCodeData.set('');
-		}
+        const gseDetails = await getGSEDetails(issue.gse_id);
+        if (gseDetails) {
+            qrScannerStore.detectedGSE.set(gseDetails);
+            if (gseDetails.error && gseDetails.details) {
+                notify(gseDetails.error, gseDetails.details, "error");
+                qrScannerStore.qrCodeData.set("");
+            } else {
+                detailsDrawerStore.hideGSEDetail.set(false);
+                if (gseDetails.most_recent_issue)
+                    homePageStore.isRecentIssueDrawerHidden.set(false);
+            }
+        } else {
+            qrScannerStore.detectedGSE.set(null);
+            cancelReportStore.closeReportHidden.set(false);
+            qrScannerStore.qrCodeData.set("");
+        }
     }
 
     async function loadPage(page?: number) {
         const returned_issues = await getIssues(
             page,
+            issuesPerPage,
             () => {
                 isLoading = true;
             },
@@ -204,7 +211,10 @@
         );
         console.log("Fetched Issues", returned_issues);
         if (returned_issues?.data && returned_issues.data.length > 0) {
-            issuesPerPage = returned_issues.page_size;
+            if (issuesPerPage !== returned_issues.page_size) {
+                issuesPerPage = returned_issues.page_size;
+                console.warn("Issues per page changed");
+            }
             currentPage = returned_issues.page;
             totalPages = Math.ceil(returned_issues.total / issuesPerPage);
             totalIssuesCount = returned_issues.total;
@@ -230,7 +240,6 @@
             issues.set(new_issues);
             return new_issues;
         } else {
-            issuesPerPage = 0;
             currentPage = 1;
             totalPages = 1;
             totalIssuesCount = 0;
@@ -346,6 +355,89 @@
             };
             recognition.onend = () => {
                 isListening = false;
+                const action = searchQuery.toLowerCase().trim();
+                let shouldLoadFilters = false;
+                let didFindAction = false;
+                if (action === "reported") {
+                    selectedCategory = search_categories.filter(
+                        (cat) => cat.label === "Reported",
+                    )[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
+                if (action === "in progress") {
+                    selectedCategory = search_categories.filter(
+                        (cat) => cat.label === "In Progress",
+                    )[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
+                if (action === "waiting for parts") {
+                    selectedCategory = search_categories.filter(
+                        (cat) => cat.label === "Waiting for parts",
+                    )[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
+                if (action === "waiting for parts") {
+                    selectedCategory = search_categories.filter(
+                        (cat) => cat.label === "Waiting for parts",
+                    )[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
+                if (action === "ready for pickup") {
+                    selectedCategory = search_categories.filter(
+                        (cat) => cat.label === "Ready for pickup",
+                    )[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
+                if (action === "back in service") {
+                    selectedCategory = search_categories.filter(
+                        (cat) => cat.label === "Back in service",
+                    )[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
+                if (action === "operable") {
+                    selectedFilter = filter_by_operable_categories.filter(
+                        (cat) => cat.label === "Operable",
+                    )[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
+                if (action === "not operable") {
+                    selectedFilter = filter_by_operable_categories.filter(
+                        (cat) => cat.label === "Not Operable",
+                    )[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
+                if (action === "previous page") {
+                    didFindAction = true;
+                    if (isLoading || currentPage === 1) {
+                        alert("Already reached the first page");
+                    } else {
+                        changePage(false);
+                    }
+                }
+                if (action === "next page") {
+                    didFindAction = true;
+                    if (
+                        isLoading ||
+                        currentPage * issuesPerPage >= totalIssuesCount
+                    ) {
+                        alert("Already reached the final page");
+                    } else {
+                        changePage(true);
+                    }
+                }
+                if (didFindAction) searchQuery = "";
+                if (shouldLoadFilters) {
+                    searchDropdownOpen = false;
+                    simulateLoadingWithFilters();
+                }
             };
             // @ts-ignore
             recognition.onresult = (event) => {
@@ -669,22 +761,74 @@
             <!-- Search -->
 
             <form class="pr-[5px] pt-2">
-                <Search
-                    size="md"
-                    class="rounded-none py-2.5"
-                    placeholder="Search Issues..."
-                    bind:value={searchQuery}
-                >
-                    <button
-                        type="button"
-                        onclick={isListening
-                            ? stopVoiceSearch
-                            : startVoiceSearch}
-                        class="outline-none"
+                <div class="flex gap-2">
+                    <Search
+                        size="md"
+                        class="rounded-none py-2.5"
+                        placeholder="Search Issues..."
+                        bind:value={searchQuery}
                     >
-                        <MicrophoneSolid class="w-5 h-5 me-2" />
-                    </button>
-                </Search>
+                        <button
+                            id="speech-btn"
+                            type="button"
+                            onclick={isListening
+                                ? stopVoiceSearch
+                                : startVoiceSearch}
+                            class="outline-none{isListening ? ' text-red' : ''}"
+                        >
+                            <MicrophoneSolid class="w-5 h-5 me-2" />
+                        </button>
+                    </Search>
+                    <Tooltip
+                        id="speech-tip-tooltip"
+                        class="z-20 max-w-[300px] w-full"
+                        type="light"
+                        triggeredBy="#speech-btn"
+                        placement="bottom"
+                        open={isListening}
+                        >{t(
+                            "Tip: You can trigger the following voice commands: 'Operable', 'Not Operable', 'Next Page', 'Previous Page', 'All Categories', 'Reported', 'In Progress', 'Waiting for parts', 'Ready for pickup', 'Back in service'",
+                        )}</Tooltip
+                    >
+                    <Label for="select-underline" class="sr-only"
+                        >Underline select</Label
+                    >
+                    <Select
+                        id="select-underline"
+                        underline
+                        class="max-w-[150px]"
+                        value={issuesPerPage.toString()}
+                        onchange={(e) => {
+                            issuesPerPage = Number.parseInt(
+                                (e.target as HTMLSelectElement).value,
+                            );
+                            loadPage(currentPage);
+                        }}
+                        items={[
+                            { value: "1", name: "1 Per Page" },
+                            { value: "5", name: "5 Per Page" },
+                            { value: "10", name: "10 Per Page" },
+                            { value: "15", name: "15 Per Page" },
+                            { value: "20", name: "20 Per Page" },
+                            { value: "25", name: "25 Per Page" },
+                            { value: "30", name: "30 Per Page" },
+                            { value: "35", name: "35 Per Page" },
+                            { value: "40", name: "40 Per Page" },
+                            { value: "45", name: "45 Per Page" },
+                            { value: "50", name: "50 Per Page" },
+                            { value: "55", name: "55 Per Page" },
+                            { value: "60", name: "60 Per Page" },
+                            { value: "65", name: "65 Per Page" },
+                            { value: "70", name: "70 Per Page" },
+                            { value: "75", name: "75 Per Page" },
+                            { value: "80", name: "80 Per Page" },
+                            { value: "85", name: "85 Per Page" },
+                            { value: "90", name: "90 Per Page" },
+                            { value: "95", name: "95 Per Page" },
+                            { value: "100", name: "100 Per Page" },
+                        ]}
+                    />
+                </div>
                 <!-- Categories: -->
                 <div class="relative w-full">
                     <Button

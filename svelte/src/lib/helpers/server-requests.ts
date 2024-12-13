@@ -106,7 +106,7 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 	return undefined;
 }
 
-export async function getIssues(page: number | undefined, loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<{
+export async function getIssues(page: number | undefined, issuesPerPage: number | undefined, loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<{
 	data: {
 		id: string;
 		gse_id: string;
@@ -132,6 +132,7 @@ export async function getIssues(page: number | undefined, loadingFunctionBefore:
 			method: "POST",
 			body: JSON.stringify({
 				page,
+				page_size: issuesPerPage
 			}),
 			signal: controller.signal,
 		});
