@@ -75,7 +75,6 @@
     "Operable:": "Operable:",
     "Broken screen": "Broken screen",
     "Battery not charging": "Battery not charging",
-    "Issues History": "Issues History",
     "View Details": "View Details",
     "Cancel Report?": "Cancel Report?",
     "Are you sure you want to cancel the report for:": "Are you sure you want to cancel the report for:",
@@ -111,7 +110,6 @@
     "Print QR Codes": "Print QR Codes",
     "View and print QR codes for items to manage their information.": "View and print QR codes for items to manage their information.",
     "Add new items, edit existing ones, and view item details.": "Add new items, edit existing ones, and view item details.",
-    "View Issues History": "View Issues History",
     "Track and resolve past issues with detailed logs.": "Track and resolve past issues with detailed logs.",
     "Account Management": "Account Management",
     "Manage user accounts and assign roles to individuals.": "Manage user accounts and assign roles to individuals.",
@@ -176,7 +174,9 @@
     "Warning": "Warning",
     "Failed to retrieve gates: Error": "Failed to retrieve gates: Error",
     "Error retrieving gates": "Error retrieving gates",
-    "Failed to retrieve gates: Request timed out after 5s": "Failed to retrieve gates: Request timed out after 5s"
+    "Failed to retrieve gates: Request timed out after 5s": "Failed to retrieve gates: Request timed out after 5s",
+    "View Issue History": "View Issue History",
+    "Issue History": "Issue History"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -254,7 +254,6 @@
     "Operable:": "Operable:",
     "Broken screen": "Ødelagt skærm",
     "Battery not charging": "Batteri oplades ikke",
-    "Issues History": "Udsteder historie",
     "View Details": "Se detaljer",
     "Cancel Report?": "Annuller rapport?",
     "Are you sure you want to cancel the report for:": "Er du sikker på, at du vil annullere rapporten til:",
@@ -290,7 +289,6 @@
     "Print QR Codes": "Udskriv QR -koder",
     "View and print QR codes for items to manage their information.": "Se og udskriv QR -koder for varer til at administrere deres oplysninger.",
     "Add new items, edit existing ones, and view item details.": "Tilføj nye varer, rediger eksisterende og se vareoplysninger.",
-    "View Issues History": "Se spørgsmål historien",
     "Track and resolve past issues with detailed logs.": "Spor og løse tidligere problemer med detaljerede logfiler.",
     "Account Management": "Kontostyring",
     "Manage user accounts and assign roles to individuals.": "Administrer brugerkonti, og tildel roller til enkeltpersoner.",
@@ -355,7 +353,9 @@
     "Warning": "Advarsel",
     "Failed to retrieve gates: Error": "Kunne ikke hente porte: fejl",
     "Error retrieving gates": "Fejl hentning af porte",
-    "Failed to retrieve gates: Request timed out after 5s": "Kunne ikke hente porte: Anmod om tidsbestemt efter 5'erne"
+    "Failed to retrieve gates: Request timed out after 5s": "Kunne ikke hente porte: Anmod om tidsbestemt efter 5'erne",
+    "View Issue History": "Se spørgsmålets historie",
+    "Issue History": "Udstedelse af historie"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -433,7 +433,6 @@
     "Operable:": "Operable:",
     "Broken screen": "Ødelagt skjerm",
     "Battery not charging": "Batteri lading ikke",
-    "Issues History": "Utsteder historie",
     "View Details": "Vis detaljer",
     "Cancel Report?": "Avbryt rapport?",
     "Are you sure you want to cancel the report for:": "Er du sikker på at du vil avbryte rapporten for:",
@@ -469,7 +468,6 @@
     "Print QR Codes": "Skriv ut QR -koder",
     "View and print QR codes for items to manage their information.": "Vis og skriv ut QR -koder for elementer for å administrere informasjonen.",
     "Add new items, edit existing ones, and view item details.": "Legg til nye elementer, rediger eksisterende og se varedetaljer.",
-    "View Issues History": "Se utsteder historie",
     "Track and resolve past issues with detailed logs.": "Spor og løse tidligere problemer med detaljerte logger.",
     "Account Management": "Kontostyring",
     "Manage user accounts and assign roles to individuals.": "Administrer brukerkontoer og tildel roller til enkeltpersoner.",
@@ -534,7 +532,9 @@
     "Warning": "Advarsel",
     "Failed to retrieve gates: Error": "Kunne ikke hente porter: feil",
     "Error retrieving gates": "Feil å hente porter",
-    "Failed to retrieve gates: Request timed out after 5s": "Kunne ikke hente porter: Be om tidsavbrudd etter 5S"
+    "Failed to retrieve gates: Request timed out after 5s": "Kunne ikke hente porter: Be om tidsavbrudd etter 5S",
+    "View Issue History": "Se utstedelseshistorikk",
+    "Issue History": "Utgave historie"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -612,7 +612,6 @@
     "Operable:": "Manövrerbar:",
     "Broken screen": "Trasig skärm",
     "Battery not charging": "Batteri laddas inte",
-    "Issues History": "Utfärdar historia",
     "View Details": "Visa detaljer",
     "Cancel Report?": "Avbryta rapporten?",
     "Are you sure you want to cancel the report for:": "Är du säker på att du vill avbryta rapporten för:",
@@ -648,7 +647,6 @@
     "Print QR Codes": "Skriv ut QR -koder",
     "View and print QR codes for items to manage their information.": "Visa och skriva ut QR -koder för objekt för att hantera sin information.",
     "Add new items, edit existing ones, and view item details.": "Lägg till nya objekt, redigera befintliga och visa objektinformation.",
-    "View Issues History": "Visa problem med historien",
     "Track and resolve past issues with detailed logs.": "Spåra och lösa tidigare problem med detaljerade loggar.",
     "Account Management": "Kontonhantering",
     "Manage user accounts and assign roles to individuals.": "Hantera användarkonton och tilldela roller till individer.",
@@ -713,6 +711,8 @@
     "Warning": "Varning",
     "Failed to retrieve gates: Error": "Det gick inte att hämta grindar: fel",
     "Error retrieving gates": "Felhämtning av grindar",
-    "Failed to retrieve gates: Request timed out after 5s": "Det gick inte att hämta Gates: Begär Timed ut efter 5 -talet"
+    "Failed to retrieve gates: Request timed out after 5s": "Det gick inte att hämta Gates: Begär Timed ut efter 5 -talet",
+    "View Issue History": "Visa problemhistorik",
+    "Issue History": "Utfärda historia"
   }
 }

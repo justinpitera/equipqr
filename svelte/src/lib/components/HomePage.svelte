@@ -163,7 +163,7 @@
                                 : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
-                            {t("View Issues History")}
+                            {t("View Issue History")}
                         </div>
                         <div
                             class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"

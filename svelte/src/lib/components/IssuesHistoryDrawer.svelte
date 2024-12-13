@@ -539,7 +539,7 @@
             <ArrowLeft class="h-6 w-6 text-gray-800" />
         </button>
         <h2 class="text-xl font-bold text-gray-800 mr-2">
-            {t("Issues History")}
+            {t("Issue History")}
         </h2>
     </div>
 
