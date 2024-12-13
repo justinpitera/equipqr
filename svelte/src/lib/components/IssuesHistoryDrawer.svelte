@@ -358,6 +358,12 @@
                 const action = searchQuery.toLowerCase().trim();
                 let shouldLoadFilters = false;
                 let didFindAction = false;
+                if (action === "all categories") {
+                    selectedCategory = search_categories[0];
+                    selectedFilter = filter_by_operable_categories[0];
+                    shouldLoadFilters = true;
+                    didFindAction = true;
+                }
                 if (action === "reported") {
                     selectedCategory = search_categories.filter(
                         (cat) => cat.label === "Reported",
@@ -368,13 +374,6 @@
                 if (action === "in progress") {
                     selectedCategory = search_categories.filter(
                         (cat) => cat.label === "In Progress",
-                    )[0];
-                    shouldLoadFilters = true;
-                    didFindAction = true;
-                }
-                if (action === "waiting for parts") {
-                    selectedCategory = search_categories.filter(
-                        (cat) => cat.label === "Waiting for parts",
                     )[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
