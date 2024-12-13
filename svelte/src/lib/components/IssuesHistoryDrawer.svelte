@@ -163,7 +163,7 @@
         isListening = false;
         startY = 0;
         currentY = 0;
-        issuesPerPage = 10;
+        // issuesPerPage = 10;
         totalPages = 1;
         totalIssuesCount = 0;
         pulling = false;
