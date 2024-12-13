@@ -302,7 +302,7 @@
         <div class="mb-4">
             <h3 class="font-semibold mb-2">Vehicles</h3>
             <div
-                class="h-[calc(100vh-(104px+36px+16px+24px+24px+8px))] overflow-y-auto pb-3"
+                class="h-[calc(100vh-(104px+36px+16px+24px+24px+8px))] overflow-y-auto pb-[50px]"
             >
                 <div>
                     <hr class="mt-2 mb-2" />
