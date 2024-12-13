@@ -363,65 +363,56 @@
                     selectedFilter = filter_by_operable_categories[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
-                }
-                if (action === "reported") {
+                } else if (action === "reported") {
                     selectedCategory = search_categories.filter(
                         (cat) => cat.label === "Reported",
                     )[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
-                }
-                if (action === "in progress") {
+                } else if (action === "in progress") {
                     selectedCategory = search_categories.filter(
                         (cat) => cat.label === "In Progress",
                     )[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
-                }
-                if (action === "waiting for parts") {
+                } else if (action === "waiting for parts") {
                     selectedCategory = search_categories.filter(
                         (cat) => cat.label === "Waiting for parts",
                     )[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
-                }
-                if (action === "ready for pickup") {
+                } else if (action === "ready for pickup") {
                     selectedCategory = search_categories.filter(
                         (cat) => cat.label === "Ready for pickup",
                     )[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
-                }
-                if (action === "back in service") {
+                } else if (action === "back in service") {
                     selectedCategory = search_categories.filter(
                         (cat) => cat.label === "Back in service",
                     )[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
-                }
-                if (action === "operable") {
+                } else if (action === "operable") {
                     selectedFilter = filter_by_operable_categories.filter(
                         (cat) => cat.label === "Operable",
                     )[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
-                }
-                if (action === "not operable") {
+                } else if (action === "not operable") {
                     selectedFilter = filter_by_operable_categories.filter(
                         (cat) => cat.label === "Not Operable",
                     )[0];
                     shouldLoadFilters = true;
                     didFindAction = true;
-                }
-                if (action === "previous page") {
+                } else if (action === "previous page") {
                     didFindAction = true;
                     if (isLoading || currentPage === 1) {
                         alert("Already reached the first page");
                     } else {
                         changePage(false);
                     }
-                }
-                if (action === "next page") {
+                } else if (action === "next page") {
                     didFindAction = true;
                     if (
                         isLoading ||
