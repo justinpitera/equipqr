@@ -254,6 +254,10 @@
     class="drawer-box p-6 bg-gray-100 fixed inset-0 z-50"
     width="100"
     bind:hidden={$qrPrintDrawerHidden}
+    transitionParams={{
+        duration: 0,
+        easing: undefined,
+    }}
 >
     {#if printQueue.length > 0}
         <h3 class="font-semibold mb-2">Print Queue</h3>
@@ -322,6 +326,7 @@
                             >
                                 <Checkbox
                                     inline
+                                    disabled
                                     class="border-2 border-blue-500 rounded-md absolute top-0 left-0"
                                     checked={selectedVehicles.has(vehicle.id)}
                                 ></Checkbox>

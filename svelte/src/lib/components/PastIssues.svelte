@@ -82,6 +82,10 @@
     backdrop={true}
     class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg"
     width="w-80"
+    transitionParams={{
+        duration: 0,
+        easing: undefined,
+    }}
 >
     <div class="flex items-center justify-between">
         <h2 class="text-lg font-bold text-gray-800">{t("Past Issues")}</h2>

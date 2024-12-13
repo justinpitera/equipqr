@@ -266,13 +266,11 @@
             issuesScroller.scrollTo({ top: 0, behavior: "instant" });
         }, 100);
         isLoading = true;
-        const totalPages = Math.ceil($issues.length / issuesPerPage);
         if (next) {
             currentPage = Math.min(totalPages, currentPage + 1);
         } else {
             currentPage = Math.max(1, currentPage - 1);
         }
-        await loadPage(currentPage);
     }
 
     function toggleSelect(issue: HistoryIssue) {
@@ -481,6 +479,10 @@
     class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg overflow-y-hidden"
     width="w-full"
     activateClickOutside={false}
+    transitionParams={{
+        duration: 0,
+        easing: undefined,
+    }}
 >
     <Modal bind:open={deleteIssuePopup} size="xs" autoclose>
         <div class="text-center">
