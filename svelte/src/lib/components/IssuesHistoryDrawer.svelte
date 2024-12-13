@@ -40,9 +40,12 @@
     } from "flowbite-svelte-icons";
     import { onDestroy, onMount, tick } from "svelte";
     import { DEBUG_MODE } from "$lib/config";
-    import { delete_issue, getIssues } from "$lib/helpers/server-requests";
+    import { delete_issue, getGSEDetails, getIssues } from "$lib/helpers/server-requests";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
+    import { qrScannerStore } from "$lib/helpers/camera";
+    import { cancelReportStore } from "$lib/helpers/cancel-report";
+    import { detailsDrawerStore } from "$lib/helpers/details";
     const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled, issues } =
         homePageStore;
 
@@ -170,6 +173,25 @@
         multiSelectMode = false;
     }
 
+    async function openDetailsDrawer(issue: HistoryIssue) {
+        qrScannerStore.qrCodeData.set(issue.gse_id);
+		const gseDetails = await getGSEDetails(issue.gse_id);
+		if (gseDetails) {
+			qrScannerStore.detectedGSE.set(gseDetails);
+			if (gseDetails.error && gseDetails.details) {
+				notify(gseDetails.error, gseDetails.details, "error")
+                qrScannerStore.qrCodeData.set('');
+			} else {
+				detailsDrawerStore.hideGSEDetail.set(false);
+				if (gseDetails.most_recent_issue) homePageStore.isRecentIssueDrawerHidden.set(false);
+			}
+		} else {
+			qrScannerStore.detectedGSE.set(null);
+			cancelReportStore.closeReportHidden.set(false);
+            qrScannerStore.qrCodeData.set('');
+		}
+    }
+
     async function loadPage(page?: number) {
         const returned_issues = await getIssues(
             page,
@@ -262,9 +284,9 @@
 
     async function changePage(next: boolean) {
         if (isLoading) return;
-        setTimeout(() => {
-            issuesScroller.scrollTo({ top: 0, behavior: "instant" });
-        }, 100);
+        // setTimeout(() => {
+        //     issuesScroller.scrollTo({ top: 0, behavior: "instant" });
+        // }, 100);
         isLoading = true;
         if (next) {
             currentPage = Math.min(totalPages, currentPage + 1);
@@ -871,6 +893,10 @@
                                 style="filter: invert({$darkModeEnabled
                                     ? '1'
                                     : '0'});"
+                                onclick={() => openDetailsDrawer(issue)}
+                                onkeypress={() => openDetailsDrawer(issue)}
+                                role="button"
+                                tabindex="0"
                             >
                                 {issue.gse_id}
                             </div>
