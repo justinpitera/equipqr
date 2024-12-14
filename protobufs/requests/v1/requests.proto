@@ -15,7 +15,7 @@ message GSEDetailsRequest {
     string gse_id = 1;
 }
 
-message MostRecentIssue {
+message MostRecentIssueResponse {
     string id = 1;
     string gse_id = 2;
     string issue_description = 3;
@@ -23,7 +23,7 @@ message MostRecentIssue {
     string attachments = 5;
 }
 
-message GSEDetails {
+message GSEDetailsResponse {
     string gse_id = 1;
     string old_gse_id = 2;
     string gse_type = 3;
