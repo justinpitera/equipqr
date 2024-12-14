@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package requests.v1;
+
+// Health Check
+message HealthStatusRequest {}
+
+message HealthStatusResponse {
+    string version = 1;
+    string status = 2;
+}
+
+// GSE Details
+message GSEDetailsRequest {
+    string gse_id = 1;
+}
+
+message GSEDetails {
+    string id = 1;
+    string name = 2;
+        string description = 3;
+}
+
+
+// Submit Issue
+message SubmitIssueRequest {
+    string gse_id = 1;
+    string issue_description = 2;
+        string estimated_time = 3;
+        string reported_by = 4;
+        repeated bytes attachments = 5;
+        repeated string attachment_names = 6;
+
+}
+message SubmitIssueResponse{
+    string id = 1;
+}
+
+
+// Fetch Issues
+message FetchIssuesRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+}
+
+message FetchIssuesResponse {
+    repeated Issue data = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+    int32 total = 4;
+}
+
+message Issue {
+    string id = 1;
+    string gse_id = 2;
+    string issue_description = 3;
+    string estimated_time = 4;
+    string reported_at = 5;
+    string reported_by = 6;
+    string progress = 7;
+        repeated Attachment attachments = 8;
+}
+
+message Attachment {
+    string id = 1;
+    string file_type = 2;
+    string uploaded_at = 3;
+}
+
+
+// Set Language
+message SetLanguageRequest {
+    string language = 1;
+}
+message SetLanguageResponse {
+    string token = 1;
+}
+
+// Login
+message LoginRequest {
+    string email = 1;
+}
+message LoginResponse{
+    string token = 1;
+}
+
+// Delete Issues
+message DeleteIssuesRequest {
+    repeated string ids = 1;
+}
+message DeleteIssuesResponse{}
+
+// Logout
+message LogoutRequest {}
+message LogoutResponse {
+    string message = 1; // Could add message for success or failure.
+}
+
+// Fetch Gates
+message FetchGatesRequest {
+    string icao_code = 1;
+}
+
+message FetchGatesResponse{
+    repeated Gate gates = 1;
+}
+
+message Gate {
+    string id = 1;
+    string name = 2;
+}
