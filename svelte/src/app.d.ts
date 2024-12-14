@@ -42,6 +42,7 @@ declare global {
 		issue: string;
 		operable: string;
 		status: string;
+		reported_at?: string;
 		estimated_date?: string;
 		gate_type?: string;
 		gate_name?: string;

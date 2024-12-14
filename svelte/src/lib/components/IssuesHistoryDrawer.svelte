@@ -226,7 +226,12 @@
                     issue: returned_issue.issue_description, //string
                     operable: "Yes", //returned_issue.operable,//string
                     status: returned_issue.progress, //returned_issue.status//string
-                    estimated_date: returned_issue.reported_at
+                    estimated_date: returned_issue.estimated_time
+                        ? new Date(
+                              returned_issue.estimated_time,
+                          ).toLocaleDateString()
+                        : undefined, //string
+                        reported_at: returned_issue.reported_at
                         ? new Date(
                               returned_issue.reported_at,
                           ).toLocaleDateString()

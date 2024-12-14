@@ -111,6 +111,7 @@ export async function getIssues(page: number | undefined, issuesPerPage: number 
 		id: string;
 		gse_id: string;
 		issue_description: string;
+		estimated_time: string;
 		reported_at: string;
 		reported_by: string | undefined;
 		progress: string;
