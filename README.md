@@ -12,20 +12,55 @@ vite shortcuts:
   press c + enter to clear console
   press q + enter to quit
 
-
-# Buf
+## Buf
 
 Generate protobuf classes:
+
 1. npm install -g protoc-gen-ts
+
 2. buf generate
 
 3. buf.gen.yaml - settings for generating:
 
-```
+```text
 version: v1
 plugins:
   - name: python
     out: api/src/protos/
   - name: ts
     out: out/ # Adjust
+```
+
+### Proto Usage Example
+
+```proto
+syntax = "proto3";
+
+enum Role {
+    ADMIN = 0;
+    MOD = 1;
+}
+
+message Author {
+    Role role = 2;
+    oneof id_or_name {
+        string id = 4;
+        string name = 5;
+    }
+}
+```
+
+```typescript
+const author = Author.fromJson({
+    role: Kind.ADMIN,
+    name: "mary poppins",
+});
+
+// Serialize to binary
+const bytes: Uint8Array = author.toBinary();
+
+// Deserialize from binary
+const received: Change = Change.fromBinary(bytes);
+
+console.log(received.toJson())
 ```
