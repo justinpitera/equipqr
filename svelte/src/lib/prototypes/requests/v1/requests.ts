@@ -202,12 +202,14 @@ export namespace requests.v1 {
             return GSEDetailsRequest.deserialize(bytes);
         }
     }
-    export class GSEDetails extends pb_1.Message {
+    export class MostRecentIssue extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             id?: string;
-            name?: string;
-            description?: string;
+            gse_id?: string;
+            issue_description?: string;
+            reported_at?: string;
+            attachments?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -215,11 +217,17 @@ export namespace requests.v1 {
                 if ("id" in data && data.id != undefined) {
                     this.id = data.id;
                 }
-                if ("name" in data && data.name != undefined) {
-                    this.name = data.name;
+                if ("gse_id" in data && data.gse_id != undefined) {
+                    this.gse_id = data.gse_id;
                 }
-                if ("description" in data && data.description != undefined) {
-                    this.description = data.description;
+                if ("issue_description" in data && data.issue_description != undefined) {
+                    this.issue_description = data.issue_description;
+                }
+                if ("reported_at" in data && data.reported_at != undefined) {
+                    this.reported_at = data.reported_at;
+                }
+                if ("attachments" in data && data.attachments != undefined) {
+                    this.attachments = data.attachments;
                 }
             }
         }
@@ -229,49 +237,77 @@ export namespace requests.v1 {
         set id(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
-        get name() {
+        get gse_id() {
             return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
         }
-        set name(value: string) {
+        set gse_id(value: string) {
             pb_1.Message.setField(this, 2, value);
         }
-        get description() {
+        get issue_description() {
             return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
         }
-        set description(value: string) {
+        set issue_description(value: string) {
             pb_1.Message.setField(this, 3, value);
+        }
+        get reported_at() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        }
+        set reported_at(value: string) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get attachments() {
+            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
+        }
+        set attachments(value: string) {
+            pb_1.Message.setField(this, 5, value);
         }
         static fromObject(data: {
             id?: string;
-            name?: string;
-            description?: string;
-        }): GSEDetails {
-            const message = new GSEDetails({});
+            gse_id?: string;
+            issue_description?: string;
+            reported_at?: string;
+            attachments?: string;
+        }): MostRecentIssue {
+            const message = new MostRecentIssue({});
             if (data.id != null) {
                 message.id = data.id;
             }
-            if (data.name != null) {
-                message.name = data.name;
+            if (data.gse_id != null) {
+                message.gse_id = data.gse_id;
             }
-            if (data.description != null) {
-                message.description = data.description;
+            if (data.issue_description != null) {
+                message.issue_description = data.issue_description;
+            }
+            if (data.reported_at != null) {
+                message.reported_at = data.reported_at;
+            }
+            if (data.attachments != null) {
+                message.attachments = data.attachments;
             }
             return message;
         }
         toObject() {
             const data: {
                 id?: string;
-                name?: string;
-                description?: string;
+                gse_id?: string;
+                issue_description?: string;
+                reported_at?: string;
+                attachments?: string;
             } = {};
             if (this.id != null) {
                 data.id = this.id;
             }
-            if (this.name != null) {
-                data.name = this.name;
+            if (this.gse_id != null) {
+                data.gse_id = this.gse_id;
             }
-            if (this.description != null) {
-                data.description = this.description;
+            if (this.issue_description != null) {
+                data.issue_description = this.issue_description;
+            }
+            if (this.reported_at != null) {
+                data.reported_at = this.reported_at;
+            }
+            if (this.attachments != null) {
+                data.attachments = this.attachments;
             }
             return data;
         }
@@ -281,10 +317,455 @@ export namespace requests.v1 {
             const writer = w || new pb_1.BinaryWriter();
             if (this.id.length)
                 writer.writeString(1, this.id);
-            if (this.name.length)
-                writer.writeString(2, this.name);
-            if (this.description.length)
-                writer.writeString(3, this.description);
+            if (this.gse_id.length)
+                writer.writeString(2, this.gse_id);
+            if (this.issue_description.length)
+                writer.writeString(3, this.issue_description);
+            if (this.reported_at.length)
+                writer.writeString(4, this.reported_at);
+            if (this.attachments.length)
+                writer.writeString(5, this.attachments);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): MostRecentIssue {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new MostRecentIssue();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.id = reader.readString();
+                        break;
+                    case 2:
+                        message.gse_id = reader.readString();
+                        break;
+                    case 3:
+                        message.issue_description = reader.readString();
+                        break;
+                    case 4:
+                        message.reported_at = reader.readString();
+                        break;
+                    case 5:
+                        message.attachments = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): MostRecentIssue {
+            return MostRecentIssue.deserialize(bytes);
+        }
+    }
+    export class GSEDetails extends pb_1.Message {
+        #one_of_decls: number[][] = [[15], [16], [17]];
+        constructor(data?: any[] | ({
+            gse_id?: string;
+            old_gse_id?: string;
+            gse_type?: string;
+            model?: string;
+            manufacturer?: string;
+            location?: string;
+            status?: string;
+            issue_count?: string;
+            type_of_fuel?: string;
+            in_use?: boolean;
+            most_recent_issue?: MostRecentIssue;
+            lift_inspection_expires?: string;
+            latest_service_chassi?: string;
+            latest_service_unit?: string;
+        } & (({
+            capacity?: number;
+        }) | ({
+            details?: string;
+        }) | ({
+            error?: string;
+        })))) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("gse_id" in data && data.gse_id != undefined) {
+                    this.gse_id = data.gse_id;
+                }
+                if ("old_gse_id" in data && data.old_gse_id != undefined) {
+                    this.old_gse_id = data.old_gse_id;
+                }
+                if ("gse_type" in data && data.gse_type != undefined) {
+                    this.gse_type = data.gse_type;
+                }
+                if ("model" in data && data.model != undefined) {
+                    this.model = data.model;
+                }
+                if ("manufacturer" in data && data.manufacturer != undefined) {
+                    this.manufacturer = data.manufacturer;
+                }
+                if ("location" in data && data.location != undefined) {
+                    this.location = data.location;
+                }
+                if ("status" in data && data.status != undefined) {
+                    this.status = data.status;
+                }
+                if ("issue_count" in data && data.issue_count != undefined) {
+                    this.issue_count = data.issue_count;
+                }
+                if ("type_of_fuel" in data && data.type_of_fuel != undefined) {
+                    this.type_of_fuel = data.type_of_fuel;
+                }
+                if ("in_use" in data && data.in_use != undefined) {
+                    this.in_use = data.in_use;
+                }
+                if ("most_recent_issue" in data && data.most_recent_issue != undefined) {
+                    this.most_recent_issue = data.most_recent_issue;
+                }
+                if ("lift_inspection_expires" in data && data.lift_inspection_expires != undefined) {
+                    this.lift_inspection_expires = data.lift_inspection_expires;
+                }
+                if ("latest_service_chassi" in data && data.latest_service_chassi != undefined) {
+                    this.latest_service_chassi = data.latest_service_chassi;
+                }
+                if ("latest_service_unit" in data && data.latest_service_unit != undefined) {
+                    this.latest_service_unit = data.latest_service_unit;
+                }
+                if ("capacity" in data && data.capacity != undefined) {
+                    this.capacity = data.capacity;
+                }
+                if ("details" in data && data.details != undefined) {
+                    this.details = data.details;
+                }
+                if ("error" in data && data.error != undefined) {
+                    this.error = data.error;
+                }
+            }
+        }
+        get gse_id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set gse_id(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get old_gse_id() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set old_gse_id(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get gse_type() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set gse_type(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        get model() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        }
+        set model(value: string) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get manufacturer() {
+            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
+        }
+        set manufacturer(value: string) {
+            pb_1.Message.setField(this, 5, value);
+        }
+        get location() {
+            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
+        }
+        set location(value: string) {
+            pb_1.Message.setField(this, 6, value);
+        }
+        get status() {
+            return pb_1.Message.getFieldWithDefault(this, 7, "") as string;
+        }
+        set status(value: string) {
+            pb_1.Message.setField(this, 7, value);
+        }
+        get issue_count() {
+            return pb_1.Message.getFieldWithDefault(this, 8, "") as string;
+        }
+        set issue_count(value: string) {
+            pb_1.Message.setField(this, 8, value);
+        }
+        get type_of_fuel() {
+            return pb_1.Message.getFieldWithDefault(this, 9, "") as string;
+        }
+        set type_of_fuel(value: string) {
+            pb_1.Message.setField(this, 9, value);
+        }
+        get in_use() {
+            return pb_1.Message.getFieldWithDefault(this, 10, false) as boolean;
+        }
+        set in_use(value: boolean) {
+            pb_1.Message.setField(this, 10, value);
+        }
+        get most_recent_issue() {
+            return pb_1.Message.getWrapperField(this, MostRecentIssue, 11) as MostRecentIssue;
+        }
+        set most_recent_issue(value: MostRecentIssue) {
+            pb_1.Message.setWrapperField(this, 11, value);
+        }
+        get has_most_recent_issue() {
+            return pb_1.Message.getField(this, 11) != null;
+        }
+        get lift_inspection_expires() {
+            return pb_1.Message.getFieldWithDefault(this, 12, "") as string;
+        }
+        set lift_inspection_expires(value: string) {
+            pb_1.Message.setField(this, 12, value);
+        }
+        get latest_service_chassi() {
+            return pb_1.Message.getFieldWithDefault(this, 13, "") as string;
+        }
+        set latest_service_chassi(value: string) {
+            pb_1.Message.setField(this, 13, value);
+        }
+        get latest_service_unit() {
+            return pb_1.Message.getFieldWithDefault(this, 14, "") as string;
+        }
+        set latest_service_unit(value: string) {
+            pb_1.Message.setField(this, 14, value);
+        }
+        get capacity() {
+            return pb_1.Message.getFieldWithDefault(this, 15, 0) as number;
+        }
+        set capacity(value: number) {
+            pb_1.Message.setOneofField(this, 15, this.#one_of_decls[0], value);
+        }
+        get has_capacity() {
+            return pb_1.Message.getField(this, 15) != null;
+        }
+        get details() {
+            return pb_1.Message.getFieldWithDefault(this, 16, "") as string;
+        }
+        set details(value: string) {
+            pb_1.Message.setOneofField(this, 16, this.#one_of_decls[1], value);
+        }
+        get has_details() {
+            return pb_1.Message.getField(this, 16) != null;
+        }
+        get error() {
+            return pb_1.Message.getFieldWithDefault(this, 17, "") as string;
+        }
+        set error(value: string) {
+            pb_1.Message.setOneofField(this, 17, this.#one_of_decls[2], value);
+        }
+        get has_error() {
+            return pb_1.Message.getField(this, 17) != null;
+        }
+        get _capacity() {
+            const cases: {
+                [index: number]: "none" | "capacity";
+            } = {
+                0: "none",
+                15: "capacity"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [15])];
+        }
+        get _details() {
+            const cases: {
+                [index: number]: "none" | "details";
+            } = {
+                0: "none",
+                16: "details"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [16])];
+        }
+        get _error() {
+            const cases: {
+                [index: number]: "none" | "error";
+            } = {
+                0: "none",
+                17: "error"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [17])];
+        }
+        static fromObject(data: {
+            gse_id?: string;
+            old_gse_id?: string;
+            gse_type?: string;
+            model?: string;
+            manufacturer?: string;
+            location?: string;
+            status?: string;
+            issue_count?: string;
+            type_of_fuel?: string;
+            in_use?: boolean;
+            most_recent_issue?: ReturnType<typeof MostRecentIssue.prototype.toObject>;
+            lift_inspection_expires?: string;
+            latest_service_chassi?: string;
+            latest_service_unit?: string;
+            capacity?: number;
+            details?: string;
+            error?: string;
+        }): GSEDetails {
+            const message = new GSEDetails({});
+            if (data.gse_id != null) {
+                message.gse_id = data.gse_id;
+            }
+            if (data.old_gse_id != null) {
+                message.old_gse_id = data.old_gse_id;
+            }
+            if (data.gse_type != null) {
+                message.gse_type = data.gse_type;
+            }
+            if (data.model != null) {
+                message.model = data.model;
+            }
+            if (data.manufacturer != null) {
+                message.manufacturer = data.manufacturer;
+            }
+            if (data.location != null) {
+                message.location = data.location;
+            }
+            if (data.status != null) {
+                message.status = data.status;
+            }
+            if (data.issue_count != null) {
+                message.issue_count = data.issue_count;
+            }
+            if (data.type_of_fuel != null) {
+                message.type_of_fuel = data.type_of_fuel;
+            }
+            if (data.in_use != null) {
+                message.in_use = data.in_use;
+            }
+            if (data.most_recent_issue != null) {
+                message.most_recent_issue = MostRecentIssue.fromObject(data.most_recent_issue);
+            }
+            if (data.lift_inspection_expires != null) {
+                message.lift_inspection_expires = data.lift_inspection_expires;
+            }
+            if (data.latest_service_chassi != null) {
+                message.latest_service_chassi = data.latest_service_chassi;
+            }
+            if (data.latest_service_unit != null) {
+                message.latest_service_unit = data.latest_service_unit;
+            }
+            if (data.capacity != null) {
+                message.capacity = data.capacity;
+            }
+            if (data.details != null) {
+                message.details = data.details;
+            }
+            if (data.error != null) {
+                message.error = data.error;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                gse_id?: string;
+                old_gse_id?: string;
+                gse_type?: string;
+                model?: string;
+                manufacturer?: string;
+                location?: string;
+                status?: string;
+                issue_count?: string;
+                type_of_fuel?: string;
+                in_use?: boolean;
+                most_recent_issue?: ReturnType<typeof MostRecentIssue.prototype.toObject>;
+                lift_inspection_expires?: string;
+                latest_service_chassi?: string;
+                latest_service_unit?: string;
+                capacity?: number;
+                details?: string;
+                error?: string;
+            } = {};
+            if (this.gse_id != null) {
+                data.gse_id = this.gse_id;
+            }
+            if (this.old_gse_id != null) {
+                data.old_gse_id = this.old_gse_id;
+            }
+            if (this.gse_type != null) {
+                data.gse_type = this.gse_type;
+            }
+            if (this.model != null) {
+                data.model = this.model;
+            }
+            if (this.manufacturer != null) {
+                data.manufacturer = this.manufacturer;
+            }
+            if (this.location != null) {
+                data.location = this.location;
+            }
+            if (this.status != null) {
+                data.status = this.status;
+            }
+            if (this.issue_count != null) {
+                data.issue_count = this.issue_count;
+            }
+            if (this.type_of_fuel != null) {
+                data.type_of_fuel = this.type_of_fuel;
+            }
+            if (this.in_use != null) {
+                data.in_use = this.in_use;
+            }
+            if (this.most_recent_issue != null) {
+                data.most_recent_issue = this.most_recent_issue.toObject();
+            }
+            if (this.lift_inspection_expires != null) {
+                data.lift_inspection_expires = this.lift_inspection_expires;
+            }
+            if (this.latest_service_chassi != null) {
+                data.latest_service_chassi = this.latest_service_chassi;
+            }
+            if (this.latest_service_unit != null) {
+                data.latest_service_unit = this.latest_service_unit;
+            }
+            if (this.capacity != null) {
+                data.capacity = this.capacity;
+            }
+            if (this.details != null) {
+                data.details = this.details;
+            }
+            if (this.error != null) {
+                data.error = this.error;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.gse_id.length)
+                writer.writeString(1, this.gse_id);
+            if (this.old_gse_id.length)
+                writer.writeString(2, this.old_gse_id);
+            if (this.gse_type.length)
+                writer.writeString(3, this.gse_type);
+            if (this.model.length)
+                writer.writeString(4, this.model);
+            if (this.manufacturer.length)
+                writer.writeString(5, this.manufacturer);
+            if (this.location.length)
+                writer.writeString(6, this.location);
+            if (this.status.length)
+                writer.writeString(7, this.status);
+            if (this.issue_count.length)
+                writer.writeString(8, this.issue_count);
+            if (this.type_of_fuel.length)
+                writer.writeString(9, this.type_of_fuel);
+            if (this.in_use != false)
+                writer.writeBool(10, this.in_use);
+            if (this.has_most_recent_issue)
+                writer.writeMessage(11, this.most_recent_issue, () => this.most_recent_issue.serialize(writer));
+            if (this.lift_inspection_expires.length)
+                writer.writeString(12, this.lift_inspection_expires);
+            if (this.latest_service_chassi.length)
+                writer.writeString(13, this.latest_service_chassi);
+            if (this.latest_service_unit.length)
+                writer.writeString(14, this.latest_service_unit);
+            if (this.has_capacity)
+                writer.writeDouble(15, this.capacity);
+            if (this.has_details)
+                writer.writeString(16, this.details);
+            if (this.has_error)
+                writer.writeString(17, this.error);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -295,13 +776,55 @@ export namespace requests.v1 {
                     break;
                 switch (reader.getFieldNumber()) {
                     case 1:
-                        message.id = reader.readString();
+                        message.gse_id = reader.readString();
                         break;
                     case 2:
-                        message.name = reader.readString();
+                        message.old_gse_id = reader.readString();
                         break;
                     case 3:
-                        message.description = reader.readString();
+                        message.gse_type = reader.readString();
+                        break;
+                    case 4:
+                        message.model = reader.readString();
+                        break;
+                    case 5:
+                        message.manufacturer = reader.readString();
+                        break;
+                    case 6:
+                        message.location = reader.readString();
+                        break;
+                    case 7:
+                        message.status = reader.readString();
+                        break;
+                    case 8:
+                        message.issue_count = reader.readString();
+                        break;
+                    case 9:
+                        message.type_of_fuel = reader.readString();
+                        break;
+                    case 10:
+                        message.in_use = reader.readBool();
+                        break;
+                    case 11:
+                        reader.readMessage(message.most_recent_issue, () => message.most_recent_issue = MostRecentIssue.deserialize(reader));
+                        break;
+                    case 12:
+                        message.lift_inspection_expires = reader.readString();
+                        break;
+                    case 13:
+                        message.latest_service_chassi = reader.readString();
+                        break;
+                    case 14:
+                        message.latest_service_unit = reader.readString();
+                        break;
+                    case 15:
+                        message.capacity = reader.readDouble();
+                        break;
+                    case 16:
+                        message.details = reader.readString();
+                        break;
+                    case 17:
+                        message.error = reader.readString();
                         break;
                     default: reader.skipField();
                 }

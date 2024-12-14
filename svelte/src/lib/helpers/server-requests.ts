@@ -1,6 +1,27 @@
 import { BACKEND_URL } from "$lib/config";
 import { notify } from "$lib/helpers/notify";
 import { t_global } from "$lib/locales";
+import { requests } from '$lib/prototypes/requests/v1/requests';
+const {
+	HealthStatusRequest,
+	HealthStatusResponse,
+	GSEDetailsRequest,
+	GSEDetails,
+	SubmitIssueRequest,
+    SubmitIssueResponse,
+	FetchIssuesRequest,
+	FetchIssuesResponse,
+	SetLanguageRequest,
+    SetLanguageResponse,
+	LoginRequest,
+    LoginResponse,
+	DeleteIssuesRequest,
+	LogoutRequest,
+    LogoutResponse,
+	FetchGatesRequest,
+	FetchGatesResponse,
+	Issue,
+} = requests.v1;
 
 const debug_routes = false;
 
@@ -12,7 +33,9 @@ export async function getAppVersion() {
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
-		const response = await request.json();
+        const responseData = await request.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData); 
+		const response = HealthStatusResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("getAppVersion", response)
 		console.log(
 			"%cAviation Failure Reporting",
@@ -58,17 +81,24 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const requestData = new GSEDetailsRequest()
+		requestData.gse_id = gse_id;
+        const requestObject = requestData.toObject();
+		const jsonString = JSON.stringify(requestObject);
 		const request = await fetch(`${BACKEND_URL}/api/gse/details`, {
 			method: 'POST',
-			body: JSON.stringify({
-				gse_id
-			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: jsonString,
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
-		const response = await request.json();
+        const responseData = await request.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData); 
+		const response = GSEDetails.deserialize(responseBytes);
 		if (debug_routes) console.log("getGSEDetails", response)
-		return response as GSEDetails;
+		return response;
 	} catch (e) {
 		console.error(
 			"%cError fetching GSE Details",
