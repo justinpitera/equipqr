@@ -3,24 +3,34 @@ import { notify } from "$lib/helpers/notify";
 import { t_global } from "$lib/locales";
 import { requests } from '$lib/prototypes/requests/v1/requests';
 const {
+	// /api/health/status
 	HealthStatusRequest,
 	HealthStatusResponse,
+	// /api/gse/details
 	GSEDetailsRequest,
 	GSEDetailsResponse,
+	// /api/gse/issues/submit
 	SubmitIssueRequest,
 	SubmitIssueResponse,
+	// /api/gse/issues/fetch
 	FetchIssuesRequest,
 	FetchIssuesResponse,
+	// /api/lang
 	SetLanguageRequest,
 	SetLanguageResponse,
+	// /api/auth
 	LoginRequest,
 	LoginResponse,
+	// /api/issues/delete
 	DeleteIssuesRequest,
 	DeleteIssuesResponse,
+	// /api/auth/logout
 	LogoutRequest,
 	LogoutResponse,
+	// /api/locations/fetch
 	FetchGatesRequest,
 	FetchGatesResponse,
+	// Other Types:
 	Issue,
 } = requests.v1;
 
@@ -164,9 +174,6 @@ export async function getIssues(page: number | undefined, issuesPerPage: number 
 		requestData.page_size = issuesPerPage ?? 10;
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/fetch`, {
 			method: "POST",
-			headers: {
-				'Content-Type': 'application/json',
-			},
             body: requestData.serializeBinary(),
 			signal: controller.signal,
 		});
@@ -192,16 +199,11 @@ export async function setLanguage(language: string): Promise<{ token: string } |
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
-		const setLanguageRequest = new SetLanguageRequest();
-		setLanguageRequest.language = language;
-		const requestObject = setLanguageRequest.toObject();
-		const jsonString = JSON.stringify(requestObject);
+		const requestData = new SetLanguageRequest();
+		requestData.language = language;
 		const response = await fetch(`${BACKEND_URL}/api/lang`, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: jsonString,
+            body: requestData.serializeBinary(),
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
@@ -226,16 +228,11 @@ export async function login(email: string): Promise<{ token: string } | undefine
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
-		const loginRequest = new LoginRequest();
-		loginRequest.email = email;
-		const requestObject = loginRequest.toObject();
-		const jsonString = JSON.stringify(requestObject);
+		const requestData = new LoginRequest();
+		requestData.email = email;
 		const response = await fetch(`${BACKEND_URL}/api/auth`, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: jsonString,
+            body: requestData.serializeBinary(),
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
@@ -260,16 +257,11 @@ export async function delete_issue(ids: string[]) {
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
-		const deleteIssuesRequest = new DeleteIssuesRequest();
-		deleteIssuesRequest.ids = ids;
-		const requestObject = deleteIssuesRequest.toObject();
-		const jsonString = JSON.stringify(requestObject);
+		const requestData = new DeleteIssuesRequest();
+		requestData.ids = ids;
 		const response = await fetch(`${BACKEND_URL}/api/issues/delete`, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: jsonString,
+            body: requestData.serializeBinary(),
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
@@ -321,16 +313,11 @@ export async function get_gates(airport_icao_code: string) {
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
-		const fetchGatesRequest = new FetchGatesRequest();
-		fetchGatesRequest.icao_code = airport_icao_code;
-		const requestObject = fetchGatesRequest.toObject();
-		const jsonString = JSON.stringify(requestObject);
+		const requestData = new FetchGatesRequest();
+		requestData.icao_code = airport_icao_code;
 		const response = await fetch(`${BACKEND_URL}/api/locations/fetch`, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: jsonString,
+            body: requestData.serializeBinary(),
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
