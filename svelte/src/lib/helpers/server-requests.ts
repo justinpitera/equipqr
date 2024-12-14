@@ -32,9 +32,11 @@ const {
 	FetchGatesResponse,
 	// Other Types:
 	Issue,
+	Attachment,
+	Gate,
 } = requests.v1;
 
-const debug_routes = false;
+const debug_routes = true;
 
 export async function getAppVersion() {
 	try {
