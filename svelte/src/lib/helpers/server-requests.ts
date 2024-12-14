@@ -6,18 +6,18 @@ const {
 	HealthStatusRequest,
 	HealthStatusResponse,
 	GSEDetailsRequest,
-	GSEDetails,
+	GSEDetailsResponse,
 	SubmitIssueRequest,
-    SubmitIssueResponse,
+	SubmitIssueResponse,
 	FetchIssuesRequest,
 	FetchIssuesResponse,
 	SetLanguageRequest,
-    SetLanguageResponse,
+	SetLanguageResponse,
 	LoginRequest,
-    LoginResponse,
+	LoginResponse,
 	DeleteIssuesRequest,
 	LogoutRequest,
-    LogoutResponse,
+	LogoutResponse,
 	FetchGatesRequest,
 	FetchGatesResponse,
 	Issue,
@@ -33,8 +33,8 @@ export async function getAppVersion() {
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
-        const responseData = await request.arrayBuffer();
-		const responseBytes = new Uint8Array(responseData); 
+		const responseData = await request.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData);
 		const response = HealthStatusResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("getAppVersion", response)
 		console.log(
@@ -83,7 +83,7 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
 		const requestData = new GSEDetailsRequest()
 		requestData.gse_id = gse_id;
-        const requestObject = requestData.toObject();
+		const requestObject = requestData.toObject();
 		const jsonString = JSON.stringify(requestObject);
 		const request = await fetch(`${BACKEND_URL}/api/gse/details`, {
 			method: 'POST',
@@ -94,9 +94,9 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
-        const responseData = await request.arrayBuffer();
-		const responseBytes = new Uint8Array(responseData); 
-		const response = GSEDetails.deserialize(responseBytes);
+		const responseData = await request.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData);
+		const response = GSEDetailsResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("getGSEDetails", response)
 		return response;
 	} catch (e) {
@@ -110,7 +110,9 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 	return undefined
 }
 
-export async function submitIssue(formData: FormData, loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<string | undefined> {
+export async function submitIssue(formData: FormData, loadingFunctionBefore: () => void, loadingFunctionAfter: () => void): Promise<{
+	id?: string;
+} | undefined> {
 	loadingFunctionBefore();
 	try {
 		const controller = new AbortController();
@@ -122,7 +124,9 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 		});
 		clearTimeout(timeout);
 		if (response.ok) {
-			const data = await response.json();
+			const responseData = await response.arrayBuffer();
+			const responseBytes = new Uint8Array(responseData);
+			const data = SubmitIssueResponse.deserialize(responseBytes);
 			if (debug_routes) console.log("submitIssue", data)
 			loadingFunctionAfter();
 			return data;
@@ -159,17 +163,24 @@ export async function getIssues(page: number | undefined, issuesPerPage: number 
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 10s'), 10000);
+		const fetchIssuesRequest = new FetchIssuesRequest()
+		fetchIssuesRequest.page = page ?? 1;
+		fetchIssuesRequest.page_size = issuesPerPage ?? 10;
+		const requestObject = fetchIssuesRequest.toObject();
+		const jsonString = JSON.stringify(requestObject);
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/fetch`, {
 			method: "POST",
-			body: JSON.stringify({
-				page,
-				page_size: issuesPerPage
-			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+            body: jsonString,
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
 		if (response.ok) {
-			const data = await response.json();
+			const responseData = await response.arrayBuffer();
+			const responseBytes = new Uint8Array(responseData);
+			const data = FetchIssuesResponse.deserialize(responseBytes);
 			if (debug_routes) console.log("getIssues", data)
 			loadingFunctionAfter();
 			return data;

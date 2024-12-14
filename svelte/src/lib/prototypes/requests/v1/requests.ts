@@ -202,166 +202,7 @@ export namespace requests.v1 {
             return GSEDetailsRequest.deserialize(bytes);
         }
     }
-    export class MostRecentIssue extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            id?: string;
-            gse_id?: string;
-            issue_description?: string;
-            reported_at?: string;
-            attachments?: string;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("id" in data && data.id != undefined) {
-                    this.id = data.id;
-                }
-                if ("gse_id" in data && data.gse_id != undefined) {
-                    this.gse_id = data.gse_id;
-                }
-                if ("issue_description" in data && data.issue_description != undefined) {
-                    this.issue_description = data.issue_description;
-                }
-                if ("reported_at" in data && data.reported_at != undefined) {
-                    this.reported_at = data.reported_at;
-                }
-                if ("attachments" in data && data.attachments != undefined) {
-                    this.attachments = data.attachments;
-                }
-            }
-        }
-        get id() {
-            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
-        }
-        set id(value: string) {
-            pb_1.Message.setField(this, 1, value);
-        }
-        get gse_id() {
-            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
-        }
-        set gse_id(value: string) {
-            pb_1.Message.setField(this, 2, value);
-        }
-        get issue_description() {
-            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
-        }
-        set issue_description(value: string) {
-            pb_1.Message.setField(this, 3, value);
-        }
-        get reported_at() {
-            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
-        }
-        set reported_at(value: string) {
-            pb_1.Message.setField(this, 4, value);
-        }
-        get attachments() {
-            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
-        }
-        set attachments(value: string) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        static fromObject(data: {
-            id?: string;
-            gse_id?: string;
-            issue_description?: string;
-            reported_at?: string;
-            attachments?: string;
-        }): MostRecentIssue {
-            const message = new MostRecentIssue({});
-            if (data.id != null) {
-                message.id = data.id;
-            }
-            if (data.gse_id != null) {
-                message.gse_id = data.gse_id;
-            }
-            if (data.issue_description != null) {
-                message.issue_description = data.issue_description;
-            }
-            if (data.reported_at != null) {
-                message.reported_at = data.reported_at;
-            }
-            if (data.attachments != null) {
-                message.attachments = data.attachments;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                id?: string;
-                gse_id?: string;
-                issue_description?: string;
-                reported_at?: string;
-                attachments?: string;
-            } = {};
-            if (this.id != null) {
-                data.id = this.id;
-            }
-            if (this.gse_id != null) {
-                data.gse_id = this.gse_id;
-            }
-            if (this.issue_description != null) {
-                data.issue_description = this.issue_description;
-            }
-            if (this.reported_at != null) {
-                data.reported_at = this.reported_at;
-            }
-            if (this.attachments != null) {
-                data.attachments = this.attachments;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.id.length)
-                writer.writeString(1, this.id);
-            if (this.gse_id.length)
-                writer.writeString(2, this.gse_id);
-            if (this.issue_description.length)
-                writer.writeString(3, this.issue_description);
-            if (this.reported_at.length)
-                writer.writeString(4, this.reported_at);
-            if (this.attachments.length)
-                writer.writeString(5, this.attachments);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): MostRecentIssue {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new MostRecentIssue();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        message.id = reader.readString();
-                        break;
-                    case 2:
-                        message.gse_id = reader.readString();
-                        break;
-                    case 3:
-                        message.issue_description = reader.readString();
-                        break;
-                    case 4:
-                        message.reported_at = reader.readString();
-                        break;
-                    case 5:
-                        message.attachments = reader.readString();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): MostRecentIssue {
-            return MostRecentIssue.deserialize(bytes);
-        }
-    }
-    export class GSEDetails extends pb_1.Message {
+    export class GSEDetailsResponse extends pb_1.Message {
         #one_of_decls: number[][] = [[15], [16], [17]];
         constructor(data?: any[] | ({
             gse_id?: string;
@@ -374,7 +215,7 @@ export namespace requests.v1 {
             issue_count?: string;
             type_of_fuel?: string;
             in_use?: boolean;
-            most_recent_issue?: MostRecentIssue;
+            most_recent_issue?: MostRecentIssueResponse;
             lift_inspection_expires?: string;
             latest_service_chassi?: string;
             latest_service_unit?: string;
@@ -502,9 +343,9 @@ export namespace requests.v1 {
             pb_1.Message.setField(this, 10, value);
         }
         get most_recent_issue() {
-            return pb_1.Message.getWrapperField(this, MostRecentIssue, 11) as MostRecentIssue;
+            return pb_1.Message.getWrapperField(this, MostRecentIssueResponse, 11) as MostRecentIssueResponse;
         }
-        set most_recent_issue(value: MostRecentIssue) {
+        set most_recent_issue(value: MostRecentIssueResponse) {
             pb_1.Message.setWrapperField(this, 11, value);
         }
         get has_most_recent_issue() {
@@ -593,15 +434,15 @@ export namespace requests.v1 {
             issue_count?: string;
             type_of_fuel?: string;
             in_use?: boolean;
-            most_recent_issue?: ReturnType<typeof MostRecentIssue.prototype.toObject>;
+            most_recent_issue?: ReturnType<typeof MostRecentIssueResponse.prototype.toObject>;
             lift_inspection_expires?: string;
             latest_service_chassi?: string;
             latest_service_unit?: string;
             capacity?: number;
             details?: string;
             error?: string;
-        }): GSEDetails {
-            const message = new GSEDetails({});
+        }): GSEDetailsResponse {
+            const message = new GSEDetailsResponse({});
             if (data.gse_id != null) {
                 message.gse_id = data.gse_id;
             }
@@ -633,7 +474,7 @@ export namespace requests.v1 {
                 message.in_use = data.in_use;
             }
             if (data.most_recent_issue != null) {
-                message.most_recent_issue = MostRecentIssue.fromObject(data.most_recent_issue);
+                message.most_recent_issue = MostRecentIssueResponse.fromObject(data.most_recent_issue);
             }
             if (data.lift_inspection_expires != null) {
                 message.lift_inspection_expires = data.lift_inspection_expires;
@@ -667,7 +508,7 @@ export namespace requests.v1 {
                 issue_count?: string;
                 type_of_fuel?: string;
                 in_use?: boolean;
-                most_recent_issue?: ReturnType<typeof MostRecentIssue.prototype.toObject>;
+                most_recent_issue?: ReturnType<typeof MostRecentIssueResponse.prototype.toObject>;
                 lift_inspection_expires?: string;
                 latest_service_chassi?: string;
                 latest_service_unit?: string;
@@ -769,8 +610,8 @@ export namespace requests.v1 {
             if (!w)
                 return writer.getResultBuffer();
         }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GSEDetails {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GSEDetails();
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GSEDetailsResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GSEDetailsResponse();
             while (reader.nextField()) {
                 if (reader.isEndGroup())
                     break;
@@ -806,7 +647,7 @@ export namespace requests.v1 {
                         message.in_use = reader.readBool();
                         break;
                     case 11:
-                        reader.readMessage(message.most_recent_issue, () => message.most_recent_issue = MostRecentIssue.deserialize(reader));
+                        reader.readMessage(message.most_recent_issue, () => message.most_recent_issue = MostRecentIssueResponse.deserialize(reader));
                         break;
                     case 12:
                         message.lift_inspection_expires = reader.readString();
@@ -834,40 +675,205 @@ export namespace requests.v1 {
         serializeBinary(): Uint8Array {
             return this.serialize();
         }
-        static deserializeBinary(bytes: Uint8Array): GSEDetails {
-            return GSEDetails.deserialize(bytes);
+        static deserializeBinary(bytes: Uint8Array): GSEDetailsResponse {
+            return GSEDetailsResponse.deserialize(bytes);
         }
     }
-    export class SubmitIssueRequest extends pb_1.Message {
+    export class MostRecentIssueResponse extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
+            id?: string;
             gse_id?: string;
             issue_description?: string;
-            estimated_time?: string;
-            reported_by?: string;
-            attachments?: Uint8Array[];
-            attachment_names?: string[];
+            reported_at?: string;
+            attachments?: string;
         }) {
             super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [5, 6], this.#one_of_decls);
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
+                if ("id" in data && data.id != undefined) {
+                    this.id = data.id;
+                }
                 if ("gse_id" in data && data.gse_id != undefined) {
                     this.gse_id = data.gse_id;
                 }
                 if ("issue_description" in data && data.issue_description != undefined) {
                     this.issue_description = data.issue_description;
                 }
-                if ("estimated_time" in data && data.estimated_time != undefined) {
-                    this.estimated_time = data.estimated_time;
-                }
-                if ("reported_by" in data && data.reported_by != undefined) {
-                    this.reported_by = data.reported_by;
+                if ("reported_at" in data && data.reported_at != undefined) {
+                    this.reported_at = data.reported_at;
                 }
                 if ("attachments" in data && data.attachments != undefined) {
                     this.attachments = data.attachments;
                 }
-                if ("attachment_names" in data && data.attachment_names != undefined) {
-                    this.attachment_names = data.attachment_names;
+            }
+        }
+        get id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set id(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get gse_id() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set gse_id(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get issue_description() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set issue_description(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        get reported_at() {
+            return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
+        }
+        set reported_at(value: string) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get attachments() {
+            return pb_1.Message.getFieldWithDefault(this, 5, "") as string;
+        }
+        set attachments(value: string) {
+            pb_1.Message.setField(this, 5, value);
+        }
+        static fromObject(data: {
+            id?: string;
+            gse_id?: string;
+            issue_description?: string;
+            reported_at?: string;
+            attachments?: string;
+        }): MostRecentIssueResponse {
+            const message = new MostRecentIssueResponse({});
+            if (data.id != null) {
+                message.id = data.id;
+            }
+            if (data.gse_id != null) {
+                message.gse_id = data.gse_id;
+            }
+            if (data.issue_description != null) {
+                message.issue_description = data.issue_description;
+            }
+            if (data.reported_at != null) {
+                message.reported_at = data.reported_at;
+            }
+            if (data.attachments != null) {
+                message.attachments = data.attachments;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                id?: string;
+                gse_id?: string;
+                issue_description?: string;
+                reported_at?: string;
+                attachments?: string;
+            } = {};
+            if (this.id != null) {
+                data.id = this.id;
+            }
+            if (this.gse_id != null) {
+                data.gse_id = this.gse_id;
+            }
+            if (this.issue_description != null) {
+                data.issue_description = this.issue_description;
+            }
+            if (this.reported_at != null) {
+                data.reported_at = this.reported_at;
+            }
+            if (this.attachments != null) {
+                data.attachments = this.attachments;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.id.length)
+                writer.writeString(1, this.id);
+            if (this.gse_id.length)
+                writer.writeString(2, this.gse_id);
+            if (this.issue_description.length)
+                writer.writeString(3, this.issue_description);
+            if (this.reported_at.length)
+                writer.writeString(4, this.reported_at);
+            if (this.attachments.length)
+                writer.writeString(5, this.attachments);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): MostRecentIssueResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new MostRecentIssueResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.id = reader.readString();
+                        break;
+                    case 2:
+                        message.gse_id = reader.readString();
+                        break;
+                    case 3:
+                        message.issue_description = reader.readString();
+                        break;
+                    case 4:
+                        message.reported_at = reader.readString();
+                        break;
+                    case 5:
+                        message.attachments = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): MostRecentIssueResponse {
+            return MostRecentIssueResponse.deserialize(bytes);
+        }
+    }
+    export class SubmitIssueRequest extends pb_1.Message {
+        #one_of_decls: number[][] = [[6], [7]];
+        constructor(data?: any[] | ({
+            gse_id?: string;
+            worker_id?: string;
+            issue_description?: string;
+            is_operable?: string;
+            attachments?: Uint8Array[];
+        } & (({
+            gate_type?: string;
+        }) | ({
+            gate_name?: string;
+        })))) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [5], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("gse_id" in data && data.gse_id != undefined) {
+                    this.gse_id = data.gse_id;
+                }
+                if ("worker_id" in data && data.worker_id != undefined) {
+                    this.worker_id = data.worker_id;
+                }
+                if ("issue_description" in data && data.issue_description != undefined) {
+                    this.issue_description = data.issue_description;
+                }
+                if ("is_operable" in data && data.is_operable != undefined) {
+                    this.is_operable = data.is_operable;
+                }
+                if ("attachments" in data && data.attachments != undefined) {
+                    this.attachments = data.attachments;
+                }
+                if ("gate_type" in data && data.gate_type != undefined) {
+                    this.gate_type = data.gate_type;
+                }
+                if ("gate_name" in data && data.gate_name != undefined) {
+                    this.gate_name = data.gate_name;
                 }
             }
         }
@@ -877,22 +883,22 @@ export namespace requests.v1 {
         set gse_id(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
-        get issue_description() {
+        get worker_id() {
             return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
         }
-        set issue_description(value: string) {
+        set worker_id(value: string) {
             pb_1.Message.setField(this, 2, value);
         }
-        get estimated_time() {
+        get issue_description() {
             return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
         }
-        set estimated_time(value: string) {
+        set issue_description(value: string) {
             pb_1.Message.setField(this, 3, value);
         }
-        get reported_by() {
+        get is_operable() {
             return pb_1.Message.getFieldWithDefault(this, 4, "") as string;
         }
-        set reported_by(value: string) {
+        set is_operable(value: string) {
             pb_1.Message.setField(this, 4, value);
         }
         get attachments() {
@@ -901,67 +907,105 @@ export namespace requests.v1 {
         set attachments(value: Uint8Array[]) {
             pb_1.Message.setField(this, 5, value);
         }
-        get attachment_names() {
-            return pb_1.Message.getFieldWithDefault(this, 6, []) as string[];
+        get gate_type() {
+            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
         }
-        set attachment_names(value: string[]) {
-            pb_1.Message.setField(this, 6, value);
+        set gate_type(value: string) {
+            pb_1.Message.setOneofField(this, 6, this.#one_of_decls[0], value);
+        }
+        get has_gate_type() {
+            return pb_1.Message.getField(this, 6) != null;
+        }
+        get gate_name() {
+            return pb_1.Message.getFieldWithDefault(this, 7, "") as string;
+        }
+        set gate_name(value: string) {
+            pb_1.Message.setOneofField(this, 7, this.#one_of_decls[1], value);
+        }
+        get has_gate_name() {
+            return pb_1.Message.getField(this, 7) != null;
+        }
+        get _gate_type() {
+            const cases: {
+                [index: number]: "none" | "gate_type";
+            } = {
+                0: "none",
+                6: "gate_type"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [6])];
+        }
+        get _gate_name() {
+            const cases: {
+                [index: number]: "none" | "gate_name";
+            } = {
+                0: "none",
+                7: "gate_name"
+            };
+            return cases[pb_1.Message.computeOneofCase(this, [7])];
         }
         static fromObject(data: {
             gse_id?: string;
+            worker_id?: string;
             issue_description?: string;
-            estimated_time?: string;
-            reported_by?: string;
+            is_operable?: string;
             attachments?: Uint8Array[];
-            attachment_names?: string[];
+            gate_type?: string;
+            gate_name?: string;
         }): SubmitIssueRequest {
             const message = new SubmitIssueRequest({});
             if (data.gse_id != null) {
                 message.gse_id = data.gse_id;
             }
+            if (data.worker_id != null) {
+                message.worker_id = data.worker_id;
+            }
             if (data.issue_description != null) {
                 message.issue_description = data.issue_description;
             }
-            if (data.estimated_time != null) {
-                message.estimated_time = data.estimated_time;
-            }
-            if (data.reported_by != null) {
-                message.reported_by = data.reported_by;
+            if (data.is_operable != null) {
+                message.is_operable = data.is_operable;
             }
             if (data.attachments != null) {
                 message.attachments = data.attachments;
             }
-            if (data.attachment_names != null) {
-                message.attachment_names = data.attachment_names;
+            if (data.gate_type != null) {
+                message.gate_type = data.gate_type;
+            }
+            if (data.gate_name != null) {
+                message.gate_name = data.gate_name;
             }
             return message;
         }
         toObject() {
             const data: {
                 gse_id?: string;
+                worker_id?: string;
                 issue_description?: string;
-                estimated_time?: string;
-                reported_by?: string;
+                is_operable?: string;
                 attachments?: Uint8Array[];
-                attachment_names?: string[];
+                gate_type?: string;
+                gate_name?: string;
             } = {};
             if (this.gse_id != null) {
                 data.gse_id = this.gse_id;
             }
+            if (this.worker_id != null) {
+                data.worker_id = this.worker_id;
+            }
             if (this.issue_description != null) {
                 data.issue_description = this.issue_description;
             }
-            if (this.estimated_time != null) {
-                data.estimated_time = this.estimated_time;
-            }
-            if (this.reported_by != null) {
-                data.reported_by = this.reported_by;
+            if (this.is_operable != null) {
+                data.is_operable = this.is_operable;
             }
             if (this.attachments != null) {
                 data.attachments = this.attachments;
             }
-            if (this.attachment_names != null) {
-                data.attachment_names = this.attachment_names;
+            if (this.gate_type != null) {
+                data.gate_type = this.gate_type;
+            }
+            if (this.gate_name != null) {
+                data.gate_name = this.gate_name;
             }
             return data;
         }
@@ -971,16 +1015,18 @@ export namespace requests.v1 {
             const writer = w || new pb_1.BinaryWriter();
             if (this.gse_id.length)
                 writer.writeString(1, this.gse_id);
+            if (this.worker_id.length)
+                writer.writeString(2, this.worker_id);
             if (this.issue_description.length)
-                writer.writeString(2, this.issue_description);
-            if (this.estimated_time.length)
-                writer.writeString(3, this.estimated_time);
-            if (this.reported_by.length)
-                writer.writeString(4, this.reported_by);
+                writer.writeString(3, this.issue_description);
+            if (this.is_operable.length)
+                writer.writeString(4, this.is_operable);
             if (this.attachments.length)
                 writer.writeRepeatedBytes(5, this.attachments);
-            if (this.attachment_names.length)
-                writer.writeRepeatedString(6, this.attachment_names);
+            if (this.has_gate_type)
+                writer.writeString(6, this.gate_type);
+            if (this.has_gate_name)
+                writer.writeString(7, this.gate_name);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -994,19 +1040,22 @@ export namespace requests.v1 {
                         message.gse_id = reader.readString();
                         break;
                     case 2:
-                        message.issue_description = reader.readString();
+                        message.worker_id = reader.readString();
                         break;
                     case 3:
-                        message.estimated_time = reader.readString();
+                        message.issue_description = reader.readString();
                         break;
                     case 4:
-                        message.reported_by = reader.readString();
+                        message.is_operable = reader.readString();
                         break;
                     case 5:
                         pb_1.Message.addToRepeatedField(message, 5, reader.readBytes());
                         break;
                     case 6:
-                        pb_1.Message.addToRepeatedField(message, 6, reader.readString());
+                        message.gate_type = reader.readString();
+                        break;
+                    case 7:
+                        message.gate_name = reader.readString();
                         break;
                     default: reader.skipField();
                 }
