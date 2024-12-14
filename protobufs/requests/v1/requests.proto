@@ -15,14 +15,6 @@ message GSEDetailsRequest {
     string gse_id = 1;
 }
 
-message MostRecentIssueResponse {
-    string id = 1;
-    string gse_id = 2;
-    string issue_description = 3;
-    string reported_at = 4;
-    string attachments = 5;
-}
-
 message GSEDetailsResponse {
     string gse_id = 1;
     string old_gse_id = 2;
@@ -34,13 +26,21 @@ message GSEDetailsResponse {
     string issue_count = 8;
     string type_of_fuel = 9;
     bool in_use = 10;
-    MostRecentIssue most_recent_issue = 11;
+    MostRecentIssueResponse most_recent_issue = 11;
     string lift_inspection_expires = 12;
     string latest_service_chassi = 13;
     string latest_service_unit = 14;
     optional double capacity = 15; // Example Optionals
     optional string details = 16; // Optional
     optional string error = 17; // Optional
+}
+
+message MostRecentIssueResponse {
+    string id = 1;
+    string gse_id = 2;
+    string issue_description = 3;
+    string reported_at = 4;
+    string attachments = 5;
 }
 
 // Submit Issue
