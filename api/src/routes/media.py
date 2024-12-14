@@ -8,7 +8,7 @@ from minio.error import S3Error
 from loguru import logger
 
 # Local
-from .. import API_CONFIG
+from src import API_CONFIG
 from src.models import IssueAttachment
 
 

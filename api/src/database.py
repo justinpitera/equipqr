@@ -9,6 +9,8 @@ Authors:
 
 # Standard
 import re
+from uuid import uuid4
+import csv
 import math
 from datetime import datetime
 
@@ -18,8 +20,9 @@ import pandas as pd
 import pytz
 
 # Local
-from . import API_CONFIG
-from src.models import GroundSupportEquiptment, ImportMetadata
+from src import API_CONFIG
+from src.models import GroundSupportEquiptment, ImportMetadata, Location
+from src.enums import LocationTypeEnum
 
 # Init
 LEGACY_CSV_PATH: str = API_CONFIG["database"]["importer"]["legacy_path"]
@@ -155,3 +158,39 @@ async def database_importer() -> None:
 
     await ImportMetadata.create(file_name=file_name, imported_at=datetime.now(timezone))
     logger.info("Legacy database import completed.")
+
+# Import CSV into the Location table
+async def location_importer(file_path, icao_code):
+    """Import locations from a CSV file to the Location table.
+    """
+    try:
+        with open(file_path, mode="r", encoding="utf-8") as csv_file:
+            reader = csv.DictReader(csv_file)
+            for row in reader:
+                location_name = row.get("location")
+                location_type = row.get("type")
+                aircraft = row.get("aircraft")
+
+                if not location_name or not location_type or not aircraft:
+                    print(f"Skipping row with missing data: {row}")
+                    continue
+
+                # Convert location_type to enum
+                try:
+                    location_type_enum = LocationTypeEnum[location_type.upper()]
+                except KeyError:
+                    print(f"Invalid location type '{location_type}' in row: {row}")
+                    continue
+
+                # Create a Location instance
+                await Location.create(
+                    id=uuid4(),
+                    icao_code=icao_code,
+                    location=location_name,
+                    aircraft=aircraft,
+                    location_type=location_type_enum,
+                )
+
+        print("CSV data imported successfully!")
+    except Exception as e:
+        print(f"An error occurred: {e}")

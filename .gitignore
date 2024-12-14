@@ -14,6 +14,11 @@ private/
 **/*.crt
 **/*.key
 
+# Mypy
+api/out
+api/.mypy_cache
+api/typings/3.*
+
 # Built web files
 api/web
 

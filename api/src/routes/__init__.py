@@ -12,6 +12,7 @@ from src.routes.health import get_status
 from src.routes.issues import delete_issues, details_request, submit_issue, fetch_issues
 from src.routes.auth import auth_user, set_token
 from src.routes.media import fetch_issue_attachment
+from src.routes.locations import fetch_locations
 
 __all__: list[str] = [
     "homepage",
@@ -23,4 +24,5 @@ __all__: list[str] = [
     "auth_user",
     "set_token",
     "fetch_issue_attachment",
+    "fetch_locations"
 ]

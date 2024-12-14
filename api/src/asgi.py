@@ -19,12 +19,16 @@ from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 from tortoise import Tortoise
 from loguru import logger
+from faker import Faker
 
 # Local
-from . import API_CONFIG, TORTOISE_CONFIG, RedisClient
+from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
 from src.models import CrewMember
 from src.database import database_importer
 from src.enums import CrewMemberPositionEnum
+
+fake: Faker = Faker()
+
 
 from src.routes import (
     get_status,
@@ -36,6 +40,7 @@ from src.routes import (
     auth_user,
     set_token,
     homepage,
+    fetch_locations
 )
 
 
@@ -80,7 +85,9 @@ async def _lifespan(_app: Starlette) -> AsyncGenerator[None, None]:
     await Tortoise.generate_schemas()
     
     await _validate_master_account()
+    # await generate_issues()
     await database_importer()
+    # await location_importer(file_path="../locations/EKCH/locations_EKCH.csv", icao_code="EKCH")
     logger.success("Startup completed successfully!")    
     yield # Yielding to Starlette to run the server.
     # Shutdown
@@ -117,6 +124,9 @@ def init_asgi() -> Starlette:
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/submit", route=submit_issue, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/delete", route=delete_issues, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/fetch", route=fetch_issues, methods=["POST"])
+
+    # Locations
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/locations/fetch", route=fetch_locations, methods=["POST"])
     
     # Authentication
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/auth", route=auth_user, methods=["POST"])

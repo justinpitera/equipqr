@@ -11,3 +11,10 @@ vite shortcuts:
   press o + enter to open in browser
   press c + enter to clear console
   press q + enter to quit
+
+
+# Buf
+
+Generate protobuf classes:
+1. npm install -g protoc-gen-ts
+2. buf generate

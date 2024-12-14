@@ -1,11 +1,6 @@
 """
 routes/issues.py - Routes regarding issues.
 
-    Includes:
-        
-        - Viewing issue(s)
-        - Submitting issues.
-
 Date: December 4, 2024
 
 Authors:
@@ -14,14 +9,14 @@ Authors:
 
 # Standard
 from __future__ import annotations
+from typing import Any
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta, timezone
 
 # Third-party
 from pydantic import BaseModel, ValidationError, Field, field_validator
-from tortoise.exceptions import OperationalError, DoesNotExist
 from tortoise.expressions import Q
-from tortoise.contrib.pydantic import PydanticModel, pydantic_model_creator # pyright: ignore
+from tortoise.exceptions import OperationalError, DoesNotExist
 from starlette.datastructures import FormData, UploadFile
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -32,7 +27,7 @@ from colorama import Fore, Style
 # Local
 from src.models import GroundSupportEquiptment, Issue, IssueAttachment
 from src.tasks import upload_attachments_to_minio
-from tortoise.queryset import QuerySet
+from src.enums import IssueProgressEnum
 
 
 async def details_request(request: Request) -> JSONResponse:
@@ -91,7 +86,7 @@ async def details_request(request: Request) -> JSONResponse:
                 "id": str(issue.id),
                 "gse_id": issue.gse_id,
                 "issue_description": issue.issue_description,
-                "reported_at": serialize_field(issue.reported_at),
+                "reported_at": serialize_field(value=issue.reported_at),
                 "attachments": None if issue.attachments is None else "Attachments are present",
             }
 
@@ -290,7 +285,6 @@ async def delete_issues(request: Request) -> JSONResponse:
         delete_issues_request: _DeleteIssuesRequest = _DeleteIssuesRequest(**body)
         logger.info(f"{Fore.GREEN}✅ Validation successful for Issue IDs: {delete_issues_request.ids}{Style.RESET_ALL}")
 
-        # Query the database for the specified Issue IDs
         logger.info(f"{Fore.YELLOW}🛠️ Querying database for Issue IDs: {delete_issues_request.ids}{Style.RESET_ALL}")
         fetched_issues: list[Issue] = await Issue.filter(id__in=delete_issues_request.ids).all()
 
@@ -304,11 +298,9 @@ async def delete_issues(request: Request) -> JSONResponse:
         fetched_issues_ids: set[str] = {str(issue.id) for issue in fetched_issues}
         not_found_ids: list[str] = list(set(delete_issues_request.ids) - fetched_issues_ids)
 
-        # Log missing IDs before deletion
         if not_found_ids:
             logger.warning(f"{Fore.RED}⚠️ The following IDs were not found and will not be deleted: {not_found_ids}{Style.RESET_ALL}")
 
-        # Delete the fetched issues
         logger.info(f"{Fore.GREEN}✅ Deleting fetched issues: {list(fetched_issues_ids)}{Style.RESET_ALL}")
         await Issue.filter(id__in=fetched_issues_ids).delete()
 
@@ -351,32 +343,31 @@ async def delete_issues(request: Request) -> JSONResponse:
 async def fetch_issues(request: Request) -> JSONResponse:
 
     class _IssueFilters(BaseModel):
-        """Pydantic model to validate query parameters for fetching issues."""
+        """Pydantic model to validate request body for fetching issues."""
         reported_by: str | None = None
-        reported_at_start: str | None = None
-        reported_at_end: str | None = None
+        reported_at_start: datetime | None = None
+        reported_at_end: datetime | None = None
+        estimated_time: str | None = None
         description: str | None = None
+        progress: str | None = None
+        location: str | None = None
         page: int = Field(default=1, ge=1)
         page_size: int = Field(default=10, ge=1, le=100)
 
-        @field_validator("reported_at_start", "reported_at_end", mode="before")
+        @field_validator("reported_at_start", "reported_at_end")
         @classmethod
-        def validate_date_format(cls, value: str | None) -> str | None:
-            if value:
-                try:
-                    datetime.fromisoformat(value)
-                except ValueError:
-                    raise ValueError("Invalid ISO 8601 date format.")
-            return value
+        def validate_date_format(cls, value: str | None) -> datetime | None:
+            if value is None:
+                return None
+            try:
+                return datetime.fromisoformat(value)
+            except ValueError:
+                raise ValueError("Invalid ISO 8601 date format.")
 
     try:
-        # Parse and validate query parameters
-        query_params: dict[str, int | str | None] = {
-            key: (int(value) if key in {"page", "page_size"} else str(value) if key in {"reported_by", "description"} else value)
-            for key, value in request.query_params.items()
-        }
-
-        filters: _IssueFilters = _IssueFilters(**query_params)
+        # Parse the request body as JSON
+        data: dict[str, str | datetime | int | None] = await request.json()
+        filters: _IssueFilters = _IssueFilters(**data) # pyright: ignore[reportArgumentType]
 
         # Construct Tortoise query
         query: Q = Q()
@@ -402,44 +393,57 @@ async def fetch_issues(request: Request) -> JSONResponse:
         )
 
         total_issues: int = await Issue.filter(query).count()
+        
+        # Initialize issues_data as a list
+        issues_data: list[dict[str, str | IssueProgressEnum | list[dict[str, str | Any | None]] | None]] = []
 
-        # Convert issues to plain dictionaries
-        issues_data = []
+        # Loop through issues_queryset and append issue data
         for issue in issues_queryset:
             issues_data.append({
                 "id": str(issue.id),
                 "gse_id": str(issue.gse_id),
                 "issue_description": issue.issue_description,
-                "reported_at": str(issue.reported_at),
+                "reported_at": issue.reported_at.isoformat() if issue.reported_at else None,
+                "estimated_time": str(issue.estimated_time) if issue.estimated_time else None,
                 "reported_by": issue.reported_by,
+                "progress": issue.progress,
                 "attachments": [
                     {
                         "id": str(attachment.id),
                         "file_type": attachment.file_type,
-                        "uploaded_at": str(attachment.uploaded_at),
+                        "uploaded_at": attachment.uploaded_at.isoformat() if attachment.uploaded_at else None,
                     }
-                    for attachment in issue.attachments
+                    for attachment in (issue.attachments or [])
                 ],
             })
 
         # Build response
-        response: dict[str, int | list[dict]] = {
+        response: dict[str, Any] = {
             "total": total_issues,
             "page": filters.page,
             "page_size": filters.page_size,
             "data": issues_data,
         }
 
-        logger.info("Successfully fetched issues with filters: {}", query_params)
+        logger.info("Successfully fetched issues with filters: {}", data)
         return JSONResponse(status_code=200, content=response)
 
-
     except DoesNotExist:
-        logger.error("No issues found for the provided filters: {}", query_params)
+        logger.error("No issues found for the provided filters: {}", data)
         return JSONResponse(status_code=404, content={"error": "No issues found."})
     except ValueError as ve:
         logger.error("Validation error: {}", str(ve))
         return JSONResponse(status_code=422, content={"error": str(ve)})
     except Exception as e:
-        logger.error("Validation error: {}", str(e))
+        logger.error("Internal server error: {}", str(e))
         return JSONResponse(status_code=500, content={"error": "Internal server error"})
+
+async def edit_issue(request: Request) -> None:
+    """POST route for editing an issue"""
+    
+    class _EditIssueRequest(BaseModel):
+        """Pydantic model to validate incoming requests to edit issues."""
+        gse_id: str # query
+        
+        # Modifiables:
+        progress: str | None = None

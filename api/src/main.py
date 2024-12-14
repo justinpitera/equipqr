@@ -75,5 +75,7 @@ if __name__ == "__main__":
         asyncio.run(main=_main())
     except (asyncio.CancelledError, KeyboardInterrupt):
         pass
+    except Exception as e:
+        print(e)
     finally:
         print(f"{Fore.GREEN}[SHUTDOWN]{Style.RESET_ALL} API shutdown successfully!")

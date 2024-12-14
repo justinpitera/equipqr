@@ -7,17 +7,14 @@ Authors:
     Justin N. Pitera (justinpitera@gmail.com)
 """
 
-# Standard
-
 # Third-party
-from typing import Any
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 # Local
-from .. import API_VERSION
+from src import API_VERSION
 
-async def get_status(request: Request) -> JSONResponse:
+async def get_status(_: Request) -> JSONResponse:
     response: JSONResponse = JSONResponse(
         status_code=200,
         content={

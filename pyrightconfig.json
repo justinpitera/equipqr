@@ -1,7 +1,5 @@
 {
     "typeCheckingMode": "strict",
-    "reportMissingTypeStubs": false,
-    "extraPaths": [
-        "./api/typings"
-    ]
+    "reportMissingTypeStubs": true,
+    "stubPath": "./api/typings"
 }

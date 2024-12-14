@@ -61,6 +61,8 @@ dnspython==2.7.0
     # via email-validator
 email-validator==2.2.0
     # via pydantic
+faker==33.1.0
+    # via api
 granian==1.6.4
     # via api
 idna==3.10
@@ -111,6 +113,7 @@ pypika-tortoise==0.2.2
     # via tortoise-orm
 python-dateutil==2.9.0.post0
     # via celery
+    # via faker
     # via pandas
 python-multipart==0.0.19
     # via api
@@ -135,14 +138,22 @@ toml==0.10.2
     # via api
 tortoise-orm==0.22.0
     # via api
+    # via types-tortoise
 tqdm==4.67.1
     # via api
 types-pytz==2024.2.0.20241003
     # via pandas-stubs
+types-requests==2.32.0.20241016
+    # via api
+types-toml==0.10.8.20240310
+    # via api
+types-tortoise==0.3.6
+    # via api
 typing-extensions==4.12.2
     # via aiosqlite
     # via celery-stubs
     # via celery-types
+    # via faker
     # via minio
     # via mypy
     # via pydantic
@@ -154,6 +165,7 @@ tzdata==2024.2
 urllib3==2.2.3
     # via minio
     # via requests
+    # via types-requests
 uvloop==0.21.0
     # via granian
 vine==5.1.0
