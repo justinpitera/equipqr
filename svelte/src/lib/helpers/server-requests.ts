@@ -16,6 +16,7 @@ const {
 	LoginRequest,
 	LoginResponse,
 	DeleteIssuesRequest,
+	DeleteIssuesResponse,
 	LogoutRequest,
 	LogoutResponse,
 	FetchGatesRequest,
@@ -198,17 +199,23 @@ export async function setLanguage(language: string): Promise<{ token: string } |
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const setLanguageRequest = new SetLanguageRequest();
+		setLanguageRequest.language = language;
+		const requestObject = setLanguageRequest.toObject();
+		const jsonString = JSON.stringify(requestObject);
 		const response = await fetch(`${BACKEND_URL}/api/lang`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ language }),
+			body: jsonString,
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
-		const data = response.json();
+		const responseData = await response.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData);
+		const data = SetLanguageResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("setLanguage", data)
 		return data
 	} catch (e) {
@@ -226,17 +233,23 @@ export async function login(email: string): Promise<{ token: string } | undefine
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const loginRequest = new LoginRequest();
+		loginRequest.email = email;
+		const requestObject = loginRequest.toObject();
+		const jsonString = JSON.stringify(requestObject);
 		const response = await fetch(`${BACKEND_URL}/api/auth`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ email }),
+			body: jsonString,
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
-		const data = response.json();
+		const responseData = await response.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData);
+		const data = LoginResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("login", data)
 		return data;
 	} catch (e) {
@@ -254,17 +267,23 @@ export async function delete_issue(ids: string[]) {
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const deleteIssuesRequest = new DeleteIssuesRequest();
+		deleteIssuesRequest.ids = ids;
+		const requestObject = deleteIssuesRequest.toObject();
+		const jsonString = JSON.stringify(requestObject);
 		const response = await fetch(`${BACKEND_URL}/api/issues/delete`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ ids }),
+			body: jsonString,
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
-		const output = response.json();
+		const responseData = await response.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData);
+		const output = DeleteIssuesResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("delete_issue", output)
 	} catch (e) {
 		console.error(
@@ -276,7 +295,7 @@ export async function delete_issue(ids: string[]) {
 	}
 }
 
-export async function logout(): Promise<{ token: string } | undefined> {
+export async function logout(): Promise<{ token?: string, message?: string } | undefined> {
 	try {
 		document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
 		const controller = new AbortController();
@@ -290,7 +309,10 @@ export async function logout(): Promise<{ token: string } | undefined> {
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
-		return response.json();
+		const responseData = await response.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData);
+		const output = LogoutResponse.deserialize(responseBytes);
+		return output;
 	} catch (e) {
 		console.error(
 			"%cError logging out",
@@ -306,17 +328,23 @@ export async function get_gates(airport_icao_code: string) {
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const fetchGatesRequest = new FetchGatesRequest();
+		fetchGatesRequest.icao_code = airport_icao_code;
+		const requestObject = fetchGatesRequest.toObject();
+		const jsonString = JSON.stringify(requestObject);
 		const response = await fetch(`${BACKEND_URL}/api/locations/fetch`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ icao_code: airport_icao_code }),
+			body: jsonString,
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
-		const output = response.json();
+		const responseData = await response.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData);
+		const output = FetchGatesResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("get_gates", output)
 	} catch (e) {
 		console.error(
