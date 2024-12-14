@@ -1306,6 +1306,7 @@
                                     inline
                                     showActionButtons
                                     autohide={false}
+                                    value={issue.estimated_date ? new Date(issue.estimated_date) : undefined}
                                     on:clear={() => {}}
                                     on:apply={(event) => {
                                         issues.set(
