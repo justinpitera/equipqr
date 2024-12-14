@@ -8,10 +8,12 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
+    "protobuf": "buf generate ../protobufs",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
+    "@bufbuild/buf": "^1.47.2",
     "@sveltejs/adapter-auto": "^3.3.1",
     "@sveltejs/kit": "^2.10.1",
     "@sveltejs/vite-plugin-svelte": "^5.0.1",
