@@ -18,3 +18,14 @@ vite shortcuts:
 Generate protobuf classes:
 1. npm install -g protoc-gen-ts
 2. buf generate
+
+3. buf.gen.yaml - settings for generating:
+
+```
+version: v1
+plugins:
+  - name: python
+    out: api/src/protos/
+  - name: ts
+    out: out/ # Adjust
+```
