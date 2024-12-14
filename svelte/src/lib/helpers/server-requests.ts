@@ -84,14 +84,9 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
 		const requestData = new GSEDetailsRequest()
 		requestData.gse_id = gse_id;
-		const requestObject = requestData.toObject();
-		const jsonString = JSON.stringify(requestObject);
 		const request = await fetch(`${BACKEND_URL}/api/gse/details`, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: jsonString,
+			body: requestData.serializeBinary(),
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);
@@ -164,17 +159,15 @@ export async function getIssues(page: number | undefined, issuesPerPage: number 
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 10s'), 10000);
-		const fetchIssuesRequest = new FetchIssuesRequest()
-		fetchIssuesRequest.page = page ?? 1;
-		fetchIssuesRequest.page_size = issuesPerPage ?? 10;
-		const requestObject = fetchIssuesRequest.toObject();
-		const jsonString = JSON.stringify(requestObject);
+		const requestData = new FetchIssuesRequest()
+		requestData.page = page ?? 1;
+		requestData.page_size = issuesPerPage ?? 10;
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/fetch`, {
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json',
 			},
-            body: jsonString,
+            body: requestData.serializeBinary(),
 			signal: controller.signal,
 		});
 		clearTimeout(timeout);

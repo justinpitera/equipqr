@@ -231,7 +231,7 @@
                               returned_issue.estimated_time,
                           ).toLocaleDateString()
                         : undefined, //string
-                        reported_at: returned_issue.reported_at
+                    reported_at: returned_issue.reported_at
                         ? new Date(
                               returned_issue.reported_at,
                           ).toLocaleDateString()
@@ -296,12 +296,21 @@
         easing: sineIn,
     };
 
-    async function changePage(next: boolean) {
+    function changePage(next: boolean, buttonsLocation: "top" | "bottom") {
         if (isLoading) return;
         // setTimeout(() => {
         //     issuesScroller.scrollTo({ top: 0, behavior: "instant" });
         // }, 100);
         isLoading = true;
+        if (buttonsLocation === "bottom") {
+            // Scroll down after page switch from the bottom pagination buttons
+            const clearOnFinishLoading = setInterval(() => {
+                if (!isLoading) {
+                    issuesScroller.scrollTo({ top: issuesScroller.scrollHeight, behavior: "instant" });
+                    clearInterval(clearOnFinishLoading);
+                }
+            }, 250);
+        }
         if (next) {
             currentPage = Math.min(totalPages, currentPage + 1);
         } else {
@@ -415,7 +424,7 @@
                     if (isLoading || currentPage === 1) {
                         alert("Already reached the first page");
                     } else {
-                        changePage(false);
+                        changePage(false, "top");
                     }
                 } else if (action === "next page") {
                     didFindAction = true;
@@ -425,7 +434,7 @@
                     ) {
                         alert("Already reached the final page");
                     } else {
-                        changePage(true);
+                        changePage(true, "top");
                     }
                 }
                 if (didFindAction) searchQuery = "";
@@ -992,7 +1001,7 @@
                 {/if}
                 <div class="flex gap-2">
                     <Button
-                        onclick={() => changePage(false)}
+                        onclick={() => changePage(false, "top")}
                         disabled={isLoading || currentPage === 1}
                         class="btn"
                         style="filter: invert({$darkModeEnabled ? '1' : '0'});"
@@ -1000,7 +1009,7 @@
                         <ArrowLeft class="h-5 w-5" />
                     </Button>
                     <Button
-                        onclick={() => changePage(true)}
+                        onclick={() => changePage(true, "top")}
                         disabled={isLoading ||
                             currentPage * issuesPerPage >= totalIssuesCount}
                         class="btn"
@@ -1100,18 +1109,18 @@
                             <div class="relative">
                                 <div class="flex justify-between">
                                     <div
-                                        class="text-sm font-bold relative left-0 top-[2px]"
+                                        class="text-sm font-bold relative left-0 top-[2px]{issue.status === 'Back in service' ? ' hidden' : ''}"
                                     >
                                         Estimated Time:
                                     </div>
                                     <span
-                                        class="text-xs font-bold absolute right-0 top-[-20px] border-b pb-1"
+                                        class="text-xs font-bold absolute right-0 top-[-20px] border-b pb-1{issue.status === 'Back in service' ? ' hidden' : ''}"
                                         >{issue.estimated_date
                                             ? issue.estimated_date
                                             : ""}</span
                                     >
                                     <span
-                                        class="text-xs font-bold relative right-0 top-[3px]"
+                                        class="text-xs font-bold relative right-0 top-[3px]{issue.status === 'Back in service' ? ' hidden' : ''}"
                                         >{timeAgo[issue_number]
                                             ? timeAgo[issue_number]
                                             : "Calculating..."}</span
@@ -1380,7 +1389,7 @@
                 </span>
                 <div class="flex gap-2">
                     <Button
-                        onclick={() => changePage(false)}
+                        onclick={() => changePage(false, "bottom")}
                         disabled={isLoading || currentPage === 1}
                         class="btn"
                         style="filter: invert({$darkModeEnabled ? '1' : '0'});"
@@ -1388,7 +1397,7 @@
                         <ArrowLeft class="h-5 w-5" />
                     </Button>
                     <Button
-                        onclick={() => changePage(true)}
+                        onclick={() => changePage(true, "bottom")}
                         disabled={isLoading ||
                             currentPage * issuesPerPage >= totalIssuesCount}
                         class="btn"
