@@ -699,9 +699,7 @@
         </div>
     </Modal>
 
-    <div
-        class="flex items-center justify-between border-b max-w-[600px] m-auto"
-    >
+    <div class="flex items-center justify-between border-b">
         <button
             type="button"
             onclick={() => {
@@ -813,14 +811,14 @@
         {/if}
 
         <div
-            class="content-wrapper{isLoading
+            class="content-wrapper relative{isLoading
                 ? ' opacity-55 pointer-events-none'
                 : ''}"
             style="transform: translateY({translateY}px);"
         >
             <!-- Search -->
 
-            <form class="pr-[5px] pt-2 max-w-[600px] m-auto">
+            <form class="pr-[5px] pt-2 max-w-[600px] m-auto md:mb-2">
                 <div class="flex gap-2">
                     <Search
                         size="md"
@@ -850,11 +848,11 @@
                             "Tip: You can trigger the following voice commands: 'Operable', 'Not Operable', 'Next Page', 'Previous Page', 'All Categories', 'Reported', 'In Progress', 'Waiting for parts', 'Ready for pickup', 'Back in service'",
                         )}</Tooltip
                     >
-                    <Label for="select-underline" class="sr-only"
-                        >Underline select</Label
+                    <Label for="per-page-select" class="sr-only"
+                        >Issues Per Page</Label
                     >
                     <Select
-                        id="select-underline"
+                        id="per-page-select"
                         underline
                         class="max-w-[108px]"
                         value={issuesPerPage.toString()}
@@ -891,7 +889,7 @@
                     />
                 </div>
                 <!-- Categories: -->
-                <div class="relative w-full">
+                <div class="relative w-full md:w-fit md:inline-block">
                     <Button
                         class="category-select mt-2 whitespace-nowrap border w-full border-primary-700"
                         style="filter: invert({$darkModeEnabled ? '1' : '0'});"
@@ -979,7 +977,7 @@
                     </Dropdown>
                 </div>
                 <!-- Filter by Operable: -->
-                <div class="relative w-full">
+                <div class="relative w-full md:w-fit md:inline-block">
                     <Button
                         class="filter-by-operable mt-2 whitespace-nowrap border w-full border-primary-700"
                         style="filter: invert({$darkModeEnabled ? '1' : '0'});"
@@ -1041,7 +1039,7 @@
             </form>
             <!-- Page Buttons Top -->
             <div
-                class="pt-2 flex justify-between p-2 pr-3 pl-3 items-center border-b max-w-[600px] m-auto"
+                class="pt-2 flex justify-between p-2 pr-3 pl-3 items-center border-b md:border-none md:absolute top-0 left-0 right-0 z-0"
             >
                 {#if isLoading}
                     <div
@@ -1108,7 +1106,7 @@
                 {#if $issues}
                     {#each $issues as issue, issue_number}
                         <div
-                            class="p-4 justify-between items-start issue-item relative select-none {editIssue ===
+                            class="p-4 flex flex-col justify-between items-start issue-item relative select-none {editIssue ===
                             issue.id.toString()
                                 ? 'bg-blue-100'
                                 : 'bg-gray-100'} rounded-md border-b-4"
@@ -1129,233 +1127,208 @@
                             ontouchstart={startMultiSelect}
                             ontouchend={stopMultiSelect}
                         >
-                            <!-- ID Tag -->
-                            {#if issue.gse_id}
-                                <div
-                                    class="font-medium h-fit inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
-                                    style="filter: invert({$darkModeEnabled
-                                        ? '1'
-                                        : '0'});"
-                                    onclick={() => openDetailsDrawer(issue)}
-                                    onkeypress={(event) => {
-                                        if (
-                                            event.key === "Enter" ||
-                                            event.key === " "
-                                        ) {
-                                            openDetailsDrawer(issue);
-                                        }
-                                    }}
-                                    role="button"
-                                    tabindex="0"
-                                >
-                                    {issue.gse_id}
-                                </div>
-                            {/if}
-                            <!-- Gate: -->
-                            {#if issue.gate_type && issue.gate_name}
-                                <div
-                                    class="flex absolute top-2 right-2 items-center bg-yellow-300 border-2 border-navy-800 rounded-md px-2 py-1 ml-3 text-navy-900 shadow-sm"
-                                    style="width: fit-content; min-width: fit-content;filter: invert({$darkModeEnabled
-                                        ? '1'
-                                        : '0'});"
-                                >
-                                    <!-- Airplane Icon -->
+                            <div class="w-full">
+                                <!-- ID Tag -->
+                                {#if issue.gse_id}
                                     <div
-                                        class="flex-shrink-0 rounded-md bg-yellow-400 p-1"
-                                    >
-                                        <Plane class="h-3 w-3 text-navy-800" />
-                                    </div>
-                                    <!-- Gate Info -->
-                                    <div
-                                        class="ml-2 text-xs font-bold text-black"
-                                    >
-                                        <p>{issue.gate_type}</p>
-                                        <p>{issue.gate_name}</p>
-                                    </div>
-                                </div>
-                            {/if}
-                            <div class="flex gap-1 mt-2">
-                                <p class="text-sm font-bold">
-                                    {t("Employee Name:")}
-                                </p>
-                                <p class="text-sm">{issue.name}</p>
-                            </div>
-                            <!-- Operable -->
-                            <div class="text-sm flex items-center">
-                                <p class="text-sm font-bold">
-                                    {t("Operable:")}
-                                </p>
-                                {#if issue.operable.toLowerCase() === "yes"}
-                                    <CheckOutline
-                                        class="ml-2 h-4 w-4 text-green-500"
+                                        class="font-medium h-fit inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
                                         style="filter: invert({$darkModeEnabled
                                             ? '1'
                                             : '0'});"
-                                    />
-                                {:else}
-                                    <X
-                                        class="ml-2 h-4 w-4 text-red-500"
-                                        style="filter: invert({$darkModeEnabled
-                                            ? '1'
-                                            : '0'});"
-                                    />
+                                        onclick={() => openDetailsDrawer(issue)}
+                                        onkeypress={(event) => {
+                                            if (
+                                                event.key === "Enter" ||
+                                                event.key === " "
+                                            ) {
+                                                openDetailsDrawer(issue);
+                                            }
+                                        }}
+                                        role="button"
+                                        tabindex="0"
+                                    >
+                                        {issue.gse_id}
+                                    </div>
                                 {/if}
-                            </div>
-                            <!-- Description: -->
-                            <p class="text-sm font-bold">
-                                {t("Issue Description:")}
-                            </p>
-                            <p class="text-sm max-w-[80%]">{issue.issue}</p>
-                            <!-- Spacer -->
-                            <hr class="mb-2 mt-2 w-[80%] m-auto" />
-                            <!-- Attachments: -->
-                            {#if issue.attachments && issue.attachments.length > 0}
-                                <div
-                                    class="text-sm font-bold relative text-center m-auto w-fit"
-                                >
-                                    <p
-                                        class="text-sm font-bold text-gray-700 mb-1 ml-4"
+                                <!-- Gate: -->
+                                {#if issue.gate_type && issue.gate_name}
+                                    <div
+                                        class="flex absolute top-2 right-2 items-center bg-yellow-300 border-2 border-navy-800 rounded-md px-2 py-1 ml-3 text-navy-900 shadow-sm"
+                                        style="width: fit-content; min-width: fit-content;filter: invert({$darkModeEnabled
+                                            ? '1'
+                                            : '0'});"
                                     >
-                                        {t("Issue Attachments:")}
-                                    </p>
-                                    <Indicator
-                                        color="blue"
-                                        border
-                                        size="xl"
-                                        placement="top-left"
-                                        class="text-xs text-white font-bold"
-                                        >{issue.attachments.length}</Indicator
-                                    >
-                                </div>
-                                <div class="flex justify-center gap-3">
-                                    {#each issue.attachments as attachment}
-                                        <Button
-                                            class="relative text-sm max-w-[80%]"
-                                            size="sm"
-                                            onclick={() => {
-                                                if (
-                                                    !$fullscreenVideo ||
-                                                    !$fullscreenImage ||
-                                                    !$fullscreenViewer
-                                                )
-                                                    return;
-                                                $fullscreenViewer.classList.remove(
-                                                    "hidden",
-                                                );
-                                                $fullscreenViewer.classList.add(
-                                                    "flex",
-                                                );
-                                                isFullScreenMode.set(true);
-                                                const attachmentURL = `${BACKEND_URL}/api/media/attachment?id=${attachment.id}`;
-                                                if (
-                                                    attachment.file_type.includes(
-                                                        "image",
-                                                    )
-                                                ) {
-                                                    $fullscreenImage.src =
-                                                        attachmentURL;
-                                                    $fullscreenImage.classList.remove(
-                                                        "hidden",
-                                                    );
-                                                    $fullscreenVideo.classList.add(
-                                                        "hidden",
-                                                    );
-                                                } else {
-                                                    //if (attachment.file_type === "video") {
-                                                    $fullscreenVideo.src =
-                                                        attachmentURL;
-                                                    $fullscreenVideo.classList.remove(
-                                                        "hidden",
-                                                    );
-                                                    $fullscreenImage.classList.add(
-                                                        "hidden",
-                                                    );
-                                                }
-                                            }}
-                                        >
-                                            {#if attachment.file_type.includes("image")}
-                                                <Image
-                                                    class="text-white dark:text-white"
-                                                />
-                                            {:else}
-                                                <Video
-                                                    class="text-white dark:text-white"
-                                                />
-                                            {/if}
-                                            <span class="sr-only"
-                                                >{issue.attachments.length} Attachments</span
-                                            >
-                                        </Button>
-                                    {/each}
-                                </div>
-                            {/if}
-                            <!-- Progress bar -->
-                            <div class="mt-2 mb-1">
-                                <div class="relative">
-                                    <div class="flex justify-between">
+                                        <!-- Airplane Icon -->
                                         <div
-                                            class="text-sm font-bold relative left-0 top-[2px]{issue.status ===
-                                            'Back in service'
-                                                ? ' hidden'
-                                                : ''}"
+                                            class="flex-shrink-0 rounded-md bg-yellow-400 p-1"
                                         >
-                                            Estimated Time:
+                                            <Plane
+                                                class="h-3 w-3 text-navy-800"
+                                            />
                                         </div>
-                                        <span
-                                            class="text-xs font-bold absolute right-0 top-[-20px] border-b pb-1{issue.status ===
-                                            'Back in service'
-                                                ? ' hidden'
-                                                : ''}"
-                                            >{issue.estimated_date
-                                                ? issue.estimated_date
-                                                : ""}</span
+                                        <!-- Gate Info -->
+                                        <div
+                                            class="ml-2 text-xs font-bold text-black"
                                         >
-                                        <span
-                                            class="text-xs font-bold relative right-0 top-[3px]{issue.status ===
-                                            'Back in service'
-                                                ? ' hidden'
-                                                : ''}"
-                                            >{timeAgo[issue_number]
-                                                ? timeAgo[issue_number]
-                                                : "Calculating..."}</span
+                                            <p>{issue.gate_type}</p>
+                                            <p>{issue.gate_name}</p>
+                                        </div>
+                                    </div>
+                                {/if}
+                                <div class="flex gap-1 mt-2">
+                                    <p class="text-sm font-bold">
+                                        {t("Employee Name:")}
+                                    </p>
+                                    <p class="text-sm">{issue.name}</p>
+                                </div>
+                                <!-- Operable -->
+                                <div class="text-sm flex items-center">
+                                    <p class="text-sm font-bold">
+                                        {t("Operable:")}
+                                    </p>
+                                    {#if issue.operable.toLowerCase() === "yes"}
+                                        <CheckOutline
+                                            class="ml-2 h-4 w-4 text-green-500"
+                                            style="filter: invert({$darkModeEnabled
+                                                ? '1'
+                                                : '0'});"
+                                        />
+                                    {:else}
+                                        <X
+                                            class="ml-2 h-4 w-4 text-red-500"
+                                            style="filter: invert({$darkModeEnabled
+                                                ? '1'
+                                                : '0'});"
+                                        />
+                                    {/if}
+                                </div>
+                                <!-- Description: -->
+                                <p class="text-sm font-bold">
+                                    {t("Issue Description:")}
+                                </p>
+                                <p class="text-sm max-w-[80%]">{issue.issue}</p>
+                                <!-- Spacer -->
+                                <hr class="mb-2 mt-2 w-[80%] m-auto" />
+                                <!-- Attachments: -->
+                                {#if issue.attachments && issue.attachments.length > 0}
+                                    <div
+                                        class="text-sm font-bold relative text-center m-auto w-fit"
+                                    >
+                                        <p
+                                            class="text-sm font-bold text-gray-700 mb-1 ml-4"
+                                        >
+                                            {t("Issue Attachments:")}
+                                        </p>
+                                        <Indicator
+                                            color="blue"
+                                            border
+                                            size="xl"
+                                            placement="top-left"
+                                            class="text-xs text-white font-bold"
+                                            >{issue.attachments
+                                                .length}</Indicator
                                         >
                                     </div>
-                                    <div class="flex">
-                                        {#each statusKeys as status, index}
-                                            <div
-                                                class={`flex-1 relative ${!(index === statusKeys.length - 1) ? "mr-1" : ""}`}
+                                    <div class="flex justify-center gap-3">
+                                        {#each issue.attachments as attachment}
+                                            <Button
+                                                class="relative text-sm max-w-[80%]"
+                                                size="sm"
+                                                onclick={() => {
+                                                    if (
+                                                        !$fullscreenVideo ||
+                                                        !$fullscreenImage ||
+                                                        !$fullscreenViewer
+                                                    )
+                                                        return;
+                                                    $fullscreenViewer.classList.remove(
+                                                        "hidden",
+                                                    );
+                                                    $fullscreenViewer.classList.add(
+                                                        "flex",
+                                                    );
+                                                    isFullScreenMode.set(true);
+                                                    const attachmentURL = `${BACKEND_URL}/api/media/attachment?id=${attachment.id}`;
+                                                    if (
+                                                        attachment.file_type.includes(
+                                                            "image",
+                                                        )
+                                                    ) {
+                                                        $fullscreenImage.src =
+                                                            attachmentURL;
+                                                        $fullscreenImage.classList.remove(
+                                                            "hidden",
+                                                        );
+                                                        $fullscreenVideo.classList.add(
+                                                            "hidden",
+                                                        );
+                                                    } else {
+                                                        //if (attachment.file_type === "video") {
+                                                        $fullscreenVideo.src =
+                                                            attachmentURL;
+                                                        $fullscreenVideo.classList.remove(
+                                                            "hidden",
+                                                        );
+                                                        $fullscreenImage.classList.add(
+                                                            "hidden",
+                                                        );
+                                                    }
+                                                }}
                                             >
+                                                {#if attachment.file_type.includes("image")}
+                                                    <Image
+                                                        class="text-white dark:text-white"
+                                                    />
+                                                {:else}
+                                                    <Video
+                                                        class="text-white dark:text-white"
+                                                    />
+                                                {/if}
+                                                <span class="sr-only"
+                                                    >{issue.attachments.length} Attachments</span
+                                                >
+                                            </Button>
+                                        {/each}
+                                    </div>
+                                {/if}
+                                <!-- Progress bar -->
+                                <div class="mt-2 mb-1">
+                                    <div class="relative">
+                                        <div class="flex justify-between">
+                                            <div
+                                                class="text-sm font-bold relative left-0 top-[2px]{issue.status ===
+                                                'Back in service'
+                                                    ? ' hidden'
+                                                    : ''}"
+                                            >
+                                                Estimated Time:
+                                            </div>
+                                            <span
+                                                class="text-xs font-bold absolute right-0 top-[-20px] border-b pb-1{issue.status ===
+                                                'Back in service'
+                                                    ? ' hidden'
+                                                    : ''}"
+                                                >{issue.estimated_date
+                                                    ? issue.estimated_date
+                                                    : ""}</span
+                                            >
+                                            <span
+                                                class="text-xs font-bold relative right-0 top-[3px]{issue.status ===
+                                                'Back in service'
+                                                    ? ' hidden'
+                                                    : ''}"
+                                                >{timeAgo[issue_number]
+                                                    ? timeAgo[issue_number]
+                                                    : "Calculating..."}</span
+                                            >
+                                        </div>
+                                        <div class="flex">
+                                            {#each statusKeys as status, index}
                                                 <div
-                                                    class={`h-3 transform skew-x-12 transition-all duration-300 ${
-                                                        index ===
-                                                            statusKeys.indexOf(
-                                                                issue.status,
-                                                            ) ||
-                                                        index <
-                                                            statusKeys.indexOf(
-                                                                issue.status,
-                                                            )
-                                                            ? `bg-${statuses[status].color}-500`
-                                                            : "bg-gray-200"
-                                                    }`}
-                                                    style="filter: invert({(index ===
-                                                        statusKeys.indexOf(
-                                                            issue.status,
-                                                        ) ||
-                                                        index <
-                                                            statusKeys.indexOf(
-                                                                issue.status,
-                                                            )) &&
-                                                    $darkModeEnabled
-                                                        ? '1'
-                                                        : '0'});"
-                                                ></div>
-                                                <div
-                                                    class="mt-4 flex flex-col items-center"
+                                                    class={`flex-1 relative ${!(index === statusKeys.length - 1) ? "mr-1" : ""}`}
                                                 >
                                                     <div
-                                                        id="issue-{issue.id}-icon-{index}"
-                                                        class={`p-3 rounded-full transition-all duration-300 ${
+                                                        class={`h-3 transform skew-x-12 transition-all duration-300 ${
                                                             index ===
                                                                 statusKeys.indexOf(
                                                                     issue.status,
@@ -1364,8 +1337,8 @@
                                                                 statusKeys.indexOf(
                                                                     issue.status,
                                                                 )
-                                                                ? `bg-${statuses[status].color}-500 text-white`
-                                                                : "bg-gray-200 text-gray-500"
+                                                                ? `bg-${statuses[status].color}-500`
+                                                                : "bg-gray-200"
                                                         }`}
                                                         style="filter: invert({(index ===
                                                             statusKeys.indexOf(
@@ -1378,276 +1351,323 @@
                                                         $darkModeEnabled
                                                             ? '1'
                                                             : '0'});"
-                                                        onclick={() =>
-                                                            changeIssueStatus(
-                                                                issue,
-                                                                status,
-                                                            )}
-                                                        onkeypress={(event) => {
-                                                            if (
-                                                                event.key ===
-                                                                    "Enter" ||
-                                                                event.key ===
-                                                                    " "
-                                                            ) {
+                                                    ></div>
+                                                    <div
+                                                        class="mt-4 flex flex-col items-center"
+                                                    >
+                                                        <div
+                                                            id="issue-{issue.id}-icon-{index}"
+                                                            class={`p-3 rounded-full transition-all duration-300 ${
+                                                                index ===
+                                                                    statusKeys.indexOf(
+                                                                        issue.status,
+                                                                    ) ||
+                                                                index <
+                                                                    statusKeys.indexOf(
+                                                                        issue.status,
+                                                                    )
+                                                                    ? `bg-${statuses[status].color}-500 text-white`
+                                                                    : "bg-gray-200 text-gray-500"
+                                                            }`}
+                                                            style="filter: invert({(index ===
+                                                                statusKeys.indexOf(
+                                                                    issue.status,
+                                                                ) ||
+                                                                index <
+                                                                    statusKeys.indexOf(
+                                                                        issue.status,
+                                                                    )) &&
+                                                            $darkModeEnabled
+                                                                ? '1'
+                                                                : '0'});"
+                                                            onclick={() =>
                                                                 changeIssueStatus(
                                                                     issue,
                                                                     status,
-                                                                );
-                                                            }
-                                                        }}
-                                                        tabindex="0"
-                                                        role="button"
-                                                    >
-                                                        {#if statuses[status].icon === "OctagonAlert"}
-                                                            <OctagonAlert
-                                                                class="h-5 w-5 mr-2-600"
-                                                            />
-                                                        {:else if statuses[status].icon === "Cog"}
-                                                            <Cog
-                                                                class="h-5 w-5 mr-2-600"
-                                                            />
-                                                        {:else if statuses[status].icon === "Loader"}
-                                                            <Loader
-                                                                class="h-5 w-5 mr-2-600"
-                                                            />
-                                                        {:else if statuses[status].icon === "KeyRound"}
-                                                            <KeyRound
-                                                                class="h-5 w-5 mr-2-600"
-                                                            />
-                                                        {:else if statuses[status].icon === "CircleCheckBig"}
-                                                            <CircleCheckBig
-                                                                class="h-5 w-5 mr-2-600"
-                                                            />
-                                                        {/if}
+                                                                )}
+                                                            onkeypress={(
+                                                                event,
+                                                            ) => {
+                                                                if (
+                                                                    event.key ===
+                                                                        "Enter" ||
+                                                                    event.key ===
+                                                                        " "
+                                                                ) {
+                                                                    changeIssueStatus(
+                                                                        issue,
+                                                                        status,
+                                                                    );
+                                                                }
+                                                            }}
+                                                            tabindex="0"
+                                                            role="button"
+                                                        >
+                                                            {#if statuses[status].icon === "OctagonAlert"}
+                                                                <OctagonAlert
+                                                                    class="h-5 w-5 mr-2-600"
+                                                                />
+                                                            {:else if statuses[status].icon === "Cog"}
+                                                                <Cog
+                                                                    class="h-5 w-5 mr-2-600"
+                                                                />
+                                                            {:else if statuses[status].icon === "Loader"}
+                                                                <Loader
+                                                                    class="h-5 w-5 mr-2-600"
+                                                                />
+                                                            {:else if statuses[status].icon === "KeyRound"}
+                                                                <KeyRound
+                                                                    class="h-5 w-5 mr-2-600"
+                                                                />
+                                                            {:else if statuses[status].icon === "CircleCheckBig"}
+                                                                <CircleCheckBig
+                                                                    class="h-5 w-5 mr-2-600"
+                                                                />
+                                                            {/if}
+                                                        </div>
+                                                        <Tooltip
+                                                            class="z-20"
+                                                            type="light"
+                                                            triggeredBy="#issue-{issue.id}-icon-{index}"
+                                                            placement="top"
+                                                            trigger="click"
+                                                            >{statuses[status]
+                                                                .label}</Tooltip
+                                                        >
                                                     </div>
-                                                    <Tooltip
-                                                        class="z-20"
-                                                        type="light"
-                                                        triggeredBy="#issue-{issue.id}-icon-{index}"
-                                                        placement="top"
-                                                        trigger="click"
-                                                        >{statuses[status]
-                                                            .label}</Tooltip
-                                                    >
                                                 </div>
-                                            </div>
-                                        {/each}
-                                    </div>
-                                    <div
-                                        class="flex m-auto w-fit text-center items-center mt-2"
-                                        style="filter: invert({$darkModeEnabled
-                                            ? '1'
-                                            : '0'});"
-                                    >
-                                        {#if statuses[issue.status].icon === "OctagonAlert"}
-                                            <OctagonAlert
-                                                class="h-5 w-5 mr-2 text-{statuses[
-                                                    issue.status
-                                                ].color}-600"
-                                            />
-                                        {:else if statuses[issue.status].icon === "Cog"}
-                                            <Cog
-                                                class="h-5 w-5 mr-2 text-{statuses[
-                                                    issue.status
-                                                ].color}-600"
-                                            />
-                                        {:else if statuses[issue.status].icon === "Loader"}
-                                            <Loader
-                                                class="h-5 w-5 mr-2 text-{statuses[
-                                                    issue.status
-                                                ].color}-600"
-                                            />
-                                        {:else if statuses[issue.status].icon === "KeyRound"}
-                                            <KeyRound
-                                                class="h-5 w-5 mr-2 text-{statuses[
-                                                    issue.status
-                                                ].color}-600"
-                                            />
-                                        {:else if statuses[issue.status].icon === "CircleCheckBig"}
-                                            <CircleCheckBig
-                                                class="h-5 w-5 mr-2 text-{statuses[
-                                                    issue.status
-                                                ].color}-600"
-                                            />
-                                        {/if}
-                                        <span
-                                            class={`text-lg font-semibold text-${statusKeys.indexOf(issue.status) >= 0 ? statuses[issue.status].color : "gray"}-500`}
+                                            {/each}
+                                        </div>
+                                        <div
+                                            class="flex m-auto w-fit text-center items-center mt-2"
+                                            style="filter: invert({$darkModeEnabled
+                                                ? '1'
+                                                : '0'});"
                                         >
-                                            {statuses[issue.status].label} - {calculateProgress(
-                                                statusKeys.indexOf(
-                                                    issue.status,
-                                                ),
-                                                statusKeys.length,
-                                            )}%
-                                        </span>
+                                            {#if statuses[issue.status].icon === "OctagonAlert"}
+                                                <OctagonAlert
+                                                    class="h-5 w-5 mr-2 text-{statuses[
+                                                        issue.status
+                                                    ].color}-600"
+                                                />
+                                            {:else if statuses[issue.status].icon === "Cog"}
+                                                <Cog
+                                                    class="h-5 w-5 mr-2 text-{statuses[
+                                                        issue.status
+                                                    ].color}-600"
+                                                />
+                                            {:else if statuses[issue.status].icon === "Loader"}
+                                                <Loader
+                                                    class="h-5 w-5 mr-2 text-{statuses[
+                                                        issue.status
+                                                    ].color}-600"
+                                                />
+                                            {:else if statuses[issue.status].icon === "KeyRound"}
+                                                <KeyRound
+                                                    class="h-5 w-5 mr-2 text-{statuses[
+                                                        issue.status
+                                                    ].color}-600"
+                                                />
+                                            {:else if statuses[issue.status].icon === "CircleCheckBig"}
+                                                <CircleCheckBig
+                                                    class="h-5 w-5 mr-2 text-{statuses[
+                                                        issue.status
+                                                    ].color}-600"
+                                                />
+                                            {/if}
+                                            <span
+                                                class={`text-lg font-semibold text-${statusKeys.indexOf(issue.status) >= 0 ? statuses[issue.status].color : "gray"}-500`}
+                                            >
+                                                {statuses[issue.status].label} -
+                                                {calculateProgress(
+                                                    statusKeys.indexOf(
+                                                        issue.status,
+                                                    ),
+                                                    statusKeys.length,
+                                                )}%
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Spacer -->
-                            <hr class="mb-2 mt-2 w-[80%] m-auto" />
-                            <!-- Edit Delete -->
-                            {#if editIssue === issue.id.toString()}
-                                <div class="flex justify-between mb-1 p-2">
-                                    <Button
-                                        class="bg-green-600 hover:bg-green-800"
-                                        onclick={(event: Event) => {
-                                            issues.set(
-                                                $issues.map((single_issue) => {
-                                                    if (
-                                                        issue.id ===
-                                                        single_issue.id
-                                                    ) {
-                                                        single_issue.estimated_date =
-                                                            new Date().toLocaleDateString();
-                                                    }
-                                                    return single_issue;
-                                                }),
-                                            );
-                                            editIssue = "";
-                                            requestAnimationFrame(() => {
-                                                editIssue = issue.id.toString();
-                                            });
-                                        }}
-                                        style="filter: invert({$darkModeEnabled
-                                            ? '1'
-                                            : '0'});"
+                            <div class="w-full">
+                                <!-- Spacer -->
+                                <hr class="mb-2 mt-2 w-[80%] m-auto" />
+                                <!-- Date Picker -->
+                                {#if issue.status !== "Back in service" && editIssue === issue.id.toString()}
+                                    <div class="flex justify-between mb-1 p-2">
+                                        <Button
+                                            class="bg-green-600 hover:bg-green-800"
+                                            onclick={(event: Event) => {
+                                                issues.set(
+                                                    $issues.map(
+                                                        (single_issue) => {
+                                                            if (
+                                                                issue.id ===
+                                                                single_issue.id
+                                                            ) {
+                                                                single_issue.estimated_date =
+                                                                    new Date().toLocaleDateString();
+                                                            }
+                                                            return single_issue;
+                                                        },
+                                                    ),
+                                                );
+                                                editIssue = "";
+                                                requestAnimationFrame(() => {
+                                                    editIssue =
+                                                        issue.id.toString();
+                                                });
+                                            }}
+                                            style="filter: invert({$darkModeEnabled
+                                                ? '1'
+                                                : '0'});"
+                                        >
+                                            <Clock class="h-5 w-5 mr-2" />
+                                            Today
+                                        </Button>
+                                        <Button
+                                            class="bg-red-600 hover:bg-red-800"
+                                            onclick={(event: Event) => {
+                                                issues.set(
+                                                    $issues.map(
+                                                        (single_issue) => {
+                                                            if (
+                                                                issue.id ===
+                                                                single_issue.id
+                                                            ) {
+                                                                single_issue.estimated_date =
+                                                                    undefined;
+                                                            }
+                                                            return single_issue;
+                                                        },
+                                                    ),
+                                                );
+                                                editIssue = "";
+                                                requestAnimationFrame(() => {
+                                                    editIssue =
+                                                        issue.id.toString();
+                                                });
+                                            }}
+                                            style="filter: invert({$darkModeEnabled
+                                                ? '1'
+                                                : '0'});"
+                                        >
+                                            <X class="h-5 w-5 mr-2" />
+                                            Clear
+                                        </Button>
+                                    </div>
+                                    <div
+                                        class="text-black mb-2 flex date-picker"
                                     >
-                                        <Clock class="h-5 w-5 mr-2" />
-                                        Today
-                                    </Button>
-                                    <Button
-                                        class="bg-red-600 hover:bg-red-800"
-                                        onclick={(event: Event) => {
-                                            issues.set(
-                                                $issues.map((single_issue) => {
-                                                    if (
-                                                        issue.id ===
-                                                        single_issue.id
-                                                    ) {
-                                                        single_issue.estimated_date =
-                                                            undefined;
-                                                    }
-                                                    return single_issue;
-                                                }),
-                                            );
-                                            editIssue = "";
-                                            requestAnimationFrame(() => {
-                                                editIssue = issue.id.toString();
-                                            });
-                                        }}
-                                        style="filter: invert({$darkModeEnabled
-                                            ? '1'
-                                            : '0'});"
-                                    >
-                                        <X class="h-5 w-5 mr-2" />
-                                        Clear
-                                    </Button>
-                                </div>
-                                <div class="text-black mb-2 flex date-picker">
-                                    <Datepicker
-                                        inline
-                                        autohide={false}
-                                        value={issue.estimated_date
-                                            ? new Date(issue.estimated_date)
-                                            : undefined}
-                                        on:clear={() => {}}
-                                        on:select={(event) => {
-                                            issues.set(
-                                                $issues.map((single_issue) => {
-                                                    if (
-                                                        issue.id ===
-                                                        single_issue.id
-                                                    ) {
-                                                        single_issue.estimated_date =
-                                                            event.detail
-                                                                ? event.detail.toLocaleDateString()
-                                                                : undefined;
-                                                    }
-                                                    return single_issue;
-                                                }),
-                                            );
-                                        }}
-                                        on:apply={(event) => {
-                                            issues.set(
-                                                $issues.map((single_issue) => {
-                                                    if (
-                                                        issue.id ===
-                                                        single_issue.id
-                                                    ) {
-                                                        single_issue.estimated_date =
-                                                            event.detail
-                                                                ? event.detail.toLocaleDateString()
-                                                                : undefined;
-                                                    }
-                                                    return single_issue;
-                                                }),
-                                            );
-                                            console.warn("WIP tell server");
-                                            editIssue = "";
-                                        }}
-                                        color="blue"
-                                        dateFormat={{
-                                            year: "numeric",
-                                            month: "short",
-                                            day: "2-digit",
-                                        }}
-                                    />
-                                </div>
-                            {/if}
-                            <Button
-                                class="bg-blue-600 w-full"
-                                onclick={(event: Event) =>
-                                    handleEdit(event, issue)}
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
-                            >
-                                <Edit class="h-5 w-5 mr-2" />
-                                {#if editIssue === issue.id.toString()}
-                                    Exit Edit Mode
-                                {:else}
-                                    Edit
+                                        <Datepicker
+                                            inline
+                                            autohide={false}
+                                            value={issue.estimated_date
+                                                ? new Date(issue.estimated_date)
+                                                : undefined}
+                                            on:clear={() => {}}
+                                            on:select={(event) => {
+                                                issues.set(
+                                                    $issues.map(
+                                                        (single_issue) => {
+                                                            if (
+                                                                issue.id ===
+                                                                single_issue.id
+                                                            ) {
+                                                                single_issue.estimated_date =
+                                                                    event.detail
+                                                                        ? event.detail.toLocaleDateString()
+                                                                        : undefined;
+                                                            }
+                                                            return single_issue;
+                                                        },
+                                                    ),
+                                                );
+                                            }}
+                                            on:apply={(event) => {
+                                                issues.set(
+                                                    $issues.map(
+                                                        (single_issue) => {
+                                                            if (
+                                                                issue.id ===
+                                                                single_issue.id
+                                                            ) {
+                                                                single_issue.estimated_date =
+                                                                    event.detail
+                                                                        ? event.detail.toLocaleDateString()
+                                                                        : undefined;
+                                                            }
+                                                            return single_issue;
+                                                        },
+                                                    ),
+                                                );
+                                                console.warn("WIP tell server");
+                                                editIssue = "";
+                                            }}
+                                            color="blue"
+                                            dateFormat={{
+                                                year: "numeric",
+                                                month: "short",
+                                                day: "2-digit",
+                                            }}
+                                        />
+                                    </div>
                                 {/if}
-                            </Button>
-                            <Button
-                                class="bg-green-600 hover:bg-green-800 w-full mt-2"
-                                onclick={(event: Event) => {
-                                    leaveCommentDrawerHidden = false;
-                                }}
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
-                            >
-                                <EnvelopeOpenOutline class="h-5 w-5 mr-2" />
-                                Comment
-                            </Button>
-                            {#if issue.status === "Back in service"}
                                 <Button
-                                    class="bg-red-600 hover:bg-red-800 w-full"
+                                    class="bg-blue-600 w-full"
                                     onclick={(event: Event) =>
-                                        handleDelete(event, issue)}
+                                        handleEdit(event, issue)}
                                     style="filter: invert({$darkModeEnabled
                                         ? '1'
                                         : '0'});"
                                 >
-                                    <Trash2 class="h-5 w-5 mr-2" />
-                                    Close Case
+                                    <Edit class="h-5 w-5 mr-2" />
+                                    {#if editIssue === issue.id.toString()}
+                                        Exit Edit Mode
+                                    {:else}
+                                        Edit
+                                    {/if}
                                 </Button>
-                            {/if}
-                            <div
-                                class="text-xs text-center font-bold text-gray-500 m-auto mt-2 w-fit"
-                            >
-                                {t("Reported at")}
-                                {issue.reported_at
-                                    ? new Date(
-                                          issue.reported_at,
-                                      ).toLocaleDateString() +
-                                      " - " +
-                                      new Date(
-                                          issue.reported_at,
-                                      ).toLocaleTimeString()
-                                    : ""}
+                                <Button
+                                    class="bg-green-600 hover:bg-green-800 w-full mt-2"
+                                    onclick={(event: Event) => {
+                                        leaveCommentDrawerHidden = false;
+                                    }}
+                                    style="filter: invert({$darkModeEnabled
+                                        ? '1'
+                                        : '0'});"
+                                >
+                                    <EnvelopeOpenOutline class="h-5 w-5 mr-2" />
+                                    Comment
+                                </Button>
+                                {#if issue.status === "Back in service"}
+                                    <Button
+                                        class="bg-red-600 hover:bg-red-800 w-full mt-2"
+                                        onclick={(event: Event) =>
+                                            handleDelete(event, issue)}
+                                        style="filter: invert({$darkModeEnabled
+                                            ? '1'
+                                            : '0'});"
+                                    >
+                                        <Trash2 class="h-5 w-5 mr-2" />
+                                        Close Case
+                                    </Button>
+                                {/if}
+                                <div
+                                    class="text-xs text-center font-bold text-gray-500 m-auto mt-2 w-fit"
+                                >
+                                    {t("Reported at")}
+                                    {issue.reported_at
+                                        ? new Date(
+                                              issue.reported_at,
+                                          ).toLocaleDateString() +
+                                          " - " +
+                                          new Date(
+                                              issue.reported_at,
+                                          ).toLocaleTimeString()
+                                        : ""}
+                                </div>
                             </div>
                         </div>
                     {/each}
