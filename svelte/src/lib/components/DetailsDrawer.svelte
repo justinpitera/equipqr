@@ -14,7 +14,7 @@
     // Utilities
     // QR Scanner utilities
     import { qrScannerStore } from "$lib/helpers/camera";
-    const { qrCodeData, detectedGSE, isAutoOpenIssueDetails } = qrScannerStore;
+    const { qrCodeData, detectedGSE, isAutoOpenIssueDetails, showPopup } = qrScannerStore;
     // Details Drawer utilities
     import { detailsDrawerStore } from "$lib/helpers/details";
     const { hideGSEDetail } = detailsDrawerStore;
@@ -25,7 +25,7 @@
     import { langChecker, translations } from "$lib/locales";
     import { onDestroy } from "svelte";
     import { equipment } from "$lib/helpers/equipment";
-    const { selectedLanguage, darkModeEnabled, isIssuesHistoryHidden } =
+    const { selectedLanguage, darkModeEnabled } =
         homePageStore;
 
     function t(key: string): string {
@@ -369,7 +369,7 @@
     </div>
     <div class="mt-6 flex justify-between">
         <div
-            class="flex items-center space-x-4{$isIssuesHistoryHidden
+            class="flex items-center space-x-4{$showPopup
                 ? ''
                 : ' hidden'}"
         >

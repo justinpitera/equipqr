@@ -50,6 +50,7 @@
             isLoading.set(false);
             console.log("isLoggedSuccess", isLoggedSuccess);
             if (isLoggedSuccess) {
+                console.log("Login Response Message:", isLoggedSuccess.message)
                 const successMessage = t("Email sent to {email}").replace(
                     "{email}",
                     email,

@@ -263,7 +263,7 @@ export async function setLanguage(language: string): Promise<{ token: string } |
 	return undefined;
 }
 
-export async function login(email: string): Promise<{ token: string } | undefined> {
+export async function login(email: string): Promise<{ message: string } | undefined> {
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);

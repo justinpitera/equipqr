@@ -4,7 +4,7 @@
     import { disableContextMenu } from "$lib/helpers/basics";
     // QR Scanner utilities
     import { qrScannerStore } from "$lib/helpers/camera";
-    const { detectedGSE, isAutoOpenMostRecentIssue } = qrScannerStore;
+    const { detectedGSE, isAutoOpenMostRecentIssue, showPopup } = qrScannerStore;
     // File upload utilities
     import { fileUploadStore } from "$lib/helpers/file-upload";
     const {
@@ -23,12 +23,10 @@
     import Copy from "lucide-svelte/icons/copy";
     import { reportUIStore } from "$lib/helpers/report-ui-store";
     import Button from "./ui/button/button.svelte";
-    import { detailsDrawerStore } from "$lib/helpers/details";
     const {
         selectedLanguage,
         darkModeEnabled,
         isRecentIssueDrawerHidden,
-        isIssuesHistoryHidden,
     } = homePageStore;
     const { issue_description } = reportUIStore;
 
@@ -282,7 +280,7 @@
         {/if}
         <div class="mt-6 flex justify-between">
             <div
-                class="flex items-center space-x-4{$isIssuesHistoryHidden
+                class="flex items-center space-x-4{$showPopup
                     ? ''
                     : ' hidden'}"
             >

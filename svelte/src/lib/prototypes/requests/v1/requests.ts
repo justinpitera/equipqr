@@ -679,6 +679,73 @@ export namespace requests.v1 {
             return GSEDetailsResponse.deserialize(bytes);
         }
     }
+    export class ListGSEReponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            gse_id?: string[];
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [1], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("gse_id" in data && data.gse_id != undefined) {
+                    this.gse_id = data.gse_id;
+                }
+            }
+        }
+        get gse_id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, []) as string[];
+        }
+        set gse_id(value: string[]) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        static fromObject(data: {
+            gse_id?: string[];
+        }): ListGSEReponse {
+            const message = new ListGSEReponse({});
+            if (data.gse_id != null) {
+                message.gse_id = data.gse_id;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                gse_id?: string[];
+            } = {};
+            if (this.gse_id != null) {
+                data.gse_id = this.gse_id;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.gse_id.length)
+                writer.writeRepeatedString(1, this.gse_id);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ListGSEReponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ListGSEReponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        pb_1.Message.addToRepeatedField(message, 1, reader.readString());
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): ListGSEReponse {
+            return ListGSEReponse.deserialize(bytes);
+        }
+    }
     export class MostRecentIssueResponse extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
@@ -1907,37 +1974,37 @@ export namespace requests.v1 {
     export class LoginResponse extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
-            token?: string;
+            message?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
-                if ("token" in data && data.token != undefined) {
-                    this.token = data.token;
+                if ("message" in data && data.message != undefined) {
+                    this.message = data.message;
                 }
             }
         }
-        get token() {
+        get message() {
             return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
         }
-        set token(value: string) {
+        set message(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
         static fromObject(data: {
-            token?: string;
+            message?: string;
         }): LoginResponse {
             const message = new LoginResponse({});
-            if (data.token != null) {
-                message.token = data.token;
+            if (data.message != null) {
+                message.message = data.message;
             }
             return message;
         }
         toObject() {
             const data: {
-                token?: string;
+                message?: string;
             } = {};
-            if (this.token != null) {
-                data.token = this.token;
+            if (this.message != null) {
+                data.message = this.message;
             }
             return data;
         }
@@ -1945,8 +2012,8 @@ export namespace requests.v1 {
         serialize(w: pb_1.BinaryWriter): void;
         serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
             const writer = w || new pb_1.BinaryWriter();
-            if (this.token.length)
-                writer.writeString(1, this.token);
+            if (this.message.length)
+                writer.writeString(1, this.message);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -1957,7 +2024,7 @@ export namespace requests.v1 {
                     break;
                 switch (reader.getFieldNumber()) {
                     case 1:
-                        message.token = reader.readString();
+                        message.message = reader.readString();
                         break;
                     default: reader.skipField();
                 }
@@ -2256,12 +2323,16 @@ export namespace requests.v1 {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             gates?: Gate[];
+            error?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [1], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
                 if ("gates" in data && data.gates != undefined) {
                     this.gates = data.gates;
+                }
+                if ("error" in data && data.error != undefined) {
+                    this.error = data.error;
                 }
             }
         }
@@ -2271,21 +2342,35 @@ export namespace requests.v1 {
         set gates(value: Gate[]) {
             pb_1.Message.setRepeatedWrapperField(this, 1, value);
         }
+        get error() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set error(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
         static fromObject(data: {
             gates?: ReturnType<typeof Gate.prototype.toObject>[];
+            error?: string;
         }): FetchGatesResponse {
             const message = new FetchGatesResponse({});
             if (data.gates != null) {
                 message.gates = data.gates.map(item => Gate.fromObject(item));
+            }
+            if (data.error != null) {
+                message.error = data.error;
             }
             return message;
         }
         toObject() {
             const data: {
                 gates?: ReturnType<typeof Gate.prototype.toObject>[];
+                error?: string;
             } = {};
             if (this.gates != null) {
                 data.gates = this.gates.map((item: Gate) => item.toObject());
+            }
+            if (this.error != null) {
+                data.error = this.error;
             }
             return data;
         }
@@ -2295,6 +2380,8 @@ export namespace requests.v1 {
             const writer = w || new pb_1.BinaryWriter();
             if (this.gates.length)
                 writer.writeRepeatedMessage(1, this.gates, (item: Gate) => item.serialize(writer));
+            if (this.error.length)
+                writer.writeString(2, this.error);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -2306,6 +2393,9 @@ export namespace requests.v1 {
                 switch (reader.getFieldNumber()) {
                     case 1:
                         reader.readMessage(message.gates, () => pb_1.Message.addToRepeatedWrapperField(message, 1, Gate.deserialize(reader), Gate));
+                        break;
+                    case 2:
+                        message.error = reader.readString();
                         break;
                     default: reader.skipField();
                 }
