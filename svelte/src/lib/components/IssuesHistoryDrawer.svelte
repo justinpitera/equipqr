@@ -648,7 +648,7 @@
     placement="right"
     bind:hidden={$isIssuesHistoryHidden}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg overflow-y-hidden"
+    class="drawer-box p-4 md:p-8 bg-white rounded-lg shadow-lg overflow-y-hidden"
     width="w-full"
     activateClickOutside={false}
     transitionParams={{
@@ -810,10 +810,10 @@
             </div>
         {/if}
         <div
-            class="content-wrapper relative{isLoading
+            class="content-wrapper relative p-1{isLoading
                 ? ' opacity-55 pointer-events-none'
                 : ''}"
-            style="transform: translateY({translateY}px);"
+            style="transform: translateY({translateY}px); background-color: transparent !important;"
         >
             <!-- Search -->
             <form class="pr-[5px] pt-2 max-w-[400px] m-auto md:mb-2">
@@ -1764,7 +1764,7 @@
         background-color: #e5e7eb;
     }
     .refresher {
-        height: calc(100svh - 24px - 40px - 24px);
+        height: calc(100svh - 24px - 40px - 10px);
         background-position: 70%;
         position: relative;
         background: rgb(240, 240, 240);
