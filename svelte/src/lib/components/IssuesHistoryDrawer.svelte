@@ -1230,7 +1230,7 @@
                                 <p class="text-sm font-bold">
                                     {t("Issue Description:")}
                                 </p>
-                                <p class="text-sm max-w-[80%]">{issue.issue}</p>
+                                <p class="text-sm max-w-[70%]">{issue.issue}</p>
                                 <!-- Attachments: -->
                                 {#if issue.attachments && issue.attachments.length > 0}
                                     <!-- Spacer -->
