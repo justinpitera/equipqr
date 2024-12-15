@@ -191,6 +191,41 @@
 
     <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5 justify-items-center">
         {#if $isLoggedIn}
+            <!-- Master: Statistics -->
+            {#if $userRole === "master"}
+                <!-- Statistics Management -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => statisticsDrawerHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            statisticsDrawerHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <ChartBarStacked
+                            class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Statistics")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "View key metrics and performance data. Monitor progress and identify trends.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
             <!-- Mechanic: View Issues -->
             {#if $userRole === "mechanic" || $userRole === "master"}
                 <div
@@ -517,39 +552,8 @@
                 </div>
             {/if}
 
-            <!-- Master: Account Management & Role Assignment -->
+            <!-- Master: Account Management -->
             {#if $userRole === "master"}
-                <!-- Statistics Management -->
-                <div
-                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => statisticsDrawerHidden.set(false)}
-                    onkeypress={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            statisticsDrawerHidden.set(false);
-                        }
-                    }}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <ChartBarStacked
-                            class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("Statistics")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "View key metrics and performance data. Monitor progress and identify trends.",
-                            )}
-                        </div>
-                    </div>
-                </div>
                 <!-- Account Management -->
                 <div
                     class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
