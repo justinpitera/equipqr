@@ -285,7 +285,8 @@
     "Login as Guest": "Login as Guest",
     "Find": "Find",
     "Select GSE ID": "Select GSE ID",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "Failed to log in: Error": "Failed to log in: Error"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -572,7 +573,8 @@
     "Login as Guest": "Log ind som gæst",
     "Find": "Finde",
     "Select GSE ID": "Vælg GSE ID",
-    "Cancel": "Ophæve"
+    "Cancel": "Ophæve",
+    "Failed to log in: Error": "Kunne ikke logge ind: Fejl"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -859,7 +861,8 @@
     "Login as Guest": "Logg inn som gjest",
     "Find": "Finne",
     "Select GSE ID": "Velg GSE ID",
-    "Cancel": "Kansellere"
+    "Cancel": "Kansellere",
+    "Failed to log in: Error": "Kunne ikke logge inn: Feil"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -1147,6 +1150,7 @@
     "Login as Guest": "Logga in som gäst",
     "Find": "Hitta",
     "Select GSE ID": "Välj GSE -ID",
-    "Cancel": "Avboka"
+    "Cancel": "Avboka",
+    "Failed to log in: Error": "Det gick inte att logga in: fel"
   }
 }
