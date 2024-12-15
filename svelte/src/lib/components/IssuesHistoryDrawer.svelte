@@ -1141,10 +1141,10 @@
                     {#if $issues}
                         {#each $issues as issue, issue_number}
                             <div
-                                class="p-4 flex flex-col justify-between items-start issue-item select-none {editIssue ===
+                                class="p-4 flex flex-col justify-between items-start issue-item select-none relative {editIssue ===
                                 issue.id.toString()
                                     ? 'bg-blue-50'
-                                    : 'relative bg-gray-100'} rounded-md border-b-4"
+                                    : 'bg-gray-100'} rounded-md border-b-4"
                                 class:multiSelectMode
                                 role="button"
                                 tabindex="0"
