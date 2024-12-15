@@ -99,41 +99,45 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) {
 	qrScannerStore.qrCodeData.set('');
 	qrScannerStore.showLoader.set(true);
-	homePageStore.startQRScanner.set(true);
-	if (!DEBUG_MODE) await destroyScanner();
-	const custom_gse_id = forceDebug || (await scanQRCode());
-	if (!DEBUG_MODE) requestAnimationFrame(destroyScanner);
-	if (custom_gse_id) {
-		qrScannerStore.qrCodeData.set(custom_gse_id);
-		if (isCheckOnly) {
-			homePageStore.startQRScanner.set(false); // Goes back to homepage
-		} else {
-			qrScannerStore.showPopup.set(true);
-		}
-		document.getElementById("qrScanner")?.classList.add("hidden");
-		const gseDetails = await getGSEDetails(custom_gse_id);
-		if (gseDetails?.gse_id) {
-			qrScannerStore.detectedGSE.set(gseDetails);
-			if (gseDetails.error && gseDetails.details) {
-				notify(gseDetails.error, gseDetails.details, "error")
+	try {
+		homePageStore.startQRScanner.set(true);
+		if (!DEBUG_MODE) await destroyScanner();
+		const custom_gse_id = forceDebug || (await scanQRCode());
+		if (!DEBUG_MODE) requestAnimationFrame(destroyScanner);
+		if (custom_gse_id) {
+			qrScannerStore.qrCodeData.set(custom_gse_id);
+			if (isCheckOnly) {
+				homePageStore.startQRScanner.set(false); // Goes back to homepage
 			} else {
-				if (isAutoOpenIssueDetails || isCheckOnly) detailsDrawerStore.hideGSEDetail.set(false);
-				if (gseDetails.most_recent_issue && (isAutoOpenMostRecentIssue || isCheckOnly)) homePageStore.isRecentIssueDrawerHidden.set(false);
+				qrScannerStore.showPopup.set(true);
+			}
+			document.getElementById("qrScanner")?.classList.add("hidden");
+			const gseDetails = await getGSEDetails(custom_gse_id);
+			if (gseDetails?.gse_id) {
+				qrScannerStore.detectedGSE.set(gseDetails);
+				if (gseDetails.error && gseDetails.details) {
+					notify(gseDetails.error, gseDetails.details, "error")
+				} else {
+					if (isAutoOpenIssueDetails || isCheckOnly) detailsDrawerStore.hideGSEDetail.set(false);
+					if (gseDetails.most_recent_issue && (isAutoOpenMostRecentIssue || isCheckOnly)) homePageStore.isRecentIssueDrawerHidden.set(false);
+				}
+			} else {
+				notify("Error", t_global("Could not find any information for") + ' ' + custom_gse_id, "error", 5000, true);
+				qrScannerStore.detectedGSE.set(null);
+				if (showPopup) cancelReportStore.closeReportHidden.set(false);
 			}
 		} else {
-			notify("Error", t_global("Could not find any information for") + ' ' + custom_gse_id, "error", 5000, true);
+			qrScannerStore.showPopup.set(false);
 			qrScannerStore.detectedGSE.set(null);
-			if (showPopup) cancelReportStore.closeReportHidden.set(false);
+			qrScannerStore.qrCodeData.set(t_global("Unable to read QR code."));
+			const loadingMessage = document.getElementById("loadingMessage");
+			if (loadingMessage) {
+				loadingMessage.hidden = false;
+				loadingMessage.textContent = '🎥 ' + t_global('Unable to access video stream (please make sure you have a webcam');
+			}
 		}
-	} else {
-		qrScannerStore.showPopup.set(false);
-		qrScannerStore.detectedGSE.set(null);
-		qrScannerStore.qrCodeData.set(t_global("Unable to read QR code."));
-		const loadingMessage = document.getElementById("loadingMessage");
-		if (loadingMessage) {
-			loadingMessage.hidden = false;
-			loadingMessage.textContent = '🎥 ' + t_global('Unable to access video stream (please make sure you have a webcam');
-		}
+	} catch (e) {
+		console.error("loadQRScanner error", e)
 	}
 	qrScannerStore.showLoader.set(false);
 }
