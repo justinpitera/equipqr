@@ -714,7 +714,10 @@
             {t("Issue History")}
         </h2>
     </div>
-    <hr class="mt-2" style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.4));">
+    <hr
+        class="mt-2"
+        style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.4));"
+    />
     {#if showScrollUp}
         <button
             onclick={() => {
@@ -768,7 +771,7 @@
                 shouldRefresh = false;
             }
         }}
-        class="refresher overflow-y-auto"
+        class="overflow-y-auto h-[calc(100svh-24px-40px-10px)] relative"
         bind:this={issuesScroller}
         onscroll={() => {
             if (issuesScroller.scrollTop > 200) {
@@ -814,13 +817,7 @@
                 ? ' opacity-55 pointer-events-none'
                 : ''}"
             style="transform: translateY({translateY}px); 
-            background: rgb(240, 240, 240);
-            background: linear-gradient(
-                180deg,
-                rgba(240, 240, 240, 1) 0%,
-                rgba(224, 224, 224, 1) 13%,
-                rgba(255, 255, 255, 1) 100%
-            );"
+            background: rgb(247, 247, 247);"
         >
             <!-- Search -->
             <form class="pr-[5px] pl-[5px] pt-2 max-w-[400px] m-auto md:mb-2">
@@ -1120,14 +1117,15 @@
                 {#if $issues}
                     {#each $issues as issue, issue_number}
                         <div
-                            class="p-4 flex flex-col justify-between items-start issue-item relative select-none {editIssue ===
+                            class="p-4 flex flex-col justify-between items-start issue-item select-none {editIssue ===
                             issue.id.toString()
-                                ? 'bg-blue-100'
-                                : 'bg-gray-100'} rounded-md border-b-4"
+                                ? 'bg-blue-50'
+                                : 'relative bg-gray-100'} rounded-md border-b-4"
                             class:multiSelectMode
                             role="button"
                             tabindex="0"
                             onclick={() => toggleSelect(issue)}
+                            style="max-height: fit-content;"
                             onkeypress={(event) => {
                                 if (
                                     event.key === "Enter" ||
@@ -1771,10 +1769,6 @@
     }
     .btn:hover:not(:disabled) {
         background-color: #e5e7eb;
-    }
-    .refresher {
-        height: calc(100svh - 24px - 40px - 10px);
-        position: relative;
     }
 
     .scroll_up {

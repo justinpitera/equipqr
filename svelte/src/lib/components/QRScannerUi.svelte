@@ -40,7 +40,7 @@
     <canvas
         id="canvas"
         hidden
-        style="max-width: 100%;position: absolute; top: 0; left: 0; width: 100vw; height: 100svh;"
+        style="max-width: 100%;position: absolute; top: 0; left: 0; width: 100svw; height: 100svh;"
     ></canvas>
     <div id="output" hidden>
         <div id="outputMessage">{t("No QR code detected.")}</div>
