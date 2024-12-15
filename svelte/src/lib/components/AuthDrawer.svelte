@@ -63,7 +63,7 @@
     id="auth-drawer"
     placement="bottom"
     bind:hidden={$isAuthDrawerHidden}
-    activateClickOutside={!$isLoading}
+    activateClickOutside={false}
     backdrop={true}
     class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"

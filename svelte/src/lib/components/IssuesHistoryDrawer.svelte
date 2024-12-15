@@ -608,6 +608,7 @@
     backdrop={true}
     style="z-index: 60;"
     placement="bottom"
+    activateClickOutside={false}
     bind:hidden={leaveCommentDrawerHidden}
     class="drawer-box"
 >
@@ -699,7 +700,10 @@
         </div>
     </Modal>
 
-    <div class="flex items-center justify-between">
+    <div
+        class="flex items-center justify-between mb-2"
+        style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.3));"
+    >
         <button
             type="button"
             onclick={() => {
@@ -714,10 +718,7 @@
             {t("Issue History")}
         </h2>
     </div>
-    <hr
-        class="mt-2"
-        style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.4));"
-    />
+    <hr />
     {#if showScrollUp}
         <button
             onclick={() => {

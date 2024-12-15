@@ -204,6 +204,7 @@
     class="drawer-box p-6 bg-gray-100 fixed inset-0 z-50"
     width="100"
     bind:hidden={$qrPrintDrawerHidden}
+    activateClickOutside={false}
     transitionParams={{
         duration: 0,
         easing: undefined,
@@ -244,7 +245,7 @@
             </TableBody>
         </Table>
     {:else}
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between mb-2" style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.3));">
             <button
                 type="button"
                 onclick={() => {
@@ -258,7 +259,7 @@
                 {t("QR Code Printing")}
             </h2>
         </div>
-        <hr class="mt-2" style="filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.2));">
+        <hr />
 
         <div class="mb-4 mt-2">
             <div

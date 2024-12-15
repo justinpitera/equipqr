@@ -167,7 +167,7 @@
     backdrop={true}
     class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg"
     width="w-full"
-    activateClickOutside={!$hideGSEDetail || $isFullScreenMode ? false : true}
+    activateClickOutside={false}
     transitionParams={{
         duration: 0,
         easing: undefined,

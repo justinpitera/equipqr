@@ -204,9 +204,10 @@
     ? 'flex'
     : 'hidden'}"
 >
-  <div class="popup-content bg-white w-full h-full">
+  <div class="popup-content bg-white md:bg-[#f5f5f5] w-full h-full">
     <div
-      class="flex items-center justify-between p-4 pb-2 md:p-6 max-w-[600px] m-auto"
+      class="flex items-center justify-between p-4 pb-2 md:p-6 md:bg-white"
+      style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.3));"
     >
       <button
         type="button"
@@ -280,19 +281,19 @@
         trigger="click">Kalmar</Tooltip
       >
     </div>
-    <hr
-      class="mt-2"
-      style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.4));"
-    />
+    <hr />
     {#if $showLoader}
       <div
-        class="report-form-bg flex justify-center space-y-4 p-4 pt-5 md:p-6 md:pt-7"
+        class="report-form bg-[#f5f5f5] flex justify-center space-y-4 p-4 pt-5 md:p-6 md:pt-7"
       >
-        <Spinner color="blue" class="w-14 h-14 mt-[calc(50svh-78px-29px-4px)]" />
+        <Spinner
+          color="blue"
+          class="w-14 h-14 mt-[calc(50svh-78px-29px-4px)]"
+        />
       </div>
     {/if}
     <form
-      class="report-form-bg max-w-[600px] m-auto space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
+      class="report-form bg-[#f5f5f5] max-w-[600px] m-auto space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
         ? 'hidden'
         : ''}"
       id="malfunction-report-form"

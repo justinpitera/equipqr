@@ -138,12 +138,13 @@
     class="drawer-box p-6 bg-gray-100 fixed inset-0 z-50"
     width="100"
     bind:hidden={$statisticsDrawerHidden}
+    activateClickOutside={false}
     transitionParams={{
         duration: 0,
         easing: undefined,
     }}
 >
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between mb-2" style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.3));">
         <button
             type="button"
             onclick={() => {
@@ -157,12 +158,13 @@
             {t("Statistics")}
         </h2>
     </div>
+    <hr />
+
     <div class="mb-4">
         <div
             class="h-[calc(100svh-(104px+36px+16px+24px+24px+8px))] overflow-y-auto overflow-x-hidden pb-3"
         >
-            <div>
-                <hr class="mt-2 mb-2" />
+            <div class="mt-2">
                 <h3 class="text-xl font-semibold mb-4 text-center">
                     Vehicle Usage
                 </h3>
