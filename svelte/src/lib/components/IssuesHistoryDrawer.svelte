@@ -1236,7 +1236,7 @@
                                                 .length}</Indicator
                                         >
                                     </div>
-                                    <div class="flex justify-center gap-3">
+                                    <div class="flex justify-center gap-3 mb-[25px] flex-wrap">
                                         {#each issue.attachments as attachment}
                                             <Button
                                                 class="relative text-sm max-w-[80%]"
