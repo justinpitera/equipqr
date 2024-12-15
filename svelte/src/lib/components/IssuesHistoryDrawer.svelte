@@ -94,7 +94,7 @@
     };
     const statusKeys = Object.keys(statuses);
 
-    let issuesScroller: HTMLElement;
+    let issuesScroller: HTMLElement | undefined = $state(undefined);
     let currentPage = $state(1);
     let totalPages = $state(1); // Math.ceil(issues.length / issuesPerPage)
     let totalIssuesCount = $state(0);
@@ -336,7 +336,7 @@
             // Scroll down after page switch from the bottom pagination buttons
             const clearOnFinishLoading = setInterval(() => {
                 if (!isLoading) {
-                    issuesScroller.scrollTo({
+                    issuesScroller?.scrollTo({
                         top: issuesScroller.scrollHeight,
                         behavior: "instant",
                     });
@@ -733,7 +733,7 @@
         {#if showScrollUp}
             <button
                 onclick={() => {
-                    issuesScroller.scrollTo({ top: 0, behavior: "instant" });
+                    issuesScroller?.scrollTo({ top: 0, behavior: "instant" });
                 }}
                 class="scroll_up"
                 title="Scroll up"
@@ -768,7 +768,7 @@
             }}
             ontouchend={async () => {
                 if (isRefreshing) return;
-                if (shouldRefresh && issuesScroller.scrollTop === 0) {
+                if (shouldRefresh && issuesScroller && issuesScroller.scrollTop === 0) {
                     rotateDeg = 0;
                     translateY = 90;
                     isRefreshing = true;
