@@ -1,6 +1,7 @@
 <script lang="ts">
-    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
-    import LogOut from 'lucide-svelte/icons/log-out'
+    import ArrowLeft from "lucide-svelte/icons/arrow-left";
+    import LogOut from "lucide-svelte/icons/log-out";
+    import LogIn from "lucide-svelte/icons/log-in";
     import Button from "flowbite-svelte/Button.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import Spinner from "flowbite-svelte/Spinner.svelte";
@@ -148,7 +149,7 @@
             on:click={async () => {
                 isLoading.set(true);
                 const didLogout = await logout();
-                if (!didLogout) isLoading.set(false);
+                // if (!didLogout) isLoading.set(false);
                 location.reload();
                 // if (window.location.hostname === "localhost")
                 //     return location.reload();
@@ -165,6 +166,22 @@
         >
             {t("Logout")}
             <LogOut class="w-4 h-4 ml-2" />
+        </Button>
+        <Button
+            on:click={async () => {
+                isLoading.set(true);
+
+                document.cookie =
+                    "auth=true;";
+                location.reload();
+            }}
+            class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2{$isLoggedIn
+                ? ' hidden'
+                : ''}"
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+        >
+            {t("Login as Guest")}
+            <LogIn class="w-4 h-4 ml-2" />
         </Button>
     </div>
 </Drawer>

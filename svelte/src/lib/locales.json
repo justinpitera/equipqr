@@ -281,7 +281,8 @@
     "Check GSE ID": "Check GSE ID",
     "Add new vehicles or parts with pre-filled information.": "Add new vehicles or parts with pre-filled information.",
     "Add Vehicles and Parts": "Add Vehicles and Parts",
-    "Add Vehicles and Ground Equipment": "Add Vehicles and Ground Equipment"
+    "Add Vehicles and Ground Equipment": "Add Vehicles and Ground Equipment",
+    "Login as Guest": "Login as Guest"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -564,7 +565,8 @@
     "Check GSE ID": "Kontroller GSE ID",
     "Add new vehicles or parts with pre-filled information.": "Tilføj nye køretøjer eller dele med forudfyldt information.",
     "Add Vehicles and Parts": "Tilføj køretøjer og dele",
-    "Add Vehicles and Ground Equipment": "Tilføj køretøjer og jordudstyr"
+    "Add Vehicles and Ground Equipment": "Tilføj køretøjer og jordudstyr",
+    "Login as Guest": "Log ind som gæst"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -847,7 +849,8 @@
     "Check GSE ID": "Sjekk GSE ID",
     "Add new vehicles or parts with pre-filled information.": "Legg til nye kjøretøyer eller deler med ferdigfylt informasjon.",
     "Add Vehicles and Parts": "Legg til kjøretøy og deler",
-    "Add Vehicles and Ground Equipment": "Legg til kjøretøy og bakkeutstyr"
+    "Add Vehicles and Ground Equipment": "Legg til kjøretøy og bakkeutstyr",
+    "Login as Guest": "Logg inn som gjest"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -1131,6 +1134,7 @@
     "Check GSE ID": "Kontrollera GSE -ID",
     "Add new vehicles or parts with pre-filled information.": "Lägg till nya fordon eller delar med förfylld information.",
     "Add Vehicles and Parts": "Lägg till fordon och delar",
-    "Add Vehicles and Ground Equipment": "Lägg till fordon och markutrustning"
+    "Add Vehicles and Ground Equipment": "Lägg till fordon och markutrustning",
+    "Login as Guest": "Logga in som gäst"
   }
 }
