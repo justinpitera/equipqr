@@ -2,5 +2,7 @@ version: v1
 plugins:
   - name: python
     out: api/src/protos/
+  - name: mypy
+    out: api/src/protos
   - name: ts
     out: out/ # Adjust

@@ -10,11 +10,11 @@ Authors:
 # Standard
 import secrets, smtplib, random, datetime
 from urllib.parse import urlparse
-from typing import Any, LiteralString
+from typing import LiteralString
 
 # Third-party
 from redis.asyncio import Redis
-from starlette.responses import JSONResponse, RedirectResponse
+from starlette.responses import JSONResponse, RedirectResponse, Response
 from starlette.requests import Request
 from tortoise.exceptions import OperationalError, DoesNotExist
 from pydantic import BaseModel, EmailStr, ValidationError
@@ -27,12 +27,18 @@ from email.mime.text import MIMEText
 from src import API_CONFIG, RedisClient
 from src.models import CrewMember
 
+# Protobufs
+from src.protos.requests.v1.requests_pb2 import (
+    LoginRequest,
+    LoginResponse
+)
 
 # Initialization
 SUCCESS_MESSAGE_REGISTER: str = "Please check your email to continue."
 SUCCESS_MESSAGE_VALIDATE: str = "User successfully registered."
 BASE_URL: str = API_CONFIG["api"]["domain"] + ":" + str(API_CONFIG["api"]["port"])
 TOKEN_SERIALIZER: URLSafeTimedSerializer = URLSafeTimedSerializer(API_CONFIG["auth"]["jwt"]["secret"])
+
 
 class _UserRegisteration(BaseModel):
     """
@@ -77,32 +83,35 @@ async def set_token(request: Request) -> RedirectResponse:
     return response
 
 
-async def auth_user(request: Request) -> JSONResponse:
+async def auth_user(request: Request) -> Response:
     """
     Handles user registration or login.
     """
     try:
-        body: dict[str, str] = await request.json()
-        user_data: _UserRegisteration = _UserRegisteration(**body)
-        valid_email: str = user_data.email
+        body: bytes= await request.body()
+        auth_user_request: LoginRequest = LoginRequest()
+        auth_user_request.ParseFromString(body)
 
         # Check if the user already exists
-        existing_user: CrewMember | None = await CrewMember.get_or_none(email=valid_email)
+        existing_user: CrewMember | None = await CrewMember.get_or_none(email=auth_user_request.email)
         if not existing_user:
             # Return an error if the user does not exist
-            logger.error(f"User not found: {valid_email}")
+            logger.error(f"User not found: {auth_user_request.email}")
             return JSONResponse({"error": "User does not exist"}, status_code=404)
 
         # User exists; proceed with sending the access token email
-        logger.info(f"Sending access token email to existing user: {valid_email}")
+        logger.info(f"Sending access token email to existing user: {auth_user_request.email}")
 
         # Generate a secure random token and store it in Redis
         random_token: str = secrets.token_urlsafe(nbytes=32)
         TOTP_CLIENT: Redis = await RedisClient.get_client(db=2)
-        await TOTP_CLIENT.set(name=random_token, value=valid_email, ex=600)  # Expires in 10 minutes
+        await TOTP_CLIENT.set(name=random_token, value=auth_user_request.email, ex=600)  # Expires in 10 minutes
 
-        await _send_magic_link(email=valid_email, random_token=random_token)
-        return JSONResponse(content={"message": "Access token sent to your email."}, status_code=200)
+        await _send_magic_link(email=auth_user_request.email, random_token=random_token)
+        response: LoginResponse = LoginResponse(
+            message="Login success"
+        )
+        return Response(content=response.SerializeToString(), status_code=200)
 
     except ValidationError as e:
         logger.error(f"Validation error: {str(e)}")

@@ -6,127 +6,130 @@ package requests.v1;
 message HealthStatusRequest {}
 
 message HealthStatusResponse {
-    string version = 1;
-    string status = 2;
+  string version = 1;
+  string status = 2;
 }
 
 // GSE Details
 message GSEDetailsRequest {
-    string gse_id = 1;
+  string gse_id = 1;
 }
 
 message GSEDetailsResponse {
-    string gse_id = 1;
-    string old_gse_id = 2;
-    string gse_type = 3;
-    string model = 4;
-    string manufacturer = 5;
-    string location = 6;
-    string status = 7;
-    string issue_count = 8;
-    string type_of_fuel = 9;
-    bool in_use = 10;
-    MostRecentIssueResponse most_recent_issue = 11;
-    string lift_inspection_expires = 12;
-    string latest_service_chassi = 13;
-    string latest_service_unit = 14;
-    optional double capacity = 15; // Example Optionals
-    optional string details = 16; // Optional
-    optional string error = 17; // Optional
+  string gse_id = 1;
+  string old_gse_id = 2;
+  string gse_type = 3;
+  string model = 4;
+  string manufacturer = 5;
+  string location = 6;
+  string status = 7;
+  string issue_count = 8;
+  string type_of_fuel = 9;
+  bool in_use = 10;
+  MostRecentIssueResponse most_recent_issue = 11;
+  string lift_inspection_expires = 12;
+  string latest_service_chassi = 13;
+  string latest_service_unit = 14;
+  optional double capacity = 15; // Example Optionals
+  optional string details = 16; // Optional
+  optional string error = 17; // Optional
+}
+
+message ListGSEReponse {
+  repeated string gse_id = 1;
 }
 
 message MostRecentIssueResponse {
-    string id = 1;
-    string gse_id = 2;
-    string issue_description = 3;
-    string reported_at = 4;
-    string attachments = 5;
+  string id = 1;
+  string gse_id = 2;
+  string issue_description = 3;
+  string reported_at = 4;
+  string attachments = 5;
 }
 
 // Submit Issue
 message SubmitIssueRequest {
-    string gse_id = 1;
-    string worker_id = 2;
-    string issue_description = 3;
-    string is_operable = 4;
-    repeated bytes attachments = 5;
-    optional string gate_type = 6;
-    optional string gate_name = 7;
+  string gse_id = 1;
+  string worker_id = 2;
+  string issue_description = 3;
+  string is_operable = 4;
+  repeated bytes attachments = 5;
+  optional string gate_type = 6;
+  optional string gate_name = 7;
 }
-message SubmitIssueResponse{
-    string id = 1;
+message SubmitIssueResponse {
+  string id = 1;
 }
-
 
 // Fetch Issues
 message FetchIssuesRequest {
-    int32 page = 1;
-    int32 page_size = 2;
+  int32 page = 1;
+  int32 page_size = 2;
 }
 
 message FetchIssuesResponse {
-    repeated Issue data = 1;
-    int32 page = 2;
-    int32 page_size = 3;
-    int32 total = 4;
+  repeated Issue data = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  int32 total = 4;
 }
 
 message Issue {
-    string id = 1;
-    string gse_id = 2;
-    string issue_description = 3;
-    string estimated_time = 4;
-    string reported_at = 5;
-    string reported_by = 6;
-    string progress = 7;
-    repeated Attachment attachments = 8;
+  string id = 1;
+  string gse_id = 2;
+  string issue_description = 3;
+  string estimated_time = 4;
+  string reported_at = 5;
+  string reported_by = 6;
+  string progress = 7;
+  repeated Attachment attachments = 8;
 }
 
 message Attachment {
-    string id = 1;
-    string file_type = 2;
-    string uploaded_at = 3;
+  string id = 1;
+  string file_type = 2;
+  string uploaded_at = 3;
 }
-
 
 // Set Language
 message SetLanguageRequest {
-    string language = 1;
+  string language = 1;
 }
 message SetLanguageResponse {
-    string token = 1;
+  string token = 1;
 }
 
 // Login
 message LoginRequest {
-    string email = 1;
+  string email = 1;
 }
-message LoginResponse{
-    string token = 1;
+message LoginResponse {
+  string message = 1;
 }
 
 // Delete Issues
 message DeleteIssuesRequest {
-    repeated string ids = 1;
+  repeated string ids = 1;
 }
-message DeleteIssuesResponse{}
+message DeleteIssuesResponse {}
 
 // Logout
 message LogoutRequest {}
 message LogoutResponse {
-    string message = 1;
+  string message = 1;
 }
 
 // Fetch Gates
 message FetchGatesRequest {
-    string icao_code = 1;
+  string icao_code = 1;
 }
 
-message FetchGatesResponse{
-    repeated Gate gates = 1;
+message FetchGatesResponse {
+  repeated Gate gates = 1;
+  string error = 2;
 }
 
 message Gate {
-    string id = 1;
-    string name = 2;
+  string id = 1;
+  string name = 2;
 }

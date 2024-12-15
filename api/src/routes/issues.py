@@ -14,12 +14,12 @@ from uuid import UUID, uuid4
 from datetime import datetime, timedelta, timezone
 
 # Third-party
-from pydantic import BaseModel, ValidationError, Field, field_validator
-from tortoise.expressions import Q
+from magic import Magic
+from google.protobuf.internal.containers import RepeatedScalarFieldContainer
+from pydantic import BaseModel, ValidationError
 from tortoise.exceptions import OperationalError, DoesNotExist
-from starlette.datastructures import FormData, UploadFile
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import Response, JSONResponse
 from starlette.exceptions import HTTPException
 from loguru import logger
 from colorama import Fore, Style
@@ -27,241 +27,179 @@ from colorama import Fore, Style
 # Local
 from src.models import GroundSupportEquiptment, Issue, IssueAttachment
 from src.tasks import upload_attachments_to_minio
-from src.enums import IssueProgressEnum
 
+# Protobufs
+from src.protos.requests.v1.requests_pb2 import (
+    FetchIssuesRequest,
+    Attachment as ProtoAttachment,
+    Issue as ProtoIssue,
+    FetchIssuesResponse,
+    GSEDetailsRequest,
+    GSEDetailsResponse,
+    MostRecentIssueResponse,
+    SubmitIssueRequest,
+    SubmitIssueResponse,
+)
 
-async def details_request(request: Request) -> JSONResponse:
+async def details_request(request: Request) -> Response:
     """POST route to handle requests to the database for GSE."""
-    
-    class _GSEDetailsRequest(BaseModel):
-        """Pydantic validation model for incoming GSE detail requests."""
-        gse_id: str
-
     try:
         logger.info(f"{Fore.CYAN}📥 Received request for GSE details{Style.RESET_ALL}")
-        body: dict[str, str] = await request.json()
-        logger.debug(f"{Fore.LIGHTBLUE_EX}🔍 Request body: {body}{Style.RESET_ALL}")
-        
-        gse_details_request_data: _GSEDetailsRequest = _GSEDetailsRequest(**body)
-        logger.info(f"{Fore.GREEN}✅ Validation successful for GSE ID: {gse_details_request_data.gse_id}{Style.RESET_ALL}")
+        body: bytes = await request.body()
+
+        # Parse the body into the GSEDetailsRequest object
+        gse_details_request = GSEDetailsRequest()
+        gse_details_request.ParseFromString(body)
+        logger.info(f"{Fore.GREEN}✅ Validation successful for GSE ID: {gse_details_request.gse_id}{Style.RESET_ALL}")
 
         # Query the database for the specified GSE
-        logger.info(f"{Fore.YELLOW}🛠️ Querying database for GSE ID: {gse_details_request_data.gse_id}{Style.RESET_ALL}")
-        fetched_gse_model: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(
-            gse_id=gse_details_request_data.gse_id
-        )
+        logger.info(f"{Fore.YELLOW}🛠️ Querying database for GSE ID: {gse_details_request.gse_id}{Style.RESET_ALL}")
+        fetched_gse_model = await GroundSupportEquiptment.get_or_none(gse_id=gse_details_request.gse_id)
 
         if not fetched_gse_model:
-            logger.warning(f"{Fore.RED}❌ GSE model not found for ID: {gse_details_request_data.gse_id}{Style.RESET_ALL}")
-            return JSONResponse(
+            logger.warning(f"{Fore.RED}❌ GSE model not found for ID: {gse_details_request.gse_id}{Style.RESET_ALL}")
+            return Response(
+                content=GSEDetailsResponse(error="The requested model could not be found.").SerializeToString(),
+                media_type="application/protobuf",
                 status_code=404,
-                content={"error": "The requested model could not be found."}
             )
 
-        fields_to_include: list[str] = [
-            "gse_id",
-            "old_gse_id",
-            "gse_type",
-            "model",
-            "manufacturer",
-            "location",
-            "lift_inspection_expires",
-            "latest_service_chassi",
-            "latest_service_unit",
-            "status",
-            "type_of_fuel",
-            "in_use",
-            "capacity",
-        ]
-
-        def serialize_field(value: str | datetime | None) -> str | None:
-            """Serializes datetime fields to ISO format. Returns other values as-is."""
-            if isinstance(value, datetime):
-                return value.isoformat()
-            return value
-
-        def serialize_issue(issue: Issue) -> dict[str, str | None]:
-            """Serializes an issue instance into a dictionary."""
-            return {
-                "id": str(issue.id),
-                "gse_id": issue.gse_id,
-                "issue_description": issue.issue_description,
-                "reported_at": serialize_field(value=issue.reported_at),
-                "attachments": None if issue.attachments is None else "Attachments are present",
-            }
-
         # Fetch all issues for the given GSE ID
-        issues: list[Issue] = await Issue.filter(gse_id=gse_details_request_data.gse_id).all()
-        
-        logger.info(f"Successfully fetched {len(issues)} issues from the database for {gse_details_request_data.gse_id}")
-
-        # Get the most recent issue if available and within the last 5 hours
-        most_recent_issue: Issue | None = (
-            max(issues, key=lambda issue: issue.reported_at) 
-            if issues and max(issues, key=lambda issue: issue.reported_at).reported_at >= datetime.now(tz=timezone.utc) - timedelta(hours=5) 
+        issues = await Issue.filter(gse_id=gse_details_request.gse_id).all()
+        most_recent_issue = (
+            max(issues, key=lambda issue: issue.reported_at)
+            if issues and max(issues, key=lambda issue: issue.reported_at).reported_at >= datetime.now(tz=timezone.utc) - timedelta(hours=5)
             else None
         )
 
-        # Fetch and serialize attachments for the most recent issue
-        attachment_ids: list[str] | None = (
-            [
-                f"{'video' if attachment.file_type.startswith('video') else 'img'}:{attachment.id}"
-                for attachment in await IssueAttachment.filter(issue=most_recent_issue)
-            ]
-            if most_recent_issue else None
+        # Serialize most recent issue
+        serialized_most_recent_issue: Any | None = (
+            MostRecentIssueResponse(
+                id=str(most_recent_issue.id),
+                gse_id=most_recent_issue.gse_id,
+                issue_description=most_recent_issue.issue_description,
+                reported_at=most_recent_issue.reported_at.isoformat() if most_recent_issue.reported_at else "",
+                attachments=", ".join(
+                    f"{'video' if attachment.file_type.startswith('video') else 'img'}:{attachment.id}"
+                    for attachment in await IssueAttachment.filter(issue=most_recent_issue)
+                )
+            ) if most_recent_issue else None
         )
 
-        # Serialize most recent issue including categorized attachments
-        serialized_most_recent_issue: dict[str, str | None] | None = (
-            {
-                **serialize_issue(issue=most_recent_issue),
-                "attachments": ", ".join(attachment_ids) if attachment_ids else None
-            } if most_recent_issue else None
+        # Build the GSEDetailsResponse protobuf
+        response_data: GSEDetailsResponse = GSEDetailsResponse(
+            gse_id=fetched_gse_model.gse_id,
+            old_gse_id=fetched_gse_model.old_gse_id,
+            gse_type=fetched_gse_model.gse_type,
+            model=fetched_gse_model.model,
+            manufacturer=fetched_gse_model.manufacturer,
+            location=fetched_gse_model.location,
+            status=fetched_gse_model.status,
+            issue_count=str(len(issues)),
+            type_of_fuel=fetched_gse_model.type_of_fuel,
+            in_use=fetched_gse_model.in_use,
+            most_recent_issue=serialized_most_recent_issue,
+            lift_inspection_expires=fetched_gse_model.lift_inspection_expires.isoformat() if fetched_gse_model.lift_inspection_expires else "",
+            latest_service_chassi=str(fetched_gse_model.latest_service_chassi),
+            latest_service_unit=str(fetched_gse_model.latest_service_unit),
+            capacity = float(fetched_gse_model.capacity) if fetched_gse_model.capacity is not None else 0.0, # pyright: ignore
+            details="",
+            error=None
         )
 
-        logger.info(f"Recent issue for {gse_details_request_data.gse_id} {"discovered, including in response details..." if most_recent_issue else "not found..."}")
-
-        # Serialize GSE model fields
-        response_data: dict[str, str | None | bool | dict[str, str | None]] = {
-            field: serialize_field(value=getattr(fetched_gse_model, field, None)) for field in fields_to_include
-        }
-        response_data["issue_count"] = str(len(issues))
-        response_data["most_recent_issue"] = serialized_most_recent_issue
-
-        logger.success(f"{Fore.GREEN}🎉 Successfully fetched GSE details for ID: {gse_details_request_data.gse_id}{Style.RESET_ALL}")
+        logger.success(f"{Fore.GREEN}🎉 Successfully fetched GSE details for ID: {gse_details_request.gse_id}{Style.RESET_ALL}")
         
-        return JSONResponse(status_code=200, content=response_data)
+        # Serialize and return the protobuf response
+        return Response(content=response_data.SerializeToString(), media_type="application/protobuf", status_code=200)
 
     except ValidationError as e:
         logger.error(f"{Fore.RED}🚨 Validation Error: {e}{Style.RESET_ALL}")
-        return JSONResponse(
-            status_code=422,
-            content={
-                "error": "Validation error",
-                "details": e.errors()
-            }
-        )
+        error_response = GSEDetailsResponse(error="Validation error: " + str(e))
+        return Response(content=error_response.SerializeToString(), media_type="application/protobuf", status_code=422)
+
     except OperationalError as e:
         logger.critical(f"{Fore.MAGENTA}💥 Database operation failed: {e}{Style.RESET_ALL}")
-        return JSONResponse(
-            status_code=500,
-            content={
-                "error": "Database operation failed",
-                "details": str(e)
-            }
-        )
+        error_response = GSEDetailsResponse(error="Database operation failed: " + str(e))
+        return Response(content=error_response.SerializeToString(), media_type="application/protobuf", status_code=500)
+
     except Exception as e:
         logger.exception(f"{Fore.RED}🔥 Unexpected error occurred: {e}{Style.RESET_ALL}")
-        return JSONResponse(
-            status_code=500,
-            content={
-                "error": "Unexpected error occurred",
-                "details": str(e)
-            }
-        )
-
-async def submit_issue(request: Request) -> JSONResponse:
+        error_response = GSEDetailsResponse(error="Unexpected error occurred: " + str(e))
+        return Response(content=error_response.SerializeToString(), media_type="application/protobuf", status_code=500)
+    
+async def submit_issue(request: Request) -> Response:
     """POST route to submit a new issue using multipart form-data."""
 
-    class _IssueSubmission(BaseModel):
-        """Pydantic model to validate issue submission data."""
-        gse_id: str
-        is_operable: bool
-        issue_description: str
-        worker_id: str
-
-    async def _extract_form_data() -> tuple[_IssueSubmission, list[dict[str, str | bytes | None]], str]:
-        """Extract and validate form data."""
-        try:
-            form: FormData = await request.form()
-
-            gse_id: str = str(form.get("gse_id", "")).strip()
-            issue_description: str = str(form.get("issue_description", "")).strip()
-            worker_id: str = str(form.get("worker_id", "")).strip()
-            is_operable_raw: UploadFile | str = form.get("is_operable", "false")
-            is_operable: bool = str(is_operable_raw).strip().lower() == "true"
-
-            if not gse_id or not issue_description:
-                logger.warning("⚠️ Missing required form fields: gse_id or issue_description.")
-                raise HTTPException(status_code=400, detail="Missing required form fields.")
-
-            validated_data: _IssueSubmission = _IssueSubmission(
-                gse_id=gse_id,
-                is_operable=is_operable,
-                issue_description=issue_description,
-                worker_id=worker_id
-            )
-
-            attachments: list[dict[str, str | bytes | None]] = [
-                {
-                    "filename": value.filename,
-                    "content_type": value.content_type,
-                    "file_content": await value.read(),
-                }
-                for _, value in form.multi_items() if isinstance(value, UploadFile)
-            ]
-            logger.info(f"📄 Extracted form data: {validated_data} and {len(attachments)} attachments.")
-            return validated_data, attachments, worker_id
-        except ValidationError as e:
-            logger.error(f"❌ Validation error: {e}")
-            raise HTTPException(
-                status_code=400,
-                detail="; ".join(f"{err['loc']}: {err['msg']}" for err in e.errors()),
-            )
-        except Exception as e:
-            logger.error(f"❌ Error parsing form data: {e}")
-            raise HTTPException(status_code=400, detail="Invalid form data.")
-
-    async def _save_issue_to_db(validated_data: _IssueSubmission, attachments: list[dict[str, str | bytes | None]], worker_id: str) -> UUID:
+    async def _save_issue_to_db(
+        gse_id: str, issue_description: str, attachments: RepeatedScalarFieldContainer[bytes], worker_id: str
+    ) -> tuple[UUID, list[tuple[UUID, bytes]]]:
         """Save issue and attachment metadata to the database."""
         try:
             issue: Issue = await Issue.create(
                 id=uuid4(),
-                gse_id=validated_data.gse_id,
-                issue_description=validated_data.issue_description,
+                gse_id=gse_id,
+                issue_description=issue_description,
                 reported_by=worker_id,
             )
+            mime: Magic = Magic(mime=True)
+            attachment_data: list[Any] = []
+
             for attachment in attachments:
                 attachment_id: UUID = uuid4()
-                attachment["attachment_id"] = str(attachment_id)
-                _ = await IssueAttachment.create(
+                content_type: str = mime.from_buffer(buf=attachment)
+                await IssueAttachment.create(
                     id=attachment_id,
                     issue=issue,
-                    file_type=attachment["content_type"],
+                    file_type=content_type or "application/octet-stream",
                 )
-            return issue.id
+                attachment_data.append((attachment_id, attachment))
+
+            return issue.id, attachment_data
         except Exception as e:
             logger.error(f"Failed to save issue to database: {e}")
             raise HTTPException(status_code=500, detail="Failed to save issue to database.")
 
-    async def _queue_attachments(_, attachments: list[dict[str, str | bytes | None]]) -> None:
+    async def _queue_attachments(attachments_data: list[tuple[UUID, bytes]]) -> None:
         """Queue attachment uploads."""
         try:
+            mime: Magic = Magic(mime=True)
             tasks: list[dict[str, str | bytes | int | None]] = [
                 {
-                    "attachment_id": att["attachment_id"],
-                    "file_stream": att["file_content"],
-                    "content_length": len(att["file_content"]) if att["file_content"] is not None else 0,
-                    "content_type": att["content_type"],
+                    "attachment_id": str(attachment_id),
+                    "file_stream": attachment,
+                    "content_length": len(attachment),
+                    "content_type": mime.from_buffer(attachment) or "application/octet-stream",
                 }
-                for att in attachments
+                for attachment_id, attachment in attachments_data
             ]
-            logger.info(f"📂 Queueing {len(attachments)} attachments...")
+            logger.info(f"Queueing {len(tasks)} attachments...")
             upload_attachments_to_minio(files_data=tasks)
-            logger.success("✅ Attachments queued successfully!")
+            logger.success("Attachments queued successfully!")
         except Exception as e:
-            logger.error(f"❌ Failed to process attachments: {e}")
+            logger.error(f"Failed to process attachments: {e}")
             raise HTTPException(status_code=500, detail="Failed to process attachments.")
 
+
     try:
-        validated_data, attachments, worker_id = await _extract_form_data()
-        issue_id: UUID = await _save_issue_to_db(validated_data, attachments, worker_id=worker_id)
-        await _queue_attachments(_=issue_id, attachments=attachments)
-        logger.info("📬 Attachments queued and issue saved successfully!")
-        return JSONResponse(
-            status_code=201,
-            content={"message": "Issue submitted successfully.", "issue_id": str(issue_id)},
+        # Parse the body into the SubmitIssueRequest object
+        body: bytes = await request.body()
+        submit_issue_request: SubmitIssueRequest = SubmitIssueRequest()
+        submit_issue_request.ParseFromString(body)
+
+        issue_id, attachment_data = await _save_issue_to_db(
+            gse_id=submit_issue_request.gse_id,
+            attachments=submit_issue_request.attachments,
+            issue_description=submit_issue_request.issue_description,
+            worker_id=submit_issue_request.worker_id,
         )
+
+        await _queue_attachments(attachments_data=attachment_data)
+
+        logger.info("\ud83d\udcec Attachments queued and issue saved successfully!")
+
+        # Prepare the response using SubmitIssueResponse
+        response: bytes = SubmitIssueResponse(id=str(issue_id)).SerializeToString()
+        return Response(content=response, status_code=200)
     except HTTPException as e:
         logger.warning(f"⚠️ HTTPException encountered: {e.detail}")
         raise e
@@ -340,110 +278,81 @@ async def delete_issues(request: Request) -> JSONResponse:
             }
         )
         
-async def fetch_issues(request: Request) -> JSONResponse:
-
-    class _IssueFilters(BaseModel):
-        """Pydantic model to validate request body for fetching issues."""
-        reported_by: str | None = None
-        reported_at_start: datetime | None = None
-        reported_at_end: datetime | None = None
-        estimated_time: str | None = None
-        description: str | None = None
-        progress: str | None = None
-        location: str | None = None
-        page: int = Field(default=1, ge=1)
-        page_size: int = Field(default=10, ge=1, le=100)
-
-        @field_validator("reported_at_start", "reported_at_end")
-        @classmethod
-        def validate_date_format(cls, value: str | None) -> datetime | None:
-            if value is None:
-                return None
-            try:
-                return datetime.fromisoformat(value)
-            except ValueError:
-                raise ValueError("Invalid ISO 8601 date format.")
+async def fetch_issues(request: Request) -> Response:
 
     try:
-        # Parse the request body as JSON
-        data: dict[str, str | datetime | int | None] = await request.json()
-        filters: _IssueFilters = _IssueFilters(**data) # pyright: ignore[reportArgumentType]
-
-        # Construct Tortoise query
-        query: Q = Q()
-        if filters.reported_by:
-            query &= Q(reported_by__email__icontains=filters.reported_by)
-        if filters.reported_at_start:
-            query &= Q(reported_at__gte=filters.reported_at_start)
-        if filters.reported_at_end:
-            query &= Q(reported_at__lte=filters.reported_at_end)
-        if filters.description:
-            query &= Q(issue_description__icontains=filters.description)
+        body: bytes = await request.body()
+        filters: FetchIssuesRequest = FetchIssuesRequest()
+        filters.ParseFromString(body)  
+        
+        # # Construct Tortoise query
+        # query: Q = Q()
+        # if filters.reported_by:
+        #     query &= Q(reported_by__email__icontains=filters.reported_by)
+        # if filters.reported_at_start:
+        #     query &= Q(reported_at__gte=filters.reported_at_start)
+        # if filters.reported_at_end:
+        #     query &= Q(reported_at__lte=filters.reported_at_end)
+        # if filters.description:
+        #     query &= Q(issue_description__icontains=filters.description)
 
         # Pagination
         offset: int = (filters.page - 1) * filters.page_size
         limit: int = filters.page_size
 
         # Query database
-        issues_queryset = (
-            await Issue.filter(query)
+        issues_queryset: list[Issue] = (
+            await Issue.filter()#query)
+            .order_by('-reported_at')
             .offset(offset)
             .limit(limit)
             .prefetch_related("attachments")
         )
 
-        total_issues: int = await Issue.filter(query).count()
+        total_issues: int = await Issue.filter().count()#query).count()
         
-        # Initialize issues_data as a list
-        issues_data: list[dict[str, str | IssueProgressEnum | list[dict[str, str | Any | None]] | None]] = []
+        # Build Protobuf response
+        response_message: FetchIssuesResponse = FetchIssuesResponse(
+            page=filters.page,
+            page_size=filters.page_size,
+            total=total_issues,
+        )
 
-        # Loop through issues_queryset and append issue data
         for issue in issues_queryset:
-            issues_data.append({
-                "id": str(issue.id),
-                "gse_id": str(issue.gse_id),
-                "issue_description": issue.issue_description,
-                "reported_at": issue.reported_at.isoformat() if issue.reported_at else None,
-                "estimated_time": str(issue.estimated_time) if issue.estimated_time else None,
-                "reported_by": issue.reported_by,
-                "progress": issue.progress,
-                "attachments": [
-                    {
-                        "id": str(attachment.id),
-                        "file_type": attachment.file_type,
-                        "uploaded_at": attachment.uploaded_at.isoformat() if attachment.uploaded_at else None,
-                    }
-                    for attachment in (issue.attachments or [])
-                ],
-            })
+            proto_issue: ProtoIssue = ProtoIssue(
+                id=str(issue.id),
+                gse_id=str(issue.gse_id),
+                issue_description=issue.issue_description,
+                reported_at=issue.reported_at.isoformat() if issue.reported_at else "",
+                estimated_time=str(issue.estimated_time) if issue.estimated_time else "",
+                reported_by=issue.reported_by,
+                progress=issue.progress,
+            )
 
-        # Build response
-        response: dict[str, Any] = {
-            "total": total_issues,
-            "page": filters.page,
-            "page_size": filters.page_size,
-            "data": issues_data,
-        }
+            for attachment in (issue.attachments or []):
+                proto_attachment: ProtoAttachment = ProtoAttachment(
+                    id=str(attachment.id),
+                    file_type=attachment.file_type,
+                    uploaded_at=attachment.uploaded_at.isoformat() if attachment.uploaded_at else "",
+                )
+                proto_issue.attachments.append(proto_attachment)
 
-        logger.info("Successfully fetched issues with filters: {}", data)
-        return JSONResponse(status_code=200, content=response)
+            response_message.data.append(proto_issue)
+
+        serialized_response: bytes = response_message.SerializeToString()
+        return Response(content=serialized_response, media_type="application/protobuf")
 
     except DoesNotExist:
-        logger.error("No issues found for the provided filters: {}", data)
-        return JSONResponse(status_code=404, content={"error": "No issues found."})
+        logger.error("No issues found for the provided filters.")
+        return Response(content="DoesNotExist error", media_type="text/plain", status_code=500)
     except ValueError as ve:
         logger.error("Validation error: {}", str(ve))
-        return JSONResponse(status_code=422, content={"error": str(ve)})
+        return Response(content=str(ve), media_type="text/plain", status_code=422)
     except Exception as e:
         logger.error("Internal server error: {}", str(e))
-        return JSONResponse(status_code=500, content={"error": "Internal server error"})
+        return Response(content="Internal server error", media_type="text/plain", status_code=500)
+
 
 async def edit_issue(request: Request) -> None:
     """POST route for editing an issue"""
-    
-    class _EditIssueRequest(BaseModel):
-        """Pydantic model to validate incoming requests to edit issues."""
-        gse_id: str # query
-        
-        # Modifiables:
-        progress: str | None = None
+    pass
