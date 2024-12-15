@@ -87,7 +87,7 @@
         </p>
     </div>
 
-    <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5">
+    <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5 justify-items-center">
         {#if $isLoggedIn}
             <!-- Master: Account Management & Role Assignment -->
             {#if $userRole === "master"}
