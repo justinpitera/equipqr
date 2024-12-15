@@ -286,7 +286,8 @@
     "Find": "Find",
     "Select GSE ID": "Select GSE ID",
     "Cancel": "Cancel",
-    "Failed to log in: Error": "Failed to log in: Error"
+    "Failed to log in: Error": "Failed to log in: Error",
+    "The issue was submitted successfully": "The issue was submitted successfully"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -574,7 +575,8 @@
     "Find": "Finde",
     "Select GSE ID": "Vælg GSE ID",
     "Cancel": "Ophæve",
-    "Failed to log in: Error": "Kunne ikke logge ind: Fejl"
+    "Failed to log in: Error": "Kunne ikke logge ind: Fejl",
+    "The issue was submitted successfully": "Problemet blev forelagt med succes"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -862,7 +864,8 @@
     "Find": "Finne",
     "Select GSE ID": "Velg GSE ID",
     "Cancel": "Kansellere",
-    "Failed to log in: Error": "Kunne ikke logge inn: Feil"
+    "Failed to log in: Error": "Kunne ikke logge inn: Feil",
+    "The issue was submitted successfully": "Problemet ble sendt inn vellykket"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -1151,6 +1154,7 @@
     "Find": "Hitta",
     "Select GSE ID": "Välj GSE -ID",
     "Cancel": "Avboka",
-    "Failed to log in: Error": "Det gick inte att logga in: fel"
+    "Failed to log in: Error": "Det gick inte att logga in: fel",
+    "The issue was submitted successfully": "Frågan lämnades framgångsrikt"
   }
 }

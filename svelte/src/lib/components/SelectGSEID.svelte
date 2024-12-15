@@ -28,7 +28,6 @@
 
   async function populateGSEIDs() {
     const response = await getAllGSEs();
-    console.log(response?.gse_id);
     if (response?.gse_id) gseIDS = response.gse_id;
   }
 
