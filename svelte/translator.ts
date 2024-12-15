@@ -51,6 +51,7 @@ const main = async () => {
   // Save updated translations back to locales.json
   fs.writeFileSync(localesPath, JSON.stringify(translations, null, 2), 'utf-8');
   console.log('\nTranslations have been saved to src/lib/locales.json');
+  main();
 };
 
 main();

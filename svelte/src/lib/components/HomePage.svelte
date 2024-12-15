@@ -4,6 +4,7 @@
     import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
     import Camera from "lucide-svelte/icons/camera";
     import Settings from "lucide-svelte/icons/settings";
+    import Search from "lucide-svelte/icons/search";
     import LogIn from "lucide-svelte/icons/log-in";
     import FileText from "lucide-svelte/icons/file-text";
     import Clipboard from "lucide-svelte/icons/clipboard";
@@ -48,6 +49,10 @@
     const toggleSettings = () => {
         isSettingsHidden.set(!$isSettingsHidden);
     };
+
+    const checkCodeManual = () => {};
+
+    const checkCodeQR = () => {};
 
     const startQRCode = () => {
         loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
@@ -331,8 +336,7 @@
             >
                 <div class="card-content">
                     <Clipboard
-                        class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                        class="w-12 h-12 mx-auto text-black-600 dark:text-white"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
                         {t("Report Failure (Manually)")}
@@ -342,6 +346,66 @@
                     >
                         {t(
                             "Enter a code manually and submit issues related to failures or malfunctions.",
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check Code (QR) -->
+            <div
+                class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                onclick={checkCodeQR}
+                onkeypress={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        checkCodeQR();
+                    }
+                }}
+                tabindex="0"
+                role="button"
+            >
+                <div class="card-content">
+                    <Search
+                        class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                    />
+                    <div class="card-title mt-3 text-xl font-semibold">
+                        {t("Check Code (QR)")}
+                    </div>
+                    <div
+                        class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                    >
+                        {t(
+                            "Scan a QR code to get information about a vehicle or part.",
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check Code (Manual) -->
+            <div
+                class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                onclick={checkCodeManual}
+                onkeypress={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        checkCodeManual();
+                    }
+                }}
+                tabindex="0"
+                role="button"
+            >
+                <div class="card-content">
+                    <Search
+                        class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                    />
+                    <div class="card-title mt-3 text-xl font-semibold">
+                        {t("Check Code (Manual)")}
+                    </div>
+                    <div
+                        class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                    >
+                        {t(
+                            "Enter a code manually to get information about a vehicle or part.",
                         )}
                     </div>
                 </div>
@@ -361,7 +425,7 @@
         >
             <div class="card-content">
                 <Settings
-                    class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
+                    class="w-12 h-12 mx-auto text-red-600 dark:text-white"
                     style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
                 <div class="card-title mt-3 text-xl font-semibold">
