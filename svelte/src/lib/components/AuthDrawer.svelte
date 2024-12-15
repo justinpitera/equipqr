@@ -1,6 +1,9 @@
 <script lang="ts">
-    import { ArrowLeft, LogOut } from "lucide-svelte";
-    import { Button, Drawer, Spinner } from "flowbite-svelte";
+    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
+    import LogOut from 'lucide-svelte/icons/log-out'
+    import Button from "flowbite-svelte/Button.svelte";
+    import Drawer from "flowbite-svelte/Drawer.svelte";
+    import Spinner from "flowbite-svelte/Spinner.svelte";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";
     import { homePageStore } from "$lib/helpers/homepage";

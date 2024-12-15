@@ -1,14 +1,16 @@
 <script lang="ts">
     // Icons and components
-    import {
-        ArrowLeft,
-        X,
-        Fuel,
-        BatteryCharging,
-        RefreshCw,
-        Droplet,
-    } from "lucide-svelte";
-    import { Button, Badge, Avatar, Drawer, Checkbox } from "flowbite-svelte";
+    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
+    import X from 'lucide-svelte/icons/x'
+    import Fuel from 'lucide-svelte/icons/fuel'
+    import BatteryCharging from 'lucide-svelte/icons/battery-charging'
+    import RefreshCw from 'lucide-svelte/icons/refresh-cw'
+    import Droplet from 'lucide-svelte/icons/droplet'
+    import Button from "flowbite-svelte/Button.svelte";
+    import Badge from "flowbite-svelte/Badge.svelte";
+    import Avatar from "flowbite-svelte/Avatar.svelte";
+    import Drawer from "flowbite-svelte/Drawer.svelte";
+    import Checkbox from "flowbite-svelte/Checkbox.svelte";
     // Utilities
     // QR Scanner utilities
     import { qrScannerStore } from "$lib/helpers/camera";
@@ -17,7 +19,7 @@
     import { detailsDrawerStore } from "$lib/helpers/details";
     const { hideGSEDetail } = detailsDrawerStore;
     // Cancel report utilities
-    import { CheckOutline } from "flowbite-svelte-icons";
+    import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
     import { sineIn } from "svelte/easing";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";

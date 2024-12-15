@@ -2,16 +2,14 @@
     import QRScannerUi from "$lib/components/QRScannerUi.svelte";
     import { DEBUG_MODE } from "$lib/config";
     import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
-    import {
-        Camera,
-        Settings,
-        LogIn,
-        FileText,
-        Clipboard,
-        UserCog,
-        ChartBarStacked,
-        User,
-    } from "lucide-svelte";
+    import Camera from 'lucide-svelte/icons/camera'
+    import Settings from 'lucide-svelte/icons/settings'
+    import LogIn from 'lucide-svelte/icons/log-in'
+    import FileText from 'lucide-svelte/icons/file-text'
+    import Clipboard from 'lucide-svelte/icons/clipboard'
+    import UserCog from 'lucide-svelte/icons/user-cog'
+    import ChartBarStacked from 'lucide-svelte/icons/chart-bar-stacked'
+    import User from 'lucide-svelte/icons/user'
     import { homePageStore } from "$lib/helpers/homepage";
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
     import AuthDrawer from "$lib/components/AuthDrawer.svelte";

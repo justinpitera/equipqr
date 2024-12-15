@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { Chart, Drawer, Button } from "flowbite-svelte";
+    import Chart from "flowbite-svelte/Chart.svelte";
+    import Drawer from "flowbite-svelte/Drawer.svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
-    import { ArrowLeft } from "lucide-svelte";
+    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
     const { statisticsDrawerHidden, selectedLanguage } = homePageStore;
 
     function t(key: string): string {

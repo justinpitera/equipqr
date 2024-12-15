@@ -17,8 +17,10 @@
     import { BACKEND_URL, DEBUG_MODE } from "$lib/config";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
-    import { Checkbox, Drawer } from "flowbite-svelte";
-    import { ArrowLeft, Copy } from "lucide-svelte";
+    import Checkbox from "flowbite-svelte/Checkbox.svelte";
+    import Drawer from "flowbite-svelte/Drawer.svelte";
+    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
+    import Copy from 'lucide-svelte/icons/copy'
     import { reportUIStore } from "$lib/helpers/report-ui-store";
     import Button from "./ui/button/button.svelte";
     import { detailsDrawerStore } from "$lib/helpers/details";

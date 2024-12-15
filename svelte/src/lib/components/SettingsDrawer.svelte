@@ -1,7 +1,12 @@
 <script lang="ts">
-    import { ArrowLeft, Bell, Globe, Sun, Trash2 } from "lucide-svelte";
+    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
+    import Bell from 'lucide-svelte/icons/bell'
+    import Globe from 'lucide-svelte/icons/globe'
+    import Sun from 'lucide-svelte/icons/sun'
+    import Trash2 from 'lucide-svelte/icons/trash-2'
     import { homePageStore } from "$lib/helpers/homepage";
-    import { Button, Drawer } from "flowbite-svelte";
+    import Button from "flowbite-svelte/Button.svelte";
+    import Drawer from "flowbite-svelte/Drawer.svelte";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";

@@ -1,5 +1,7 @@
 <script lang="ts">
-    import { LightbulbOff, Lightbulb, Menu } from "lucide-svelte";
+    import LightbulbOff from 'lucide-svelte/icons/lightbulb-off'
+    import Lightbulb from 'lucide-svelte/icons/lightbulb'
+    import Menu from 'lucide-svelte/icons/menu'
     import { disableContextMenu } from "$lib/helpers/basics";
     import { destroyScanner, qrScannerStore } from "$lib/helpers/camera";
     const { flashlightOn, flashlightDisabled } = qrScannerStore;

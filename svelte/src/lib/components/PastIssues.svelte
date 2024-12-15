@@ -1,7 +1,9 @@
 <script lang="ts">
-    import { Drawer } from "flowbite-svelte";
-    import { ArrowLeft, Plane, X } from "lucide-svelte";
-    import { CheckOutline } from "flowbite-svelte-icons";
+    import Drawer from "flowbite-svelte/Drawer.svelte";
+    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
+    import Plane from 'lucide-svelte/icons/plane'
+    import X from 'lucide-svelte/icons/x'
+    import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import {
         build_gate_options,

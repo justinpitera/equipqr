@@ -1,19 +1,19 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { ArrowLeft, Check, X } from "lucide-svelte";
-    import {
-        Table,
-        TableBody,
-        TableBodyCell,
-        TableBodyRow,
-        TableHead,
-        TableHeadCell,
-        Drawer,
-        Button,
-        Badge,
-        Card,
-        Checkbox,
-    } from "flowbite-svelte";
+    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
+    import Check from 'lucide-svelte/icons/check'
+    import X from 'lucide-svelte/icons/x'
+    import Table from "flowbite-svelte/Table.svelte";
+    import TableBody from "flowbite-svelte/TableBody.svelte";
+    import TableBodyCell from "flowbite-svelte/TableBodyCell.svelte";
+    import TableBodyRow from "flowbite-svelte/TableBodyRow.svelte";
+    import TableHead from "flowbite-svelte/TableHead.svelte";
+    import TableHeadCell from "flowbite-svelte/TableHeadCell.svelte";
+    import Drawer from "flowbite-svelte/Drawer.svelte";
+    import Button from "flowbite-svelte/Button.svelte";
+    import Badge from "flowbite-svelte/Badge.svelte";
+    import Card from "flowbite-svelte/Card.svelte";
+    import Checkbox from "flowbite-svelte/Checkbox.svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import { equipment } from "$lib/helpers/equipment";
     import { langChecker, translations } from "$lib/locales";

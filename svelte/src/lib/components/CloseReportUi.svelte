@@ -1,6 +1,9 @@
 <script lang="ts">
-  import { Drawer, Button, CloseButton } from "flowbite-svelte";
-  import { InfoCircleSolid, ArrowRightOutline } from "flowbite-svelte-icons";
+  import Drawer from "flowbite-svelte/Drawer.svelte";
+  import Button from "flowbite-svelte/Button.svelte";
+  import CloseButton from "flowbite-svelte/CloseButton.svelte";
+  import InfoCircleSolid from "flowbite-svelte-icons/InfoCircleSolid.svelte";
+  import ArrowRightOutline from "flowbite-svelte-icons/ArrowRightOutline.svelte";
   import { disableContextMenu } from "$lib/helpers/basics";
   import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
   const { qrCodeData, showPopup } = qrScannerStore;

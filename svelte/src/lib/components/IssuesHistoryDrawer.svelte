@@ -1,48 +1,42 @@
 <script lang="ts">
-    import {
-        Drawer,
-        Dropdown,
-        DropdownItem,
-        Modal,
-        Search,
-        Tooltip,
-        Datepicker,
-        Textarea,
-        Label,
-        CloseButton,
-        Select,
-        Button,
-        Indicator,
-    } from "flowbite-svelte";
-    import {
-        Trash2,
-        Edit,
-        ArrowLeft,
-        OctagonAlert,
-        Cog,
-        Loader,
-        CircleCheckBig,
-        KeyRound,
-        RefreshCcw,
-        RefreshCcwDot,
-        X,
-        ArrowRight,
-        ArrowUp,
-        Plane,
-        Clock,
-        Image,
-        Video,
-    } from "lucide-svelte";
+    import Drawer from "flowbite-svelte/Drawer.svelte";
+    import Dropdown from "flowbite-svelte/Dropdown.svelte";
+    import DropdownItem from "flowbite-svelte/DropdownItem.svelte";
+    import Modal from "flowbite-svelte/Modal.svelte";
+    import Search from "flowbite-svelte/Search.svelte";
+    import Tooltip from "flowbite-svelte/Tooltip.svelte";
+    import Datepicker from "flowbite-svelte/Datepicker.svelte";
+    import Textarea from "flowbite-svelte/Textarea.svelte";
+    import Label from "flowbite-svelte/Label.svelte";
+    import CloseButton from "flowbite-svelte/CloseButton.svelte";
+    import Select from "flowbite-svelte/Select.svelte";
+    import Button from "flowbite-svelte/Button.svelte";
+    import Indicator from "flowbite-svelte/Indicator.svelte";
+    import Trash2 from 'lucide-svelte/icons/trash-2'
+    import Edit from 'lucide-svelte/icons/edit'
+    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
+    import OctagonAlert from 'lucide-svelte/icons/octagon-alert'
+    import Cog from 'lucide-svelte/icons/cog'
+    import Loader from 'lucide-svelte/icons/loader'
+    import CircleCheckBig from 'lucide-svelte/icons/circle-check-big'
+    import KeyRound from 'lucide-svelte/icons/key-round'
+    import RefreshCcw from 'lucide-svelte/icons/refresh-ccw'
+    import RefreshCcwDot from 'lucide-svelte/icons/refresh-ccw-dot'
+    import X from 'lucide-svelte/icons/x'
+    import ArrowRight from 'lucide-svelte/icons/arrow-right'
+    import ArrowUp from 'lucide-svelte/icons/arrow-up'
+    import Plane from 'lucide-svelte/icons/plane'
+    import Clock from 'lucide-svelte/icons/clock'
+    import Image from 'lucide-svelte/icons/image'
+    import Video from 'lucide-svelte/icons/video'
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
-    import {
-        CheckOutline,
-        ChevronDownOutline,
-        EnvelopeOpenOutline,
-        ExclamationCircleOutline,
-        InfoCircleSolid,
-        MicrophoneSolid,
-    } from "flowbite-svelte-icons";
+    import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
+    import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
+    import EnvelopeOpenOutline from "flowbite-svelte-icons/EnvelopeOpenOutline.svelte";
+    import ExclamationCircleOutline from "flowbite-svelte-icons/ExclamationCircleOutline.svelte";
+    import InfoCircleSolid from "flowbite-svelte-icons/InfoCircleSolid.svelte";
+    import MicrophoneSolid from "flowbite-svelte-icons/MicrophoneSolid.svelte";
     import { onDestroy, onMount, tick } from "svelte";
     import { BACKEND_URL, DEBUG_MODE } from "$lib/config";
     import {
@@ -204,7 +198,11 @@
                     homePageStore.isRecentIssueDrawerHidden.set(false);
             }
         } else {
-            notify("Error", t("Could not find any information for") + ' ' + issue.gse_id, "error");
+            notify(
+                "Error",
+                t("Could not find any information for") + " " + issue.gse_id,
+                "error",
+            );
             qrScannerStore.detectedGSE.set(null);
             cancelReportStore.closeReportHidden.set(false);
             qrScannerStore.qrCodeData.set("");
@@ -353,14 +351,18 @@
     const handleSpecificPageChange = () => {
         if (isLoading) return;
         const newPageInput = prompt(
-            t('Enter which page you want to load:') + "\n" + t('Please enter a number between 1 and') + " " +
+            t("Enter which page you want to load:") +
+                "\n" +
+                t("Please enter a number between 1 and") +
+                " " +
                 totalPages,
         );
         if (newPageInput === null) return;
         const newPage = parseInt(newPageInput.trim());
         if (isNaN(newPage) || newPage < 1 || newPage > totalPages) {
             alert(
-                t("Invalid page number. Please enter a number between 1 and") + ' ' +
+                t("Invalid page number. Please enter a number between 1 and") +
+                    " " +
                     totalPages,
             );
             return;

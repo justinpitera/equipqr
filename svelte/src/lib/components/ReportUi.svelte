@@ -1,29 +1,25 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   // Icons and components
-  import {
-    Image,
-    Video,
-    Upload,
-    Trash,
-    ArrowLeft,
-    Plane,
-    PlaneLanding,
-    PlaneTakeoff,
-    Boxes,
-    Globe,
-    TriangleAlert,
-  } from "lucide-svelte";
-  import {
-    Button,
-    Badge,
-    Avatar,
-    Dropdown,
-    DropdownItem,
-    Select,
-    Spinner,
-    Tooltip,
-  } from "flowbite-svelte";
+  import Image from "lucide-svelte/icons/image";
+  import Video from "lucide-svelte/icons/video";
+  import Upload from "lucide-svelte/icons/upload";
+  import Trash from "lucide-svelte/icons/trash";
+  import ArrowLeft from "lucide-svelte/icons/arrow-left";
+  import Plane from "lucide-svelte/icons/plane";
+  import PlaneLanding from "lucide-svelte/icons/plane-landing";
+  import PlaneTakeoff from "lucide-svelte/icons/plane-takeoff";
+  import Boxes from "lucide-svelte/icons/boxes";
+  import Globe from "lucide-svelte/icons/globe";
+  import TriangleAlert from "lucide-svelte/icons/triangle-alert";
+  import Button from "flowbite-svelte/Button.svelte";
+  import Badge from "flowbite-svelte/Badge.svelte";
+  import Avatar from "flowbite-svelte/Avatar.svelte";
+  import Dropdown from "flowbite-svelte/Dropdown.svelte";
+  import DropdownItem from "flowbite-svelte/DropdownItem.svelte";
+  import Select from "flowbite-svelte/Select.svelte";
+  import Spinner from "flowbite-svelte/Spinner.svelte";
+  import Tooltip from "flowbite-svelte/Tooltip.svelte";
   // Utilities
   import { disableContextMenu, formatNumber } from "$lib/helpers/basics";
   // QR Scanner utilities
@@ -45,7 +41,7 @@
   import { detailsDrawerStore } from "$lib/helpers/details";
   import { DEBUG_MODE, maxFiles } from "$lib/config";
   import { submitIssue } from "$lib/helpers/server-requests";
-  import { ChevronDownOutline } from "flowbite-svelte-icons";
+  import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
   import { notify } from "$lib/helpers/notify";
   import { homePageStore } from "$lib/helpers/homepage";
   import {

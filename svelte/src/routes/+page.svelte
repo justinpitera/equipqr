@@ -14,7 +14,7 @@
   import DetailsDrawer from "$lib/components/DetailsDrawer.svelte";
   import HomePage from "$lib/components/HomePage.svelte";
   import PastIssues from "$lib/components/PastIssues.svelte";
-  import { Spinner } from "flowbite-svelte";
+  import Spinner from "flowbite-svelte/Spinner.svelte";
   import PrintDrawer from "$lib/components/PrintDrawer.svelte";
   import StatisticsDrawer from "$lib/components/StatisticsDrawer.svelte";
   import MostRecentIssue from "$lib/components/MostRecentIssue.svelte";
