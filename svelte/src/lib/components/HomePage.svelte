@@ -191,6 +191,76 @@
 
     <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5 justify-items-center">
         {#if $isLoggedIn}
+            <!-- Mechanic: View Issues, Print QR Codes -->
+            {#if $userRole === "mechanic" || $userRole === "master"}
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => isIssuesHistoryHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            isIssuesHistoryHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <FileText
+                            class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("View Issue History")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Track and resolve past issues with detailed logs.",
+                            )}
+                            {#if $userRole === "master"}
+                                <b>{" "}{t("(Visible to Mechanics)")}</b>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => qrPrintDrawerHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            qrPrintDrawerHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Camera
+                            class="w-12 h-12 mx-auto text-green-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Print QR Codes")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "View and print QR codes for items to manage their information.",
+                            )}
+                            {#if $userRole === "master"}
+                                <b>{" "}{t("(Visible to Mechanics)")}</b>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
             <!-- Report QR Failures -->
             <div
                 class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
@@ -309,76 +379,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Mechanic: View Issues, Print QR Codes -->
-            {#if $userRole === "mechanic" || $userRole === "master"}
-                <div
-                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => isIssuesHistoryHidden.set(false)}
-                    onkeypress={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            isIssuesHistoryHidden.set(false);
-                        }
-                    }}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <FileText
-                            class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("View Issue History")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "Track and resolve past issues with detailed logs.",
-                            )}
-                            {#if $userRole === "master"}
-                                <b>{" "}{t("(Visible to Mechanics)")}</b>
-                            {/if}
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => qrPrintDrawerHidden.set(false)}
-                    onkeypress={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            qrPrintDrawerHidden.set(false);
-                        }
-                    }}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <Camera
-                            class="w-12 h-12 mx-auto text-green-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("Print QR Codes")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "View and print QR codes for items to manage their information.",
-                            )}
-                            {#if $userRole === "master"}
-                                <b>{" "}{t("(Visible to Mechanics)")}</b>
-                            {/if}
-                        </div>
-                    </div>
-                </div>
-            {/if}
 
             <!-- Master: Account Management & Role Assignment -->
             {#if $userRole === "master"}
