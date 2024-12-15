@@ -193,7 +193,7 @@
     async function openDetailsDrawer(issue: HistoryIssue) {
         qrScannerStore.qrCodeData.set(issue.gse_id);
         const gseDetails = await getGSEDetails(issue.gse_id);
-        if (gseDetails) {
+        if (gseDetails?.gse_id) {
             qrScannerStore.detectedGSE.set(gseDetails);
             if (gseDetails.error && gseDetails.details) {
                 notify(gseDetails.error, gseDetails.details, "error");
@@ -204,6 +204,7 @@
                     homePageStore.isRecentIssueDrawerHidden.set(false);
             }
         } else {
+            notify("Error", t("Could not find any information for") + ' ' + issue.gse_id, "error");
             qrScannerStore.detectedGSE.set(null);
             cancelReportStore.closeReportHidden.set(false);
             qrScannerStore.qrCodeData.set("");

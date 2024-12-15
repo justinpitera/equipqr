@@ -60,19 +60,24 @@
         if (result) {
             qrScannerStore.qrCodeData.set(result);
             qrScannerStore.showPopup.set(true);
-            document.getElementById("qrScanner")?.classList.add("hidden");
-            const gseDetails = await getGSEDetails(result);
-            if (gseDetails) {
-                qrScannerStore.detectedGSE.set(gseDetails);
-                if (gseDetails.error && gseDetails.details) {
-                    notify(gseDetails.error, gseDetails.details, "error");
+            try {
+                const gseDetails = await getGSEDetails(result);
+                if (gseDetails?.gse_id) {
+                    qrScannerStore.detectedGSE.set(gseDetails);
+                    if (gseDetails.error && gseDetails.details) {
+                        notify(gseDetails.error, gseDetails.details, "error");
+                    } else {
+                        if ($isAutoOpenIssueDetails)
+                            detailsDrawerStore.hideGSEDetail.set(false);
+                        if ($isAutoOpenMostRecentIssue)
+                            homePageStore.isRecentIssueDrawerHidden.set(false);
+                    }
                 } else {
-                    if (isAutoOpenIssueDetails)
-                        detailsDrawerStore.hideGSEDetail.set(false);
-                    if (isAutoOpenMostRecentIssue)
-                        homePageStore.isRecentIssueDrawerHidden.set(false);
+                    notify("Error", t("Could not find any information for") + ' ' + result, "error");
+                    qrScannerStore.detectedGSE.set(null);
+                    cancelReportStore.closeReportHidden.set(false);
                 }
-            } else {
+            } catch (e) {
                 qrScannerStore.detectedGSE.set(null);
                 cancelReportStore.closeReportHidden.set(false);
             }

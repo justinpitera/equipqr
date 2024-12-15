@@ -165,7 +165,7 @@
     placement="bottom"
     bind:hidden={$isRecentIssueDrawerHidden}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg"
+    class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     activateClickOutside={false}
     transitionParams={{

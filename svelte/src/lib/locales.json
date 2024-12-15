@@ -198,7 +198,9 @@
     "Invalid page number. Please enter a number between 1 and": "Invalid page number. Please enter a number between 1 and",
     "Page is still loading...": "Page is still loading...",
     "Already reached the final page": "Already reached the final page",
-    "Already reached the first page": "Already reached the first page"
+    "Already reached the first page": "Already reached the first page",
+    "View key metrics and performance data. Monitor progress and identify trends.": "View key metrics and performance data. Monitor progress and identify trends.",
+    "Could not find any information for": "Could not find any information for"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -398,7 +400,9 @@
     "Invalid page number. Please enter a number between 1 and": "Ugyldigt sidetal.Indtast et nummer mellem 1 og",
     "Page is still loading...": "Siden indlæses stadig ...",
     "Already reached the final page": "Nåede allerede den sidste side",
-    "Already reached the first page": "Nåede allerede den første side"
+    "Already reached the first page": "Nåede allerede den første side",
+    "View key metrics and performance data. Monitor progress and identify trends.": "Se nøglemetrik og præstationsdata.Overvåg fremskridt og identificer tendenser.",
+    "Could not find any information for": "Kunne ikke finde nogen oplysninger til"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -598,7 +602,9 @@
     "Invalid page number. Please enter a number between 1 and": "Ugyldig sidetall.Vennligst skriv inn et nummer mellom 1 og",
     "Page is still loading...": "Siden laster fortsatt ...",
     "Already reached the final page": "Allerede nådd den endelige siden",
-    "Already reached the first page": "Allerede nådd den første siden"
+    "Already reached the first page": "Allerede nådd den første siden",
+    "View key metrics and performance data. Monitor progress and identify trends.": "Se viktige beregninger og ytelsesdata.Overvåke fremgangen og identifisere trender.",
+    "Could not find any information for": "Kunne ikke finne noen informasjon for"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -799,6 +805,8 @@
     "Invalid page number. Please enter a number between 1 and": "Ogiltigt sidnummer.Ange ett nummer mellan 1 och",
     "Page is still loading...": "Sidan laddas fortfarande ...",
     "Already reached the final page": "Har redan nått den sista sidan",
-    "Already reached the first page": "Redan nådde den första sidan"
+    "Already reached the first page": "Redan nådde den första sidan",
+    "View key metrics and performance data. Monitor progress and identify trends.": "Visa nyckelmätningar och prestandadata.Övervaka framsteg och identifiera trender.",
+    "Could not find any information for": "Kunde inte hitta någon information för"
   }
 }

@@ -7,6 +7,7 @@ import { detailsDrawerStore } from "./details";
 import { homePageStore } from "./homepage";
 import { DEBUG_MODE } from "$lib/config";
 import { cancelReportStore } from "./cancel-report";
+import { t_global } from "$lib/locales";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
 let torchInfo: ITorchInfo = { hasCamera: false, hasTorch: false };
@@ -94,15 +95,15 @@ export async function loadQRScanner(forceDebug?: string) {
 	qrScannerStore.showLoader.set(true);
 	homePageStore.startQRScanner.set(true);
 	if (!DEBUG_MODE) await destroyScanner();
-	const result = forceDebug || (await scanQRCode());
+	const custom_gse_id = forceDebug || (await scanQRCode());
 	if (!DEBUG_MODE) requestAnimationFrame(destroyScanner);
-	if (result) {
+	if (custom_gse_id) {
 		// homePageStore.startQRScanner.set(false); // Goes back to homepage
-		qrScannerStore.qrCodeData.set(result);
+		qrScannerStore.qrCodeData.set(custom_gse_id);
 		qrScannerStore.showPopup.set(true);
 		document.getElementById("qrScanner")?.classList.add("hidden");
-		const gseDetails = await getGSEDetails(result);
-		if (gseDetails) {
+		const gseDetails = await getGSEDetails(custom_gse_id);
+		if (gseDetails?.gse_id) {
 			qrScannerStore.detectedGSE.set(gseDetails);
 			if (gseDetails.error && gseDetails.details) {
 				notify(gseDetails.error, gseDetails.details, "error")
@@ -111,6 +112,7 @@ export async function loadQRScanner(forceDebug?: string) {
 				if (isAutoOpenMostRecentIssue) homePageStore.isRecentIssueDrawerHidden.set(false);
 			}
 		} else {
+			notify("Error", t_global("Could not find any information for") + ' ' + custom_gse_id, "error");
 			qrScannerStore.detectedGSE.set(null);
 			cancelReportStore.closeReportHidden.set(false);
 		}
