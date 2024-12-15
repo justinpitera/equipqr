@@ -809,7 +809,6 @@
                 {/if}
             </div>
         {/if}
-
         <div
             class="content-wrapper relative{isLoading
                 ? ' opacity-55 pointer-events-none'
@@ -817,37 +816,8 @@
             style="transform: translateY({translateY}px);"
         >
             <!-- Search -->
-
-            <form class="pr-[5px] pt-2 max-w-[600px] m-auto md:mb-2">
+            <form class="pr-[5px] pt-2 max-w-[400px] m-auto md:mb-2">
                 <div class="flex gap-2">
-                    <Search
-                        size="md"
-                        class="rounded-none py-2.5"
-                        placeholder="Search Issues..."
-                        bind:value={searchQuery}
-                    >
-                        <button
-                            id="speech-btn"
-                            type="button"
-                            onclick={isListening
-                                ? stopVoiceSearch
-                                : startVoiceSearch}
-                            class="outline-none{isListening ? ' text-red' : ''}"
-                        >
-                            <MicrophoneSolid class="w-5 h-5 me-2" />
-                        </button>
-                    </Search>
-                    <Tooltip
-                        id="speech-tip-tooltip"
-                        class="z-20 max-w-[300px] w-full"
-                        type="light"
-                        triggeredBy="#speech-btn"
-                        placement="bottom"
-                        open={isListening}
-                        >{t(
-                            "Tip: You can trigger the following voice commands: 'Operable', 'Not Operable', 'Next Page', 'Previous Page', 'All Categories', 'Reported', 'In Progress', 'Waiting for parts', 'Ready for pickup', 'Back in service'",
-                        )}</Tooltip
-                    >
                     <Label for="per-page-select" class="sr-only"
                         >Issues Per Page</Label
                     >
@@ -887,154 +857,184 @@
                             { value: "100", name: "100 Per Page" },
                         ]}
                     />
+                    <Search
+                        size="md"
+                        class="rounded-none py-2.5"
+                        placeholder="Search Issues..."
+                        bind:value={searchQuery}
+                    >
+                        <button
+                            id="speech-btn"
+                            type="button"
+                            onclick={isListening
+                                ? stopVoiceSearch
+                                : startVoiceSearch}
+                            class="outline-none{isListening ? ' text-red' : ''}"
+                        >
+                            <MicrophoneSolid class="w-5 h-5 me-2" />
+                        </button>
+                    </Search>
+                    <Tooltip
+                        id="speech-tip-tooltip"
+                        class="z-20 max-w-[300px] w-full"
+                        type="light"
+                        triggeredBy="#speech-btn"
+                        placement="bottom"
+                        open={isListening}
+                        >{t(
+                            "Tip: You can trigger the following voice commands: 'Operable', 'Not Operable', 'Next Page', 'Previous Page', 'All Categories', 'Reported', 'In Progress', 'Waiting for parts', 'Ready for pickup', 'Back in service'",
+                        )}</Tooltip
+                    >
                 </div>
-                <!-- Categories: -->
-                <div class="relative w-full md:w-fit md:inline-block">
-                    <Button
-                        class="category-select mt-2 whitespace-nowrap border w-full border-primary-700"
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-                    >
-                        <div class="flex items-center mt-0">
-                            {#if selectedCategory.icon === "OctagonAlert"}
-                                <OctagonAlert class="h-5 w-5 mr-2" />
-                            {:else if selectedCategory.icon === "Cog"}
-                                <Cog class="h-5 w-5 mr-2" />
-                            {:else if selectedCategory.icon === "Loader"}
-                                <Loader class="h-5 w-5 mr-2" />
-                            {:else if selectedCategory.icon === "KeyRound"}
-                                <KeyRound class="h-5 w-5 mr-2" />
-                            {:else if selectedCategory.icon === "CircleCheckBig"}
-                                <CircleCheckBig class="h-5 w-5 mr-2" />
-                            {/if}
-                            <span class="font-semibold">
-                                {selectedCategory.label}
-                            </span>
-                        </div>
-                        <ChevronDownOutline class="w-4 h-4 ms-1" />
-                    </Button>
-                    <Dropdown
-                        triggeredBy=".category-select"
-                        classContainer="w-80"
-                        bind:open={searchDropdownOpen}
-                    >
-                        {#each search_categories as category, index}
-                            <DropdownItem
-                                onclick={() => {
-                                    selectedCategory = category;
-                                    searchDropdownOpen = false;
-                                    simulateLoadingWithFilters();
-                                }}
-                                class={selectedCategory.label === category.label
-                                    ? "underline"
-                                    : ""}
-                            >
-                                <div
-                                    class="flex items-center mt-0"
-                                    style="filter: invert({index > 0 &&
-                                    $darkModeEnabled
-                                        ? '1'
-                                        : '0'});"
+                <div class="md:flex md:gap-2 md:justify-between">
+                    <!-- Categories: -->
+                    <div class="relative w-full md:w-fit">
+                        <Button
+                            class="category-select mt-2 whitespace-nowrap border w-full border-primary-700"
+                            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                        >
+                            <div class="flex items-center mt-0">
+                                {#if selectedCategory.icon === "OctagonAlert"}
+                                    <OctagonAlert class="h-5 w-5 mr-2" />
+                                {:else if selectedCategory.icon === "Cog"}
+                                    <Cog class="h-5 w-5 mr-2" />
+                                {:else if selectedCategory.icon === "Loader"}
+                                    <Loader class="h-5 w-5 mr-2" />
+                                {:else if selectedCategory.icon === "KeyRound"}
+                                    <KeyRound class="h-5 w-5 mr-2" />
+                                {:else if selectedCategory.icon === "CircleCheckBig"}
+                                    <CircleCheckBig class="h-5 w-5 mr-2" />
+                                {/if}
+                                <span class="font-semibold">
+                                    {selectedCategory.label}
+                                </span>
+                            </div>
+                            <ChevronDownOutline class="w-4 h-4 ms-1" />
+                        </Button>
+                        <Dropdown
+                            triggeredBy=".category-select"
+                            classContainer="w-80"
+                            bind:open={searchDropdownOpen}
+                        >
+                            {#each search_categories as category, index}
+                                <DropdownItem
+                                    onclick={() => {
+                                        selectedCategory = category;
+                                        searchDropdownOpen = false;
+                                        simulateLoadingWithFilters();
+                                    }}
+                                    class={selectedCategory.label === category.label
+                                        ? "underline"
+                                        : ""}
                                 >
-                                    {#if category.icon === "OctagonAlert"}
-                                        <OctagonAlert
-                                            class="h-5 w-5 mr-2 text-{statuses[
-                                                category.label
-                                            ].color}-600"
-                                        />
-                                    {:else if category.icon === "Cog"}
-                                        <Cog
-                                            class="h-5 w-5 mr-2 animate-spin-slow text-{statuses[
-                                                category.label
-                                            ].color}-600"
-                                        />
-                                    {:else if category.icon === "Loader"}
-                                        <Loader
-                                            class="h-5 w-5 mr-2 animate-spin-slow text-{statuses[
-                                                category.label
-                                            ].color}-600"
-                                        />
-                                    {:else if category.icon === "KeyRound"}
-                                        <KeyRound
-                                            class="h-5 w-5 mr-2 text-{statuses[
-                                                category.label
-                                            ].color}-600"
-                                        />
-                                    {:else if category.icon === "CircleCheckBig"}
-                                        <CircleCheckBig
-                                            class="h-5 w-5 mr-2 text-{statuses[
-                                                category.label
-                                            ].color}-600"
-                                        />
-                                    {/if}
-                                    <span
-                                        class="text-{category.color}-600 font-semibold"
+                                    <div
+                                        class="flex items-center mt-0"
+                                        style="filter: invert({index > 0 &&
+                                        $darkModeEnabled
+                                            ? '1'
+                                            : '0'});"
                                     >
-                                        {category.label}
-                                    </span>
-                                </div>
-                            </DropdownItem>
-                        {/each}
-                    </Dropdown>
-                </div>
-                <!-- Filter by Operable: -->
-                <div class="relative w-full md:w-fit md:inline-block">
-                    <Button
-                        class="filter-by-operable mt-2 whitespace-nowrap border w-full border-primary-700"
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-                    >
-                        <div class="flex items-center mt-0">
-                            {#if selectedFilter.icon === "check"}
-                                <CheckOutline
-                                    class="h-5 w-5 mr-2 text-green-500"
-                                />
-                            {:else if selectedFilter.icon === "x"}
-                                <X class="h-5 w-5 mr-2 text-red-500" />
-                            {/if}
-                            <span class="font-semibold">
-                                {selectedFilter.label}
-                            </span>
-                        </div>
-                        <ChevronDownOutline class="w-4 h-4 ms-1" />
-                    </Button>
-                    <Dropdown
-                        triggeredBy=".filter-by-operable"
-                        classContainer="w-80"
-                        bind:open={filterDropdownOpen}
-                    >
-                        {#each filter_by_operable_categories as filter, index}
-                            <DropdownItem
-                                onclick={() => {
-                                    selectedFilter = filter;
-                                    filterDropdownOpen = false;
-                                    simulateLoadingWithFilters();
-                                }}
-                                class={selectedFilter.label === filter.label
-                                    ? "underline"
-                                    : ""}
-                            >
-                                <div
-                                    class="flex items-center mt-0"
-                                    style="filter: invert({index > 0 &&
-                                    $darkModeEnabled
-                                        ? '1'
-                                        : '0'});"
+                                        {#if category.icon === "OctagonAlert"}
+                                            <OctagonAlert
+                                                class="h-5 w-5 mr-2 text-{statuses[
+                                                    category.label
+                                                ].color}-600"
+                                            />
+                                        {:else if category.icon === "Cog"}
+                                            <Cog
+                                                class="h-5 w-5 mr-2 animate-spin-slow text-{statuses[
+                                                    category.label
+                                                ].color}-600"
+                                            />
+                                        {:else if category.icon === "Loader"}
+                                            <Loader
+                                                class="h-5 w-5 mr-2 animate-spin-slow text-{statuses[
+                                                    category.label
+                                                ].color}-600"
+                                            />
+                                        {:else if category.icon === "KeyRound"}
+                                            <KeyRound
+                                                class="h-5 w-5 mr-2 text-{statuses[
+                                                    category.label
+                                                ].color}-600"
+                                            />
+                                        {:else if category.icon === "CircleCheckBig"}
+                                            <CircleCheckBig
+                                                class="h-5 w-5 mr-2 text-{statuses[
+                                                    category.label
+                                                ].color}-600"
+                                            />
+                                        {/if}
+                                        <span
+                                            class="text-{category.color}-600 font-semibold"
+                                        >
+                                            {category.label}
+                                        </span>
+                                    </div>
+                                </DropdownItem>
+                            {/each}
+                        </Dropdown>
+                    </div>
+                    <!-- Filter by Operable: -->
+                    <div class="relative w-full md:w-fit">
+                        <Button
+                            class="filter-by-operable mt-2 whitespace-nowrap border w-full border-primary-700"
+                            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                        >
+                            <div class="flex items-center mt-0">
+                                {#if selectedFilter.icon === "check"}
+                                    <CheckOutline
+                                        class="h-5 w-5 mr-2 text-green-500"
+                                    />
+                                {:else if selectedFilter.icon === "x"}
+                                    <X class="h-5 w-5 mr-2 text-red-500" />
+                                {/if}
+                                <span class="font-semibold">
+                                    {selectedFilter.label}
+                                </span>
+                            </div>
+                            <ChevronDownOutline class="w-4 h-4 ms-1" />
+                        </Button>
+                        <Dropdown
+                            triggeredBy=".filter-by-operable"
+                            classContainer="w-80"
+                            bind:open={filterDropdownOpen}
+                        >
+                            {#each filter_by_operable_categories as filter, index}
+                                <DropdownItem
+                                    onclick={() => {
+                                        selectedFilter = filter;
+                                        filterDropdownOpen = false;
+                                        simulateLoadingWithFilters();
+                                    }}
+                                    class={selectedFilter.label === filter.label
+                                        ? "underline"
+                                        : ""}
                                 >
-                                    {#if filter.icon === "check"}
-                                        <CheckOutline
-                                            class="h-5 w-5 mr-2 text-green-500"
-                                        />
-                                    {:else if filter.icon === "x"}
-                                        <X class="h-5 w-5 mr-2 text-red-500" />
-                                    {/if}
-                                    <span
-                                        class="text-{filter.color}-600 font-semibold"
+                                    <div
+                                        class="flex items-center mt-0"
+                                        style="filter: invert({index > 0 &&
+                                        $darkModeEnabled
+                                            ? '1'
+                                            : '0'});"
                                     >
-                                        {filter.label}
-                                    </span>
-                                </div>
-                            </DropdownItem>
-                        {/each}
-                    </Dropdown>
+                                        {#if filter.icon === "check"}
+                                            <CheckOutline
+                                                class="h-5 w-5 mr-2 text-green-500"
+                                            />
+                                        {:else if filter.icon === "x"}
+                                            <X class="h-5 w-5 mr-2 text-red-500" />
+                                        {/if}
+                                        <span
+                                            class="text-{filter.color}-600 font-semibold"
+                                        >
+                                            {filter.label}
+                                        </span>
+                                    </div>
+                                </DropdownItem>
+                            {/each}
+                        </Dropdown>
+                    </div>
                 </div>
             </form>
             <!-- Page Buttons Top -->
