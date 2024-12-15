@@ -30,6 +30,8 @@ const {
 	// /api/locations/fetch
 	FetchGatesRequest,
 	FetchGatesResponse,
+	// /api/gse/all
+	ListGSEReponse,
 	// Other Types:
 	Issue,
 	Attachment,
@@ -251,6 +253,32 @@ export async function setLanguage(language: string): Promise<{ token: string } |
 		const responseBytes = new Uint8Array(responseData);
 		const data = SetLanguageResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("setLanguage", data)
+		return data
+	} catch (e) {
+		console.error(
+			"%cError setting language",
+			"color: red; font-size: 18px; font-weight: bold;",
+			e,
+		);
+		notify("Error setting language", `Failed to set language: ${e}`, "error");
+	}
+	return undefined;
+}
+
+export async function getAllGSEs(): Promise<{ gse_id?: string[] } | undefined> {
+	try {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+		const response = await fetch(`${BACKEND_URL}/api/gse/all`, {
+			method: 'GET',
+			signal: controller.signal
+		});
+		clearTimeout(timeout);
+		if (!response.ok) throw new Error(response.statusText);
+		const responseData = await response.arrayBuffer();
+		const responseBytes = new Uint8Array(responseData);
+		const data = ListGSEReponse.deserialize(responseBytes);
+		if (debug_routes) console.log("getAllGSEs", data)
 		return data
 	} catch (e) {
 		console.error(

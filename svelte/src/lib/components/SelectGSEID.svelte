@@ -8,9 +8,14 @@
   import { transitionParamsTop } from "$lib/helpers/cancel-report";
   import { langChecker, translations } from "$lib/locales";
   import { homePageStore } from "$lib/helpers/homepage";
-  import { onDestroy } from "svelte";
-  const { selectedLanguage, darkModeEnabled, selectGSEIDDrawerHidden, gseAction } =
-    homePageStore;
+  import { onDestroy, onMount } from "svelte";
+  import { getAllGSEs } from "$lib/helpers/server-requests";
+  const {
+    selectedLanguage,
+    darkModeEnabled,
+    selectGSEIDDrawerHidden,
+    gseAction,
+  } = homePageStore;
 
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];
@@ -18,10 +23,18 @@
     return langTranslations?.[key] || key;
   }
 
-  let selectedGSEID: string = "";
-  let items: string[] = ["ASU 00001", "ASU 00002", "ASU 00003", "ASU 00004"];
-  let filteredItems: string[] = [...items];
+  let selectedGSEID: string = $state("");
+  let gseIDS: string[] = $state([]);
 
+  async function populateGSEIDs() {
+    const response = await getAllGSEs();
+    console.log(response?.gse_id);
+    if (response?.gse_id) gseIDS = response.gse_id;
+  }
+
+  onMount(() => {
+    populateGSEIDs();
+  });
   onDestroy(() => {
     selectGSEIDDrawerHidden.set(true);
   });
@@ -56,19 +69,21 @@
     <label for="selected-gse-id" class="block text-sm font-medium"
       >{t("Enter the GSE ID")}</label
     >
-    <input
-      type="text"
-      id="selected-gse-id"
-      bind:value={selectedGSEID}
-      class="w-full border border-gray-300 rounded-lg p-2"
-      placeholder={t("Enter the GSE ID")}
-      list="selected-gse-id-options"
-    />
-    <datalist id="selected-gse-id-options">
-      {#each filteredItems as item}
-        <option value={item}>{item}</option>
-      {/each}
-    </datalist>
+    {#if gseIDS.length > 0}
+      <input
+        type="text"
+        id="selected-gse-id"
+        bind:value={selectedGSEID}
+        class="w-full border border-gray-300 rounded-lg p-2"
+        placeholder={t("Enter the GSE ID")}
+        list="selected-gse-id-options"
+      />
+      <datalist id="selected-gse-id-options">
+        {#each gseIDS as item}
+          <option value={item}>{item}</option>
+        {/each}
+      </datalist>
+    {/if}
   </div>
   <div class="flex justify-between">
     <Button
