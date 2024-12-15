@@ -60,6 +60,16 @@
             fuelType: "Diesel",
             inUse: true,
         },
+        {
+            id: 5,
+            name: "Baggage cart (BCT)",
+            manufacturer: "Acme",
+            model: "V2",
+            location: "BBP",
+            status: "Needs Maintenance",
+            fuelType: "Electric",
+            inUse: false,
+        },
     ];
     const inUseCount = vehicles.filter((vehicle) => vehicle.inUse).length;
     const notInUseCount = vehicles.length - inUseCount;
@@ -316,7 +326,9 @@
                     <Chart {options} />
                     <hr class="mt-2 mb-2" />
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 justify-items-center gap-6"
+                >
                     {#each vehicles as vehicle}
                         <Card
                             class="bg-white border border-gray-200 rounded-lg shadow-lg transition-all hover:shadow-xl p-6"

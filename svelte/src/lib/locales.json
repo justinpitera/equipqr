@@ -176,7 +176,12 @@
     "Error retrieving gates": "Error retrieving gates",
     "Failed to retrieve gates: Request timed out after 5s": "Failed to retrieve gates: Request timed out after 5s",
     "View Issue History": "View Issue History",
-    "Issue History": "Issue History"
+    "Issue History": "Issue History",
+    "Reported at": "Reported at",
+    "Results:": "Results:",
+    "Page": "Page",
+    "of": "of",
+    "Total": "Total"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -355,7 +360,11 @@
     "Error retrieving gates": "Fejl hentning af porte",
     "Failed to retrieve gates: Request timed out after 5s": "Kunne ikke hente porte: Anmod om tidsbestemt efter 5'erne",
     "View Issue History": "Se spørgsmålets historie",
-    "Issue History": "Udstedelse af historie"
+    "Issue History": "Udstedelse af historie",
+    "Reported at": "Rapporteret kl",
+    "Page": "Side",
+    "of": "af",
+    "Total": "Total"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -534,7 +543,11 @@
     "Error retrieving gates": "Feil å hente porter",
     "Failed to retrieve gates: Request timed out after 5s": "Kunne ikke hente porter: Be om tidsavbrudd etter 5S",
     "View Issue History": "Se utstedelseshistorikk",
-    "Issue History": "Utgave historie"
+    "Issue History": "Utgave historie",
+    "Reported at": "Rapportert på",
+    "Page": "Side",
+    "of": "av",
+    "Total": "Total"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -713,6 +726,11 @@
     "Error retrieving gates": "Felhämtning av grindar",
     "Failed to retrieve gates: Request timed out after 5s": "Det gick inte att hämta Gates: Begär Timed ut efter 5 -talet",
     "View Issue History": "Visa problemhistorik",
-    "Issue History": "Utfärda historia"
+    "Issue History": "Utfärda historia",
+    "Reported at": "Rapporterad",
+    "Results:": "Resultat:",
+    "Page": "Sida",
+    "of": "av",
+    "Total": "Total"
   }
 }

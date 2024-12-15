@@ -35,13 +35,9 @@
     stopWiggle,
     fileUploadStore,
     handleFileChange,
-    closeFullscreen,
   } from "$lib/helpers/file-upload";
   const {
     mediaFiles,
-    fullscreenViewer,
-    fullscreenImage,
-    fullscreenVideo,
     wiggleModeEnabled,
     pressTimer,
     isDragging,
@@ -61,7 +57,6 @@
     reportUIStore,
   } from "$lib/helpers/report-ui-store";
   import { langChecker, translations } from "$lib/locales";
-  import MostRecentIssue from "./MostRecentIssue.svelte";
   const {
     selectedLanguage,
     isPastIssuesForSpecificIDHidden,
@@ -226,7 +221,9 @@
         {t("Recent Issue")}
       </Button>
     {/if}
-    <div class="flex items-center justify-between p-4 md:p-6">
+    <div
+      class="flex items-center justify-between p-4 md:p-6 max-w-[600px] m-auto"
+    >
       <button
         type="button"
         onclick={() => {
@@ -242,7 +239,11 @@
       <div
         class="flex flex-col items-center"
         onclick={showIssueDetails}
-        onkeypress={showIssueDetails}
+        onkeypress={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            showIssueDetails();
+          }
+        }}
         role="button"
         tabindex="0"
         id="header-label"
@@ -307,13 +308,12 @@
       </div>
     {/if}
     <form
-      class="report-form-bg space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
+      class="report-form-bg max-w-[600px] m-auto space-y-4 mt-0 p-4 pt-5 md:p-6 md:pt-7 {$showLoader
         ? 'hidden'
         : ''}"
       id="malfunction-report-form"
       onsubmit={handleReportFormSubmit}
     >
-      <MostRecentIssue />
       <!-- Employee Name: -->
       <label
         for="employee-name"
@@ -556,7 +556,11 @@
                       ? 'wiggle'
                       : ''}"
                     onclick={handleClick}
-                    onkeypress={handleClick}
+                    onkeypress={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        handleClick();
+                      }
+                    }}
                     onmousedown={startWiggle}
                     onmouseup={stopWiggle}
                     onmouseleave={() => {
@@ -606,55 +610,6 @@
               </div>
             </div>
           {/if}
-        </div>
-        <div
-          id="fullscreenViewer"
-          bind:this={$fullscreenViewer}
-          role="button"
-          tabindex="0"
-          class="fixed inset-0 bg-black bg-opacity-90 items-center justify-center select-none hidden"
-          onclick={closeFullscreen}
-          onkeypress={closeFullscreen}
-          style="z-index: 100; filter: invert({$darkModeEnabled ? '1' : '0'});"
-        >
-          <button
-            id="closeButton"
-            type="button"
-            onclick={closeFullscreen}
-            class="absolute select-none top-4 right-4 text-white text-3xl z-10"
-            >×</button
-          >
-          <div
-            role="button"
-            tabindex="0"
-            onclick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-            onkeypress={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-          >
-            <img
-              id="fullscreenImage"
-              bind:this={$fullscreenImage}
-              alt=""
-              class="max-w-full max-h-full hidden"
-              oncontextmenu={disableContextMenu}
-            />
-            <video
-              id="fullscreenVideo"
-              bind:this={$fullscreenVideo}
-              class="max-w-full max-h-full hidden"
-              controls={true}
-              loop={true}
-              autoplay={true}
-              muted={false}
-            >
-              <track kind="captions" />
-            </video>
-          </div>
         </div>
       </div>
       <button

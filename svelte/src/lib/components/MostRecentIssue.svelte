@@ -234,8 +234,14 @@
                                         class="gallery-item ignore-js select-none relative"
                                         onclick={() =>
                                             openAttachment(attachment)}
-                                        onkeypress={() =>
-                                            openAttachment(attachment)}
+                                        onkeypress={(event) => {
+                                            if (
+                                                event.key === "Enter" ||
+                                                event.key === " "
+                                            ) {
+                                                openAttachment(attachment);
+                                            }
+                                        }}
                                     >
                                         {#if attachment.split("img:")[1]}
                                             <img

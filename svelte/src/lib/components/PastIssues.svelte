@@ -103,7 +103,11 @@
             <div
                 class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer transition relative flex items-center justify-between"
                 onclick={() => selectIssue(issue.gse_id)}
-                onkeypress={() => selectIssue(issue.gse_id)}
+                onkeypress={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        selectIssue(issue.gse_id);
+                    }
+                }}
                 tabindex="0"
                 role="button"
             >

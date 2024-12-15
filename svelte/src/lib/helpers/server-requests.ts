@@ -152,6 +152,7 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
             gate_name: gateName,
         });
         const requestBytes = request.serializeBinary();
+		console.log(request.toObject())
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/submit`, {
 			method: "POST",
             body: requestBytes,
@@ -206,17 +207,19 @@ export async function getIssues(page: number | undefined, issuesPerPage: number 
 		requestData.page_size = issuesPerPage ?? 10;
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/fetch`, {
 			method: "POST",
-            body: requestData.serializeBinary(),
+            // body: requestData.serializeBinary(),
+			body: JSON.stringify({
+				page: page ?? 1,
+				page_size: issuesPerPage ?? 10,
+			}),
 			signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/protobuf'
-            }
+            // headers: {
+            //   'Content-Type': 'application/protobuf'
+            // }
 		});
 		clearTimeout(timeout);
 		if (response.ok) {
-			const responseData = await response.arrayBuffer();
-			const responseBytes = new Uint8Array(responseData);
-			const data = FetchIssuesResponse.deserialize(responseBytes);
+			const data = await response.json();
 			if (debug_routes) console.log("getIssues", data)
 			loadingFunctionAfter();
 			return data;

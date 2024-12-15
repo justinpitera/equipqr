@@ -17,7 +17,7 @@ vite shortcuts:
 Generate protobuf classes:
 
 1. npm install -g protoc-gen-ts + Add to `%PATH` [protoc-29.1-win64.zip](https://github.com/protocolbuffers/protobuf/releases)
- 
+
 2. buf generate
 
 3. buf.gen.yaml - settings for generating:

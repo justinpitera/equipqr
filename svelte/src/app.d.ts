@@ -46,6 +46,11 @@ declare global {
 		estimated_date?: string;
 		gate_type?: string;
 		gate_name?: string;
+		attachments?: {
+			id: string;
+			file_type: string;
+			uploaded_at: string;
+		}[]
 	}
 	/*  */
 	interface MediaFile {

@@ -56,7 +56,7 @@
 </div>
 
 <main
-    class="container px-4 py-5 pt-2 h-screen overflow-y-auto bg-slate-100{$startQRScanner ||
+    class="px-4 py-5 pt-2 h-screen overflow-y-auto bg-slate-100{$startQRScanner ||
     !$isIssuesHistoryHidden
         ? ' hidden'
         : ''}"
@@ -87,14 +87,18 @@
         </p>
     </div>
 
-    <div class="grid gap-5 md:grid-cols-3">
+    <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5">
         {#if $isLoggedIn}
             <!-- Master: Account Management & Role Assignment -->
             {#if $userRole === "master"}
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={toggleSettings}
-                    onkeypress={toggleSettings}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            toggleSettings();
+                        }
+                    }}
                     tabindex="0"
                     role="button"
                 >
@@ -121,7 +125,11 @@
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={() => alert("WIP")}
-                    onkeypress={() => alert("WIP")}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            alert("WIP");
+                        }
+                    }}
                     tabindex="0"
                     role="button"
                 >
@@ -151,7 +159,11 @@
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={() => isIssuesHistoryHidden.set(false)}
-                    onkeypress={() => isIssuesHistoryHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            isIssuesHistoryHidden.set(false);
+                        }
+                    }}
                     tabindex="0"
                     role="button"
                 >
@@ -180,7 +192,11 @@
                 <div
                     class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={() => qrPrintDrawerHidden.set(false)}
-                    onkeypress={() => qrPrintDrawerHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            qrPrintDrawerHidden.set(false);
+                        }
+                    }}
                     tabindex="0"
                     role="button"
                 >
@@ -212,7 +228,11 @@
             <div
                 class="card p-4 pt-3 bg-white rounded-lg shadow-md"
                 onclick={startQRCode}
-                onkeypress={startQRCode}
+                onkeypress={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        startQRCode();
+                    }
+                }}
                 tabindex="0"
                 role="button"
             >
@@ -238,7 +258,11 @@
         <div
             class="card p-4 pt-3 bg-white rounded-lg shadow-md"
             onclick={toggleSettings}
-            onkeypress={toggleSettings}
+            onkeypress={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    toggleSettings();
+                }
+            }}
             tabindex="0"
             role="button"
         >
@@ -264,7 +288,11 @@
         <div
             class="card p-4 pt-3 bg-white rounded-lg rounded-br-none rounded-bl-none shadow-md"
             onclick={toggleLogin}
-            onkeypress={toggleLogin}
+            onkeypress={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    toggleLogin();
+                }
+            }}
             tabindex="0"
             role="button"
         >
@@ -306,11 +334,6 @@
 </main>
 
 <style>
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
     .card {
         transition: all 0.3s ease;
     }

@@ -16,6 +16,8 @@
   import PastIssues from "$lib/components/PastIssues.svelte";
   import { Spinner } from "flowbite-svelte";
   import PrintDrawer from "$lib/components/PrintDrawer.svelte";
+  import MostRecentIssue from "$lib/components/MostRecentIssue.svelte";
+  import FullScreenMediaViewer from "$lib/components/FullScreenMediaViewer.svelte";
 
   onMount(() => {
     registerServiceWorker();
@@ -30,13 +32,15 @@
 </script>
 
 {#if typeof window === "undefined"}
-  <main class="container px-4 py-5 pt-2 min-h-screen bg-slate-100">
+  <main class="px-4 py-5 pt-2 min-h-screen bg-slate-100">
     <div class="fixed inset-0 flex items-center justify-center z-50">
       <Spinner color="blue" class="w-12 h-12" />
     </div>
   </main>
 {:else}
   <HomePage />
+  <FullScreenMediaViewer />
+  <MostRecentIssue />
   <PastIssues />
   <PrintDrawer />
   <DetailsDrawer />

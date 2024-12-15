@@ -20,10 +20,10 @@
     $effect(() => {
         const html = document.querySelector("html");
         if (!html) return;
-        const invert = `invert(${$darkModeEnabled ? '1' : '0'})`;
+        const invert = `invert(${$darkModeEnabled ? "1" : "0"})`;
         html.style.filter = invert;
-        html.style.background = $darkModeEnabled ? 'white' : '';
-        for (const container of document.querySelectorAll('.toast-container')) {
+        html.style.background = $darkModeEnabled ? "white" : "";
+        for (const container of document.querySelectorAll(".toast-container")) {
             (container as HTMLElement).style.filter = invert;
         }
     });
@@ -67,7 +67,7 @@
     placement="bottom"
     bind:hidden={$isSettingsHidden}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg"
+    class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
     transitionParams={transitionParamsBottom}

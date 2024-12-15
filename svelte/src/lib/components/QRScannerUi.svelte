@@ -25,9 +25,11 @@
             startQRScanner.set(false);
             await destroyScanner();
         }}
-        onkeypress={async () => {
-            startQRScanner.set(false);
-            await destroyScanner();
+        onkeypress={async (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                startQRScanner.set(false);
+                await destroyScanner();
+            }
         }}
         role="button"
         tabindex="0"
