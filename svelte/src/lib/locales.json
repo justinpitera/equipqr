@@ -283,7 +283,9 @@
     "Add Vehicles and Parts": "Add Vehicles and Parts",
     "Add Vehicles and Ground Equipment": "Add Vehicles and Ground Equipment",
     "Login as Guest": "Login as Guest",
-    "Find": "Find"
+    "Find": "Find",
+    "Select GSE ID": "Select GSE ID",
+    "Cancel": "Cancel"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -568,7 +570,9 @@
     "Add Vehicles and Parts": "Tilføj køretøjer og dele",
     "Add Vehicles and Ground Equipment": "Tilføj køretøjer og jordudstyr",
     "Login as Guest": "Log ind som gæst",
-    "Find": "Finde"
+    "Find": "Finde",
+    "Select GSE ID": "Vælg GSE ID",
+    "Cancel": "Ophæve"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -853,7 +857,9 @@
     "Add Vehicles and Parts": "Legg til kjøretøy og deler",
     "Add Vehicles and Ground Equipment": "Legg til kjøretøy og bakkeutstyr",
     "Login as Guest": "Logg inn som gjest",
-    "Find": "Finne"
+    "Find": "Finne",
+    "Select GSE ID": "Velg GSE ID",
+    "Cancel": "Kansellere"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -1139,6 +1145,8 @@
     "Add Vehicles and Parts": "Lägg till fordon och delar",
     "Add Vehicles and Ground Equipment": "Lägg till fordon och markutrustning",
     "Login as Guest": "Logga in som gäst",
-    "Find": "Hitta"
+    "Find": "Hitta",
+    "Select GSE ID": "Välj GSE -ID",
+    "Cancel": "Avboka"
   }
 }
