@@ -1,11 +1,8 @@
 <script lang="ts">
-    import {
-        Chart,
-        Drawer,
-        Button,
-    } from "flowbite-svelte";
+    import { Chart, Drawer, Button } from "flowbite-svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
+    import { ArrowLeft } from "lucide-svelte";
     const { statisticsDrawerHidden, selectedLanguage } = homePageStore;
 
     function t(key: string): string {
@@ -146,26 +143,32 @@
         easing: undefined,
     }}
 >
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold">Statistics</h2>
-            <Button
-                color="red"
-                size="sm"
-                onclick={() => statisticsDrawerHidden.set(true)}>Close</Button
-            >
-        </div>
-        <div class="mb-4">
-            <div
-                class="h-[calc(100svh-(104px+36px+16px+24px+24px+8px))] overflow-y-auto overflow-x-hidden pb-3"
-            >
-                <div>
-                    <hr class="mt-2 mb-2" />
-                    <h3 class="text-xl font-semibold mb-4 text-center">
-                        Vehicle Usage
-                    </h3>
-                    <Chart {options} />
-                    <hr class="mt-2 mb-2" />
-                </div>
+    <div class="flex items-center justify-between">
+        <button
+            type="button"
+            onclick={() => {
+                statisticsDrawerHidden.set(true);
+            }}
+            class="p-2 hover:bg-gray-200 rounded-md"
+        >
+            <ArrowLeft class="h-6 w-6 text-gray-800" />
+        </button>
+        <h2 class="text-xl font-bold text-gray-800 mr-2">
+            {t("Statistics")}
+        </h2>
+    </div>
+    <div class="mb-4">
+        <div
+            class="h-[calc(100svh-(104px+36px+16px+24px+24px+8px))] overflow-y-auto overflow-x-hidden pb-3"
+        >
+            <div>
+                <hr class="mt-2 mb-2" />
+                <h3 class="text-xl font-semibold mb-4 text-center">
+                    Vehicle Usage
+                </h3>
+                <Chart {options} />
+                <hr class="mt-2 mb-2" />
             </div>
         </div>
+    </div>
 </Drawer>

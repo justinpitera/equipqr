@@ -188,7 +188,9 @@
     "Supervisor": "Supervisor",
     "Mechanic": "Mechanic",
     "Employee": "Employee",
-    "QR Code Printing": "QR Code Printing"
+    "QR Code Printing": "QR Code Printing",
+    "Print Queue": "Print Queue",
+    "Statistics": "Statistics"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -378,7 +380,9 @@
     "Supervisor": "Tilsynsførende",
     "Mechanic": "Mekaniker",
     "Employee": "Medarbejder",
-    "QR Code Printing": "QR -kodeudskrivning"
+    "QR Code Printing": "QR -kodeudskrivning",
+    "Print Queue": "Printkø",
+    "Statistics": "Statistik"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -568,7 +572,9 @@
     "Supervisor": "Veileder",
     "Mechanic": "Mekaniker",
     "Employee": "Ansatt",
-    "QR Code Printing": "QR -kodeutskrift"
+    "QR Code Printing": "QR -kodeutskrift",
+    "Print Queue": "Utskriftskø",
+    "Statistics": "Statistikk"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -759,6 +765,8 @@
     "Supervisor": "Handledare",
     "Mechanic": "Mekaniker",
     "Employee": "Anställd",
-    "QR Code Printing": "QR -kodutskrift"
+    "QR Code Printing": "QR -kodutskrift",
+    "Print Queue": "Tryckkö",
+    "Statistics": "Statistik"
   }
 }

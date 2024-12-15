@@ -210,7 +210,7 @@
     }}
 >
     {#if printQueue.length > 0}
-        <h3 class="font-semibold mb-2">Print Queue</h3>
+        <h3 class="font-semibold mb-2">{t("Print Queue")}</h3>
         <Table>
             <TableHead>
                 <TableHeadCell>ID</TableHeadCell>
