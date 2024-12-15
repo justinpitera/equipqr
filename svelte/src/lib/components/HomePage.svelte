@@ -191,7 +191,7 @@
 
     <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5 justify-items-center">
         {#if $isLoggedIn}
-            <!-- Mechanic: View Issues, Print QR Codes -->
+            <!-- Mechanic: View Issues -->
             {#if $userRole === "mechanic" || $userRole === "master"}
                 <div
                     class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
@@ -226,6 +226,262 @@
                         </div>
                     </div>
                 </div>
+            {/if}
+
+            {#if $userRole === "mechanic"}
+                <!-- Check Code (QR) -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={checkCodeQR}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            checkCodeQR();
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Search
+                            class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Check Code (QR)")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Scan a QR code to get information about a vehicle or part.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Check Code (Manual) -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={checkCodeManual}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            checkCodeManual();
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Search
+                            class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Check Code (Manual)")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Enter a code manually to get information about a vehicle or part.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report QR Failures -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={startQRCode}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            startQRCode();
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Clipboard
+                            class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Report Failure (QR)")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Scan QR codes and submit issues related to failures or malfunctions.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Manual Failures -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={startManualReport}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            startManualReport();
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Clipboard
+                            class="w-12 h-12 mx-auto text-black-600 dark:text-white"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Report Failure (Manually)")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Enter a code manually and submit issues related to failures or malfunctions.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+            {:else}
+                <!-- Report QR Failures -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={startQRCode}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            startQRCode();
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Clipboard
+                            class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Report Failure (QR)")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Scan QR codes and submit issues related to failures or malfunctions.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Manual Failures -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={startManualReport}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            startManualReport();
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Clipboard
+                            class="w-12 h-12 mx-auto text-black-600 dark:text-white"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Report Failure (Manually)")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Enter a code manually and submit issues related to failures or malfunctions.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Check Code (QR) -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={checkCodeQR}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            checkCodeQR();
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Search
+                            class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Check Code (QR)")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Scan a QR code to get information about a vehicle or part.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Check Code (Manual) -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={checkCodeManual}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            checkCodeManual();
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Search
+                            class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Check Code (Manual)")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Enter a code manually to get information about a vehicle or part.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
+            <!-- Mechanic: Print QR Codes -->
+            {#if $userRole === "mechanic" || $userRole === "master"}
                 <div
                     class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={() => qrPrintDrawerHidden.set(false)}
@@ -260,125 +516,6 @@
                     </div>
                 </div>
             {/if}
-
-            <!-- Report QR Failures -->
-            <div
-                class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                onclick={startQRCode}
-                onkeypress={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                        startQRCode();
-                    }
-                }}
-                tabindex="0"
-                role="button"
-            >
-                <div class="card-content">
-                    <Clipboard
-                        class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-                    />
-                    <div class="card-title mt-3 text-xl font-semibold">
-                        {t("Report Failure (QR)")}
-                    </div>
-                    <div
-                        class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                    >
-                        {t(
-                            "Scan QR codes and submit issues related to failures or malfunctions.",
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Report Manual Failures -->
-            <div
-                class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                onclick={startManualReport}
-                onkeypress={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                        startManualReport();
-                    }
-                }}
-                tabindex="0"
-                role="button"
-            >
-                <div class="card-content">
-                    <Clipboard
-                        class="w-12 h-12 mx-auto text-black-600 dark:text-white"
-                    />
-                    <div class="card-title mt-3 text-xl font-semibold">
-                        {t("Report Failure (Manually)")}
-                    </div>
-                    <div
-                        class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                    >
-                        {t(
-                            "Enter a code manually and submit issues related to failures or malfunctions.",
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Check Code (QR) -->
-            <div
-                class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                onclick={checkCodeQR}
-                onkeypress={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                        checkCodeQR();
-                    }
-                }}
-                tabindex="0"
-                role="button"
-            >
-                <div class="card-content">
-                    <Search
-                        class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-                    />
-                    <div class="card-title mt-3 text-xl font-semibold">
-                        {t("Check Code (QR)")}
-                    </div>
-                    <div
-                        class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                    >
-                        {t(
-                            "Scan a QR code to get information about a vehicle or part.",
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Check Code (Manual) -->
-            <div
-                class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                onclick={checkCodeManual}
-                onkeypress={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                        checkCodeManual();
-                    }
-                }}
-                tabindex="0"
-                role="button"
-            >
-                <div class="card-content">
-                    <Search
-                        class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-                    />
-                    <div class="card-title mt-3 text-xl font-semibold">
-                        {t("Check Code (Manual)")}
-                    </div>
-                    <div
-                        class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                    >
-                        {t(
-                            "Enter a code manually to get information about a vehicle or part.",
-                        )}
-                    </div>
-                </div>
-            </div>
 
             <!-- Master: Account Management & Role Assignment -->
             {#if $userRole === "master"}
