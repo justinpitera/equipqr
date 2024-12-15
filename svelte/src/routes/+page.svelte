@@ -20,6 +20,7 @@
   import MostRecentIssue from "$lib/components/MostRecentIssue.svelte";
   import IssuesHistoryDrawer from "$lib/components/IssuesHistoryDrawer.svelte";
   import FullScreenMediaViewer from "$lib/components/FullScreenMediaViewer.svelte";
+  import NewVehicle from "$lib/components/NewVehicle.svelte";
 
   onMount(() => {
     registerServiceWorker();
@@ -44,6 +45,7 @@
   <FullScreenMediaViewer />
   <MostRecentIssue />
   <PastIssues />
+  <NewVehicle />
   <PrintDrawer />
   <StatisticsDrawer />
   <IssuesHistoryDrawer />

@@ -278,7 +278,10 @@
     "Scan a QR code to get information about a vehicle or part.": "Scan a QR code to get information about a vehicle or part.",
     "Check Code (QR)": "Check Code (QR)",
     "Enter a code manually to get information about a vehicle or part.": "Enter a code manually to get information about a vehicle or part.",
-    "Check GSE ID": "Check GSE ID"
+    "Check GSE ID": "Check GSE ID",
+    "Add new vehicles or parts with pre-filled information.": "Add new vehicles or parts with pre-filled information.",
+    "Add Vehicles and Parts": "Add Vehicles and Parts",
+    "Add Vehicles and Ground Equipment": "Add Vehicles and Ground Equipment"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -558,7 +561,10 @@
     "Scan a QR code to get information about a vehicle or part.": "Scan en QR -kode for at få information om et køretøj eller en del.",
     "Check Code (QR)": "Kontroller kode (QR)",
     "Enter a code manually to get information about a vehicle or part.": "Indtast en kode manuelt for at få oplysninger om et køretøj eller en del.",
-    "Check GSE ID": "Kontroller GSE ID"
+    "Check GSE ID": "Kontroller GSE ID",
+    "Add new vehicles or parts with pre-filled information.": "Tilføj nye køretøjer eller dele med forudfyldt information.",
+    "Add Vehicles and Parts": "Tilføj køretøjer og dele",
+    "Add Vehicles and Ground Equipment": "Tilføj køretøjer og jordudstyr"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -838,7 +844,10 @@
     "Scan a QR code to get information about a vehicle or part.": "Skann en QR -kode for å få informasjon om et kjøretøy eller en del.",
     "Check Code (QR)": "Sjekk kode (QR)",
     "Enter a code manually to get information about a vehicle or part.": "Skriv inn en kode manuelt for å få informasjon om et kjøretøy eller en del.",
-    "Check GSE ID": "Sjekk GSE ID"
+    "Check GSE ID": "Sjekk GSE ID",
+    "Add new vehicles or parts with pre-filled information.": "Legg til nye kjøretøyer eller deler med ferdigfylt informasjon.",
+    "Add Vehicles and Parts": "Legg til kjøretøy og deler",
+    "Add Vehicles and Ground Equipment": "Legg til kjøretøy og bakkeutstyr"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -1119,6 +1128,9 @@
     "Scan a QR code to get information about a vehicle or part.": "Skanna en QR -kod för att få information om ett fordon eller en del.",
     "Check Code (QR)": "Kontrollkod (QR)",
     "Enter a code manually to get information about a vehicle or part.": "Ange en kod manuellt för att få information om ett fordon eller en del.",
-    "Check GSE ID": "Kontrollera GSE -ID"
+    "Check GSE ID": "Kontrollera GSE -ID",
+    "Add new vehicles or parts with pre-filled information.": "Lägg till nya fordon eller delar med förfylld information.",
+    "Add Vehicles and Parts": "Lägg till fordon och delar",
+    "Add Vehicles and Ground Equipment": "Lägg till fordon och markutrustning"
   }
 }

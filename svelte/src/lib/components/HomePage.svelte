@@ -5,6 +5,7 @@
     import Camera from "lucide-svelte/icons/camera";
     import Settings from "lucide-svelte/icons/settings";
     import Search from "lucide-svelte/icons/search";
+    import Car from "lucide-svelte/icons/car";
     import LogIn from "lucide-svelte/icons/log-in";
     import FileText from "lucide-svelte/icons/file-text";
     import Clipboard from "lucide-svelte/icons/clipboard";
@@ -30,6 +31,7 @@
         selectedLanguage,
         darkModeEnabled,
         qrPrintDrawerHidden,
+        addVehiclesDrawerHidden,
         statisticsDrawerHidden,
     } = homePageStore;
 
@@ -543,6 +545,43 @@
                         >
                             {t(
                                 "View and print QR codes for items to manage their information.",
+                            )}
+                            {#if $userRole === "master"}
+                                <b>{" "}{t("(Visible to Mechanics)")}</b>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
+            <!-- Mechanic:  -->
+            {#if $userRole === "mechanic" || $userRole === "master"}
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => addVehiclesDrawerHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            addVehiclesDrawerHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Car
+                            class="w-12 h-12 mx-auto text-cyan-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Add Vehicles and Ground Equipment")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Add new vehicles or parts with pre-filled information.",
                             )}
                             {#if $userRole === "master"}
                                 <b>{" "}{t("(Visible to Mechanics)")}</b>
