@@ -1,0 +1,171 @@
+<script lang="ts">
+    import {
+        Chart,
+        Drawer,
+        Button,
+    } from "flowbite-svelte";
+    import { homePageStore } from "$lib/helpers/homepage";
+    import { langChecker, translations } from "$lib/locales";
+    const { statisticsDrawerHidden, selectedLanguage } = homePageStore;
+
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations?.[key] || key;
+    }
+
+    let vehicles = [
+        {
+            id: 1,
+            name: "Baggage cart (BCT)",
+            manufacturer: "Acme",
+            model: "V2",
+            location: "BBP",
+            status: "Needs Maintenance",
+            fuelType: "Electric",
+            inUse: false,
+        },
+        {
+            id: 2,
+            name: "Ground power unit (GPU)",
+            manufacturer: "Delta",
+            model: "D3",
+            location: "CCP",
+            status: "Okay",
+            fuelType: "Gasoline",
+            inUse: true,
+        },
+        {
+            id: 3,
+            name: "Manual passenger stair (MPS)",
+            manufacturer: "Beta",
+            model: "B4",
+            location: "DDP",
+            status: "Faulty",
+            fuelType: "Diesel",
+            inUse: false,
+        },
+        {
+            id: 4,
+            name: "High loader (HIL)",
+            manufacturer: "Polar",
+            model: "GSH-1",
+            location: "AAP",
+            status: "Okay",
+            fuelType: "Diesel",
+            inUse: true,
+        },
+        {
+            id: 5,
+            name: "Baggage cart (BCT)",
+            manufacturer: "Acme",
+            model: "V2",
+            location: "BBP",
+            status: "Needs Maintenance",
+            fuelType: "Electric",
+            inUse: false,
+        },
+    ];
+    const inUseCount = vehicles.filter((vehicle) => vehicle.inUse).length;
+    const notInUseCount = vehicles.length - inUseCount;
+    const options = {
+        series: [inUseCount, notInUseCount],
+        labels: ["In Use", "Not In Use"],
+        colors: ["#28a745", "#dc3545"], // Green and Red
+        chart: {
+            height: 320,
+            type: "donut",
+        },
+        stroke: {
+            colors: ["transparent"],
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    labels: {
+                        show: true,
+                        name: {
+                            show: true,
+                        },
+                        total: {
+                            showAlways: true,
+                            show: true,
+                            label: "Total Vehicles",
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: "18px",
+                            fontWeight: 600,
+                            formatter: function (w) {
+                                const sum = w.globals.seriesTotals.reduce(
+                                    (a: number, b: number) => a + b,
+                                    0,
+                                );
+                                return `${sum} vehicles`;
+                            },
+                        },
+                        value: {
+                            show: true,
+                            formatter: function (value: string) {
+                                return value + " vehicles";
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        tooltip: {
+            enabled: true,
+            y: {
+                formatter: function (value) {
+                    return `${value} vehicles`;
+                },
+            },
+        },
+        legend: {
+            position: "bottom",
+            labels: {
+                useSeriesColors: true,
+            },
+            itemMargin: {
+                horizontal: 10,
+                vertical: 5,
+            },
+            fontFamily: "Inter, sans-serif",
+        },
+    } as ApexCharts.ApexOptions;
+</script>
+
+<Drawer
+    id="statistics-drawer"
+    placement="bottom"
+    backdrop={true}
+    class="drawer-box p-6 bg-gray-100 fixed inset-0 z-50"
+    width="100"
+    bind:hidden={$statisticsDrawerHidden}
+    transitionParams={{
+        duration: 0,
+        easing: undefined,
+    }}
+>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold">Statistics</h2>
+            <Button
+                color="red"
+                size="sm"
+                onclick={() => statisticsDrawerHidden.set(true)}>Close</Button
+            >
+        </div>
+        <div class="mb-4">
+            <div
+                class="h-[calc(100svh-(104px+36px+16px+24px+24px+8px))] overflow-y-auto overflow-x-hidden pb-3"
+            >
+                <div>
+                    <hr class="mt-2 mb-2" />
+                    <h3 class="text-xl font-semibold mb-4 text-center">
+                        Vehicle Usage
+                    </h3>
+                    <Chart {options} />
+                    <hr class="mt-2 mb-2" />
+                </div>
+            </div>
+        </div>
+</Drawer>

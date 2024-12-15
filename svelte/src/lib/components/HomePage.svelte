@@ -11,6 +11,8 @@
         Edit,
         UserPlus,
         UserCog,
+        ChartBarStacked,
+        User,
     } from "lucide-svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
@@ -28,6 +30,7 @@
         selectedLanguage,
         darkModeEnabled,
         qrPrintDrawerHidden,
+        statisticsDrawerHidden,
     } = homePageStore;
 
     function t(key: string): string {
@@ -49,14 +52,12 @@
     };
 </script>
 
-<IssuesHistoryDrawer />
-
 <div class={!$startQRScanner ? "hidden" : ""}>
     <QRScannerUi />
 </div>
 
 <main
-    class="px-4 py-5 pt-2 h-screen overflow-y-auto bg-slate-100{$startQRScanner ||
+    class="px-4 py-5 pt-2 h-screen overflow-y-auto relative bg-slate-100{$startQRScanner ||
     !$isIssuesHistoryHidden
         ? ' hidden'
         : ''}"
@@ -76,7 +77,15 @@
                 : ''}"
         >
             {t("Welcome,")}
-            {t($userRole)}!
+            {#if $userRole === "mechanic"}
+                {t("Mechanic")}!
+            {:else if $userRole === "employee"}
+                {t("Employee")}!
+            {:else if $userRole === "master"}
+                {t("Supervisor")}!
+            {:else}
+                {t($userRole)}!
+            {/if}
         </h1>
         <p
             class="text-lg text-gray-600 dark:text-gray-400 mt-2{!$isLoggedIn
@@ -87,16 +96,66 @@
         </p>
     </div>
 
+    <!-- Settings Bubble -->
+    <button
+        class="absolute top-4 left-4 rounded-full h-10 w-10 bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
+        onclick={toggleSettings}
+        aria-label="Settings"
+        style="min-width: auto;"
+    >
+        <Settings class="h-6 w-6 text-gray-700" />
+    </button>
+    <button
+        class="absolute top-4 right-4 rounded-full h-10 w-10 bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
+        onclick={toggleLogin}
+        aria-label="Account"
+        style="min-width: auto;"
+    >
+        <User class="h-6 w-6 text-gray-700" />
+    </button>
+
     <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5 justify-items-center">
         {#if $isLoggedIn}
             <!-- Master: Account Management & Role Assignment -->
             {#if $userRole === "master"}
+                <!-- Statistics Management -->
                 <div
                     class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={toggleSettings}
+                    onclick={() => statisticsDrawerHidden.set(false)}
                     onkeypress={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
-                            toggleSettings();
+                            statisticsDrawerHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <ChartBarStacked
+                            class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Statistics")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "View key metrics and performance data. Monitor progress and identify trends.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+                <!-- Account Management -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => alert("WIP")}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            alert("WIP");
                         }
                     }}
                     tabindex="0"
@@ -117,37 +176,6 @@
                         >
                             {t(
                                 "Manage user accounts and assign roles to individuals.",
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => alert("WIP")}
-                    onkeypress={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            alert("WIP");
-                        }
-                    }}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <UserPlus
-                            class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("Assign Roles")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "Assign different roles to users: employee, mechanic, or other.",
                             )}
                         </div>
                     </div>

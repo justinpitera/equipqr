@@ -45,10 +45,10 @@
         </button>
     </div>
 
-    <!-- Set Role to Master -->
+    <!-- Set Role to Supervisor -->
     <div class="card p-1 bg-white rounded-lg shadow-md">
         <button class="button" onclick={() => setRole("master")}>
-            {t("Set Role to Master")}
+            {t("Set Role to Supervisor")}
         </button>
     </div>
 </div>

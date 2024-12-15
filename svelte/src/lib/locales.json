@@ -183,7 +183,12 @@
     "of": "of",
     "Total": "Total",
     "Results": "Results",
-    "Error: Assertion failed": "Error: Assertion failed"
+    "Error: Assertion failed": "Error: Assertion failed",
+    "Set Role to Supervisor": "Set Role to Supervisor",
+    "Supervisor": "Supervisor",
+    "Mechanic": "Mechanic",
+    "Employee": "Employee",
+    "QR Code Printing": "QR Code Printing"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -368,7 +373,12 @@
     "of": "af",
     "Total": "Total",
     "Results": "Resultater",
-    "Error: Assertion failed": "Fejl: Påstand mislykkedes"
+    "Error: Assertion failed": "Fejl: Påstand mislykkedes",
+    "Set Role to Supervisor": "Sæt rolle til vejleder",
+    "Supervisor": "Tilsynsførende",
+    "Mechanic": "Mekaniker",
+    "Employee": "Medarbejder",
+    "QR Code Printing": "QR -kodeudskrivning"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -553,7 +563,12 @@
     "of": "av",
     "Total": "Total",
     "Results": "Resultater",
-    "Error: Assertion failed": "Feil: Påstanden mislyktes"
+    "Error: Assertion failed": "Feil: Påstanden mislyktes",
+    "Set Role to Supervisor": "Sett rolle til veileder",
+    "Supervisor": "Veileder",
+    "Mechanic": "Mekaniker",
+    "Employee": "Ansatt",
+    "QR Code Printing": "QR -kodeutskrift"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -739,6 +754,11 @@
     "of": "av",
     "Total": "Total",
     "Results": "Resultat",
-    "Error: Assertion failed": "Fel: Påståendet misslyckades"
+    "Error: Assertion failed": "Fel: Påståendet misslyckades",
+    "Set Role to Supervisor": "Ställ in roll till handledaren",
+    "Supervisor": "Handledare",
+    "Mechanic": "Mekaniker",
+    "Employee": "Anställd",
+    "QR Code Printing": "QR -kodutskrift"
   }
 }

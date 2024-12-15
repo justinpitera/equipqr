@@ -16,7 +16,9 @@
   import PastIssues from "$lib/components/PastIssues.svelte";
   import { Spinner } from "flowbite-svelte";
   import PrintDrawer from "$lib/components/PrintDrawer.svelte";
+  import StatisticsDrawer from "$lib/components/StatisticsDrawer.svelte";
   import MostRecentIssue from "$lib/components/MostRecentIssue.svelte";
+  import IssuesHistoryDrawer from "$lib/components/IssuesHistoryDrawer.svelte";
   import FullScreenMediaViewer from "$lib/components/FullScreenMediaViewer.svelte";
 
   onMount(() => {
@@ -43,6 +45,8 @@
   <MostRecentIssue />
   <PastIssues />
   <PrintDrawer />
+  <StatisticsDrawer />
+  <IssuesHistoryDrawer />
   <DetailsDrawer />
   <NotifyUi />
   <CloseReportUi />

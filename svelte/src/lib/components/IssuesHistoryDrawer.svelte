@@ -648,7 +648,7 @@
     placement="right"
     bind:hidden={$isIssuesHistoryHidden}
     backdrop={true}
-    class="drawer-box p-4 md:p-8 bg-white rounded-lg shadow-lg overflow-y-hidden"
+    class="drawer-box p-4 md:p-6 md:pt-4 bg-white rounded-lg shadow-lg overflow-y-hidden"
     width="w-full"
     activateClickOutside={false}
     transitionParams={{
@@ -699,7 +699,7 @@
         </div>
     </Modal>
 
-    <div class="flex items-center justify-between border-b pb-2">
+    <div class="flex items-center justify-between">
         <button
             type="button"
             onclick={() => {
@@ -714,7 +714,7 @@
             {t("Issue History")}
         </h2>
     </div>
-
+    <hr class="mt-2" style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.4));">
     {#if showScrollUp}
         <button
             onclick={() => {

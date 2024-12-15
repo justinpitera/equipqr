@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Check, X } from "lucide-svelte";
+    import { ArrowLeft, Check, X } from "lucide-svelte";
     import {
         Table,
         TableBody,
@@ -8,7 +8,6 @@
         TableBodyRow,
         TableHead,
         TableHeadCell,
-        Chart,
         Drawer,
         Button,
         Badge,
@@ -17,7 +16,14 @@
     } from "flowbite-svelte";
     import { homePageStore } from "$lib/helpers/homepage";
     import { equipment } from "$lib/helpers/equipment";
-    const { qrPrintDrawerHidden } = homePageStore;
+    import { langChecker, translations } from "$lib/locales";
+    const { qrPrintDrawerHidden, selectedLanguage } = homePageStore;
+
+    function t(key: string): string {
+        const langTranslations = translations[$selectedLanguage];
+        langChecker(key);
+        return langTranslations?.[key] || key;
+    }
 
     let vehicles = [
         {
@@ -71,72 +77,6 @@
             inUse: false,
         },
     ];
-    const inUseCount = vehicles.filter((vehicle) => vehicle.inUse).length;
-    const notInUseCount = vehicles.length - inUseCount;
-    const options = {
-        series: [inUseCount, notInUseCount],
-        labels: ["In Use", "Not In Use"],
-        colors: ["#28a745", "#dc3545"], // Green and Red
-        chart: {
-            height: 320,
-            type: "donut",
-        },
-        stroke: {
-            colors: ["transparent"],
-        },
-        plotOptions: {
-            pie: {
-                donut: {
-                    labels: {
-                        show: true,
-                        name: {
-                            show: true,
-                        },
-                        total: {
-                            showAlways: true,
-                            show: true,
-                            label: "Total Vehicles",
-                            fontFamily: "Inter, sans-serif",
-                            fontSize: "18px",
-                            fontWeight: 600,
-                            formatter: function (w) {
-                                const sum = w.globals.seriesTotals.reduce(
-                                    (a: number, b: number) => a + b,
-                                    0,
-                                );
-                                return `${sum} vehicles`;
-                            },
-                        },
-                        value: {
-                            show: true,
-                            formatter: function (value: string) {
-                                return value + " vehicles";
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        tooltip: {
-            enabled: true,
-            y: {
-                formatter: function (value) {
-                    return `${value} vehicles`;
-                },
-            },
-        },
-        legend: {
-            position: "bottom",
-            labels: {
-                useSeriesColors: true,
-            },
-            itemMargin: {
-                horizontal: 10,
-                vertical: 5,
-            },
-            fontFamily: "Inter, sans-serif",
-        },
-    } as ApexCharts.ApexOptions;
 
     const getRandomImage = (vehicleName: string) => {
         const matchingImage = equipment[vehicleName];
@@ -304,28 +244,26 @@
             </TableBody>
         </Table>
     {:else}
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold">QR Code Printing</h2>
-            <Button
-                color="red"
-                size="sm"
-                onclick={() => qrPrintDrawerHidden.set(true)}>Close</Button
+        <div class="flex items-center justify-between">
+            <button
+                type="button"
+                onclick={() => {
+                    qrPrintDrawerHidden.set(true);
+                }}
+                class="p-2 hover:bg-gray-200 rounded-md"
             >
+                <ArrowLeft class="h-6 w-6 text-gray-800" />
+            </button>
+            <h2 class="text-xl font-bold text-gray-800 mr-2">
+                {t("QR Code Printing")}
+            </h2>
         </div>
+        <hr class="mt-2" style="filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.2));">
 
-        <div class="mb-4">
-            <h3 class="font-semibold mb-2">Vehicles</h3>
+        <div class="mb-4 mt-2">
             <div
                 class="h-[calc(100svh-(104px+36px+16px+24px+24px+8px))] overflow-y-auto overflow-x-hidden pb-3"
             >
-                <div>
-                    <hr class="mt-2 mb-2" />
-                    <h3 class="text-xl font-semibold mb-4 text-center">
-                        Vehicle Usage
-                    </h3>
-                    <Chart {options} />
-                    <hr class="mt-2 mb-2" />
-                </div>
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 justify-items-center gap-6"
                 >
@@ -355,7 +293,7 @@
                             >
                                 {vehicle.name}
                             </h4>
-                            <div class="space-y-2 text-sm text-gray-600">
+                            <div class="space-y-2 text-sm text-gray-600 text-center">
                                 <p>
                                     <strong>Manufacturer:</strong>
                                     {vehicle.manufacturer}
@@ -371,8 +309,8 @@
                                     {vehicle.fuelType}
                                 </p>
                             </div>
-                            <div class="flex items-center mt-4 space-x-2">
-                                <strong class="text-sm">In Use:</strong>
+                            <div class="flex items-center mt-1 space-x-2 text-gray-600 text-center w-fit m-auto">
+                                <strong class="text-sm">Operational:</strong>
                                 {#if vehicle.inUse}
                                     <Check class="text-green-500" />
                                 {:else}
@@ -396,9 +334,9 @@
         </div>
 
         <div
-            class="fixed bottom-0 left-0 right-0 bg-gray-200 p-4 text-center pb-4 max-w-[768px] m-auto"
+            class="fixed bottom-0 left-0 right-0 bg-gray-200 p-4 text-center pb-4"
         >
-            <div>
+            <div class="max-w-[768px] m-auto">
                 <Button
                     color="green"
                     size="sm"
@@ -418,7 +356,7 @@
                     class="px-4 py-2 rounded-full">Print Now</Button
                 >
             </div>
-            <div class="flex justify-between items-center mt-2">
+            <div class="flex justify-between items-center mt-2 max-w-[768px] m-auto">
                 <span class="text-lg font-semibold text-blue-600"
                     >{selectedVehicles.size} selected</span
                 >
