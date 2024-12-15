@@ -11,6 +11,8 @@ class HomePageStore {
         public isIssuesHistoryHidden: Writable<boolean> = writable(true),
         public isRecentIssueDrawerHidden: Writable<boolean> = writable(true),
         public qrPrintDrawerHidden: Writable<boolean> = writable(true),
+        public selectGSEIDDrawerHidden: Writable<boolean> = writable(true),
+        public gseAction: Writable<Function | undefined> = writable(undefined),
         public addVehiclesDrawerHidden: Writable<boolean> = writable(true),
         public statisticsDrawerHidden: Writable<boolean> = writable(true),
         public hideTip: Writable<boolean> = writable(false),

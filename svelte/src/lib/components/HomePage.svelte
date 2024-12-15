@@ -33,6 +33,8 @@
         qrPrintDrawerHidden,
         addVehiclesDrawerHidden,
         statisticsDrawerHidden,
+        selectGSEIDDrawerHidden,
+        gseAction,
     } = homePageStore;
 
     const { isAutoOpenMostRecentIssue, isAutoOpenIssueDetails, showPopup } =
@@ -53,35 +55,46 @@
     };
 
     const checkCodeManual = async () => {
-        const result = prompt(t("Check GSE ID"));
-        if (result) {
-            qrScannerStore.qrCodeData.set(result);
-            try {
-                const gseDetails = await getGSEDetails(result);
-                if (gseDetails?.gse_id) {
-                    qrScannerStore.detectedGSE.set(gseDetails);
-                    if (gseDetails.error && gseDetails.details) {
-                        notify(gseDetails.error, gseDetails.details, "error");
+        // const selectedGSEID = prompt(t("Check GSE ID"));
+        gseAction.set(async (selectedGSEID: string) => {
+            if (selectedGSEID) {
+                qrScannerStore.qrCodeData.set(selectedGSEID);
+                try {
+                    const gseDetails = await getGSEDetails(selectedGSEID);
+                    if (gseDetails?.gse_id) {
+                        qrScannerStore.detectedGSE.set(gseDetails);
+                        if (gseDetails.error && gseDetails.details) {
+                            notify(
+                                gseDetails.error,
+                                gseDetails.details,
+                                "error",
+                            );
+                        } else {
+                            detailsDrawerStore.hideGSEDetail.set(false);
+                            if (gseDetails.most_recent_issue)
+                                homePageStore.isRecentIssueDrawerHidden.set(
+                                    false,
+                                );
+                        }
                     } else {
-                        detailsDrawerStore.hideGSEDetail.set(false);
-                        if (gseDetails.most_recent_issue)
-                            homePageStore.isRecentIssueDrawerHidden.set(false);
+                        notify(
+                            "Error",
+                            t("Could not find any information for") +
+                                " " +
+                                selectedGSEID,
+                            "error",
+                            5000,
+                            true,
+                        );
+                        qrScannerStore.detectedGSE.set(null);
                     }
-                } else {
-                    notify(
-                        "Error",
-                        t("Could not find any information for") + " " + result,
-                        "error",
-                        5000,
-                        true,
-                    );
+                } catch (e) {
                     qrScannerStore.detectedGSE.set(null);
+                    cancelReportStore.closeReportHidden.set(false);
                 }
-            } catch (e) {
-                qrScannerStore.detectedGSE.set(null);
-                cancelReportStore.closeReportHidden.set(false);
             }
-        }
+        });
+        selectGSEIDDrawerHidden.set(false);
     };
 
     const checkCodeQR = () => {
@@ -93,39 +106,50 @@
     };
 
     const startManualReport = async () => {
-        const result = prompt(t("Enter the GSE ID"));
-        if (result) {
-            qrScannerStore.qrCodeData.set(result);
-            qrScannerStore.showPopup.set(true);
-            try {
-                const gseDetails = await getGSEDetails(result);
-                if (gseDetails?.gse_id) {
-                    qrScannerStore.detectedGSE.set(gseDetails);
-                    if (gseDetails.error && gseDetails.details) {
-                        notify(gseDetails.error, gseDetails.details, "error");
+        // const selectedGSEID = prompt(t("Enter the GSE ID"));
+        gseAction.set(async (selectedGSEID: string) => {
+            if (selectedGSEID) {
+                qrScannerStore.qrCodeData.set(selectedGSEID);
+                qrScannerStore.showPopup.set(true);
+                try {
+                    const gseDetails = await getGSEDetails(selectedGSEID);
+                    if (gseDetails?.gse_id) {
+                        qrScannerStore.detectedGSE.set(gseDetails);
+                        if (gseDetails.error && gseDetails.details) {
+                            notify(
+                                gseDetails.error,
+                                gseDetails.details,
+                                "error",
+                            );
+                        } else {
+                            if ($isAutoOpenIssueDetails)
+                                detailsDrawerStore.hideGSEDetail.set(false);
+                            if ($isAutoOpenMostRecentIssue)
+                                homePageStore.isRecentIssueDrawerHidden.set(
+                                    false,
+                                );
+                        }
                     } else {
-                        if ($isAutoOpenIssueDetails)
-                            detailsDrawerStore.hideGSEDetail.set(false);
-                        if ($isAutoOpenMostRecentIssue)
-                            homePageStore.isRecentIssueDrawerHidden.set(false);
+                        notify(
+                            "Error",
+                            t("Could not find any information for") +
+                                " " +
+                                selectedGSEID,
+                            "error",
+                            5000,
+                            true,
+                        );
+                        qrScannerStore.detectedGSE.set(null);
+                        if ($showPopup)
+                            cancelReportStore.closeReportHidden.set(false);
                     }
-                } else {
-                    notify(
-                        "Error",
-                        t("Could not find any information for") + " " + result,
-                        "error",
-                        5000,
-                        true,
-                    );
+                } catch (e) {
                     qrScannerStore.detectedGSE.set(null);
-                    if ($showPopup)
-                        cancelReportStore.closeReportHidden.set(false);
+                    cancelReportStore.closeReportHidden.set(false);
                 }
-            } catch (e) {
-                qrScannerStore.detectedGSE.set(null);
-                cancelReportStore.closeReportHidden.set(false);
             }
-        }
+        });
+        selectGSEIDDrawerHidden.set(false);
     };
 </script>
 

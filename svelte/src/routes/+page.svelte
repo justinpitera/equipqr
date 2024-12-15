@@ -17,6 +17,7 @@
   import Spinner from "flowbite-svelte/Spinner.svelte";
   import PrintDrawer from "$lib/components/PrintDrawer.svelte";
   import StatisticsDrawer from "$lib/components/StatisticsDrawer.svelte";
+  import SelectGSEID from "$lib/components/SelectGSEID.svelte";
   import MostRecentIssue from "$lib/components/MostRecentIssue.svelte";
   import IssuesHistoryDrawer from "$lib/components/IssuesHistoryDrawer.svelte";
   import FullScreenMediaViewer from "$lib/components/FullScreenMediaViewer.svelte";
@@ -46,6 +47,7 @@
   <MostRecentIssue />
   <PastIssues />
   <NewVehicle />
+  <SelectGSEID />
   <PrintDrawer />
   <StatisticsDrawer />
   <IssuesHistoryDrawer />
