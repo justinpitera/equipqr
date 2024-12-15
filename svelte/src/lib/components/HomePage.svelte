@@ -124,7 +124,10 @@
                         } else {
                             if ($isAutoOpenIssueDetails)
                                 detailsDrawerStore.hideGSEDetail.set(false);
-                            if ($isAutoOpenMostRecentIssue)
+                            if (
+                                gseDetails.most_recent_issue &&
+                                $isAutoOpenMostRecentIssue
+                            )
                                 homePageStore.isRecentIssueDrawerHidden.set(
                                     false,
                                 );

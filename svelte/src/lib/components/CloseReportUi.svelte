@@ -16,7 +16,7 @@
   const { closeReportHidden } = cancelReportStore;
   import { homePageStore } from "$lib/helpers/homepage";
   import { onDestroy } from "svelte";
-  const { selectedLanguage, darkModeEnabled } = homePageStore;
+  const { selectedLanguage, darkModeEnabled, startQRScanner } = homePageStore;
 
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];
@@ -71,7 +71,7 @@
       document.getElementById("qrScanner")?.classList.remove("hidden");
       if (DEBUG_MODE) {
         homePageStore.startQRScanner.set(false);
-      } else {
+      } else if ($startQRScanner) {
         loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
       }
     }}
