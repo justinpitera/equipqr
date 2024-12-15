@@ -1704,7 +1704,7 @@
                     {totalPages}
                     <br />
                     {$issues.length}
-                    {t("results")}
+                    {t("Results")}
                     <br />
                     {Math.min(
                         issuesPerPage * (currentPage - 1) + 1,

@@ -181,7 +181,8 @@
     "Results:": "Results:",
     "Page": "Page",
     "of": "of",
-    "Total": "Total"
+    "Total": "Total",
+    "Results": "Results"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -364,7 +365,8 @@
     "Reported at": "Rapporteret kl",
     "Page": "Side",
     "of": "af",
-    "Total": "Total"
+    "Total": "Total",
+    "Results": "Resultater"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -547,7 +549,8 @@
     "Reported at": "Rapportert på",
     "Page": "Side",
     "of": "av",
-    "Total": "Total"
+    "Total": "Total",
+    "Results": "Resultater"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -731,6 +734,7 @@
     "Results:": "Resultat:",
     "Page": "Sida",
     "of": "av",
-    "Total": "Total"
+    "Total": "Total",
+    "Results": "Resultat"
   }
 }
