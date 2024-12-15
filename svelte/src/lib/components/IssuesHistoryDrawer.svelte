@@ -786,7 +786,7 @@
             class="overflow-y-auto h-[calc(100svh-24px-40px-10px)] relative"
             bind:this={issuesScroller}
             onscroll={() => {
-                if (issuesScroller.scrollTop > 200) {
+                if (issuesScroller && issuesScroller.scrollTop > 200) {
                     showScrollUp = true;
                 } else {
                     showScrollUp = false;
