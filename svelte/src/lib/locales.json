@@ -190,7 +190,15 @@
     "Employee": "Employee",
     "QR Code Printing": "QR Code Printing",
     "Print Queue": "Print Queue",
-    "Statistics": "Statistics"
+    "Statistics": "Statistics",
+    "Report Failure (Manually)": "Report Failure (Manually)",
+    "Report Failure (QR)": "Report Failure (QR)",
+    "Enter the GSE ID": "Enter the GSE ID",
+    "Please enter a number between 1 and": "Please enter a number between 1 and",
+    "Invalid page number. Please enter a number between 1 and": "Invalid page number. Please enter a number between 1 and",
+    "Page is still loading...": "Page is still loading...",
+    "Already reached the final page": "Already reached the final page",
+    "Already reached the first page": "Already reached the first page"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -382,7 +390,15 @@
     "Employee": "Medarbejder",
     "QR Code Printing": "QR -kodeudskrivning",
     "Print Queue": "Printkø",
-    "Statistics": "Statistik"
+    "Statistics": "Statistik",
+    "Report Failure (Manually)": "Rapportfejl (manuelt)",
+    "Report Failure (QR)": "Rapportfejl (QR)",
+    "Enter the GSE ID": "Indtast GSE -ID",
+    "Please enter a number between 1 and": "Indtast et nummer mellem 1 og",
+    "Invalid page number. Please enter a number between 1 and": "Ugyldigt sidetal.Indtast et nummer mellem 1 og",
+    "Page is still loading...": "Siden indlæses stadig ...",
+    "Already reached the final page": "Nåede allerede den sidste side",
+    "Already reached the first page": "Nåede allerede den første side"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -574,7 +590,15 @@
     "Employee": "Ansatt",
     "QR Code Printing": "QR -kodeutskrift",
     "Print Queue": "Utskriftskø",
-    "Statistics": "Statistikk"
+    "Statistics": "Statistikk",
+    "Report Failure (Manually)": "Rapporter feil (manuelt)",
+    "Report Failure (QR)": "Rapportfeil (QR)",
+    "Enter the GSE ID": "Skriv inn GSE ID",
+    "Please enter a number between 1 and": "Vennligst skriv inn et nummer mellom 1 og",
+    "Invalid page number. Please enter a number between 1 and": "Ugyldig sidetall.Vennligst skriv inn et nummer mellom 1 og",
+    "Page is still loading...": "Siden laster fortsatt ...",
+    "Already reached the final page": "Allerede nådd den endelige siden",
+    "Already reached the first page": "Allerede nådd den første siden"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -767,6 +791,14 @@
     "Employee": "Anställd",
     "QR Code Printing": "QR -kodutskrift",
     "Print Queue": "Tryckkö",
-    "Statistics": "Statistik"
+    "Statistics": "Statistik",
+    "Report Failure (Manually)": "Rapportfel (manuellt)",
+    "Report Failure (QR)": "Rapportfel (QR)",
+    "Enter the GSE ID": "Ange GSE -ID",
+    "Please enter a number between 1 and": "Ange ett nummer mellan 1 och",
+    "Invalid page number. Please enter a number between 1 and": "Ogiltigt sidnummer.Ange ett nummer mellan 1 och",
+    "Page is still loading...": "Sidan laddas fortfarande ...",
+    "Already reached the final page": "Har redan nått den sista sidan",
+    "Already reached the first page": "Redan nådde den första sidan"
   }
 }

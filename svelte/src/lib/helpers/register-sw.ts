@@ -44,6 +44,6 @@ export async function registerServiceWorker() {
 		}
 	});
 	window.addEventListener('appinstalled', () => {
-		alert('App was installed');
+		console.log('App was installed successfully');
 	});
 }

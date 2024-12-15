@@ -1,15 +1,13 @@
 <script lang="ts">
     import QRScannerUi from "$lib/components/QRScannerUi.svelte";
     import { DEBUG_MODE } from "$lib/config";
-    import { loadQRScanner } from "$lib/helpers/camera";
+    import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
     import {
         Camera,
         Settings,
         LogIn,
         FileText,
         Clipboard,
-        Edit,
-        UserPlus,
         UserCog,
         ChartBarStacked,
         User,
@@ -17,8 +15,11 @@
     import { homePageStore } from "$lib/helpers/homepage";
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
     import AuthDrawer from "$lib/components/AuthDrawer.svelte";
-    import IssuesHistoryDrawer from "$lib/components/IssuesHistoryDrawer.svelte";
     import { langChecker, translations } from "$lib/locales";
+    import { getGSEDetails } from "$lib/helpers/server-requests";
+    import { detailsDrawerStore } from "$lib/helpers/details";
+    import { notify } from "$lib/helpers/notify";
+    import { cancelReportStore } from "$lib/helpers/cancel-report";
 
     const {
         isLoggedIn,
@@ -32,6 +33,9 @@
         qrPrintDrawerHidden,
         statisticsDrawerHidden,
     } = homePageStore;
+
+    const { isAutoOpenMostRecentIssue, isAutoOpenIssueDetails } =
+        qrScannerStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -49,6 +53,30 @@
 
     const startQRCode = () => {
         loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
+    };
+
+    const startManualReport = async () => {
+        const result = prompt(t("Enter the GSE ID"));
+        if (result) {
+            qrScannerStore.qrCodeData.set(result);
+            qrScannerStore.showPopup.set(true);
+            document.getElementById("qrScanner")?.classList.add("hidden");
+            const gseDetails = await getGSEDetails(result);
+            if (gseDetails) {
+                qrScannerStore.detectedGSE.set(gseDetails);
+                if (gseDetails.error && gseDetails.details) {
+                    notify(gseDetails.error, gseDetails.details, "error");
+                } else {
+                    if (isAutoOpenIssueDetails)
+                        detailsDrawerStore.hideGSEDetail.set(false);
+                    if (isAutoOpenMostRecentIssue)
+                        homePageStore.isRecentIssueDrawerHidden.set(false);
+                }
+            } else {
+                qrScannerStore.detectedGSE.set(null);
+                cancelReportStore.closeReportHidden.set(false);
+            }
+        }
     };
 </script>
 
@@ -270,7 +298,37 @@
                         style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
-                        {t("Report Failure or Malfunction")}
+                        {t("Report Failure (QR)")}
+                    </div>
+                    <div
+                        class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                    >
+                        {t(
+                            "Scan QR codes and submit issues related to failures or malfunctions.",
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Failures -->
+            <div
+                class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                onclick={startManualReport}
+                onkeypress={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        startManualReport();
+                    }
+                }}
+                tabindex="0"
+                role="button"
+            >
+                <div class="card-content">
+                    <Clipboard
+                        class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
+                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                    />
+                    <div class="card-title mt-3 text-xl font-semibold">
+                        {t("Report Failure (Manually)")}
                     </div>
                     <div
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"

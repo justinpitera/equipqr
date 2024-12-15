@@ -352,14 +352,14 @@
     const handleSpecificPageChange = () => {
         if (isLoading) return;
         const newPageInput = prompt(
-            "Enter which page you want to load:\nPlease enter a number between 1 and " +
+            t('Enter which page you want to load:') + "\n" + t('Please enter a number between 1 and') + " " +
                 totalPages,
         );
         if (newPageInput === null) return;
         const newPage = parseInt(newPageInput.trim());
         if (isNaN(newPage) || newPage < 1 || newPage > totalPages) {
             alert(
-                "Invalid page number. Please enter a number between 1 and " +
+                t("Invalid page number. Please enter a number between 1 and") + ' ' +
                     totalPages,
             );
             return;
@@ -471,10 +471,10 @@
                 } else if (action === "previous page") {
                     didFindAction = true;
                     if (isLoading) {
-                        alert("Page is loading...");
+                        alert(t("Page is still loading..."));
                     } else {
                         if (currentPage === 1) {
-                            alert("Already reached the first page");
+                            alert(t("Already reached the first page"));
                         } else {
                             changePage(false, "top");
                         }
@@ -482,10 +482,10 @@
                 } else if (action === "next page") {
                     didFindAction = true;
                     if (isLoading) {
-                        alert("Page is loading...");
+                        alert(t("Page is still loading..."));
                     } else {
                         if (currentPage * issuesPerPage >= totalIssuesCount) {
-                            alert("Already reached the final page");
+                            alert(t("Already reached the final page"));
                         } else {
                             changePage(true, "top");
                         }
