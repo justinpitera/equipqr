@@ -891,7 +891,9 @@
                     <div class="relative w-full md:w-fit">
                         <Button
                             class="category-select mt-2 whitespace-nowrap border w-full border-primary-700"
-                            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         >
                             <div class="flex items-center mt-0">
                                 {#if selectedCategory.icon === "OctagonAlert"}
@@ -923,7 +925,8 @@
                                         searchDropdownOpen = false;
                                         simulateLoadingWithFilters();
                                     }}
-                                    class={selectedCategory.label === category.label
+                                    class={selectedCategory.label ===
+                                    category.label
                                         ? "underline"
                                         : ""}
                                 >
@@ -979,7 +982,9 @@
                     <div class="relative w-full md:w-fit">
                         <Button
                             class="filter-by-operable mt-2 whitespace-nowrap border w-full border-primary-700"
-                            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
                         >
                             <div class="flex items-center mt-0">
                                 {#if selectedFilter.icon === "check"}
@@ -1023,7 +1028,9 @@
                                                 class="h-5 w-5 mr-2 text-green-500"
                                             />
                                         {:else if filter.icon === "x"}
-                                            <X class="h-5 w-5 mr-2 text-red-500" />
+                                            <X
+                                                class="h-5 w-5 mr-2 text-red-500"
+                                            />
                                         {/if}
                                         <span
                                             class="text-{filter.color}-600 font-semibold"
@@ -1039,7 +1046,7 @@
             </form>
             <!-- Page Buttons Top -->
             <div
-                class="pt-2 flex justify-between p-2 pr-3 pl-3 items-center border-b md:border-none md:absolute top-0 left-0 right-0 z-0"
+                class="pt-2 flex justify-between p-2 pr-3 pl-3 items-center border-b md:border-none md:absolute top-0 left-0 right-0 z-[-1]"
             >
                 {#if isLoading}
                     <div
@@ -1207,10 +1214,10 @@
                                     {t("Issue Description:")}
                                 </p>
                                 <p class="text-sm max-w-[80%]">{issue.issue}</p>
-                                <!-- Spacer -->
-                                <hr class="mb-2 mt-2 w-[80%] m-auto" />
                                 <!-- Attachments: -->
                                 {#if issue.attachments && issue.attachments.length > 0}
+                                    <!-- Spacer -->
+                                    <hr class="mb-2 mt-2 w-[80%] m-auto" />
                                     <div
                                         class="text-sm font-bold relative text-center m-auto w-fit"
                                     >
