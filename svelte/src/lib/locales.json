@@ -106,7 +106,6 @@
     "Welcome,": "Welcome,",
     "Choose an action below to get started": "Choose an action below to get started",
     "Report Failure or Malfunction": "Report Failure or Malfunction",
-    "Scan QR codes and submit issues related to failures or malfunctions.": "Scan QR codes and submit issues related to failures or malfunctions.",
     "Print QR Codes": "Print QR Codes",
     "View and print QR codes for items to manage their information.": "View and print QR codes for items to manage their information.",
     "Add new items, edit existing ones, and view item details.": "Add new items, edit existing ones, and view item details.",
@@ -200,7 +199,8 @@
     "Already reached the final page": "Already reached the final page",
     "Already reached the first page": "Already reached the first page",
     "View key metrics and performance data. Monitor progress and identify trends.": "View key metrics and performance data. Monitor progress and identify trends.",
-    "Could not find any information for": "Could not find any information for"
+    "Could not find any information for": "Could not find any information for",
+    "Enter a code manually and submit issues related to failures or malfunctions.": "Enter a code manually and submit issues related to failures or malfunctions."
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -309,7 +309,6 @@
     "Welcome,": "Velkomst,",
     "Choose an action below to get started": "Vælg en handling nedenfor for at komme i gang",
     "Report Failure or Malfunction": "Rapporter fejl eller funktionsfejl",
-    "Scan QR codes and submit issues related to failures or malfunctions.": "Scan QR -koder og indsend problemer relateret til fejl eller funktionsfejl.",
     "Print QR Codes": "Udskriv QR -koder",
     "View and print QR codes for items to manage their information.": "Se og udskriv QR -koder for varer til at administrere deres oplysninger.",
     "Add new items, edit existing ones, and view item details.": "Tilføj nye varer, rediger eksisterende og se vareoplysninger.",
@@ -402,7 +401,8 @@
     "Already reached the final page": "Nåede allerede den sidste side",
     "Already reached the first page": "Nåede allerede den første side",
     "View key metrics and performance data. Monitor progress and identify trends.": "Se nøglemetrik og præstationsdata.Overvåg fremskridt og identificer tendenser.",
-    "Could not find any information for": "Kunne ikke finde nogen oplysninger til"
+    "Could not find any information for": "Kunne ikke finde nogen oplysninger til",
+    "Enter a code manually and submit issues related to failures or malfunctions.": "Indtast en kode manuelt og indsend problemer relateret til fejl eller funktionsfejl."
   },
   "no": {
     "Authentication": "Autentisering",
@@ -511,7 +511,6 @@
     "Welcome,": "Velkomst,",
     "Choose an action below to get started": "Velg en handling nedenfor for å komme i gang",
     "Report Failure or Malfunction": "Rapportfeil eller funksjonsfeil",
-    "Scan QR codes and submit issues related to failures or malfunctions.": "Skann QR -koder og send inn problemer relatert til feil eller funksjonsfeil.",
     "Print QR Codes": "Skriv ut QR -koder",
     "View and print QR codes for items to manage their information.": "Vis og skriv ut QR -koder for elementer for å administrere informasjonen.",
     "Add new items, edit existing ones, and view item details.": "Legg til nye elementer, rediger eksisterende og se varedetaljer.",
@@ -604,7 +603,8 @@
     "Already reached the final page": "Allerede nådd den endelige siden",
     "Already reached the first page": "Allerede nådd den første siden",
     "View key metrics and performance data. Monitor progress and identify trends.": "Se viktige beregninger og ytelsesdata.Overvåke fremgangen og identifisere trender.",
-    "Could not find any information for": "Kunne ikke finne noen informasjon for"
+    "Could not find any information for": "Kunne ikke finne noen informasjon for",
+    "Enter a code manually and submit issues related to failures or malfunctions.": "Skriv inn en kode manuelt og send inn problemer relatert til feil eller funksjonsfeil."
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -713,7 +713,6 @@
     "Welcome,": "Välkomna,",
     "Choose an action below to get started": "Välj en åtgärd nedan för att komma igång",
     "Report Failure or Malfunction": "Rapportfel eller fel",
-    "Scan QR codes and submit issues related to failures or malfunctions.": "Skanna QR -koder och skicka problem relaterade till fel eller fel.",
     "Print QR Codes": "Skriv ut QR -koder",
     "View and print QR codes for items to manage their information.": "Visa och skriva ut QR -koder för objekt för att hantera sin information.",
     "Add new items, edit existing ones, and view item details.": "Lägg till nya objekt, redigera befintliga och visa objektinformation.",
@@ -807,6 +806,7 @@
     "Already reached the final page": "Har redan nått den sista sidan",
     "Already reached the first page": "Redan nådde den första sidan",
     "View key metrics and performance data. Monitor progress and identify trends.": "Visa nyckelmätningar och prestandadata.Övervaka framsteg och identifiera trender.",
-    "Could not find any information for": "Kunde inte hitta någon information för"
+    "Could not find any information for": "Kunde inte hitta någon information för",
+    "Enter a code manually and submit issues related to failures or malfunctions.": "Ange en kod manuellt och skicka problem relaterade till fel eller fel."
   }
 }

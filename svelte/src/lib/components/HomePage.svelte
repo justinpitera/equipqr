@@ -309,7 +309,7 @@
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
                         {t(
-                            "Scan QR codes and submit issues related to failures or malfunctions.",
+                            "Enter a code manually and submit issues related to failures or malfunctions.",
                         )}
                     </div>
                 </div>
