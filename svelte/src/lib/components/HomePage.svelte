@@ -2,14 +2,14 @@
     import QRScannerUi from "$lib/components/QRScannerUi.svelte";
     import { DEBUG_MODE } from "$lib/config";
     import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
-    import Camera from 'lucide-svelte/icons/camera'
-    import Settings from 'lucide-svelte/icons/settings'
-    import LogIn from 'lucide-svelte/icons/log-in'
-    import FileText from 'lucide-svelte/icons/file-text'
-    import Clipboard from 'lucide-svelte/icons/clipboard'
-    import UserCog from 'lucide-svelte/icons/user-cog'
-    import ChartBarStacked from 'lucide-svelte/icons/chart-bar-stacked'
-    import User from 'lucide-svelte/icons/user'
+    import Camera from "lucide-svelte/icons/camera";
+    import Settings from "lucide-svelte/icons/settings";
+    import LogIn from "lucide-svelte/icons/log-in";
+    import FileText from "lucide-svelte/icons/file-text";
+    import Clipboard from "lucide-svelte/icons/clipboard";
+    import UserCog from "lucide-svelte/icons/user-cog";
+    import ChartBarStacked from "lucide-svelte/icons/chart-bar-stacked";
+    import User from "lucide-svelte/icons/user";
     import { homePageStore } from "$lib/helpers/homepage";
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
     import AuthDrawer from "$lib/components/AuthDrawer.svelte";
@@ -71,7 +71,11 @@
                             homePageStore.isRecentIssueDrawerHidden.set(false);
                     }
                 } else {
-                    notify("Error", t("Could not find any information for") + ' ' + result, "error");
+                    notify(
+                        "Error",
+                        t("Could not find any information for") + " " + result,
+                        "error",
+                    );
                     qrScannerStore.detectedGSE.set(null);
                     cancelReportStore.closeReportHidden.set(false);
                 }
@@ -283,7 +287,7 @@
                 </div>
             {/if}
 
-            <!-- Report Failures -->
+            <!-- Report QR Failures -->
             <div
                 class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
                 onclick={startQRCode}
@@ -307,13 +311,13 @@
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
                         {t(
-                            "Enter a code manually and submit issues related to failures or malfunctions.",
+                            "Scan QR codes and submit issues related to failures or malfunctions.",
                         )}
                     </div>
                 </div>
             </div>
 
-            <!-- Report Failures -->
+            <!-- Report Manual Failures -->
             <div
                 class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
                 onclick={startManualReport}
@@ -337,7 +341,7 @@
                         class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
                     >
                         {t(
-                            "Scan QR codes and submit issues related to failures or malfunctions.",
+                            "Enter a code manually and submit issues related to failures or malfunctions.",
                         )}
                     </div>
                 </div>

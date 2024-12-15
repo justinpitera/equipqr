@@ -119,11 +119,11 @@ export async function loadQRScanner(forceDebug?: string) {
 	} else {
 		qrScannerStore.showPopup.set(false);
 		qrScannerStore.detectedGSE.set(null);
-		qrScannerStore.qrCodeData.set("Unable to read QR code.");
+		qrScannerStore.qrCodeData.set(t_global("Unable to read QR code."));
 		const loadingMessage = document.getElementById("loadingMessage");
 		if (loadingMessage) {
 			loadingMessage.hidden = false;
-			loadingMessage.textContent = '🎥 Unable to access video stream (please make sure you have a webcam';
+			loadingMessage.textContent = '🎥 ' + t_global('Unable to access video stream (please make sure you have a webcam');
 		}
 	}
 	qrScannerStore.showLoader.set(false);
@@ -167,7 +167,7 @@ export async function destroyScanner() {
 	const loadingMessage = document.getElementById("loadingMessage");
 	if (loadingMessage) {
 		loadingMessage.hidden = false;
-		loadingMessage.textContent = "🎥 Loading Camera...";
+		loadingMessage.textContent = "🎥 " + t_global("Loading Camera...");
 	}
 
 	const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });

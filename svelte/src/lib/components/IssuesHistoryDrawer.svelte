@@ -12,23 +12,23 @@
     import Select from "flowbite-svelte/Select.svelte";
     import Button from "flowbite-svelte/Button.svelte";
     import Indicator from "flowbite-svelte/Indicator.svelte";
-    import Trash2 from 'lucide-svelte/icons/trash-2'
-    import Edit from 'lucide-svelte/icons/edit'
-    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
-    import OctagonAlert from 'lucide-svelte/icons/octagon-alert'
-    import Cog from 'lucide-svelte/icons/cog'
-    import Loader from 'lucide-svelte/icons/loader'
-    import CircleCheckBig from 'lucide-svelte/icons/circle-check-big'
-    import KeyRound from 'lucide-svelte/icons/key-round'
-    import RefreshCcw from 'lucide-svelte/icons/refresh-ccw'
-    import RefreshCcwDot from 'lucide-svelte/icons/refresh-ccw-dot'
-    import X from 'lucide-svelte/icons/x'
-    import ArrowRight from 'lucide-svelte/icons/arrow-right'
-    import ArrowUp from 'lucide-svelte/icons/arrow-up'
-    import Plane from 'lucide-svelte/icons/plane'
-    import Clock from 'lucide-svelte/icons/clock'
-    import Image from 'lucide-svelte/icons/image'
-    import Video from 'lucide-svelte/icons/video'
+    import Trash2 from "lucide-svelte/icons/trash-2";
+    import Edit from "lucide-svelte/icons/edit";
+    import ArrowLeft from "lucide-svelte/icons/arrow-left";
+    import OctagonAlert from "lucide-svelte/icons/octagon-alert";
+    import Cog from "lucide-svelte/icons/cog";
+    import Loader from "lucide-svelte/icons/loader";
+    import CircleCheckBig from "lucide-svelte/icons/circle-check-big";
+    import KeyRound from "lucide-svelte/icons/key-round";
+    import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
+    import RefreshCcwDot from "lucide-svelte/icons/refresh-ccw-dot";
+    import X from "lucide-svelte/icons/x";
+    import ArrowRight from "lucide-svelte/icons/arrow-right";
+    import ArrowUp from "lucide-svelte/icons/arrow-up";
+    import Plane from "lucide-svelte/icons/plane";
+    import Clock from "lucide-svelte/icons/clock";
+    import Image from "lucide-svelte/icons/image";
+    import Video from "lucide-svelte/icons/video";
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
@@ -248,8 +248,8 @@
                             : undefined, //string
                         // gate_type: returned_issue.gate_type ? returned_issue.gate_type : undefined, //string
                         // gate_name: returned_issue.gate_name ? returned_issue.gate_name : undefined, //string
-                        gate_type: "Gate #" + index,
-                        gate_name: "Example",
+                        gate_type: t("Gate") + " #" + index,
+                        gate_name: t("Example"),
                         attachments: returned_issue.attachments,
                     } as HistoryIssue;
                 },
@@ -571,16 +571,18 @@
             .filter(Boolean)
             .reduce((acc, part, index, array) => {
                 if (index === array.length - 1 && array.length > 1) {
-                    return `${acc} and ${part}`;
+                    return `${acc} ${t("and")} ${part}`;
                 }
                 return acc ? `${acc}, ${part}` : part;
             }, "");
 
         if (!timeString) {
-            return "Calculating...";
+            return t("Calculating...");
         }
 
-        return isFuture ? `${timeString} left` : `${timeString} ago`;
+        return isFuture
+            ? `${timeString} ${t("left")}`
+            : `${timeString} ${t("ago")}`;
     }
 
     onMount(() => {
@@ -590,7 +592,7 @@
                 if (issue.estimated_date) {
                     timeAgo.push(calculateTimeAgo(issue.estimated_date));
                 } else {
-                    timeAgo.push("Not Set");
+                    timeAgo.push(t("Not Set"));
                 }
             }
             await tick();
@@ -620,7 +622,7 @@
             id="drawer-label"
             class="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
         >
-            <InfoCircleSolid class="w-5 h-5 me-2.5" />Leave a comment
+            <InfoCircleSolid class="w-5 h-5 me-2.5" />{t("Leave a comment")}
         </h5>
         <CloseButton
             on:click={() => (leaveCommentDrawerHidden = true)}
@@ -629,11 +631,13 @@
     </div>
     <form action="#" class="mb-6">
         <div class="mb-6">
-            <Label for="message" class="mb-2">Your message</Label>
+            <Label for="message" class="mb-2">{t("Your message")}</Label>
             <Textarea
                 id="message"
-                placeholder="Your message..."
-                value="This is an example note that was already put here for testing purposes..."
+                placeholder={t("Your message...")}
+                value={t(
+                    "This is an example note that was already put here for testing purposes...",
+                )}
                 rows={4}
                 name="message"
             />
@@ -642,7 +646,7 @@
             type="submit"
             class="w-full"
             on:click={() => (leaveCommentDrawerHidden = true)}
-            >Send message</Button
+            >{t("Send message")}</Button
         >
     </form>
 </Drawer>
@@ -669,7 +673,7 @@
             <h3
                 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400"
             >
-                Are you sure you want to delete this issue?
+                {t("Are you sure you want to delete this issue?")}
             </h3>
             <Button
                 onclick={async () => {
@@ -689,7 +693,7 @@
                 color="red"
                 class="me-2"
                 style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-                >Yes, I'm sure</Button
+                >{t("Yes, I'm sure")}</Button
             >
             <Button
                 onclick={() => {
@@ -698,7 +702,7 @@
                 }}
                 color="alternative"
                 style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-                >No, cancel</Button
+                >{t("No, cancel")}</Button
             >
         </div>
     </Modal>
@@ -916,7 +920,7 @@
                                     <CircleCheckBig class="h-5 w-5 mr-2" />
                                 {/if}
                                 <span class="font-semibold">
-                                    {selectedCategory.label}
+                                    {t(selectedCategory.label)}
                                 </span>
                             </div>
                             <ChevronDownOutline class="w-4 h-4 ms-1" />
@@ -979,7 +983,7 @@
                                         <span
                                             class="text-{category.color}-600 font-semibold"
                                         >
-                                            {category.label}
+                                            {t(category.label)}
                                         </span>
                                     </div>
                                 </DropdownItem>
@@ -1003,7 +1007,7 @@
                                     <X class="h-5 w-5 mr-2 text-red-500" />
                                 {/if}
                                 <span class="font-semibold">
-                                    {selectedFilter.label}
+                                    {t(selectedFilter.label)}
                                 </span>
                             </div>
                             <ChevronDownOutline class="w-4 h-4 ms-1" />
@@ -1043,7 +1047,7 @@
                                         <span
                                             class="text-{filter.color}-600 font-semibold"
                                         >
-                                            {filter.label}
+                                            {t(filter.label)}
                                         </span>
                                     </div>
                                 </DropdownItem>
@@ -1319,7 +1323,7 @@
                                                     ? ' hidden'
                                                     : ''}"
                                             >
-                                                Estimated Time:
+                                                {t("Estimated Time:")}
                                             </div>
                                             <span
                                                 class="text-xs font-bold absolute right-0 top-[-20px] border-b pb-1{issue.status ===
@@ -1449,8 +1453,10 @@
                                                             triggeredBy="#issue-{issue.id}-icon-{index}"
                                                             placement="top"
                                                             trigger="click"
-                                                            >{statuses[status]
-                                                                .label}</Tooltip
+                                                            >{t(
+                                                                statuses[status]
+                                                                    .label,
+                                                            )}</Tooltip
                                                         >
                                                     </div>
                                                 </div>
@@ -1496,7 +1502,10 @@
                                             <span
                                                 class={`text-lg font-semibold text-${statusKeys.indexOf(issue.status) >= 0 ? statuses[issue.status].color : "gray"}-500`}
                                             >
-                                                {statuses[issue.status].label} -
+                                                {t(
+                                                    statuses[issue.status]
+                                                        .label,
+                                                )} -
                                                 {calculateProgress(
                                                     statusKeys.indexOf(
                                                         issue.status,
@@ -1542,7 +1551,7 @@
                                                 : '0'});"
                                         >
                                             <Clock class="h-5 w-5 mr-2" />
-                                            Today
+                                            {t("Today")}
                                         </Button>
                                         <Button
                                             class="bg-red-600 hover:bg-red-800"
@@ -1572,7 +1581,7 @@
                                                 : '0'});"
                                         >
                                             <X class="h-5 w-5 mr-2" />
-                                            Clear
+                                            {t("Clear")}
                                         </Button>
                                     </div>
                                     <div
@@ -1580,6 +1589,7 @@
                                     >
                                         <Datepicker
                                             inline
+                                            locale={$selectedLanguage}
                                             autohide={false}
                                             value={issue.estimated_date
                                                 ? new Date(issue.estimated_date)
@@ -1642,9 +1652,9 @@
                                 >
                                     <Edit class="h-5 w-5 mr-2" />
                                     {#if editIssue === issue.id.toString()}
-                                        Exit Edit Mode
+                                        {t("Exit Edit Mode")}
                                     {:else}
-                                        Edit
+                                        {t("Edit")}
                                     {/if}
                                 </Button>
                                 <Button
@@ -1657,7 +1667,7 @@
                                         : '0'});"
                                 >
                                     <EnvelopeOpenOutline class="h-5 w-5 mr-2" />
-                                    Comment
+                                    {t("Comment")}
                                 </Button>
                                 {#if issue.status === "Back in service"}
                                     <Button
@@ -1669,7 +1679,7 @@
                                             : '0'});"
                                     >
                                         <Trash2 class="h-5 w-5 mr-2" />
-                                        Close Case
+                                        {t("Close Case")}
                                     </Button>
                                 {/if}
                                 <div

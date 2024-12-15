@@ -29,8 +29,8 @@
 
     let issues: PastIssue[] = Array.from({ length: 20 }, (_, i) => ({
         gse_id: i + 1,
-        worker_id: `Employee ${i + 1}`,
-        issue_description: `Issue description ${i + 1}`,
+        worker_id: `${t('Employee')} ${i + 1}`,
+        issue_description: `${t('Issue description')} ${i + 1}`,
         is_operable: i % 2 === 0 ? "Yes" : "No",
         date: Date.now(),
     }));

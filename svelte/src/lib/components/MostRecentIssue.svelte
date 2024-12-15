@@ -19,8 +19,8 @@
     import { langChecker, translations } from "$lib/locales";
     import Checkbox from "flowbite-svelte/Checkbox.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
-    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
-    import Copy from 'lucide-svelte/icons/copy'
+    import ArrowLeft from "lucide-svelte/icons/arrow-left";
+    import Copy from "lucide-svelte/icons/copy";
     import { reportUIStore } from "$lib/helpers/report-ui-store";
     import Button from "./ui/button/button.svelte";
     import { detailsDrawerStore } from "$lib/helpers/details";
@@ -31,7 +31,6 @@
         isIssuesHistoryHidden,
     } = homePageStore;
     const { issue_description } = reportUIStore;
-    const { hideGSEDetail } = detailsDrawerStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -69,11 +68,11 @@
             .filter(Boolean)
             .reduce((acc, part, index, array) => {
                 if (index === array.length - 1 && array.length > 1) {
-                    return `${acc} and ${part}`;
+                    return `${acc} ${t("and")} ${part}`;
                 }
                 return acc ? `${acc}, ${part}` : part;
             }, "");
-        return timeAgoOutput ? `${timeAgoOutput} ago` : "just now";
+        return timeAgoOutput ? `${timeAgoOutput} ${t("ago")}` : t("just now");
     }
 
     function handleAttachmentClick(url: string, type: "video" | "img") {

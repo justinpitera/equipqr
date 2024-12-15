@@ -31,16 +31,8 @@ export function langChecker(value: string) {
       'color: white; background-color: #f59e0b; padding: 3px 6px; border-radius: 3px;'
     );
     console.warn(
-      `%cINFO: 'bun translate' is now available!`,
+      `%cINFO: 'bun translate' Auto-translate your text and save it directly to your JSON file.`,
       'color: white; background-color: #34d399; padding: 3px 6px; border-radius: 3px;',
-    );
-    console.warn(
-      `%cAuto-translate your text and save it directly to your JSON file.`,
-      'color: #34d399; font-weight: bold;',
-    );
-    console.warn(
-      `%cIf a translation is missing, simply enter the text, and 'bun translate' will handle the translation and store it for future use.`,
-      'color: #34d399;',
     );
   }
 }

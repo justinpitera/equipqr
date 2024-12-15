@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
-    import Check from 'lucide-svelte/icons/check'
-    import X from 'lucide-svelte/icons/x'
+    import ArrowLeft from "lucide-svelte/icons/arrow-left";
+    import Check from "lucide-svelte/icons/check";
+    import X from "lucide-svelte/icons/x";
     import Table from "flowbite-svelte/Table.svelte";
     import TableBody from "flowbite-svelte/TableBody.svelte";
     import TableBodyCell from "flowbite-svelte/TableBodyCell.svelte";
@@ -215,9 +215,9 @@
         <Table>
             <TableHead>
                 <TableHeadCell>ID</TableHeadCell>
-                <TableHeadCell>Name</TableHeadCell>
-                <TableHeadCell>Status</TableHeadCell>
-                <TableHeadCell>Actions</TableHeadCell>
+                <TableHeadCell>{t("Name")}</TableHeadCell>
+                <TableHeadCell>{t("Status")}</TableHeadCell>
+                <TableHeadCell>{t("Actions")}</TableHeadCell>
             </TableHead>
             <TableBody tableBodyClass="divide-y">
                 {#each printQueue as item}
@@ -226,9 +226,9 @@
                         <TableBodyCell>{item.name}</TableBodyCell>
                         <TableBodyCell>
                             {#if item.status === "printing"}
-                                <Badge color="green">Printing</Badge>
+                                <Badge color="green">{t("Printing")}</Badge>
                             {:else}
-                                <Badge color="yellow">Pending</Badge>
+                                <Badge color="yellow">{"Pending"}</Badge>
                             {/if}
                         </TableBodyCell>
                         <TableBodyCell>
@@ -245,7 +245,10 @@
             </TableBody>
         </Table>
     {:else}
-        <div class="flex items-center justify-between mb-2" style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.3));">
+        <div
+            class="flex items-center justify-between mb-2"
+            style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.3));"
+        >
             <button
                 type="button"
                 onclick={() => {
@@ -294,24 +297,36 @@
                             >
                                 {vehicle.name}
                             </h4>
-                            <div class="space-y-2 text-sm text-gray-600 text-center">
+                            <div
+                                class="space-y-2 text-sm text-gray-600 text-center"
+                            >
                                 <p>
-                                    <strong>Manufacturer:</strong>
+                                    <strong>{t("Manufacturer:")}</strong>
                                     {vehicle.manufacturer}
                                 </p>
-                                <p><strong>Model:</strong> {vehicle.model}</p>
                                 <p>
-                                    <strong>Location:</strong>
+                                    <strong>{t("Model:")}</strong>
+                                    {vehicle.model}
+                                </p>
+                                <p>
+                                    <strong>{t("Location:")}</strong>
                                     {vehicle.location}
                                 </p>
-                                <p><strong>Status:</strong> {vehicle.status}</p>
                                 <p>
-                                    <strong>Fuel Type:</strong>
+                                    <strong>{t("Status:")}</strong>
+                                    {vehicle.status}
+                                </p>
+                                <p>
+                                    <strong>{t("Fuel Type:")}</strong>
                                     {vehicle.fuelType}
                                 </p>
                             </div>
-                            <div class="flex items-center mt-1 space-x-2 text-gray-600 text-center w-fit m-auto">
-                                <strong class="text-sm">Operational:</strong>
+                            <div
+                                class="flex items-center mt-1 space-x-2 text-gray-600 text-center w-fit m-auto"
+                            >
+                                <strong class="text-sm"
+                                    >{t("Operational:")}</strong
+                                >
                                 {#if vehicle.inUse}
                                     <Check class="text-green-500" />
                                 {:else}
@@ -325,8 +340,8 @@
                                 onclick={() => toggleSelection(vehicle.id)}
                             >
                                 {selectedVehicles.has(vehicle.id)
-                                    ? "Deselect"
-                                    : "Select"}
+                                    ? t("Deselect")
+                                    : t("Select")}
                             </Button>
                         </Card>
                     {/each}
@@ -342,27 +357,29 @@
                     color="green"
                     size="sm"
                     onclick={selectAll}
-                    class="px-4 py-2 rounded-full">Select All</Button
+                    class="px-4 py-2 rounded-full">{t("Select All")}</Button
                 >
                 <Button
                     color="red"
                     size="sm"
                     onclick={deselectAll}
-                    class="px-4 py-2 rounded-full">Deselect All</Button
+                    class="px-4 py-2 rounded-full">{t("Deselect All")}</Button
                 >
                 <Button
                     color="blue"
                     size="sm"
                     onclick={printNow}
-                    class="px-4 py-2 rounded-full">Print Now</Button
+                    class="px-4 py-2 rounded-full">{t("Print Now")}</Button
                 >
             </div>
-            <div class="flex justify-between items-center mt-2 max-w-[768px] m-auto">
+            <div
+                class="flex justify-between items-center mt-2 max-w-[768px] m-auto"
+            >
                 <span class="text-lg font-semibold text-blue-600"
-                    >{selectedVehicles.size} selected</span
+                    >{selectedVehicles.size} {t("selected")}</span
                 >
                 <Checkbox inline class="me-2" bind:checked={printEcoFriendly}
-                    >Eco Friendly</Checkbox
+                    >{t("Eco Friendly")}</Checkbox
                 >
             </div>
         </div>

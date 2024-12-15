@@ -9,10 +9,10 @@ class CancelReportStore {
 
 export const cancelReportStore = new CancelReportStore();
 
-let closeReportHidden = false;
-cancelReportStore.closeReportHidden.subscribe((value) => {
-    closeReportHidden = value;
-});
+// let closeReportHidden = false;
+// cancelReportStore.closeReportHidden.subscribe((value) => {
+//     closeReportHidden = value;
+// });
 
 export let transitionParamsTop = {
     y: -320,
