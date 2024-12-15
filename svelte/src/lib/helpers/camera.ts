@@ -101,9 +101,9 @@ export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) 
 	qrScannerStore.showLoader.set(true);
 	try {
 		homePageStore.startQRScanner.set(true);
-		if (!DEBUG_MODE) await destroyScanner();
-		const custom_gse_id = forceDebug || (await scanQRCode());
-		if (!DEBUG_MODE) requestAnimationFrame(destroyScanner);
+		if (!DEBUG_MODE) await destroyScanner(); // Before
+		const custom_gse_id = forceDebug || (await scanQRCode()); // Scanning...
+		if (!DEBUG_MODE) requestAnimationFrame(destroyScanner); // After
 		if (custom_gse_id) {
 			qrScannerStore.qrCodeData.set(custom_gse_id);
 			if (isCheckOnly) {

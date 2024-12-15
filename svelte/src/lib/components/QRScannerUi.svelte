@@ -25,6 +25,7 @@
         class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
         onclick={async () => {
             startQRScanner.set(false);
+            qrScannerStore.showLoader.set(false);
             await destroyScanner();
         }}
         onkeypress={async (event) => {
