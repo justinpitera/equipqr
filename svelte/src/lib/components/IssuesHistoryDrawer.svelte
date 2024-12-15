@@ -699,7 +699,7 @@
         </div>
     </Modal>
 
-    <div class="flex items-center justify-between border-b">
+    <div class="flex items-center justify-between border-b pb-2">
         <button
             type="button"
             onclick={() => {
@@ -813,10 +813,17 @@
             class="content-wrapper relative p-1{isLoading
                 ? ' opacity-55 pointer-events-none'
                 : ''}"
-            style="transform: translateY({translateY}px); background-color: transparent !important;"
+            style="transform: translateY({translateY}px); 
+            background: rgb(240, 240, 240);
+            background: linear-gradient(
+                180deg,
+                rgba(240, 240, 240, 1) 0%,
+                rgba(224, 224, 224, 1) 13%,
+                rgba(255, 255, 255, 1) 100%
+            );"
         >
             <!-- Search -->
-            <form class="pr-[5px] pt-2 max-w-[400px] m-auto md:mb-2">
+            <form class="pr-[5px] pl-[5px] pt-2 max-w-[400px] m-auto md:mb-2">
                 <div class="flex gap-2">
                     <Label for="per-page-select" class="sr-only"
                         >Issues Per Page</Label
@@ -1236,7 +1243,9 @@
                                                 .length}</Indicator
                                         >
                                     </div>
-                                    <div class="flex justify-center gap-3 mb-[25px] flex-wrap">
+                                    <div
+                                        class="flex justify-center gap-3 mb-[25px] flex-wrap"
+                                    >
                                         {#each issue.attachments as attachment}
                                             <Button
                                                 class="relative text-sm max-w-[80%]"
@@ -1765,16 +1774,7 @@
     }
     .refresher {
         height: calc(100svh - 24px - 40px - 10px);
-        background-position: 70%;
         position: relative;
-        background: rgb(240, 240, 240);
-        background: linear-gradient(
-            180deg,
-            rgba(240, 240, 240, 1) 0%,
-            rgba(224, 224, 224, 1) 13%,
-            rgba(255, 255, 255, 1) 100%
-        );
-        opacity: 0.8;
     }
 
     .scroll_up {

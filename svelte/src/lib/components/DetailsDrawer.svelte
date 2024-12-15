@@ -23,7 +23,8 @@
     import { langChecker, translations } from "$lib/locales";
     import { onDestroy } from "svelte";
     import { equipment } from "$lib/helpers/equipment";
-    const { selectedLanguage, darkModeEnabled } = homePageStore;
+    const { selectedLanguage, darkModeEnabled, isIssuesHistoryHidden } =
+        homePageStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -78,7 +79,10 @@
                 .checked,
         );
         if (typeof window !== "undefined")
-            localStorage.setItem("autoOpenIssueDetails", String($isAutoOpenIssueDetails));
+            localStorage.setItem(
+                "autoOpenIssueDetails",
+                String($isAutoOpenIssueDetails),
+            );
     };
 </script>
 
@@ -88,7 +92,7 @@
     placement="bottom"
     bind:hidden={$hideGSEDetail}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg"
+    class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
     transitionParams={transitionParamsBottom}
@@ -118,7 +122,6 @@
             </div>
         {/if}
     </div>
-
     <div class="mt-6">
         {#if $detectedGSE}
             <div class="flex items-center space-x-4">
@@ -361,9 +364,12 @@
             </div>
         {/if}
     </div>
-
     <div class="mt-6 flex justify-between">
-        <div class="flex items-center space-x-4">
+        <div
+            class="flex items-center space-x-4{$isIssuesHistoryHidden
+                ? ''
+                : ' hidden'}"
+        >
             <label for="toggle" class="text-lg">{t("Auto Open:")}</label>
             <Checkbox
                 id="toggle"

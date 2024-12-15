@@ -92,7 +92,7 @@
             <!-- Master: Account Management & Role Assignment -->
             {#if $userRole === "master"}
                 <div
-                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={toggleSettings}
                     onkeypress={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -123,7 +123,7 @@
                 </div>
 
                 <div
-                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={() => alert("WIP")}
                     onkeypress={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -157,7 +157,7 @@
             <!-- Mechanic: View Issues, Print QR Codes -->
             {#if $userRole === "mechanic" || $userRole === "master"}
                 <div
-                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={() => isIssuesHistoryHidden.set(false)}
                     onkeypress={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -190,7 +190,7 @@
                     </div>
                 </div>
                 <div
-                    class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
                     onclick={() => qrPrintDrawerHidden.set(false)}
                     onkeypress={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -226,7 +226,7 @@
 
             <!-- Report Failures -->
             <div
-                class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+                class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
                 onclick={startQRCode}
                 onkeypress={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
@@ -256,7 +256,7 @@
         {/if}
 
         <div
-            class="card p-4 pt-3 bg-white rounded-lg shadow-md"
+            class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
             onclick={toggleSettings}
             onkeypress={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
@@ -286,7 +286,7 @@
 
         <!-- Login -->
         <div
-            class="card p-4 pt-3 bg-white rounded-lg rounded-br-none rounded-bl-none shadow-md"
+            class="card w-full p-4 pt-3 bg-white rounded-lg rounded-br-none rounded-bl-none shadow-md"
             onclick={toggleLogin}
             onkeypress={(event) => {
                 if (event.key === "Enter" || event.key === " ") {

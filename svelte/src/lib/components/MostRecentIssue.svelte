@@ -22,8 +22,12 @@
     import { reportUIStore } from "$lib/helpers/report-ui-store";
     import Button from "./ui/button/button.svelte";
     import { detailsDrawerStore } from "$lib/helpers/details";
-    const { selectedLanguage, darkModeEnabled, isRecentIssueDrawerHidden } =
-        homePageStore;
+    const {
+        selectedLanguage,
+        darkModeEnabled,
+        isRecentIssueDrawerHidden,
+        isIssuesHistoryHidden,
+    } = homePageStore;
     const { issue_description } = reportUIStore;
     const { hideGSEDetail } = detailsDrawerStore;
 
@@ -276,7 +280,11 @@
             </p>
         {/if}
         <div class="mt-6 flex justify-between">
-            <div class="flex items-center space-x-4">
+            <div
+                class="flex items-center space-x-4{$isIssuesHistoryHidden
+                    ? ''
+                    : ' hidden'}"
+            >
                 <label for="toggle" class="text-lg">{t("Auto Open:")}</label>
                 <Checkbox
                     id="toggle"

@@ -25,7 +25,7 @@
         id="closeButton"
         type="button"
         onclick={closeFullscreen}
-        class="absolute select-none top-4 right-4 text-white text-3xl z-10"
+        class="absolute select-none top-4 right-4 text-red text-3xl z-10 shadow-lg"
         >×</button
     >
     <div

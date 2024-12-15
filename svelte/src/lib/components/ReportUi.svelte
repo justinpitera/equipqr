@@ -36,12 +36,8 @@
     fileUploadStore,
     handleFileChange,
   } from "$lib/helpers/file-upload";
-  const {
-    mediaFiles,
-    wiggleModeEnabled,
-    pressTimer,
-    isDragging,
-  } = fileUploadStore;
+  const { mediaFiles, wiggleModeEnabled, pressTimer, isDragging } =
+    fileUploadStore;
   // Cancel report utilities
   import { cancelReportStore } from "$lib/helpers/cancel-report";
   const { closeReportHidden } = cancelReportStore;
@@ -209,20 +205,8 @@
     : 'hidden'}"
 >
   <div class="popup-content bg-white w-full h-full">
-    {#if $detectedGSE?.most_recent_issue}
-      <Button
-        class="p-2 pr-3 pl-3 flex items-center fixed bottom-4 right-3"
-        onclick={() => {
-          isRecentIssueDrawerHidden.set(false);
-        }}
-        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-      >
-        <TriangleAlert class="w-5 h-5 mr-2" />
-        {t("Recent Issue")}
-      </Button>
-    {/if}
     <div
-      class="flex items-center justify-between p-4 md:p-6 max-w-[600px] m-auto"
+      class="flex items-center justify-between p-4 pb-2 md:p-6 max-w-[600px] m-auto"
     >
       <button
         type="button"
@@ -315,12 +299,26 @@
       onsubmit={handleReportFormSubmit}
     >
       <!-- Employee Name: -->
-      <label
-        for="employee-name"
-        class="block text-sm font-medium text-gray-700 mb-1"
-      >
-        {t("Employee Name")}
-      </label>
+      <div class="flex items-center justify-between mb-1 mt-2">
+        <label
+          for="employee-name"
+          class="block text-sm font-medium text-gray-700 mb-1"
+        >
+          {t("Employee Name")}
+        </label>
+        {#if $detectedGSE?.most_recent_issue}
+          <Button
+            class="p-2 pr-3 pl-3 flex items-center"
+            onclick={() => {
+              isRecentIssueDrawerHidden.set(false);
+            }}
+            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+          >
+            <TriangleAlert class="w-5 h-5 mr-2" />
+            {t("Recent Issue")}
+          </Button>
+        {/if}
+      </div>
       <input
         bind:value={$worker_id}
         id="employee-name"
