@@ -182,7 +182,8 @@
     "Page": "Page",
     "of": "of",
     "Total": "Total",
-    "Results": "Results"
+    "Results": "Results",
+    "Error: Assertion failed": "Error: Assertion failed"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -366,7 +367,8 @@
     "Page": "Side",
     "of": "af",
     "Total": "Total",
-    "Results": "Resultater"
+    "Results": "Resultater",
+    "Error: Assertion failed": "Fejl: Påstand mislykkedes"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -550,7 +552,8 @@
     "Page": "Side",
     "of": "av",
     "Total": "Total",
-    "Results": "Resultater"
+    "Results": "Resultater",
+    "Error: Assertion failed": "Feil: Påstanden mislyktes"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -735,6 +738,7 @@
     "Page": "Sida",
     "of": "av",
     "Total": "Total",
-    "Results": "Resultat"
+    "Results": "Resultat",
+    "Error: Assertion failed": "Fel: Påståendet misslyckades"
   }
 }
