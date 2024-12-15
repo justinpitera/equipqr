@@ -4,8 +4,8 @@
     import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
-    const { statisticsDrawerHidden, selectedLanguage } = homePageStore;
-    import { onMount } from "svelte";
+    const { statisticsDrawerHidden, selectedLanguage, darkModeEnabled } =
+        homePageStore;
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
         langChecker(key);
@@ -197,7 +197,8 @@
         id="statistics-drawer"
         placement="bottom"
         backdrop={true}
-        class="drawer-box p-6 bg-gray-100 fixed inset-0 z-50"
+        class="drawer-box p-6 {$darkModeEnabled ? 'bg-gray-500 text-white' : 'bg-gray-100'} fixed inset-0 z-50"
+        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         width="100"
         bind:hidden={$statisticsDrawerHidden}
         activateClickOutside={false}
@@ -216,10 +217,12 @@
                     statisticsDrawerHidden.set(true);
                 }}
                 class="p-2 hover:bg-gray-200 rounded-md"
+        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 <ArrowLeft class="h-6 w-6 text-gray-800" />
             </button>
-            <h2 class="text-xl font-bold text-gray-800 mr-2">
+            <h2 class="text-xl font-bold text-gray-800 mr-2"
+        style="filter: invert({$darkModeEnabled ? '1' : '0'});">
                 {t("Statistics")}
             </h2>
         </div>
