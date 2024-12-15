@@ -100,9 +100,9 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 			method: 'POST',
 			body: requestData.serializeBinary(),
 			signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/protobuf'
-            }
+			headers: {
+				'Content-Type': 'application/protobuf'
+			}
 		});
 		clearTimeout(timeout);
 		const responseData = await request.arrayBuffer();
@@ -128,38 +128,38 @@ export async function submitIssue(formData: FormData, loadingFunctionBefore: () 
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 240s'), 240000);
-        const gseId = formData.get("gse_id")?.toString() || undefined;
-        const workerId = formData.get("worker_id")?.toString() || undefined;
-        const issueDescription = formData.get("issue_description")?.toString() || undefined;
-        const isOperable = formData.get("is_operable")?.toString() || undefined;
-        const gateType = formData.get("gate_type")?.toString() || undefined;
-        const gateName = formData.get("gate_name")?.toString() || undefined;
-        const attachments: Uint8Array[] = [];
-        const fileAttachments = formData.getAll("attachments");
-        for(const attachment of fileAttachments){
-          if (attachment instanceof File) {
-            const arrayBuffer = await attachment.arrayBuffer();
-              attachments.push(new Uint8Array(arrayBuffer));
-           }
-        }
-        const request = new SubmitIssueRequest({
-            gse_id: gseId,
-            worker_id: workerId,
-            issue_description: issueDescription,
-            is_operable: isOperable,
-            attachments: attachments,
-            gate_type: gateType,
-            gate_name: gateName,
-        });
-        const requestBytes = request.serializeBinary();
+		const gseId = formData.get("gse_id")?.toString() || undefined;
+		const workerId = formData.get("worker_id")?.toString() || undefined;
+		const issueDescription = formData.get("issue_description")?.toString() || undefined;
+		const isOperable = formData.get("is_operable")?.toString() || undefined;
+		const gateType = formData.get("gate_type")?.toString() || undefined;
+		const gateName = formData.get("gate_name")?.toString() || undefined;
+		const attachments: Uint8Array[] = [];
+		const fileAttachments = formData.getAll("attachments");
+		for (const attachment of fileAttachments) {
+			if (attachment instanceof File) {
+				const arrayBuffer = await attachment.arrayBuffer();
+				attachments.push(new Uint8Array(arrayBuffer));
+			}
+		}
+		const request = new SubmitIssueRequest({
+			gse_id: gseId,
+			worker_id: workerId,
+			issue_description: issueDescription,
+			is_operable: isOperable,
+			attachments: attachments,
+			gate_type: gateType,
+			gate_name: gateName,
+		});
+		const requestBytes = request.serializeBinary();
 		console.log(request.toObject())
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/submit`, {
 			method: "POST",
-            body: requestBytes,
+			body: requestBytes,
 			signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/protobuf'
-            }
+			headers: {
+				'Content-Type': 'application/protobuf'
+			}
 		});
 		clearTimeout(timeout);
 		if (response.ok) {
@@ -207,19 +207,17 @@ export async function getIssues(page: number | undefined, issuesPerPage: number 
 		requestData.page_size = issuesPerPage ?? 10;
 		const response = await fetch(`${BACKEND_URL}/api/gse/issues/fetch`, {
 			method: "POST",
-            // body: requestData.serializeBinary(),
-			body: JSON.stringify({
-				page: page ?? 1,
-				page_size: issuesPerPage ?? 10,
-			}),
+			body: requestData.serializeBinary(),
 			signal: controller.signal,
-            // headers: {
-            //   'Content-Type': 'application/protobuf'
-            // }
+			headers: {
+				'Content-Type': 'application/protobuf'
+			}
 		});
 		clearTimeout(timeout);
 		if (response.ok) {
-			const data = await response.json();
+			const responseData = await response.arrayBuffer();
+			const responseBytes = new Uint8Array(responseData);
+			const data = FetchIssuesResponse.deserialize(responseBytes);
 			if (debug_routes) console.log("getIssues", data)
 			loadingFunctionAfter();
 			return data;
@@ -241,11 +239,11 @@ export async function setLanguage(language: string): Promise<{ token: string } |
 		requestData.language = language;
 		const response = await fetch(`${BACKEND_URL}/api/lang`, {
 			method: 'POST',
-            body: requestData.serializeBinary(),
+			body: requestData.serializeBinary(),
 			signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/protobuf'
-            }
+			headers: {
+				'Content-Type': 'application/protobuf'
+			}
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
@@ -273,11 +271,11 @@ export async function login(email: string): Promise<{ token: string } | undefine
 		requestData.email = email;
 		const response = await fetch(`${BACKEND_URL}/api/auth`, {
 			method: 'POST',
-            body: requestData.serializeBinary(),
+			body: requestData.serializeBinary(),
 			signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/protobuf'
-            }
+			headers: {
+				'Content-Type': 'application/protobuf'
+			}
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
@@ -305,11 +303,11 @@ export async function delete_issue(ids: string[]) {
 		requestData.ids = ids;
 		const response = await fetch(`${BACKEND_URL}/api/issues/delete`, {
 			method: 'POST',
-            body: requestData.serializeBinary(),
+			body: requestData.serializeBinary(),
 			signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/protobuf'
-            }
+			headers: {
+				'Content-Type': 'application/protobuf'
+			}
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
@@ -364,11 +362,11 @@ export async function get_gates(airport_icao_code: string) {
 		requestData.icao_code = airport_icao_code;
 		const response = await fetch(`${BACKEND_URL}/api/locations/fetch`, {
 			method: 'POST',
-            body: requestData.serializeBinary(),
+			body: requestData.serializeBinary(),
 			signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/protobuf'
-            }
+			headers: {
+				'Content-Type': 'application/protobuf'
+			}
 		});
 		clearTimeout(timeout);
 		if (!response.ok) throw new Error(response.statusText);
