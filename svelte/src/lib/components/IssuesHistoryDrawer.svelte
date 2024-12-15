@@ -59,6 +59,8 @@
     import { detailsDrawerStore } from "$lib/helpers/details";
     const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled, issues } =
         homePageStore;
+    const { showPopup } =
+        qrScannerStore;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -202,9 +204,11 @@
                 "Error",
                 t("Could not find any information for") + " " + issue.gse_id,
                 "error",
+                5000,
+                true
             );
             qrScannerStore.detectedGSE.set(null);
-            cancelReportStore.closeReportHidden.set(false);
+            if ($showPopup) cancelReportStore.closeReportHidden.set(false);
             qrScannerStore.qrCodeData.set("");
         }
     }
@@ -656,7 +660,7 @@
     placement="right"
     bind:hidden={$isIssuesHistoryHidden}
     backdrop={true}
-    class="drawer-box p-4 md:p-6 md:pt-4 bg-white rounded-lg shadow-lg overflow-y-hidden"
+    class="drawer-box p-4 md:p-6 md:pt-4 bg-white rounded-lg md:rounded-none shadow-lg overflow-y-hidden"
     width="w-full"
     activateClickOutside={false}
     transitionParams={{

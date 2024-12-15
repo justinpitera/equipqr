@@ -82,7 +82,7 @@
     placement="right"
     bind:hidden={$isPastIssuesForSpecificIDHidden}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-white rounded-lg shadow-lg"
+    class="drawer-box p-6 md:p-8 bg-white rounded-lg md:rounded-none shadow-lg"
     width="w-80"
     transitionParams={{
         duration: 0,

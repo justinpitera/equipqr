@@ -33,7 +33,7 @@
         statisticsDrawerHidden,
     } = homePageStore;
 
-    const { isAutoOpenMostRecentIssue, isAutoOpenIssueDetails } =
+    const { isAutoOpenMostRecentIssue, isAutoOpenIssueDetails, showPopup } =
         qrScannerStore;
 
     function t(key: string): string {
@@ -50,9 +50,41 @@
         isSettingsHidden.set(!$isSettingsHidden);
     };
 
-    const checkCodeManual = () => {};
+    const checkCodeManual = async () => {
+        const result = prompt(t("Check GSE ID"));
+        if (result) {
+            qrScannerStore.qrCodeData.set(result);
+            try {
+                const gseDetails = await getGSEDetails(result);
+                if (gseDetails?.gse_id) {
+                    qrScannerStore.detectedGSE.set(gseDetails);
+                    if (gseDetails.error && gseDetails.details) {
+                        notify(gseDetails.error, gseDetails.details, "error");
+                    } else {
+                        detailsDrawerStore.hideGSEDetail.set(false);
+                        if (gseDetails.most_recent_issue)
+                            homePageStore.isRecentIssueDrawerHidden.set(false);
+                    }
+                } else {
+                    notify(
+                        "Error",
+                        t("Could not find any information for") + " " + result,
+                        "error",
+                        5000,
+                        true,
+                    );
+                    qrScannerStore.detectedGSE.set(null);
+                }
+            } catch (e) {
+                qrScannerStore.detectedGSE.set(null);
+                cancelReportStore.closeReportHidden.set(false);
+            }
+        }
+    };
 
-    const checkCodeQR = () => {};
+    const checkCodeQR = () => {
+        loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined, true);
+    };
 
     const startQRCode = () => {
         loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
@@ -80,9 +112,12 @@
                         "Error",
                         t("Could not find any information for") + " " + result,
                         "error",
+                        5000,
+                        true,
                     );
                     qrScannerStore.detectedGSE.set(null);
-                    cancelReportStore.closeReportHidden.set(false);
+                    if ($showPopup)
+                        cancelReportStore.closeReportHidden.set(false);
                 }
             } catch (e) {
                 qrScannerStore.detectedGSE.set(null);
@@ -156,142 +191,6 @@
 
     <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5 justify-items-center">
         {#if $isLoggedIn}
-            <!-- Master: Account Management & Role Assignment -->
-            {#if $userRole === "master"}
-                <!-- Statistics Management -->
-                <div
-                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => statisticsDrawerHidden.set(false)}
-                    onkeypress={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            statisticsDrawerHidden.set(false);
-                        }
-                    }}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <ChartBarStacked
-                            class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("Statistics")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "View key metrics and performance data. Monitor progress and identify trends.",
-                            )}
-                        </div>
-                    </div>
-                </div>
-                <!-- Account Management -->
-                <div
-                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => alert("WIP")}
-                    onkeypress={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            alert("WIP");
-                        }
-                    }}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <UserCog
-                            class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("Account Management")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "Manage user accounts and assign roles to individuals.",
-                            )}
-                        </div>
-                    </div>
-                </div>
-            {/if}
-
-            <!-- Mechanic: View Issues, Print QR Codes -->
-            {#if $userRole === "mechanic" || $userRole === "master"}
-                <div
-                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => isIssuesHistoryHidden.set(false)}
-                    onkeypress={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            isIssuesHistoryHidden.set(false);
-                        }
-                    }}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <FileText
-                            class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("View Issue History")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "Track and resolve past issues with detailed logs.",
-                            )}
-                            {#if $userRole === "master"}
-                                <b>{" "}{t("(Visible to Mechanics)")}</b>
-                            {/if}
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => qrPrintDrawerHidden.set(false)}
-                    onkeypress={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                            qrPrintDrawerHidden.set(false);
-                        }
-                    }}
-                    tabindex="0"
-                    role="button"
-                >
-                    <div class="card-content">
-                        <Camera
-                            class="w-12 h-12 mx-auto text-green-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
-                        />
-                        <div class="card-title mt-3 text-xl font-semibold">
-                            {t("Print QR Codes")}
-                        </div>
-                        <div
-                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
-                        >
-                            {t(
-                                "View and print QR codes for items to manage their information.",
-                            )}
-                            {#if $userRole === "master"}
-                                <b>{" "}{t("(Visible to Mechanics)")}</b>
-                            {/if}
-                        </div>
-                    </div>
-                </div>
-            {/if}
-
             <!-- Report QR Failures -->
             <div
                 class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
@@ -410,6 +309,142 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Mechanic: View Issues, Print QR Codes -->
+            {#if $userRole === "mechanic" || $userRole === "master"}
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => isIssuesHistoryHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            isIssuesHistoryHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <FileText
+                            class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("View Issue History")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Track and resolve past issues with detailed logs.",
+                            )}
+                            {#if $userRole === "master"}
+                                <b>{" "}{t("(Visible to Mechanics)")}</b>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => qrPrintDrawerHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            qrPrintDrawerHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Camera
+                            class="w-12 h-12 mx-auto text-green-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Print QR Codes")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "View and print QR codes for items to manage their information.",
+                            )}
+                            {#if $userRole === "master"}
+                                <b>{" "}{t("(Visible to Mechanics)")}</b>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
+            <!-- Master: Account Management & Role Assignment -->
+            {#if $userRole === "master"}
+                <!-- Statistics Management -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => statisticsDrawerHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            statisticsDrawerHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <ChartBarStacked
+                            class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Statistics")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "View key metrics and performance data. Monitor progress and identify trends.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+                <!-- Account Management -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => alert("WIP")}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            alert("WIP");
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <UserCog
+                            class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            {t("Account Management")}
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            {t(
+                                "Manage user accounts and assign roles to individuals.",
+                            )}
+                        </div>
+                    </div>
+                </div>
+            {/if}
         {/if}
 
         <div

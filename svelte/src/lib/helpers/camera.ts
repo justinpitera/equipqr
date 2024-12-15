@@ -33,6 +33,11 @@ qrScannerStore.isAutoOpenIssueDetails.subscribe((value) => {
 	isAutoOpenIssueDetails = value;
 });
 
+let showPopup: boolean = false;
+qrScannerStore.showPopup.subscribe((value) => {
+	showPopup = value;
+});
+
 let isAutoOpenMostRecentIssue: boolean = typeof window !== "undefined" ? localStorage?.getItem("autoOpenMostRecentIssue") === "true" : false;
 qrScannerStore.isAutoOpenMostRecentIssue.subscribe((value) => {
 	isAutoOpenMostRecentIssue = value;
@@ -91,16 +96,20 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	return { hasCamera: videoInputs.length > 0, hasTorch: false, track: lastTrack, stream: lastStream };
 };
 
-export async function loadQRScanner(forceDebug?: string) {
+export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) {
+	qrScannerStore.qrCodeData.set('');
 	qrScannerStore.showLoader.set(true);
 	homePageStore.startQRScanner.set(true);
 	if (!DEBUG_MODE) await destroyScanner();
 	const custom_gse_id = forceDebug || (await scanQRCode());
 	if (!DEBUG_MODE) requestAnimationFrame(destroyScanner);
 	if (custom_gse_id) {
-		// homePageStore.startQRScanner.set(false); // Goes back to homepage
 		qrScannerStore.qrCodeData.set(custom_gse_id);
-		qrScannerStore.showPopup.set(true);
+		if (isCheckOnly) {
+			homePageStore.startQRScanner.set(false); // Goes back to homepage
+		} else {
+			qrScannerStore.showPopup.set(true);
+		}
 		document.getElementById("qrScanner")?.classList.add("hidden");
 		const gseDetails = await getGSEDetails(custom_gse_id);
 		if (gseDetails?.gse_id) {
@@ -108,13 +117,13 @@ export async function loadQRScanner(forceDebug?: string) {
 			if (gseDetails.error && gseDetails.details) {
 				notify(gseDetails.error, gseDetails.details, "error")
 			} else {
-				if (isAutoOpenIssueDetails) detailsDrawerStore.hideGSEDetail.set(false);
-				if (isAutoOpenMostRecentIssue) homePageStore.isRecentIssueDrawerHidden.set(false);
+				if (isAutoOpenIssueDetails || isCheckOnly) detailsDrawerStore.hideGSEDetail.set(false);
+				if (gseDetails.most_recent_issue && (isAutoOpenMostRecentIssue || isCheckOnly)) homePageStore.isRecentIssueDrawerHidden.set(false);
 			}
 		} else {
-			notify("Error", t_global("Could not find any information for") + ' ' + custom_gse_id, "error");
+			notify("Error", t_global("Could not find any information for") + ' ' + custom_gse_id, "error", 5000, true);
 			qrScannerStore.detectedGSE.set(null);
-			cancelReportStore.closeReportHidden.set(false);
+			if (showPopup) cancelReportStore.closeReportHidden.set(false);
 		}
 	} else {
 		qrScannerStore.showPopup.set(false);

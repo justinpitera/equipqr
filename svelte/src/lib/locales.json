@@ -277,7 +277,8 @@
     "Check Code (Manual)": "Check Code (Manual)",
     "Scan a QR code to get information about a vehicle or part.": "Scan a QR code to get information about a vehicle or part.",
     "Check Code (QR)": "Check Code (QR)",
-    "Enter a code manually to get information about a vehicle or part.": "Enter a code manually to get information about a vehicle or part."
+    "Enter a code manually to get information about a vehicle or part.": "Enter a code manually to get information about a vehicle or part.",
+    "Check GSE ID": "Check GSE ID"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -556,7 +557,8 @@
     "Check Code (Manual)": "Kontroller kode (manuel)",
     "Scan a QR code to get information about a vehicle or part.": "Scan en QR -kode for at få information om et køretøj eller en del.",
     "Check Code (QR)": "Kontroller kode (QR)",
-    "Enter a code manually to get information about a vehicle or part.": "Indtast en kode manuelt for at få oplysninger om et køretøj eller en del."
+    "Enter a code manually to get information about a vehicle or part.": "Indtast en kode manuelt for at få oplysninger om et køretøj eller en del.",
+    "Check GSE ID": "Kontroller GSE ID"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -835,7 +837,8 @@
     "Check Code (Manual)": "Kontroller kode (manuell)",
     "Scan a QR code to get information about a vehicle or part.": "Skann en QR -kode for å få informasjon om et kjøretøy eller en del.",
     "Check Code (QR)": "Sjekk kode (QR)",
-    "Enter a code manually to get information about a vehicle or part.": "Skriv inn en kode manuelt for å få informasjon om et kjøretøy eller en del."
+    "Enter a code manually to get information about a vehicle or part.": "Skriv inn en kode manuelt for å få informasjon om et kjøretøy eller en del.",
+    "Check GSE ID": "Sjekk GSE ID"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -1115,6 +1118,7 @@
     "Check Code (Manual)": "Kontrollkod (manual)",
     "Scan a QR code to get information about a vehicle or part.": "Skanna en QR -kod för att få information om ett fordon eller en del.",
     "Check Code (QR)": "Kontrollkod (QR)",
-    "Enter a code manually to get information about a vehicle or part.": "Ange en kod manuellt för att få information om ett fordon eller en del."
+    "Enter a code manually to get information about a vehicle or part.": "Ange en kod manuellt för att få information om ett fordon eller en del.",
+    "Check GSE ID": "Kontrollera GSE -ID"
   }
 }
