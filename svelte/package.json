@@ -33,7 +33,7 @@
     "google-protobuf": "^3.21.4",
     "jsqr": "^1.4.0",
     "readline-sync": "^1.4.10",
-    "svelte": "^5.12.0",
+    "svelte": "^5.14.0",
     "svelte-check": "^4.1.1",
     "svelte-sonner": "^0.3.28",
     "svelte-toasts": "^1.1.2",
