@@ -4,7 +4,7 @@ import { notify } from "$lib/helpers/notify";
 import { getGSEDetails } from "./server-requests";
 import { DEBUG_MODE } from "$lib/config";
 import store from '$lib/store';
-import { t_global } from "$lib/locales";
+import { t } from "$lib/locales";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
 let torchInfo: ITorchInfo = { hasCamera: false, hasTorch: false };
@@ -104,18 +104,18 @@ export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) 
 					if (gseDetails.most_recent_issue && (isAutoOpenMostRecentIssue || isCheckOnly)) store.isRecentIssueDrawerHidden.set(false);
 				}
 			} else {
-				notify("Error", t_global("Could not find any information for") + ' ' + custom_gse_id, "error", 5000, true);
+				notify("Error", t("Could not find any information for") + ' ' + custom_gse_id, "error", 5000, true);
 				store.detectedGSE.set(null);
 				if (showPopup) store.closeReportHidden.set(false);
 			}
 		} else {
 			store.showPopup.set(false);
 			store.detectedGSE.set(null);
-			store.qrCodeData.set(t_global("Unable to read QR code."));
+			store.qrCodeData.set(t("Unable to read QR code."));
 			const loadingMessage = document.getElementById("loadingMessage");
 			if (loadingMessage) {
 				loadingMessage.hidden = false;
-				loadingMessage.textContent = '🎥 ' + t_global('Unable to access video stream (please make sure you have a webcam');
+				loadingMessage.textContent = '🎥 ' + t('Unable to access video stream (please make sure you have a webcam');
 			}
 		}
 	} catch (e) {
@@ -162,7 +162,7 @@ export async function destroyScanner() {
 	const loadingMessage = document.getElementById("loadingMessage");
 	if (loadingMessage) {
 		loadingMessage.hidden = false;
-		loadingMessage.textContent = "🎥 " + t_global("Loading Camera...");
+		loadingMessage.textContent = "🎥 " + t("Loading Camera...");
 	}
 
 	const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });

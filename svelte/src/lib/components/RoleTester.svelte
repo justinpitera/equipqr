@@ -1,14 +1,8 @@
 <script lang="ts">
     import { notify } from "$lib/helpers/notify";
-    import { langChecker, translations } from "$lib/locales";
+    import { t } from "$lib/locales";
     import store from "$lib/store";
-    const { isAuthDrawerHidden, selectedLanguage, userRole } = store;
-
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
+    const { isAuthDrawerHidden, userRole } = store;
 
     const setRole = (role: string) => {
         userRole.set(role);

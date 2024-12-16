@@ -2,18 +2,9 @@
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
     import Button from "flowbite-svelte/Button.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
-    import { equipment } from "$lib/helpers/equipment";
-    import { langChecker, translations } from "$lib/locales";
-    import { onMount } from "svelte";
+    import { t } from "$lib/locales";
     import store from "$lib/store";
-    const { selectedLanguage, addVehiclesDrawerHidden, darkModeEnabled } =
-        store;
-
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
+    const { addVehiclesDrawerHidden, darkModeEnabled } = store;
 
     let newGSE = {
         gse_type: "",
@@ -33,19 +24,9 @@
         "Los Angeles",
         "San Francisco",
         "Chicago",
-    ]; // Prefilled location options
+    ];
     let filteredItems: string[] = [...items];
-    let isOpen = false;
     let inputValue = "";
-    let selectedIndex = -1;
-    let gseTypes: string[] = [];
-    let vehicles: {
-        id: string;
-        gse_type: string;
-        manufacturer?: string;
-        model?: string;
-        image: string;
-    }[] = [];
 
     $: if (inputValue === "") {
         filteredItems = [...items];
@@ -57,28 +38,6 @@
 
     function handleInput(event: Event) {
         inputValue = (event.target as HTMLInputElement).value;
-        isOpen = true;
-        selectedIndex = -1;
-    }
-
-    function setupVehicles() {
-        vehicles = Object.entries(equipment).map(([key, image]) => {
-            gseTypes.push(key);
-            let manufacturer = "";
-            if (key.includes("tractor")) {
-                manufacturer = "Kalmar";
-            } else if (key.includes("unit")) {
-                manufacturer = "Guinault";
-            } else if (key.includes("loader")) {
-                manufacturer = "TLD";
-            }
-            return {
-                id: key,
-                gse_type: key,
-                manufacturer: manufacturer,
-                image: image,
-            };
-        });
     }
 
     function handleSubmit() {
@@ -96,10 +55,6 @@
             lift_inspection_expiry: "",
         };
     }
-
-    onMount(() => {
-        setupVehicles();
-    });
 </script>
 
 <Drawer

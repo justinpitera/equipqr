@@ -31,7 +31,7 @@
   import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
   import { notify } from "$lib/helpers/notify";
   import { build_gate_options } from "$lib/helpers/report-ui-store";
-  import { langChecker, translations } from "$lib/locales";
+  import { t } from "$lib/locales";
   import store from "$lib/store";
   const {
     worker_id,
@@ -42,7 +42,6 @@
     gates,
     is_gate_type_dropdown_open,
     hideGSEDetail,
-    selectedLanguage,
     isPastIssuesForSpecificIDHidden,
     darkModeEnabled,
     hideTip,
@@ -57,12 +56,6 @@
     pressTimer,
     isDragging,
   } = store;
-
-  function t(key: string): string {
-    const langTranslations = translations[$selectedLanguage];
-    langChecker(key);
-    return langTranslations?.[key] || key;
-  }
 
   async function handleReportFormSubmit(event: Event): Promise<void> {
     event.preventDefault();

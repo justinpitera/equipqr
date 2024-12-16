@@ -7,24 +7,17 @@
   import { disableContextMenu } from "$lib/helpers/basics";
   import { loadQRScanner } from "$lib/helpers/camera";
   import { DEBUG_MODE } from "$lib/config";
-  import { langChecker, translations } from "$lib/locales";
   import { onDestroy } from "svelte";
   import { flyTransitionParamsTop } from "$lib/helpers/fly";
   import store from "$lib/store";
+  import { t } from "$lib/locales";
   const {
-    selectedLanguage,
     darkModeEnabled,
     startQRScanner,
     closeReportHidden,
     qrCodeData,
     showPopup,
   } = store;
-
-  function t(key: string): string {
-    const langTranslations = translations[$selectedLanguage];
-    langChecker(key);
-    return langTranslations?.[key] || key;
-  }
 
   onDestroy(() => {
     closeReportHidden.set(true);

@@ -1,6 +1,6 @@
 import { BACKEND_URL } from "$lib/config";
 import { notify } from "$lib/helpers/notify";
-import { t_global } from "$lib/locales";
+import { t } from "$lib/locales";
 import { requests } from '$lib/prototypes/requests/v1/requests';
 const {
 	// /api/health/status
@@ -15,9 +15,6 @@ const {
 	// /api/gse/issues/fetch
 	FetchIssuesRequest,
 	FetchIssuesResponse,
-	// /api/lang
-	SetLanguageRequest,
-	SetLanguageResponse,
 	// /api/auth
 	LoginRequest,
 	LoginResponse,
@@ -74,8 +71,8 @@ export async function getAppVersion() {
 			);
 		}
 		notify(
-			t_global("Aviation Failure Reporting"),
-			`${t_global('Version:')} ${response.version}\n${t_global('Status:')} ${t_global(response.status)}`,
+			t("Aviation Failure Reporting"),
+			`${t('Version:')} ${response.version}\n${t('Status:')} ${t(response.status)}`,
 			response.status === "healthy" ? "success" : "error",
 			5000,
 			true
@@ -86,7 +83,7 @@ export async function getAppVersion() {
 			"color: red; font-size: 18px; font-weight: bold;",
 			e,
 		);
-		notify(t_global("Error fetching status"), `${t_global('Failed to get app version:')} ${t_global(`${e}`)}`, "error",
+		notify(t("Error fetching status"), `${t('Failed to get app version:')} ${t(`${e}`)}`, "error",
 			5000,
 			true);
 	}
@@ -230,38 +227,6 @@ export async function getIssues(page: number | undefined, issuesPerPage: number 
 		console.error("An error occurred:", error);
 	}
 	loadingFunctionAfter();
-	return undefined;
-}
-
-export async function setLanguage(language: string): Promise<{ token: string } | undefined> {
-	try {
-		const controller = new AbortController();
-		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
-		const requestData = new SetLanguageRequest();
-		requestData.language = language;
-		const response = await fetch(`${BACKEND_URL}/api/lang`, {
-			method: 'POST',
-			body: requestData.serializeBinary(),
-			signal: controller.signal,
-			headers: {
-				'Content-Type': 'application/protobuf'
-			}
-		});
-		clearTimeout(timeout);
-		if (!response.ok) throw new Error(response.statusText);
-		const responseData = await response.arrayBuffer();
-		const responseBytes = new Uint8Array(responseData);
-		const data = SetLanguageResponse.deserialize(responseBytes);
-		if (debug_routes) console.log("setLanguage", data)
-		return data
-	} catch (e) {
-		console.error(
-			"%cError setting language",
-			"color: red; font-size: 18px; font-weight: bold;",
-			e,
-		);
-		notify("Error setting language", `Failed to set language: ${e}`, "error");
-	}
 	return undefined;
 }
 

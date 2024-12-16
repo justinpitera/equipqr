@@ -2,7 +2,7 @@
     import { onDestroy, onMount, tick } from "svelte";
     import { disableContextMenu } from "$lib/helpers/basics";
     import { BACKEND_URL, DEBUG_MODE } from "$lib/config";
-    import { langChecker, translations } from "$lib/locales";
+    import { t } from "$lib/locales";
     import Checkbox from "flowbite-svelte/Checkbox.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
@@ -14,7 +14,6 @@
         fullscreenImage,
         fullscreenVideo,
         isFullScreenMode,
-        selectedLanguage,
         darkModeEnabled,
         isRecentIssueDrawerHidden,
         detectedGSE,
@@ -22,12 +21,6 @@
         showPopup,
         issue_description,
     } = store;
-
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
 
     let interval: NodeJS.Timeout;
     let timeAgo = "";

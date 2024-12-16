@@ -8,7 +8,7 @@
         build_gate_options,
         gate_types,
     } from "$lib/helpers/report-ui-store";
-    import { langChecker, translations } from "$lib/locales";
+    import { t } from "$lib/locales";
     import { onDestroy } from "svelte";
     import store from "$lib/store";
     const {
@@ -17,15 +17,8 @@
         selected_gate_type,
         selected_gate_name,
         isPastIssuesForSpecificIDHidden,
-        selectedLanguage,
         darkModeEnabled,
     } = store;
-
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
 
     let issues: PastIssue[] = Array.from({ length: 20 }, (_, i) => ({
         gse_id: i + 1,

@@ -1,6 +1,5 @@
 import locales from '$lib/locales.json'
 import { defaultLang } from './config';
-import store from '$lib/store';
 
 export type LanguageKeys = "en" | "da" | "no" | "sv";
 export const languages = [
@@ -11,13 +10,8 @@ export const languages = [
 ];
 export type Translations = Record<LanguageKeys, Record<string, string>>;
 
-let selectedLanguage: LanguageKeys = (typeof window !== 'undefined' ? (localStorage.getItem('savedLang') || defaultLang) : defaultLang) as LanguageKeys;
-store.selectedLanguage.subscribe((value) => {
-  selectedLanguage = value;
-});
-
-export function t_global(key: string): string {
-  const langTranslations = translations[selectedLanguage];
+export function t(key: string): string {
+  const langTranslations = translations[(typeof window !== 'undefined' ? (localStorage.getItem('savedLang') || defaultLang) : defaultLang) as LanguageKeys];
   langChecker(key);
   return langTranslations?.[key] || key;
 }

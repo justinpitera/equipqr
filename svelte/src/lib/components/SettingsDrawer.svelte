@@ -7,9 +7,8 @@
     import Button from "flowbite-svelte/Button.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import { notify } from "$lib/helpers/notify";
-    import { langChecker, languages, translations } from "$lib/locales";
+    import { t, languages } from "$lib/locales";
     import { defaultLang } from "$lib/config";
-    import { setLanguage } from "$lib/helpers/server-requests";
     import { onDestroy } from "svelte";
     import { flyTransitionParamsBottom } from "$lib/helpers/fly";
     import store from "$lib/store";
@@ -18,7 +17,6 @@
         notificationsEnabled,
         darkModeEnabled,
         selectedLanguage,
-        isLoggedIn,
     } = store;
 
     $effect(() => {
@@ -32,12 +30,6 @@
         }
     });
 
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
-
     const toggleSettings = () => {
         isSettingsHidden.set(!$isSettingsHidden);
     };
@@ -45,10 +37,11 @@
     const resetSettings = () => {
         notificationsEnabled.set(true);
         localStorage.setItem("notificationsEnabled", "true");
-        if ($isLoggedIn && $selectedLanguage !== defaultLang)
-            setLanguage(defaultLang);
-        selectedLanguage.set(defaultLang);
         localStorage.setItem("savedLang", defaultLang);
+        if ($selectedLanguage !== defaultLang) {
+            selectedLanguage.set(defaultLang);
+            location.reload();
+        }
         notify(
             "Settings Reset",
             "Settings have been reset to defaults.",
@@ -103,7 +96,7 @@
                 class="mt-2 p-2 border rounded-md focus:ring-2 focus:ring-blue-400"
                 onchange={() => {
                     localStorage.setItem("savedLang", $selectedLanguage);
-                    setLanguage($selectedLanguage);
+                    location.reload();
                 }}
             >
                 {#each languages as { code, label }}

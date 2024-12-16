@@ -29,7 +29,7 @@
     import Clock from "lucide-svelte/icons/clock";
     import Image from "lucide-svelte/icons/image";
     import Video from "lucide-svelte/icons/video";
-    import { langChecker, translations } from "$lib/locales";
+    import { t } from "$lib/locales";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
     import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
     import EnvelopeOpenOutline from "flowbite-svelte-icons/EnvelopeOpenOutline.svelte";
@@ -57,12 +57,6 @@
         isFullScreenMode,
         showPopup,
     } = store;
-
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
 
     const statuses: Record<
         string,

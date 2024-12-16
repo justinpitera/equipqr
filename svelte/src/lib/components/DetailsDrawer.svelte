@@ -10,14 +10,13 @@
     import Avatar from "flowbite-svelte/Avatar.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import Checkbox from "flowbite-svelte/Checkbox.svelte";
-    import { langChecker, translations } from "$lib/locales";
+    import { t } from "$lib/locales";
     import { onDestroy } from "svelte";
     import { equipment } from "$lib/helpers/equipment";
     import { flyTransitionParamsBottom } from "$lib/helpers/fly";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
     import store from "$lib/store";
     const {
-        selectedLanguage,
         darkModeEnabled,
         qrCodeData,
         detectedGSE,
@@ -25,12 +24,6 @@
         showPopup,
         hideGSEDetail,
     } = store;
-
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
 
     onDestroy(() => {
         hideGSEDetail.set(true);

@@ -14,7 +14,7 @@
     import User from "lucide-svelte/icons/user";
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
     import AuthDrawer from "$lib/components/AuthDrawer.svelte";
-    import { langChecker, translations } from "$lib/locales";
+    import { t } from "$lib/locales";
     import { getGSEDetails } from "$lib/helpers/server-requests";
     import { notify } from "$lib/helpers/notify";
     import store from "$lib/store";
@@ -25,7 +25,6 @@
         isAuthDrawerHidden,
         isIssuesHistoryHidden,
         userRole,
-        selectedLanguage,
         darkModeEnabled,
         qrPrintDrawerHidden,
         addVehiclesDrawerHidden,
@@ -36,12 +35,6 @@
         isAutoOpenIssueDetails,
         showPopup,
     } = store;
-
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
 
     const toggleLogin = () => {
         isAuthDrawerHidden.set(false);

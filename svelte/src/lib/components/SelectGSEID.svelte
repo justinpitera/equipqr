@@ -5,23 +5,12 @@
   import InfoCircleSolid from "flowbite-svelte-icons/InfoCircleSolid.svelte";
   import ArrowRightOutline from "flowbite-svelte-icons/ArrowRightOutline.svelte";
   import { disableContextMenu } from "$lib/helpers/basics";
-  import { langChecker, translations } from "$lib/locales";
+  import { t } from "$lib/locales";
   import { onDestroy, onMount } from "svelte";
   import { getAllGSEs } from "$lib/helpers/server-requests";
   import { flyTransitionParamsTop } from "$lib/helpers/fly";
   import store from "$lib/store";
-  const {
-    selectedLanguage,
-    darkModeEnabled,
-    selectGSEIDDrawerHidden,
-    gseAction,
-  } = store;
-
-  function t(key: string): string {
-    const langTranslations = translations[$selectedLanguage];
-    langChecker(key);
-    return langTranslations?.[key] || key;
-  }
+  const { darkModeEnabled, selectGSEIDDrawerHidden, gseAction } = store;
 
   let selectedGSEID: string = $state("");
   let gseIDS: string[] = $state([]);

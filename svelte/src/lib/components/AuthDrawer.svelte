@@ -6,7 +6,7 @@
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import Spinner from "flowbite-svelte/Spinner.svelte";
     import { notify } from "$lib/helpers/notify";
-    import { langChecker, languages, translations } from "$lib/locales";
+    import { languages, t } from "$lib/locales";
     import RoleTester from "./RoleTester.svelte";
     import { writable } from "svelte/store";
     import { login, logout } from "$lib/helpers/server-requests";
@@ -22,12 +22,6 @@
 
     let email = "";
     let isLoading = writable(false);
-
-    function t(key: string): string {
-        const langTranslations = translations[$selectedLanguage];
-        langChecker(key);
-        return langTranslations?.[key] || key;
-    }
 
     onDestroy(() => {
         isAuthDrawerHidden.set(true);
