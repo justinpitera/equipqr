@@ -7,12 +7,12 @@
     import store from "$lib/store";
     import Button from "flowbite-svelte/Button.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
-    import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";
     import { defaultLang } from "$lib/config";
     import { setLanguage } from "$lib/helpers/server-requests";
     import { onDestroy } from "svelte";
+    import { flyTransitionParamsBottom } from "$lib/helpers/fly";
 
     const {
         isSettingsHidden,
@@ -56,12 +56,6 @@
             "info",
         );
     };
-
-    let transitionParamsBottom = {
-        y: 320,
-        duration: 200,
-        easing: sineIn,
-    };
     onDestroy(() => {
         isSettingsHidden.set(true);
     });
@@ -75,7 +69,7 @@
     class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
-    transitionParams={transitionParamsBottom}
+    transitionParams={flyTransitionParamsBottom}
     activateClickOutside={false}
 >
     <!-- Header -->

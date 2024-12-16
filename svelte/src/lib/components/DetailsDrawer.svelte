@@ -19,11 +19,11 @@
     // Details Drawer utilities
     const { hideGSEDetail } = store;
     // Cancel report utilities
-    import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
-    import { sineIn } from "svelte/easing";
     import { langChecker, translations } from "$lib/locales";
     import { onDestroy } from "svelte";
     import { equipment } from "$lib/helpers/equipment";
+    import { flyTransitionParamsBottom } from "$lib/helpers/fly";
+    import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
     const { selectedLanguage, darkModeEnabled } = store;
 
     function t(key: string): string {
@@ -31,12 +31,6 @@
         langChecker(key);
         return langTranslations?.[key] || key;
     }
-
-    let transitionParamsBottom = {
-        y: 320,
-        duration: 200,
-        easing: sineIn,
-    };
 
     onDestroy(() => {
         hideGSEDetail.set(true);
@@ -96,7 +90,7 @@
     width="w-full"
     transitionType="fly"
     activateClickOutside={false}
-    transitionParams={transitionParamsBottom}
+    transitionParams={flyTransitionParamsBottom}
 >
     <div class="flex items-center justify-between">
         <button

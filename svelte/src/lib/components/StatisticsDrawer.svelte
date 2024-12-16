@@ -82,7 +82,6 @@
         { status: "Back in service", date: new Date("2024-01-15") },
     ];
 
-    const totalIssues = issues.length;
     const reportedIssues = issues.filter(
         (issue) => issue.status === "Reported",
     ).length;

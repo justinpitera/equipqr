@@ -8,11 +8,11 @@
   import { loadQRScanner } from "$lib/helpers/camera";
   import store from "$lib/store";
   const { qrCodeData, showPopup } = store;
-  import { transitionParamsTop } from "$lib/helpers/cancel-report";
   import { DEBUG_MODE } from "$lib/config";
   import { langChecker, translations } from "$lib/locales";
   const { closeReportHidden } = store;
   import { onDestroy } from "svelte";
+  import { flyTransitionParamsTop } from "$lib/helpers/fly";
   const { selectedLanguage, darkModeEnabled, startQRScanner } = store;
 
   function t(key: string): string {
@@ -32,7 +32,7 @@
   width="w-full"
   transitionType="fly"
   activateClickOutside={false}
-  transitionParams={transitionParamsTop}
+  transitionParams={flyTransitionParamsTop}
   bind:hidden={$closeReportHidden}
   class="drawer-box max-w-[600px] m-auto"
 >

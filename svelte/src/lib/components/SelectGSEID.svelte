@@ -5,11 +5,11 @@
   import InfoCircleSolid from "flowbite-svelte-icons/InfoCircleSolid.svelte";
   import ArrowRightOutline from "flowbite-svelte-icons/ArrowRightOutline.svelte";
   import { disableContextMenu } from "$lib/helpers/basics";
-  import { transitionParamsTop } from "$lib/helpers/cancel-report";
   import { langChecker, translations } from "$lib/locales";
   import store from "$lib/store";
   import { onDestroy, onMount } from "svelte";
   import { getAllGSEs } from "$lib/helpers/server-requests";
+  import { flyTransitionParamsTop } from "$lib/helpers/fly";
   const {
     selectedLanguage,
     darkModeEnabled,
@@ -45,7 +45,7 @@
   width="w-full"
   transitionType="fly"
   activateClickOutside={false}
-  transitionParams={transitionParamsTop}
+  transitionParams={flyTransitionParamsTop}
   bind:hidden={$selectGSEIDDrawerHidden}
   class="drawer-box max-w-[600px] m-auto"
 >

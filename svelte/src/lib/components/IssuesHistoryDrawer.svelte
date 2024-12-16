@@ -44,8 +44,8 @@
         getGSEDetails,
         getIssues,
     } from "$lib/helpers/server-requests";
-    import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
+    import { flyTransitionParamsBottom } from "$lib/helpers/fly";
     const {
         fullscreenViewer,
         fullscreenImage,
@@ -100,7 +100,7 @@
     let showScrollUp = $state(false);
     let searchDropdownOpen = $state(false);
     let filterDropdownOpen = $state(false);
-    let clickTimer: NodeJS.Timeout | undefined = undefined;
+    // let clickTimer: NodeJS.Timeout | undefined = undefined;
 
     const search_categories: {
         label: string;
@@ -315,11 +315,6 @@
 
     let deleteIssuePopup = $state(false);
     let leaveCommentDrawerHidden = $state(true);
-    let transitionParams = {
-        x: -320,
-        duration: 200,
-        easing: sineIn,
-    };
 
     function changePage(next: boolean, buttonsLocation: "top" | "bottom") {
         if (isLoading) return;
@@ -607,7 +602,7 @@
 <Drawer
     id="leave-comment-drawer"
     transitionType="fly"
-    {transitionParams}
+    transitionParams={flyTransitionParamsBottom}
     backdrop={true}
     style="z-index: 60;"
     placement="bottom"

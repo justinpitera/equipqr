@@ -8,11 +8,11 @@
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";
     import store from "$lib/store";
-    import { sineIn } from "svelte/easing";
     import RoleTester from "./RoleTester.svelte";
     import { writable } from "svelte/store";
     import { login, logout } from "$lib/helpers/server-requests";
     import { onDestroy } from "svelte";
+    import { flyTransitionParamsBottom } from "$lib/helpers/fly";
 
     let email = "";
     let isLoading = writable(false);
@@ -23,12 +23,6 @@
         selectedLanguage,
         darkModeEnabled,
     } = store;
-
-    const transitionParamsBottom = {
-        y: 320,
-        duration: 200,
-        easing: sineIn,
-    };
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -73,7 +67,7 @@
     class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
-    transitionParams={transitionParamsBottom}
+    transitionParams={flyTransitionParamsBottom}
 >
     {#if $isLoading}
         <div class="flex justify-center space-y-4 p-4 pt-5">
@@ -149,9 +143,10 @@
         <Button
             on:click={async () => {
                 isLoading.set(true);
-                const didLogout = await logout();
-                // if (!didLogout) isLoading.set(false);
+                await logout();
                 location.reload();
+                // const didLogout = 
+                // if (!didLogout) isLoading.set(false);
                 // if (window.location.hostname === "localhost")
                 //     return location.reload();
                 // if (didLogout) {

@@ -1,9 +1,5 @@
 <script lang="ts">
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
-    import Fuel from "lucide-svelte/icons/fuel";
-    import BatteryCharging from "lucide-svelte/icons/battery-charging";
-    import RefreshCw from "lucide-svelte/icons/refresh-cw";
-    import Droplet from "lucide-svelte/icons/droplet";
     import Button from "flowbite-svelte/Button.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import store from "$lib/store";
@@ -38,8 +34,6 @@
         "San Francisco",
         "Chicago",
     ]; // Prefilled location options
-    let value: string = "";
-    let placeholder: string = "Select an item";
     let filteredItems: string[] = [...items];
     let isOpen = false;
     let inputValue = "";
@@ -66,48 +60,6 @@
         isOpen = true;
         selectedIndex = -1;
     }
-    function handleBlur() {
-        setTimeout(() => {
-            if (isOpen) isOpen = false;
-        }, 100);
-    }
-
-    function handleItemClick(item: string) {
-        value = item;
-        inputValue = item;
-        isOpen = false;
-    }
-
-    const fuelIcons = {
-        diesel: Fuel,
-        electric: BatteryCharging,
-        hybrid: RefreshCw,
-        petrol: Droplet,
-    } as const;
-
-    const defaultIcon = Fuel;
-
-    function getResolvedIcon(fuelType: string): typeof Fuel {
-        return (
-            fuelIcons[
-                fuelType.split(" ")[0].toLowerCase() as keyof typeof fuelIcons
-            ] || defaultIcon
-        );
-    }
-
-    const getStatusNumber = (status: string | undefined): string => {
-        const match = status?.match(/^(\d+)/);
-        return match ? match[1] : "0"; // Default to "0" if no match is found
-    };
-
-    const statusColors: Record<string, string> = {
-        "0": "dark", // Scraped
-        "1": "red", // Scrap
-        "2": "yellow", // Usable
-        "3": "indigo", // Okay
-        "4": "purple", // Good condition
-        "5": "green", // Very good condition
-    };
 
     function setupVehicles() {
         vehicles = Object.entries(equipment).map(([key, image]) => {
@@ -127,32 +79,6 @@
                 image: image,
             };
         });
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-        if (event.key === "ArrowDown") {
-            event.preventDefault();
-            if (selectedIndex < filteredItems.length - 1) {
-                selectedIndex++;
-            }
-        }
-        if (event.key === "ArrowUp") {
-            event.preventDefault();
-            if (selectedIndex > 0) {
-                selectedIndex--;
-            }
-        }
-        if (event.key === "Enter" && selectedIndex > -1) {
-            event.preventDefault();
-            handleItemClick(filteredItems[selectedIndex]);
-        }
-        if (event.key === "Escape") {
-            isOpen = false;
-        }
-    }
-
-    function setSelectedClass(index: number): string {
-        return index === selectedIndex ? "bg-blue-100 dark:bg-gray-600" : "";
     }
 
     function handleSubmit() {

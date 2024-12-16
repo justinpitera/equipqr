@@ -4,7 +4,7 @@ import { t_global } from "$lib/locales";
 import { requests } from '$lib/prototypes/requests/v1/requests';
 const {
 	// /api/health/status
-	HealthStatusRequest,
+	// HealthStatusRequest,
 	HealthStatusResponse,
 	// /api/gse/details
 	GSEDetailsRequest,
@@ -25,7 +25,7 @@ const {
 	DeleteIssuesRequest,
 	DeleteIssuesResponse,
 	// /api/auth/logout
-	LogoutRequest,
+	// LogoutRequest,
 	LogoutResponse,
 	// /api/locations/fetch
 	FetchGatesRequest,
@@ -33,9 +33,9 @@ const {
 	// /api/gse/all
 	ListGSEReponse,
 	// Other Types:
-	Issue,
-	Attachment,
-	Gate,
+	// Issue,
+	// Attachment,
+	// Gate,
 } = requests.v1;
 
 const debug_routes = true;
