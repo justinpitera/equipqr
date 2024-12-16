@@ -5,7 +5,7 @@ export class Utils {
   }
 
   public static getInstance(): Utils {
-        return this.instance || (this.instance = new Utils());
+    return this.instance || (this.instance = new Utils());
   }
 
   public onLoad(cb: () => void | Promise<void>): Promise<void> {

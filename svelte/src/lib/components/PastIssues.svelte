@@ -1,19 +1,18 @@
 <script lang="ts">
     import Drawer from "flowbite-svelte/Drawer.svelte";
-    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
-    import Plane from 'lucide-svelte/icons/plane'
-    import X from 'lucide-svelte/icons/x'
+    import ArrowLeft from "lucide-svelte/icons/arrow-left";
+    import Plane from "lucide-svelte/icons/plane";
+    import X from "lucide-svelte/icons/x";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
-    import { homePageStore } from "$lib/helpers/homepage";
+    import store from "$lib/store";
     import {
         build_gate_options,
         gate_types,
-        reportUIStore,
     } from "$lib/helpers/report-ui-store";
-    const { isPastIssuesForSpecificIDHidden } = homePageStore;
+    const { isPastIssuesForSpecificIDHidden } = store;
     import { langChecker, translations } from "$lib/locales";
     import { onDestroy } from "svelte";
-    const { selectedLanguage, darkModeEnabled } = homePageStore;
+    const { selectedLanguage, darkModeEnabled } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -25,12 +24,12 @@
         operable,
         selected_gate_type,
         selected_gate_name,
-    } = reportUIStore;
+    } = store;
 
     let issues: PastIssue[] = Array.from({ length: 20 }, (_, i) => ({
         gse_id: i + 1,
-        worker_id: `${t('Employee')} ${i + 1}`,
-        issue_description: `${t('Issue description')} ${i + 1}`,
+        worker_id: `${t("Employee")} ${i + 1}`,
+        issue_description: `${t("Issue description")} ${i + 1}`,
         is_operable: i % 2 === 0 ? "Yes" : "No",
         date: Date.now(),
     }));

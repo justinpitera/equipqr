@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { homePageStore } from "$lib/helpers/homepage";
+    import store from "$lib/store";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, translations } from "$lib/locales";
-    const { isAuthDrawerHidden, selectedLanguage, userRole } = homePageStore;
+    const { isAuthDrawerHidden, selectedLanguage, userRole } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];

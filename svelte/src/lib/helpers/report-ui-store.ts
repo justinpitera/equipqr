@@ -1,19 +1,4 @@
-import { writable, type Writable } from "svelte/store";
-
-class ReportUIStore {
-    constructor(
-        public worker_id: Writable<string> = writable(''),
-        public issue_description: Writable<string> = writable(''),
-        public operable: Writable<string> = writable(''),
-        public selected_gate_type: Writable<string> = writable(''),
-        public selected_gate_name: Writable<string> = writable(''),
-        public is_gate_type_dropdown_open: Writable<boolean> = writable(false),
-        public showSuccessStamp: Writable<boolean> = writable(false),
-        public gates: Writable<{ value: string; name: string }[]> = writable([]),
-    ) { }
-}
-
-export const reportUIStore = new ReportUIStore();
+import store from "$lib/store";
 
 export let gate_types: Record<string, string[]> = {
     GA: ["103 Apn"],
@@ -23,10 +8,10 @@ export let gate_types: Record<string, string[]> = {
 };
 
 export function build_gate_options(gate: string, forceSelect?: string) {
-    reportUIStore.selected_gate_type.set(gate);
-    reportUIStore.is_gate_type_dropdown_open.set(false);
-    reportUIStore.gates.set([]);
-    reportUIStore.gates.update((currentGates) => {
+    store.selected_gate_type.set(gate);
+    store.is_gate_type_dropdown_open.set(false);
+    store.gates.set([]);
+    store.gates.update((currentGates) => {
         for (const gate_type in gate_types) {
             if (gate_type.toLowerCase() !== gate.toLowerCase()) continue;
             const gate_names = gate_types[gate_type];

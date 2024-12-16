@@ -1,10 +1,10 @@
 <script lang="ts">
-    import ArrowLeft from 'lucide-svelte/icons/arrow-left'
-    import Bell from 'lucide-svelte/icons/bell'
-    import Globe from 'lucide-svelte/icons/globe'
-    import Sun from 'lucide-svelte/icons/sun'
-    import Trash2 from 'lucide-svelte/icons/trash-2'
-    import { homePageStore } from "$lib/helpers/homepage";
+    import ArrowLeft from "lucide-svelte/icons/arrow-left";
+    import Bell from "lucide-svelte/icons/bell";
+    import Globe from "lucide-svelte/icons/globe";
+    import Sun from "lucide-svelte/icons/sun";
+    import Trash2 from "lucide-svelte/icons/trash-2";
+    import store from "$lib/store";
     import Button from "flowbite-svelte/Button.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import { sineIn } from "svelte/easing";
@@ -20,7 +20,7 @@
         darkModeEnabled,
         selectedLanguage,
         isLoggedIn,
-    } = homePageStore;
+    } = store;
 
     $effect(() => {
         const html = document.querySelector("html");

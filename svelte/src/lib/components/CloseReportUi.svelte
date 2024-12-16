@@ -5,18 +5,15 @@
   import InfoCircleSolid from "flowbite-svelte-icons/InfoCircleSolid.svelte";
   import ArrowRightOutline from "flowbite-svelte-icons/ArrowRightOutline.svelte";
   import { disableContextMenu } from "$lib/helpers/basics";
-  import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
-  const { qrCodeData, showPopup } = qrScannerStore;
-  import {
-    cancelReportStore,
-    transitionParamsTop,
-  } from "$lib/helpers/cancel-report";
+  import { loadQRScanner } from "$lib/helpers/camera";
+  import store from "$lib/store";
+  const { qrCodeData, showPopup } = store;
+  import { transitionParamsTop } from "$lib/helpers/cancel-report";
   import { DEBUG_MODE } from "$lib/config";
   import { langChecker, translations } from "$lib/locales";
-  const { closeReportHidden } = cancelReportStore;
-  import { homePageStore } from "$lib/helpers/homepage";
+  const { closeReportHidden } = store;
   import { onDestroy } from "svelte";
-  const { selectedLanguage, darkModeEnabled, startQRScanner } = homePageStore;
+  const { selectedLanguage, darkModeEnabled, startQRScanner } = store;
 
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];
@@ -70,7 +67,7 @@
       showPopup.set(false);
       document.getElementById("qrScanner")?.classList.remove("hidden");
       if (DEBUG_MODE) {
-        homePageStore.startQRScanner.set(false);
+        store.startQRScanner.set(false);
       } else if ($startQRScanner) {
         loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
       }

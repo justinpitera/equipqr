@@ -29,7 +29,7 @@
     import Clock from "lucide-svelte/icons/clock";
     import Image from "lucide-svelte/icons/image";
     import Video from "lucide-svelte/icons/video";
-    import { homePageStore } from "$lib/helpers/homepage";
+    import store from "$lib/store";
     import { langChecker, translations } from "$lib/locales";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
     import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
@@ -46,20 +46,15 @@
     } from "$lib/helpers/server-requests";
     import { sineIn } from "svelte/easing";
     import { notify } from "$lib/helpers/notify";
-    import { qrScannerStore } from "$lib/helpers/camera";
-    import { cancelReportStore } from "$lib/helpers/cancel-report";
-    // File upload utilities
-    import { fileUploadStore } from "$lib/helpers/file-upload";
     const {
         fullscreenViewer,
         fullscreenImage,
         fullscreenVideo,
         isFullScreenMode,
-    } = fileUploadStore;
-    import { detailsDrawerStore } from "$lib/helpers/details";
+    } = store;
     const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled, issues } =
-        homePageStore;
-    const { showPopup } = qrScannerStore;
+        store;
+    const { showPopup } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -186,17 +181,17 @@
     }
 
     async function openDetailsDrawer(issue: HistoryIssue) {
-        qrScannerStore.qrCodeData.set(issue.gse_id);
+        store.qrCodeData.set(issue.gse_id);
         const gseDetails = await getGSEDetails(issue.gse_id);
         if (gseDetails?.gse_id) {
-            qrScannerStore.detectedGSE.set(gseDetails);
+            store.detectedGSE.set(gseDetails);
             if (gseDetails.error && gseDetails.details) {
                 notify(gseDetails.error, gseDetails.details, "error");
-                qrScannerStore.qrCodeData.set("");
+                store.qrCodeData.set("");
             } else {
-                detailsDrawerStore.hideGSEDetail.set(false);
+                store.hideGSEDetail.set(false);
                 if (gseDetails.most_recent_issue)
-                    homePageStore.isRecentIssueDrawerHidden.set(false);
+                    store.isRecentIssueDrawerHidden.set(false);
             }
         } else {
             notify(
@@ -206,9 +201,9 @@
                 5000,
                 true,
             );
-            qrScannerStore.detectedGSE.set(null);
-            if ($showPopup) cancelReportStore.closeReportHidden.set(false);
-            qrScannerStore.qrCodeData.set("");
+            store.detectedGSE.set(null);
+            if ($showPopup) store.closeReportHidden.set(false);
+            store.qrCodeData.set("");
         }
     }
 
@@ -768,7 +763,11 @@
             }}
             ontouchend={async () => {
                 if (isRefreshing) return;
-                if (shouldRefresh && issuesScroller && issuesScroller.scrollTop === 0) {
+                if (
+                    shouldRefresh &&
+                    issuesScroller &&
+                    issuesScroller.scrollTop === 0
+                ) {
                     rotateDeg = 0;
                     translateY = 90;
                     isRefreshing = true;

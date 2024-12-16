@@ -7,7 +7,7 @@
     import Spinner from "flowbite-svelte/Spinner.svelte";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";
-    import { homePageStore } from "$lib/helpers/homepage";
+    import store from "$lib/store";
     import { sineIn } from "svelte/easing";
     import RoleTester from "./RoleTester.svelte";
     import { writable } from "svelte/store";
@@ -22,7 +22,7 @@
         isAuthDrawerHidden,
         selectedLanguage,
         darkModeEnabled,
-    } = homePageStore;
+    } = store;
 
     const transitionParamsBottom = {
         y: 320,
@@ -50,7 +50,7 @@
             isLoading.set(false);
             console.log("isLoggedSuccess", isLoggedSuccess);
             if (isLoggedSuccess) {
-                console.log("Login Response Message:", isLoggedSuccess.message)
+                console.log("Login Response Message:", isLoggedSuccess.message);
                 const successMessage = t("Email sent to {email}").replace(
                     "{email}",
                     email,
@@ -172,8 +172,7 @@
             on:click={async () => {
                 isLoading.set(true);
 
-                document.cookie =
-                    "auth=true;";
+                document.cookie = "auth=true;";
                 location.reload();
             }}
             class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2{$isLoggedIn

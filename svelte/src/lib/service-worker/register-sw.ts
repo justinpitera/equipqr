@@ -1,6 +1,6 @@
 import { DEBUG_MODE } from "$lib/config";
 import { notify } from "$lib/helpers/notify";
-import { Utils } from "$lib/helpers/utils.service";
+import { Utils } from "$lib/service-worker/utils.sw";
 
 const registerSw = (
 	scriptUrl: string,

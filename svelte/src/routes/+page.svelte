@@ -4,7 +4,7 @@
   // Utilities
   import { browser } from "$app/environment";
   import { getAppVersion } from "$lib/helpers/server-requests";
-  import { registerServiceWorker } from "$lib/helpers/register-sw";
+  import { registerServiceWorker } from "$lib/service-worker/register-sw";
   // QR Scanner utilities
   import { destroyScanner } from "$lib/helpers/camera";
   // UI Components:

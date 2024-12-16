@@ -1,10 +1,10 @@
 import type { Placement, Theme, ToastType } from "svelte-toasts/types/common";
 import { toasts } from "svelte-toasts";
 import { t_global } from "$lib/locales";
-import { homePageStore } from "./homepage";
+import store from "$lib/store";
 
 let notificationsEnabled: boolean = typeof window !== 'undefined' ? localStorage.getItem('notificationsEnabled') !== 'false' : true;
-homePageStore.notificationsEnabled.subscribe((value) => {
+store.notificationsEnabled.subscribe((value) => {
 	notificationsEnabled = value;
 });
 

@@ -1,6 +1,6 @@
 import locales from '$lib/locales.json'
 import { defaultLang } from './config';
-import { homePageStore } from './helpers/homepage';
+import store from '$lib/store';
 
 export type LanguageKeys = "en" | "da" | "no" | "sv";
 export const languages = [
@@ -12,14 +12,14 @@ export const languages = [
 export type Translations = Record<LanguageKeys, Record<string, string>>;
 
 let selectedLanguage: LanguageKeys = (typeof window !== 'undefined' ? (localStorage.getItem('savedLang') || defaultLang) : defaultLang) as LanguageKeys;
-homePageStore.selectedLanguage.subscribe((value) => {
-	selectedLanguage = value;
+store.selectedLanguage.subscribe((value) => {
+  selectedLanguage = value;
 });
 
 export function t_global(key: string): string {
-	const langTranslations = translations[selectedLanguage];
-	langChecker(key);
-	return langTranslations?.[key] || key;
+  const langTranslations = translations[selectedLanguage];
+  langChecker(key);
+  return langTranslations?.[key] || key;
 }
 
 export function langChecker(value: string) {

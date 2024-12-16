@@ -5,15 +5,13 @@
     import RefreshCw from "lucide-svelte/icons/refresh-cw";
     import Droplet from "lucide-svelte/icons/droplet";
     import Button from "flowbite-svelte/Button.svelte";
-    import Avatar from "flowbite-svelte/Avatar.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
-    import Tooltip from "flowbite-svelte/Tooltip.svelte";
-    import { homePageStore } from "$lib/helpers/homepage";
+    import store from "$lib/store";
     import { equipment } from "$lib/helpers/equipment";
     import { langChecker, translations } from "$lib/locales";
     import { onMount } from "svelte";
     const { selectedLanguage, addVehiclesDrawerHidden, darkModeEnabled } =
-        homePageStore;
+        store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];

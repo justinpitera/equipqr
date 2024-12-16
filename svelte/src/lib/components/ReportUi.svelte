@@ -23,31 +23,24 @@
   // Utilities
   import { disableContextMenu, formatNumber } from "$lib/helpers/basics";
   // QR Scanner utilities
-  import { loadQRScanner, qrScannerStore } from "$lib/helpers/camera";
-  const { qrCodeData, showPopup, showLoader, detectedGSE } = qrScannerStore;
+  import { loadQRScanner } from "$lib/helpers/camera";
+  import store from "$lib/store";
+  const { qrCodeData, showPopup, showLoader, detectedGSE } = store;
   // File upload utilities
   import {
     startWiggle,
     stopWiggle,
-    fileUploadStore,
     handleFileChange,
   } from "$lib/helpers/file-upload";
-  const { mediaFiles, wiggleModeEnabled, pressTimer, isDragging } =
-    fileUploadStore;
+  const { mediaFiles, wiggleModeEnabled, pressTimer, isDragging } = store;
   // Cancel report utilities
-  import { cancelReportStore } from "$lib/helpers/cancel-report";
-  const { closeReportHidden } = cancelReportStore;
+  const { closeReportHidden } = store;
   // Details Drawer utilities
-  import { detailsDrawerStore } from "$lib/helpers/details";
   import { DEBUG_MODE, maxFiles } from "$lib/config";
   import { submitIssue } from "$lib/helpers/server-requests";
   import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
   import { notify } from "$lib/helpers/notify";
-  import { homePageStore } from "$lib/helpers/homepage";
-  import {
-    build_gate_options,
-    reportUIStore,
-  } from "$lib/helpers/report-ui-store";
+  import { build_gate_options } from "$lib/helpers/report-ui-store";
   import { langChecker, translations } from "$lib/locales";
   const {
     selectedLanguage,
@@ -55,7 +48,7 @@
     darkModeEnabled,
     hideTip,
     isRecentIssueDrawerHidden,
-  } = homePageStore;
+  } = store;
 
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];
@@ -63,7 +56,7 @@
     return langTranslations?.[key] || key;
   }
 
-  const { hideGSEDetail } = detailsDrawerStore;
+  const { hideGSEDetail } = store;
   const {
     worker_id,
     issue_description,
@@ -72,7 +65,7 @@
     selected_gate_name,
     gates,
     is_gate_type_dropdown_open,
-  } = reportUIStore;
+  } = store;
 
   async function handleReportFormSubmit(event: Event): Promise<void> {
     event.preventDefault();
@@ -139,7 +132,7 @@
       showPopup.set(false);
       document.getElementById("qrScanner")?.classList.remove("hidden");
       if (DEBUG_MODE) {
-        homePageStore.startQRScanner.set(false);
+        store.startQRScanner.set(false);
       } else {
         loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
       }
@@ -152,7 +145,7 @@
     const target = event.target as HTMLElement;
     if (!target.closest(".ignore-js")) {
       stopWiggle();
-      fileUploadStore.wiggleModeEnabled.set(false);
+      store.wiggleModeEnabled.set(false);
     }
   };
 

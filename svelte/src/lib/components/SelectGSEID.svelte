@@ -7,7 +7,7 @@
   import { disableContextMenu } from "$lib/helpers/basics";
   import { transitionParamsTop } from "$lib/helpers/cancel-report";
   import { langChecker, translations } from "$lib/locales";
-  import { homePageStore } from "$lib/helpers/homepage";
+  import store from "$lib/store";
   import { onDestroy, onMount } from "svelte";
   import { getAllGSEs } from "$lib/helpers/server-requests";
   const {
@@ -15,7 +15,7 @@
     darkModeEnabled,
     selectGSEIDDrawerHidden,
     gseAction,
-  } = homePageStore;
+  } = store;
 
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];

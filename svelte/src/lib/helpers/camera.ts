@@ -1,45 +1,27 @@
 import jsQR from "jsqr";
 import type { Point } from "jsqr/dist/locator";
 import { notify } from "$lib/helpers/notify";
-import { writable, type Writable } from "svelte/store";
 import { getGSEDetails } from "./server-requests";
-import { detailsDrawerStore } from "./details";
-import { homePageStore } from "./homepage";
 import { DEBUG_MODE } from "$lib/config";
-import { cancelReportStore } from "./cancel-report";
+import store from '$lib/store';
 import { t_global } from "$lib/locales";
 let videoTrack: MediaStreamTrack | null = null;
 let videoElement: HTMLVideoElement | null = null;
 let torchInfo: ITorchInfo = { hasCamera: false, hasTorch: false };
 let torch_state = "Uninitialized";
 
-class QRScannerStore {
-	constructor(
-		public showLoader: Writable<boolean> = writable(false),
-		public flashlightOn: Writable<boolean> = writable(false),
-		public flashlightDisabled: Writable<boolean> = writable(false),
-		public qrCodeData: Writable<string | null> = writable(null),
-		public showPopup: Writable<boolean> = writable(false),
-		public detectedGSE: Writable<GSEDetails | null> = writable(null),
-		public isAutoOpenIssueDetails: Writable<boolean> = writable(typeof window !== "undefined" ? localStorage?.getItem("autoOpenIssueDetails") === "true" : false),
-		public isAutoOpenMostRecentIssue: Writable<boolean> = writable(typeof window !== "undefined" ? localStorage?.getItem("autoOpenMostRecentIssue") === "true" : false),
-	) { }
-}
-
-export const qrScannerStore = new QRScannerStore();
-
 let isAutoOpenIssueDetails: boolean = typeof window !== "undefined" ? localStorage?.getItem("autoOpenIssueDetails") === "true" : false;
-qrScannerStore.isAutoOpenIssueDetails.subscribe((value) => {
+store.isAutoOpenIssueDetails.subscribe((value) => {
 	isAutoOpenIssueDetails = value;
 });
 
 let showPopup: boolean = false;
-qrScannerStore.showPopup.subscribe((value) => {
+store.showPopup.subscribe((value) => {
 	showPopup = value;
 });
 
 let isAutoOpenMostRecentIssue: boolean = typeof window !== "undefined" ? localStorage?.getItem("autoOpenMostRecentIssue") === "true" : false;
-qrScannerStore.isAutoOpenMostRecentIssue.subscribe((value) => {
+store.isAutoOpenMostRecentIssue.subscribe((value) => {
 	isAutoOpenMostRecentIssue = value;
 });
 
@@ -90,46 +72,46 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 		if (lastDevice?.deviceId !== collectedTrack.device_id) collectedTrack.track.stop();
 	}
 	torch_state = "Disabled";
-	qrScannerStore.flashlightOn.set(false);
-	qrScannerStore.flashlightDisabled.set(true);
+	store.flashlightOn.set(false);
+	store.flashlightDisabled.set(true);
 	console.warn("No camera with torch capability found.");
 	return { hasCamera: videoInputs.length > 0, hasTorch: false, track: lastTrack, stream: lastStream };
 };
 
 export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) {
-	qrScannerStore.qrCodeData.set('');
-	qrScannerStore.showLoader.set(true);
+	store.qrCodeData.set('');
+	store.showLoader.set(true);
 	try {
-		homePageStore.startQRScanner.set(true);
+		store.startQRScanner.set(true);
 		if (!DEBUG_MODE) await destroyScanner(); // Before
 		const custom_gse_id = forceDebug || (await scanQRCode()); // Scanning...
 		if (!DEBUG_MODE) requestAnimationFrame(destroyScanner); // After
 		if (custom_gse_id) {
-			qrScannerStore.qrCodeData.set(custom_gse_id);
+			store.qrCodeData.set(custom_gse_id);
 			if (isCheckOnly) {
-				homePageStore.startQRScanner.set(false); // Goes back to homepage
+				store.startQRScanner.set(false); // Goes back to homepage
 			} else {
-				qrScannerStore.showPopup.set(true);
+				store.showPopup.set(true);
 			}
 			document.getElementById("qrScanner")?.classList.add("hidden");
 			const gseDetails = await getGSEDetails(custom_gse_id);
 			if (gseDetails?.gse_id) {
-				qrScannerStore.detectedGSE.set(gseDetails);
+				store.detectedGSE.set(gseDetails);
 				if (gseDetails.error && gseDetails.details) {
 					notify(gseDetails.error, gseDetails.details, "error")
 				} else {
-					if (isAutoOpenIssueDetails || isCheckOnly) detailsDrawerStore.hideGSEDetail.set(false);
-					if (gseDetails.most_recent_issue && (isAutoOpenMostRecentIssue || isCheckOnly)) homePageStore.isRecentIssueDrawerHidden.set(false);
+					if (isAutoOpenIssueDetails || isCheckOnly) store.hideGSEDetail.set(false);
+					if (gseDetails.most_recent_issue && (isAutoOpenMostRecentIssue || isCheckOnly)) store.isRecentIssueDrawerHidden.set(false);
 				}
 			} else {
 				notify("Error", t_global("Could not find any information for") + ' ' + custom_gse_id, "error", 5000, true);
-				qrScannerStore.detectedGSE.set(null);
-				if (showPopup) cancelReportStore.closeReportHidden.set(false);
+				store.detectedGSE.set(null);
+				if (showPopup) store.closeReportHidden.set(false);
 			}
 		} else {
-			qrScannerStore.showPopup.set(false);
-			qrScannerStore.detectedGSE.set(null);
-			qrScannerStore.qrCodeData.set(t_global("Unable to read QR code."));
+			store.showPopup.set(false);
+			store.detectedGSE.set(null);
+			store.qrCodeData.set(t_global("Unable to read QR code."));
 			const loadingMessage = document.getElementById("loadingMessage");
 			if (loadingMessage) {
 				loadingMessage.hidden = false;
@@ -139,12 +121,12 @@ export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) 
 	} catch (e) {
 		console.error("loadQRScanner error", e)
 	}
-	qrScannerStore.showLoader.set(false);
+	store.showLoader.set(false);
 }
 
 export async function destroyScanner() {
 	// Turn off the flashlight
-	qrScannerStore.flashlightOn.set(false);
+	store.flashlightOn.set(false);
 
 	// Stop the video track
 	if (videoTrack) {
@@ -251,7 +233,7 @@ async function scanQRCode(): Promise<string | null> {
 								advanced: [{ torch: on } as ExtendedMediaTrackConstraintSet],
 							});
 							torch_state = on ? "On" : "Off";
-							qrScannerStore.flashlightOn.set(on);
+							store.flashlightOn.set(on);
 							notify(
 								"QR Code Scanner",
 								`Flashlight turned ${on ? "on" : "off"}.`,
@@ -374,7 +356,7 @@ async function scanQRCode(): Promise<string | null> {
 								advanced: [{ torch: false } as ExtendedMediaTrackConstraintSet],
 							}).then(() => {
 								torch_state = "Off";
-								qrScannerStore.flashlightOn.set(false);
+								store.flashlightOn.set(false);
 							});
 						} catch (e) { }
 					}

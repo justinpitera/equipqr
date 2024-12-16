@@ -14,10 +14,10 @@
     import Badge from "flowbite-svelte/Badge.svelte";
     import Card from "flowbite-svelte/Card.svelte";
     import Checkbox from "flowbite-svelte/Checkbox.svelte";
-    import { homePageStore } from "$lib/helpers/homepage";
+    import store from "$lib/store";
     import { equipment } from "$lib/helpers/equipment";
     import { langChecker, translations } from "$lib/locales";
-    const { qrPrintDrawerHidden, selectedLanguage } = homePageStore;
+    const { qrPrintDrawerHidden, selectedLanguage } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];

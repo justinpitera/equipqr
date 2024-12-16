@@ -1,34 +1,24 @@
 <script lang="ts">
     import { onDestroy, onMount, tick } from "svelte";
-    // Utilities
     import { disableContextMenu } from "$lib/helpers/basics";
-    // QR Scanner utilities
-    import { qrScannerStore } from "$lib/helpers/camera";
-    const { detectedGSE, isAutoOpenMostRecentIssue, showPopup } = qrScannerStore;
-    // File upload utilities
-    import { fileUploadStore } from "$lib/helpers/file-upload";
+    import store from "$lib/store";
+    const { detectedGSE, isAutoOpenMostRecentIssue, showPopup } = store;
     const {
         fullscreenViewer,
         fullscreenImage,
         fullscreenVideo,
         isFullScreenMode,
-    } = fileUploadStore;
-    // Details Drawer utilities
+    } = store;
     import { BACKEND_URL, DEBUG_MODE } from "$lib/config";
-    import { homePageStore } from "$lib/helpers/homepage";
     import { langChecker, translations } from "$lib/locales";
     import Checkbox from "flowbite-svelte/Checkbox.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
     import Copy from "lucide-svelte/icons/copy";
-    import { reportUIStore } from "$lib/helpers/report-ui-store";
     import Button from "./ui/button/button.svelte";
-    const {
-        selectedLanguage,
-        darkModeEnabled,
-        isRecentIssueDrawerHidden,
-    } = homePageStore;
-    const { issue_description } = reportUIStore;
+    const { selectedLanguage, darkModeEnabled, isRecentIssueDrawerHidden } =
+        store;
+    const { issue_description } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -280,9 +270,7 @@
         {/if}
         <div class="mt-6 flex justify-between">
             <div
-                class="flex items-center space-x-4{$showPopup
-                    ? ''
-                    : ' hidden'}"
+                class="flex items-center space-x-4{$showPopup ? '' : ' hidden'}"
             >
                 <label for="toggle" class="text-lg">{t("Auto Open:")}</label>
                 <Checkbox

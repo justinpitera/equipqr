@@ -1,13 +1,13 @@
 <script lang="ts">
-    import LightbulbOff from 'lucide-svelte/icons/lightbulb-off'
-    import Lightbulb from 'lucide-svelte/icons/lightbulb'
-    import Menu from 'lucide-svelte/icons/menu'
+    import LightbulbOff from "lucide-svelte/icons/lightbulb-off";
+    import Lightbulb from "lucide-svelte/icons/lightbulb";
+    import Menu from "lucide-svelte/icons/menu";
     import { disableContextMenu } from "$lib/helpers/basics";
-    import { destroyScanner, qrScannerStore } from "$lib/helpers/camera";
-    const { flashlightOn, flashlightDisabled } = qrScannerStore;
-    import { homePageStore } from "$lib/helpers/homepage";
+    import { destroyScanner } from "$lib/helpers/camera";
+    const { flashlightOn, flashlightDisabled } = store;
+    import store from "$lib/store";
     import { langChecker, translations } from "$lib/locales";
-    const { startQRScanner, selectedLanguage, darkModeEnabled } = homePageStore;
+    const { startQRScanner, selectedLanguage, darkModeEnabled } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -25,7 +25,7 @@
         class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
         onclick={async () => {
             startQRScanner.set(false);
-            qrScannerStore.showLoader.set(false);
+            store.showLoader.set(false);
             await destroyScanner();
         }}
         onkeypress={async (event) => {
