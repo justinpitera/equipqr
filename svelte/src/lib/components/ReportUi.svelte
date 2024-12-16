@@ -30,7 +30,7 @@
   import { submitIssue } from "$lib/helpers/server-requests";
   import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
   import { notify } from "$lib/helpers/notify";
-  import { build_gate_options } from "$lib/helpers/report-ui-store";
+  import { build_gate_options } from "$lib/helpers/gates";
   import { t } from "$lib/locales";
   import store from "$lib/store";
   const {

@@ -4,10 +4,7 @@
     import Plane from "lucide-svelte/icons/plane";
     import X from "lucide-svelte/icons/x";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
-    import {
-        build_gate_options,
-        gate_types,
-    } from "$lib/helpers/report-ui-store";
+    import { build_gate_options, gate_types } from "$lib/helpers/gates";
     import { t } from "$lib/locales";
     import { onDestroy } from "svelte";
     import store from "$lib/store";

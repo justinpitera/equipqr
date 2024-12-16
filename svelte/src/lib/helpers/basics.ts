@@ -10,4 +10,3 @@ export function disableContextMenu(event: Event): boolean {
 	event.stopImmediatePropagation();
 	return false;
 }
-
