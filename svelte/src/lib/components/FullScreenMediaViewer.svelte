@@ -1,9 +1,13 @@
 <script lang="ts">
     import { disableContextMenu } from "$lib/helpers/basics";
     import { closeFullscreen } from "$lib/helpers/file-upload";
-    const { fullscreenViewer, fullscreenImage, fullscreenVideo } = store;
     import store from "$lib/store";
-    const { darkModeEnabled } = store;
+    const {
+        darkModeEnabled,
+        fullscreenViewer,
+        fullscreenImage,
+        fullscreenVideo,
+    } = store;
 </script>
 
 <div

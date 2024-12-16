@@ -1,14 +1,6 @@
 <script lang="ts">
     import { onDestroy, onMount, tick } from "svelte";
     import { disableContextMenu } from "$lib/helpers/basics";
-    import store from "$lib/store";
-    const { detectedGSE, isAutoOpenMostRecentIssue, showPopup } = store;
-    const {
-        fullscreenViewer,
-        fullscreenImage,
-        fullscreenVideo,
-        isFullScreenMode,
-    } = store;
     import { BACKEND_URL, DEBUG_MODE } from "$lib/config";
     import { langChecker, translations } from "$lib/locales";
     import Checkbox from "flowbite-svelte/Checkbox.svelte";
@@ -16,9 +8,20 @@
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
     import Copy from "lucide-svelte/icons/copy";
     import { Button } from "flowbite-svelte";
-    const { selectedLanguage, darkModeEnabled, isRecentIssueDrawerHidden } =
-        store;
-    const { issue_description } = store;
+    import store from "$lib/store";
+    const {
+        fullscreenViewer,
+        fullscreenImage,
+        fullscreenVideo,
+        isFullScreenMode,
+        selectedLanguage,
+        darkModeEnabled,
+        isRecentIssueDrawerHidden,
+        detectedGSE,
+        isAutoOpenMostRecentIssue,
+        showPopup,
+        issue_description,
+    } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];

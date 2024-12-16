@@ -7,22 +7,21 @@
     import Spinner from "flowbite-svelte/Spinner.svelte";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, languages, translations } from "$lib/locales";
-    import store from "$lib/store";
     import RoleTester from "./RoleTester.svelte";
     import { writable } from "svelte/store";
     import { login, logout } from "$lib/helpers/server-requests";
     import { onDestroy } from "svelte";
     import { flyTransitionParamsBottom } from "$lib/helpers/fly";
-
-    let email = "";
-    let isLoading = writable(false);
-
+    import store from "$lib/store";
     const {
         isLoggedIn,
         isAuthDrawerHidden,
         selectedLanguage,
         darkModeEnabled,
     } = store;
+
+    let email = "";
+    let isLoading = writable(false);
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
@@ -145,7 +144,7 @@
                 isLoading.set(true);
                 await logout();
                 location.reload();
-                // const didLogout = 
+                // const didLogout =
                 // if (!didLogout) isLoading.set(false);
                 // if (window.location.hostname === "localhost")
                 //     return location.reload();

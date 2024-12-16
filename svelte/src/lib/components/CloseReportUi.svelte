@@ -6,14 +6,19 @@
   import ArrowRightOutline from "flowbite-svelte-icons/ArrowRightOutline.svelte";
   import { disableContextMenu } from "$lib/helpers/basics";
   import { loadQRScanner } from "$lib/helpers/camera";
-  import store from "$lib/store";
-  const { qrCodeData, showPopup } = store;
   import { DEBUG_MODE } from "$lib/config";
   import { langChecker, translations } from "$lib/locales";
-  const { closeReportHidden } = store;
   import { onDestroy } from "svelte";
   import { flyTransitionParamsTop } from "$lib/helpers/fly";
-  const { selectedLanguage, darkModeEnabled, startQRScanner } = store;
+  import store from "$lib/store";
+  const {
+    selectedLanguage,
+    darkModeEnabled,
+    startQRScanner,
+    closeReportHidden,
+    qrCodeData,
+    showPopup,
+  } = store;
 
   function t(key: string): string {
     const langTranslations = translations[$selectedLanguage];

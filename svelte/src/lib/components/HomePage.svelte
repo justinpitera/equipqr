@@ -18,7 +18,6 @@
     import { getGSEDetails } from "$lib/helpers/server-requests";
     import { notify } from "$lib/helpers/notify";
     import store from "$lib/store";
-
     const {
         isLoggedIn,
         isSettingsHidden,
@@ -33,10 +32,10 @@
         statisticsDrawerHidden,
         selectGSEIDDrawerHidden,
         gseAction,
+        isAutoOpenMostRecentIssue,
+        isAutoOpenIssueDetails,
+        showPopup,
     } = store;
-
-    const { isAutoOpenMostRecentIssue, isAutoOpenIssueDetails, showPopup } =
-        store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];

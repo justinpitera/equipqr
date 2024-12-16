@@ -1,10 +1,11 @@
 <script lang="ts">
     import Chart from "flowbite-svelte/Chart.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
-    import store from "$lib/store";
     import { langChecker, translations } from "$lib/locales";
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
+    import store from "$lib/store";
     const { statisticsDrawerHidden, selectedLanguage, darkModeEnabled } = store;
+
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
         langChecker(key);

@@ -4,27 +4,28 @@
     import Plane from "lucide-svelte/icons/plane";
     import X from "lucide-svelte/icons/x";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
-    import store from "$lib/store";
     import {
         build_gate_options,
         gate_types,
     } from "$lib/helpers/report-ui-store";
-    const { isPastIssuesForSpecificIDHidden } = store;
     import { langChecker, translations } from "$lib/locales";
     import { onDestroy } from "svelte";
-    const { selectedLanguage, darkModeEnabled } = store;
+    import store from "$lib/store";
+    const {
+        issue_description,
+        operable,
+        selected_gate_type,
+        selected_gate_name,
+        isPastIssuesForSpecificIDHidden,
+        selectedLanguage,
+        darkModeEnabled,
+    } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];
         langChecker(key);
         return langTranslations?.[key] || key;
     }
-    const {
-        issue_description,
-        operable,
-        selected_gate_type,
-        selected_gate_name,
-    } = store;
 
     let issues: PastIssue[] = Array.from({ length: 20 }, (_, i) => ({
         gse_id: i + 1,

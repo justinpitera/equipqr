@@ -1,7 +1,7 @@
 <script lang="ts">
-    import store from "$lib/store";
     import { notify } from "$lib/helpers/notify";
     import { langChecker, translations } from "$lib/locales";
+    import store from "$lib/store";
     const { isAuthDrawerHidden, selectedLanguage, userRole } = store;
 
     function t(key: string): string {

@@ -4,10 +4,15 @@
     import Menu from "lucide-svelte/icons/menu";
     import { disableContextMenu } from "$lib/helpers/basics";
     import { destroyScanner } from "$lib/helpers/camera";
-    const { flashlightOn, flashlightDisabled } = store;
-    import store from "$lib/store";
     import { langChecker, translations } from "$lib/locales";
-    const { startQRScanner, selectedLanguage, darkModeEnabled } = store;
+    import store from "$lib/store";
+    const {
+        flashlightOn,
+        flashlightDisabled,
+        startQRScanner,
+        selectedLanguage,
+        darkModeEnabled,
+    } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];

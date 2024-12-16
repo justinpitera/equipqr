@@ -1,5 +1,4 @@
 <script lang="ts">
-    // Icons and components
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
     import X from "lucide-svelte/icons/x";
     import Fuel from "lucide-svelte/icons/fuel";
@@ -11,20 +10,21 @@
     import Avatar from "flowbite-svelte/Avatar.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import Checkbox from "flowbite-svelte/Checkbox.svelte";
-    // Utilities
-    // QR Scanner utilities
-    import store from "$lib/store";
-    const { qrCodeData, detectedGSE, isAutoOpenIssueDetails, showPopup } =
-        store;
-    // Details Drawer utilities
-    const { hideGSEDetail } = store;
-    // Cancel report utilities
     import { langChecker, translations } from "$lib/locales";
     import { onDestroy } from "svelte";
     import { equipment } from "$lib/helpers/equipment";
     import { flyTransitionParamsBottom } from "$lib/helpers/fly";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
-    const { selectedLanguage, darkModeEnabled } = store;
+    import store from "$lib/store";
+    const {
+        selectedLanguage,
+        darkModeEnabled,
+        qrCodeData,
+        detectedGSE,
+        isAutoOpenIssueDetails,
+        showPopup,
+        hideGSEDetail,
+    } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];

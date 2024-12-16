@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  // Icons and components
   import Image from "lucide-svelte/icons/image";
   import Video from "lucide-svelte/icons/video";
   import Upload from "lucide-svelte/icons/upload";
@@ -20,43 +19,20 @@
   import Select from "flowbite-svelte/Select.svelte";
   import Spinner from "flowbite-svelte/Spinner.svelte";
   import Tooltip from "flowbite-svelte/Tooltip.svelte";
-  // Utilities
   import { disableContextMenu, formatNumber } from "$lib/helpers/basics";
-  // QR Scanner utilities
   import { loadQRScanner } from "$lib/helpers/camera";
-  import store from "$lib/store";
-  const { qrCodeData, showPopup, showLoader, detectedGSE } = store;
-  // File upload utilities
   import {
     startWiggle,
     stopWiggle,
     handleFileChange,
   } from "$lib/helpers/file-upload";
-  const { mediaFiles, wiggleModeEnabled, pressTimer, isDragging } = store;
-  // Cancel report utilities
-  const { closeReportHidden } = store;
-  // Details Drawer utilities
   import { DEBUG_MODE, maxFiles } from "$lib/config";
   import { submitIssue } from "$lib/helpers/server-requests";
   import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
   import { notify } from "$lib/helpers/notify";
   import { build_gate_options } from "$lib/helpers/report-ui-store";
   import { langChecker, translations } from "$lib/locales";
-  const {
-    selectedLanguage,
-    isPastIssuesForSpecificIDHidden,
-    darkModeEnabled,
-    hideTip,
-    isRecentIssueDrawerHidden,
-  } = store;
-
-  function t(key: string): string {
-    const langTranslations = translations[$selectedLanguage];
-    langChecker(key);
-    return langTranslations?.[key] || key;
-  }
-
-  const { hideGSEDetail } = store;
+  import store from "$lib/store";
   const {
     worker_id,
     issue_description,
@@ -65,7 +41,28 @@
     selected_gate_name,
     gates,
     is_gate_type_dropdown_open,
+    hideGSEDetail,
+    selectedLanguage,
+    isPastIssuesForSpecificIDHidden,
+    darkModeEnabled,
+    hideTip,
+    isRecentIssueDrawerHidden,
+    closeReportHidden,
+    qrCodeData,
+    showPopup,
+    showLoader,
+    detectedGSE,
+    mediaFiles,
+    wiggleModeEnabled,
+    pressTimer,
+    isDragging,
   } = store;
+
+  function t(key: string): string {
+    const langTranslations = translations[$selectedLanguage];
+    langChecker(key);
+    return langTranslations?.[key] || key;
+  }
 
   async function handleReportFormSubmit(event: Event): Promise<void> {
     event.preventDefault();

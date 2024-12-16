@@ -29,7 +29,6 @@
     import Clock from "lucide-svelte/icons/clock";
     import Image from "lucide-svelte/icons/image";
     import Video from "lucide-svelte/icons/video";
-    import store from "$lib/store";
     import { langChecker, translations } from "$lib/locales";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
     import ChevronDownOutline from "flowbite-svelte-icons/ChevronDownOutline.svelte";
@@ -46,15 +45,18 @@
     } from "$lib/helpers/server-requests";
     import { notify } from "$lib/helpers/notify";
     import { flyTransitionParamsBottom } from "$lib/helpers/fly";
+    import store from "$lib/store";
     const {
+        selectedLanguage,
+        isIssuesHistoryHidden,
+        darkModeEnabled,
+        issues,
         fullscreenViewer,
         fullscreenImage,
         fullscreenVideo,
         isFullScreenMode,
+        showPopup,
     } = store;
-    const { selectedLanguage, isIssuesHistoryHidden, darkModeEnabled, issues } =
-        store;
-    const { showPopup } = store;
 
     function t(key: string): string {
         const langTranslations = translations[$selectedLanguage];

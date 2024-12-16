@@ -4,7 +4,6 @@
     import Globe from "lucide-svelte/icons/globe";
     import Sun from "lucide-svelte/icons/sun";
     import Trash2 from "lucide-svelte/icons/trash-2";
-    import store from "$lib/store";
     import Button from "flowbite-svelte/Button.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import { notify } from "$lib/helpers/notify";
@@ -13,7 +12,7 @@
     import { setLanguage } from "$lib/helpers/server-requests";
     import { onDestroy } from "svelte";
     import { flyTransitionParamsBottom } from "$lib/helpers/fly";
-
+    import store from "$lib/store";
     const {
         isSettingsHidden,
         notificationsEnabled,

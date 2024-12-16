@@ -2,10 +2,10 @@
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
     import Button from "flowbite-svelte/Button.svelte";
     import Drawer from "flowbite-svelte/Drawer.svelte";
-    import store from "$lib/store";
     import { equipment } from "$lib/helpers/equipment";
     import { langChecker, translations } from "$lib/locales";
     import { onMount } from "svelte";
+    import store from "$lib/store";
     const { selectedLanguage, addVehiclesDrawerHidden, darkModeEnabled } =
         store;
 
