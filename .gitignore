@@ -1,5 +1,6 @@
 mkcert.exe
 qr_codes
+out
 qr_codes_page.html
 
 # Database migrations
