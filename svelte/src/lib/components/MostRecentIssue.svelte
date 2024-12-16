@@ -15,7 +15,7 @@
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
     import Copy from "lucide-svelte/icons/copy";
-    import Button from "./ui/button/button.svelte";
+    import { Button } from "flowbite-svelte";
     const { selectedLanguage, darkModeEnabled, isRecentIssueDrawerHidden } =
         store;
     const { issue_description } = store;
