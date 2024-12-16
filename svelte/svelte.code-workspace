@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"src/lib/prototypes": true,
+			"src/lib/index.ts": true,
+			"src/lib/utils.ts": true,
+			"**/svelte.code-workspace": false,
+			"**/translator.ts": true,
+			"**/.svelte-kit": true,
+			"**/node_modules": true,
+			"**/postcss.config.js": true,
+			"**/components.json": true,
+			"**/buf.gen.yaml": true,
+			"**/bun.lockb": true,
+			"**/.npmrc": true,
+			"**/update.sh": true,
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true
+		}
+	}
+}
