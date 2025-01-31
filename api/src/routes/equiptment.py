@@ -26,6 +26,7 @@ from src.models import GroundSupportEquiptment, Issue, IssueAttachment
 from src.protos.requests.v1.requests_pb2 import (
     GSEDetailsRequest,
     GSEDetailsResponse,
+    ListGSEReponse,
     MostRecentIssueResponse,
 )
 
@@ -42,7 +43,7 @@ async def details_request(request: Request) -> Response:
 
         # Query the database for the specified GSE
         logger.info(f"{Fore.YELLOW}🛠️ Querying database for GSE ID: {gse_details_request.gse_id}{Style.RESET_ALL}")
-        fetched_gse_model = await GroundSupportEquiptment.get_or_none(gse_id=gse_details_request.gse_id)
+        fetched_gse_model: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(gse_id=gse_details_request.gse_id)
 
         if not fetched_gse_model:
             logger.warning(f"{Fore.RED}❌ GSE model not found for ID: {gse_details_request.gse_id}{Style.RESET_ALL}")
@@ -91,7 +92,7 @@ async def details_request(request: Request) -> Response:
             latest_service_chassi=str(fetched_gse_model.latest_service_chassi),
             latest_service_unit=str(fetched_gse_model.latest_service_unit),
             capacity = float(fetched_gse_model.capacity) if fetched_gse_model.capacity is not None else 0.0, # pyright: ignore
-            details="",
+            details="success",
             error=None
         )
 
@@ -106,9 +107,19 @@ async def details_request(request: Request) -> Response:
         return Response(content=error_response.SerializeToString(), media_type="application/protobuf", status_code=500)
 
     except Exception as e:
-        logger.exception(f"{Fore.RED}🔥 Unexpected error occurred: {e}{Style.RESET_ALL}")
+        logger.exception(f"{Fore.RED}🔥 Unexpected error occurred: {e}{Style.RESET_ALL}")    
         error_response = GSEDetailsResponse(error="Unexpected error occurred: " + str(e))
         return Response(content=error_response.SerializeToString(), media_type="application/protobuf", status_code=500)
     
-async def fetch_gse() -> Response:
-    pass
+async def fetch_gse(request: Request) -> Response:
+    
+    models: list[GroundSupportEquiptment] = await GroundSupportEquiptment.all()
+    
+    response: ListGSEReponse = ListGSEReponse()
+    for model in models:
+        response.gse_id.append(model.gse_id)
+        
+    return Response(
+        status_code=200,
+        content=response.SerializeToString()
+    )

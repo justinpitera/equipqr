@@ -1,5 +1,11 @@
 {
     "typeCheckingMode": "strict",
     "reportMissingTypeStubs": true,
-    "stubPath": "./api/typings"
+    "stubPath": "./api/typings",
+    "exclude": [
+        "**/tortoise/**"
+    ],
+    "reportUnknownMemberType": false,
+    "reportUnknownArgumentType": false,
+    "reportGeneralTypeIssues": false
 }

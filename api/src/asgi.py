@@ -19,7 +19,6 @@ from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 from tortoise import Tortoise
 from loguru import logger
-from faker import Faker
 
 # Local
 from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
@@ -27,11 +26,9 @@ from src.models import CrewMember
 from src.database import database_importer
 from src.enums import CrewMemberPositionEnum
 
-fake: Faker = Faker()
-
-
 from src.routes import (
     get_status,
+    fetch_gse,
     details_request,
     submit_issue,
     delete_issues,
@@ -119,6 +116,7 @@ def init_asgi() -> Starlette:
     
     # GroundSupportEquiptment (GSEs) related
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/details", route=details_request, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/all", route=fetch_gse, methods=["GET"])
 
     # Issues
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/submit", route=submit_issue, methods=["POST"])

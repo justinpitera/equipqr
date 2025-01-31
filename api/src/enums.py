@@ -13,9 +13,9 @@ from enum import Enum
 
 class CrewMemberPositionEnum(str, Enum):
     """Enum to describe crew member positions."""
-    GROUND   = "Ground"
-    MECHANIC = "Mechanic"
-    MANAGEMENT = "Management"
+    GROUND   = "employee"
+    MECHANIC = "mechanic"
+    MANAGEMENT = "master"
     
 class IssueProgressEnum(str, Enum):
     """Enum to describe issue progress."""

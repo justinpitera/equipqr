@@ -7,7 +7,7 @@ qr_codes_page.html
 migrations/
 
 # Database csv
-database.csv
+# database.csv
 
 # Certificate/Key bundles
 private/

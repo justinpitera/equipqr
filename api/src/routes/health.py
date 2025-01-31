@@ -9,17 +9,20 @@ Authors:
 
 # Third-party
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import Response
 
 # Local
 from src import API_VERSION
 
-async def get_status(_: Request) -> JSONResponse:
-    response: JSONResponse = JSONResponse(
-        status_code=200,
-        content={
-            "status": "healthy",
-            "version": API_VERSION
-        }
+# Protobufs
+from src.protos.requests.v1.requests_pb2 import HealthStatusResponse
+
+async def get_status(_: Request) -> Response:
+    response: HealthStatusResponse = HealthStatusResponse(
+        status="healthy",
+        version=API_VERSION
     )
-    return response
+    return Response(
+        status_code=200,
+        content=response.SerializeToString()
+    )

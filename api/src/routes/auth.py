@@ -40,13 +40,6 @@ BASE_URL: str = API_CONFIG["api"]["domain"] + ":" + str(API_CONFIG["api"]["port"
 TOKEN_SERIALIZER: URLSafeTimedSerializer = URLSafeTimedSerializer(API_CONFIG["auth"]["jwt"]["secret"])
 
 
-class _UserRegisteration(BaseModel):
-    """
-    Class used to validate incoming email addresses during registration.
-    """
-    email: EmailStr
-
-
 async def set_token(request: Request) -> RedirectResponse:
     """Sets the access token in cookies for existing users and redirects home."""
     TOTP_CLIENT: Redis = await RedisClient.get_client(db=2)
@@ -93,21 +86,17 @@ async def auth_user(request: Request) -> Response:
         auth_user_request.ParseFromString(body)
 
         # Check if the user already exists
-        existing_user: CrewMember | None = await CrewMember.get_or_none(email=auth_user_request.email)
-        if not existing_user:
-            # Return an error if the user does not exist
-            logger.error(f"User not found: {auth_user_request.email}")
-            return JSONResponse({"error": "User does not exist"}, status_code=404)
+        existing_user: CrewMember | None = await CrewMember.get(email=auth_user_request.email)
 
         # User exists; proceed with sending the access token email
-        logger.info(f"Sending access token email to existing user: {auth_user_request.email}")
+        logger.info(f"Sending access token email to existing user: {existing_user.email}")
 
         # Generate a secure random token and store it in Redis
         random_token: str = secrets.token_urlsafe(nbytes=32)
         TOTP_CLIENT: Redis = await RedisClient.get_client(db=2)
-        await TOTP_CLIENT.set(name=random_token, value=auth_user_request.email, ex=600)  # Expires in 10 minutes
+        await TOTP_CLIENT.set(name=random_token, value=existing_user.email, ex=600)  # Expires in 10 minutes
 
-        await _send_magic_link(email=auth_user_request.email, random_token=random_token)
+        await _send_magic_link(email=existing_user.email, random_token=random_token)
         response: LoginResponse = LoginResponse(
             message="Login success"
         )
@@ -115,19 +104,26 @@ async def auth_user(request: Request) -> Response:
 
     except ValidationError as e:
         logger.error(f"Validation error: {str(e)}")
-        return JSONResponse(content={"error": "Invalid input data"}, status_code=400)
-    except OperationalError as e:
-        logger.error(f"Database error: {str(e)}")
-        return JSONResponse(content={"error": "Database error"}, status_code=500)
-    except ValueError as e:
-        logger.error(f"Value error: {str(e)}")
-        return JSONResponse(content={"error": "Invalid value provided"}, status_code=400)
+        return Response(
+            content=LoginResponse(message="Validation error occurred").SerializeToString(),
+            status_code=400,
+        )
+    except DoesNotExist as e:
+        logger.error(f"Does not exist error: {str(e)}")
+        return Response(
+            content=LoginResponse(message="User does not exist.").SerializeToString(),
+            status_code=400,
+        )
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
-        return JSONResponse(content={"error": "An unexpected error occurred"}, status_code=500)
+        return Response(
+            content=LoginResponse(message="Unexpected error occurred").SerializeToString(),
+            status_code=500,
+        )
 
 
 async def _send_magic_link(email: str, random_token: str) -> None:
+    
     """
     Sends an email with a button to set the access token in the user's cookies.
     """
