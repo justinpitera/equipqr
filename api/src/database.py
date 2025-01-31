@@ -97,6 +97,7 @@ async def parse_gse_row(row: pd.Series) -> GroundSupportEquiptment | None:
             status=clean_value(row["status"], "status"),
             purchase_date=safe_parse_date(row["purchase_date"], "purchase_date"),
             agreement_expire_date=safe_parse_date(row["agreement_expire_date"], "agreement_expire_date"),
+            path="/default"  # Add a default path value
         )
     except Exception as e:
         logger.error(f"Row parsing failed: {row.to_dict()} | Error: {e}")
