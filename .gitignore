@@ -3,6 +3,8 @@ qr_codes
 out
 qr_codes_page.html
 
+.pid
+
 # Database migrations
 migrations/
 
