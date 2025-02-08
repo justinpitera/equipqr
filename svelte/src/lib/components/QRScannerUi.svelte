@@ -25,7 +25,7 @@
     <div
         class="absolute bottom-0 bg-slate-300 left-0 w-full"
         style="
-    height: calc(100vh - 720px);
+    height: calc((100vh - 720px) / 2);
     border-top-left-radius: 10px;
     border-top-right-radius: 12px;
     filter: drop-shadow(1px 2px 8px rgba(255,255,255,0.5));"
