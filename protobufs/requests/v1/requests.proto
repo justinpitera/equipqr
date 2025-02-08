@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package requests.v1;
 
-import "google/protobuf/timestamp.proto";
+// import "google/protobuf/timestamp.proto";
 
 // Health Check
 message HealthStatusRequest {}

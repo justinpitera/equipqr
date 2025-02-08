@@ -12,18 +12,18 @@ from typing import Literal
 from uuid import uuid4
 
 # Third-party
-from src.routes.issues import leave_comment
 from starlette.applications import Starlette
 from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
-from tortoise import Tortoise
+from tortoise import Tortoise # pyright: ignore
 from loguru import logger
 
 # Local
 from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
 from src.models import CrewMember
-from src.database import database_importer
+# from src.database import database_importer
 from src.enums import CrewMemberPositionEnum
+from src.routes.issues import leave_comment
 
 from src.routes import (
     get_status,

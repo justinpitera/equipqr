@@ -160,6 +160,10 @@ export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean, 
 		console.log("Checking...")
 		if (custom_gse_id) {
 			console.log("Code Valid!", custom_gse_id)
+			// Vibrate on success - short pulse
+			if ('vibrate' in navigator) {
+				navigator.vibrate(100);
+			}
 			store.qrCodeData.set(custom_gse_id);
 			console.log("isCheckOnly?", isCheckOnly, custom_gse_id)
 			if (isCheckOnly) {
@@ -192,6 +196,10 @@ export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean, 
 			}
 		} else {
 			console.log("Invalid code found!", custom_gse_id)
+			// Vibrate error pattern - longer pulses
+			if ('vibrate' in navigator) {
+				navigator.vibrate([100, 100, 200]);
+			}
 			store.showPopup.set(false);
 			store.detectedGSE.set(null);
 			store.qrCodeData.set(t("Unable to read QR code."));
@@ -203,6 +211,10 @@ export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean, 
 			}
 		}
 	} catch (e) {
+		// Vibrate error pattern
+		if ('vibrate' in navigator) {
+			navigator.vibrate([100, 100, 200]);
+		}
 		console.error("loadQRScanner error", e)
 	}
 	store.showLoader.set(false);

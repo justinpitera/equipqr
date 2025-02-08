@@ -19,8 +19,7 @@ from tortoise.fields import (
     DatetimeField,
     UUIDField,
     ForeignKeyField,
-    Field,
-    OnDelete
+    OnDelete # pyright: ignore
 )
 
 if TYPE_CHECKING:
@@ -28,11 +27,11 @@ if TYPE_CHECKING:
 
 class IssueAttachment(Model):
     """Stores attachments (photos/videos) related to Issues mapped to object storage."""
-    id: Field[UUID] = UUIDField(primary_key=True, unique=True, null=False)
-    issue: Field["Issue"] = ForeignKeyField(
+    id: UUID = UUIDField(primary_key=True, unique=True, null=False)
+    issue: "Issue" = ForeignKeyField(
         model_name="models.Issue",
         related_name="attachments",
         on_delete=OnDelete.CASCADE,
     )
-    file_type: Field[str] = CharField(max_length=50, null=False)
-    uploaded_at: Field[datetime] = DatetimeField(auto_now_add=True)
+    file_type: str = CharField(max_length=50, null=False)
+    uploaded_at: datetime = DatetimeField(auto_now_add=True)

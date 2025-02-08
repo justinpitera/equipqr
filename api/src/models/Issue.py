@@ -11,7 +11,6 @@ from tortoise.fields import (
     DatetimeField,
     TextField,
     UUIDField,
-    Field,
     ReverseRelation,
     CharEnumField
 )
@@ -27,14 +26,14 @@ if TYPE_CHECKING:
 
 class Issue(Model):
     """Stores issues relating to GroundSupportEquiptment."""
-    id                               : Field[UUID]     = UUIDField(primary_key=True, unique=True, null=False)
-    gse_id                           : Field[str]      = CharField(max_length=255)
-    issue_description                : Field[str]      = TextField()
-    reported_at                      : Field[datetime] = DatetimeField(auto_now_add=True)
-    reported_by                      : Field[str]      = CharField(max_length=3)
-    is_operable                      : Field[bool]     = BooleanField(default=True)
-   # Location                         : Field["Location"] = 
+    id                               : UUID     = UUIDField(primary_key=True, unique=True, null=False)
+    gse_id                           : str      = CharField(max_length=255)
+    issue_description                : str      = TextField()
+    reported_at                      : datetime = DatetimeField(auto_now_add=True)
+    reported_by                      : str      = CharField(max_length=3)
+    is_operable                      : bool     = BooleanField(default=True)
+   # Location                         : "Location" = 
     progress                         : IssueProgressEnum = CharEnumField(enum_type=IssueProgressEnum, null=False, default=IssueProgressEnum.REPORTED)
-    estimated_time                   : Field[datetime] = DatetimeField(null=True)
+    estimated_time                   : datetime | None = DatetimeField(null=True)
     attachments                      : ReverseRelation["IssueAttachment"] | None = None
     comments                         : ReverseRelation["IssueComment"] | None = None

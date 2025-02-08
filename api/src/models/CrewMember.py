@@ -31,9 +31,9 @@ if TYPE_CHECKING:
 
 class CrewMember(Model):
     """Database model to represent various types of crew memberss (ground crew, mechanics, etc) and degree of authority."""
-    id                               : Field[UUID] = UUIDField(primary_key=True, unique=True, null=False)
-    email                            : Field[str] = CharField(unique=True, max_length=255, null=False, db_index=True)
-    language_preference              : Field[str] = CharField(max_length=50, null=False)
+    id                               : UUID = UUIDField(primary_key=True, unique=True, null=False)
+    email                            : str = CharField(unique=True, max_length=255, null=False, db_index=True)
+    language_preference              : str = CharField(max_length=50, null=False)
     position                         : CrewMemberPositionEnum = CharEnumField(enum_type=CrewMemberPositionEnum, null=False)
-    is_master                        : Field[bool] = BooleanField(default=False)
+    is_master                        : bool = BooleanField(default=False)
     reported_issues                  : ReverseRelation["Issue"]

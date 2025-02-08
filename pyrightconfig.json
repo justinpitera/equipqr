@@ -1,10 +1,7 @@
 {
     "typeCheckingMode": "basic",
     "reportMissingTypeStubs": false,
-    "exclude": [
-        "**/tortoise/**"
-    ],
     "reportUnknownMemberType": false,
     "reportUnknownArgumentType": false,
-    "reportGeneralTypeIssues": false
+    "reportGeneralTypeIssues": true
 }
