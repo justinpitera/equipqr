@@ -288,7 +288,8 @@
     "Cancel": "Cancel",
     "Failed to log in: Error": "Failed to log in: Error",
     "The issue was submitted successfully": "The issue was submitted successfully",
-    "Failed to retrieve gates: Error: Not Found": "Failed to retrieve gates: Error: Not Found"
+    "Failed to retrieve gates: Error: Not Found": "Failed to retrieve gates: Error: Not Found",
+    "Camera has been closed": "Camera has been closed"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -578,7 +579,8 @@
     "Cancel": "Ophæve",
     "Failed to log in: Error": "Kunne ikke logge ind: Fejl",
     "The issue was submitted successfully": "Problemet blev forelagt med succes",
-    "Failed to retrieve gates: Error: Not Found": "Kunne ikke hente porte: fejl: ikke fundet"
+    "Failed to retrieve gates: Error: Not Found": "Kunne ikke hente porte: fejl: ikke fundet",
+    "Camera has been closed": "Kameraet er blevet lukket"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -868,7 +870,8 @@
     "Cancel": "Kansellere",
     "Failed to log in: Error": "Kunne ikke logge inn: Feil",
     "The issue was submitted successfully": "Problemet ble sendt inn vellykket",
-    "Failed to retrieve gates: Error: Not Found": "Kunne ikke hente porter: Feil: ikke funnet"
+    "Failed to retrieve gates: Error: Not Found": "Kunne ikke hente porter: Feil: ikke funnet",
+    "Camera has been closed": "Kamera har vært lukket"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -1159,6 +1162,7 @@
     "Cancel": "Avboka",
     "Failed to log in: Error": "Det gick inte att logga in: fel",
     "The issue was submitted successfully": "Frågan lämnades framgångsrikt",
-    "Failed to retrieve gates: Error: Not Found": "Det gick inte att hämta Gates: Fel: hittades inte"
+    "Failed to retrieve gates: Error: Not Found": "Det gick inte att hämta Gates: Fel: hittades inte",
+    "Camera has been closed": "Kameran har stängts"
   }
 }
