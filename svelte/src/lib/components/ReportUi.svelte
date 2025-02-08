@@ -328,7 +328,7 @@
             class="w-6 h-6 ms-2 p-0 font-semibold text-primary-800 bg-white dark:text-primary-800 dark:bg-white"
           >
             {$detectedGSE?.issue_count
-              ? formatNumber(parseInt($detectedGSE.issue_count))
+              ? formatNumber($detectedGSE.issue_count)
               : "0"}
           </Badge>
         </Button>

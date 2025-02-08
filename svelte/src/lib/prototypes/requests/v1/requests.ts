@@ -3,6 +3,7 @@
  * compiler version: 0.0.0
  * source: requests/v1/requests.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
+import * as dependency_1 from "./..\\..\\google\\protobuf\\timestamp";
 import * as pb_1 from "google-protobuf";
 export namespace requests.v1 {
     export class HealthStatusRequest extends pb_1.Message {
@@ -212,13 +213,13 @@ export namespace requests.v1 {
             manufacturer?: string;
             location?: string;
             status?: string;
-            issue_count?: string;
+            issue_count?: number;
             type_of_fuel?: string;
             in_use?: boolean;
             most_recent_issue?: MostRecentIssueResponse;
             lift_inspection_expires?: string;
-            latest_service_chassi?: string;
-            latest_service_unit?: string;
+            latest_service_chassi?: dependency_1.google.protobuf.Timestamp;
+            latest_service_unit?: dependency_1.google.protobuf.Timestamp;
         } & (({
             capacity?: number;
         }) | ({
@@ -325,9 +326,9 @@ export namespace requests.v1 {
             pb_1.Message.setField(this, 7, value);
         }
         get issue_count() {
-            return pb_1.Message.getFieldWithDefault(this, 8, "") as string;
+            return pb_1.Message.getFieldWithDefault(this, 8, 0) as number;
         }
-        set issue_count(value: string) {
+        set issue_count(value: number) {
             pb_1.Message.setField(this, 8, value);
         }
         get type_of_fuel() {
@@ -358,16 +359,22 @@ export namespace requests.v1 {
             pb_1.Message.setField(this, 12, value);
         }
         get latest_service_chassi() {
-            return pb_1.Message.getFieldWithDefault(this, 13, "") as string;
+            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 13) as dependency_1.google.protobuf.Timestamp;
         }
-        set latest_service_chassi(value: string) {
-            pb_1.Message.setField(this, 13, value);
+        set latest_service_chassi(value: dependency_1.google.protobuf.Timestamp) {
+            pb_1.Message.setWrapperField(this, 13, value);
+        }
+        get has_latest_service_chassi() {
+            return pb_1.Message.getField(this, 13) != null;
         }
         get latest_service_unit() {
-            return pb_1.Message.getFieldWithDefault(this, 14, "") as string;
+            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 14) as dependency_1.google.protobuf.Timestamp;
         }
-        set latest_service_unit(value: string) {
-            pb_1.Message.setField(this, 14, value);
+        set latest_service_unit(value: dependency_1.google.protobuf.Timestamp) {
+            pb_1.Message.setWrapperField(this, 14, value);
+        }
+        get has_latest_service_unit() {
+            return pb_1.Message.getField(this, 14) != null;
         }
         get capacity() {
             return pb_1.Message.getFieldWithDefault(this, 15, 0) as number;
@@ -431,13 +438,13 @@ export namespace requests.v1 {
             manufacturer?: string;
             location?: string;
             status?: string;
-            issue_count?: string;
+            issue_count?: number;
             type_of_fuel?: string;
             in_use?: boolean;
             most_recent_issue?: ReturnType<typeof MostRecentIssueResponse.prototype.toObject>;
             lift_inspection_expires?: string;
-            latest_service_chassi?: string;
-            latest_service_unit?: string;
+            latest_service_chassi?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+            latest_service_unit?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
             capacity?: number;
             details?: string;
             error?: string;
@@ -480,10 +487,10 @@ export namespace requests.v1 {
                 message.lift_inspection_expires = data.lift_inspection_expires;
             }
             if (data.latest_service_chassi != null) {
-                message.latest_service_chassi = data.latest_service_chassi;
+                message.latest_service_chassi = dependency_1.google.protobuf.Timestamp.fromObject(data.latest_service_chassi);
             }
             if (data.latest_service_unit != null) {
-                message.latest_service_unit = data.latest_service_unit;
+                message.latest_service_unit = dependency_1.google.protobuf.Timestamp.fromObject(data.latest_service_unit);
             }
             if (data.capacity != null) {
                 message.capacity = data.capacity;
@@ -505,13 +512,13 @@ export namespace requests.v1 {
                 manufacturer?: string;
                 location?: string;
                 status?: string;
-                issue_count?: string;
+                issue_count?: number;
                 type_of_fuel?: string;
                 in_use?: boolean;
                 most_recent_issue?: ReturnType<typeof MostRecentIssueResponse.prototype.toObject>;
                 lift_inspection_expires?: string;
-                latest_service_chassi?: string;
-                latest_service_unit?: string;
+                latest_service_chassi?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+                latest_service_unit?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
                 capacity?: number;
                 details?: string;
                 error?: string;
@@ -553,10 +560,10 @@ export namespace requests.v1 {
                 data.lift_inspection_expires = this.lift_inspection_expires;
             }
             if (this.latest_service_chassi != null) {
-                data.latest_service_chassi = this.latest_service_chassi;
+                data.latest_service_chassi = this.latest_service_chassi.toObject();
             }
             if (this.latest_service_unit != null) {
-                data.latest_service_unit = this.latest_service_unit;
+                data.latest_service_unit = this.latest_service_unit.toObject();
             }
             if (this.capacity != null) {
                 data.capacity = this.capacity;
@@ -587,8 +594,8 @@ export namespace requests.v1 {
                 writer.writeString(6, this.location);
             if (this.status.length)
                 writer.writeString(7, this.status);
-            if (this.issue_count.length)
-                writer.writeString(8, this.issue_count);
+            if (this.issue_count != 0)
+                writer.writeInt32(8, this.issue_count);
             if (this.type_of_fuel.length)
                 writer.writeString(9, this.type_of_fuel);
             if (this.in_use != false)
@@ -597,10 +604,10 @@ export namespace requests.v1 {
                 writer.writeMessage(11, this.most_recent_issue, () => this.most_recent_issue.serialize(writer));
             if (this.lift_inspection_expires.length)
                 writer.writeString(12, this.lift_inspection_expires);
-            if (this.latest_service_chassi.length)
-                writer.writeString(13, this.latest_service_chassi);
-            if (this.latest_service_unit.length)
-                writer.writeString(14, this.latest_service_unit);
+            if (this.has_latest_service_chassi)
+                writer.writeMessage(13, this.latest_service_chassi, () => this.latest_service_chassi.serialize(writer));
+            if (this.has_latest_service_unit)
+                writer.writeMessage(14, this.latest_service_unit, () => this.latest_service_unit.serialize(writer));
             if (this.has_capacity)
                 writer.writeDouble(15, this.capacity);
             if (this.has_details)
@@ -638,7 +645,7 @@ export namespace requests.v1 {
                         message.status = reader.readString();
                         break;
                     case 8:
-                        message.issue_count = reader.readString();
+                        message.issue_count = reader.readInt32();
                         break;
                     case 9:
                         message.type_of_fuel = reader.readString();
@@ -653,10 +660,10 @@ export namespace requests.v1 {
                         message.lift_inspection_expires = reader.readString();
                         break;
                     case 13:
-                        message.latest_service_chassi = reader.readString();
+                        reader.readMessage(message.latest_service_chassi, () => message.latest_service_chassi = dependency_1.google.protobuf.Timestamp.deserialize(reader));
                         break;
                     case 14:
-                        message.latest_service_unit = reader.readString();
+                        reader.readMessage(message.latest_service_unit, () => message.latest_service_unit = dependency_1.google.protobuf.Timestamp.deserialize(reader));
                         break;
                     case 15:
                         message.capacity = reader.readDouble();

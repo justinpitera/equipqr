@@ -1,4 +1,3 @@
-import { DEBUG_MODE } from "$lib/config";
 import { notify } from "$lib/helpers/notify";
 import { Utils } from "$lib/service-worker/utils.sw";
 
@@ -26,21 +25,21 @@ const registerSw = (
 	});
 
 let deferredPrompt: any | null = null;
-let attempts: number = 0;
 export async function registerServiceWorker() {
 	await registerSw("sw.js", /* 12 hours */ 1000 * 60 * 60 * 12);
-	if (DEBUG_MODE) return;
+	// if (DEBUG_MODE) return;
 	window.addEventListener('beforeinstallprompt', (e) => {
 		deferredPrompt = e; // e.preventDefault();
 		return false;
 	});
+	let showOnce = true;
 	window.addEventListener('click', async () => {
+		if (!showOnce) return;
 		if (deferredPrompt) {
-			if (attempts === 2) return;
-			attempts += 1;
 			deferredPrompt.prompt();
 			await deferredPrompt.userChoice; // const choiceResult = console.log(`User choice: ${choiceResult.outcome}`);
 			deferredPrompt = null;
+			showOnce = false;
 		}
 	});
 	window.addEventListener('appinstalled', () => {

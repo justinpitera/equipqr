@@ -10,7 +10,7 @@ declare global {
 		manufacturer?: string;
 		location?: string;
 		status?: string;
-		issue_count?: string;
+		issue_count?: number;
 		type_of_fuel?: string;
 		in_use?: boolean;
 		most_recent_issue?: {
@@ -21,8 +21,8 @@ declare global {
 			attachments: string;
 		};
 		lift_inspection_expires?: string | null;
-		latest_service_chassi?: string | null;
-		latest_service_unit?: string | null;
+		latest_service_chassi?: Timestamp | null;
+		latest_service_unit?: Timestamp | null;
 		capacity?: number | null;
 		details?: string;
 		error?: string;

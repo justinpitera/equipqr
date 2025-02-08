@@ -287,7 +287,8 @@
     "Select GSE ID": "Select GSE ID",
     "Cancel": "Cancel",
     "Failed to log in: Error": "Failed to log in: Error",
-    "The issue was submitted successfully": "The issue was submitted successfully"
+    "The issue was submitted successfully": "The issue was submitted successfully",
+    "Failed to retrieve gates: Error: Not Found": "Failed to retrieve gates: Error: Not Found"
   },
   "da": {
     "Authentication": "Godkendelse",
@@ -576,7 +577,8 @@
     "Select GSE ID": "Vælg GSE ID",
     "Cancel": "Ophæve",
     "Failed to log in: Error": "Kunne ikke logge ind: Fejl",
-    "The issue was submitted successfully": "Problemet blev forelagt med succes"
+    "The issue was submitted successfully": "Problemet blev forelagt med succes",
+    "Failed to retrieve gates: Error: Not Found": "Kunne ikke hente porte: fejl: ikke fundet"
   },
   "no": {
     "Authentication": "Autentisering",
@@ -865,7 +867,8 @@
     "Select GSE ID": "Velg GSE ID",
     "Cancel": "Kansellere",
     "Failed to log in: Error": "Kunne ikke logge inn: Feil",
-    "The issue was submitted successfully": "Problemet ble sendt inn vellykket"
+    "The issue was submitted successfully": "Problemet ble sendt inn vellykket",
+    "Failed to retrieve gates: Error: Not Found": "Kunne ikke hente porter: Feil: ikke funnet"
   },
   "sv": {
     "Authentication": "Autentisering",
@@ -1155,6 +1158,7 @@
     "Select GSE ID": "Välj GSE -ID",
     "Cancel": "Avboka",
     "Failed to log in: Error": "Det gick inte att logga in: fel",
-    "The issue was submitted successfully": "Frågan lämnades framgångsrikt"
+    "The issue was submitted successfully": "Frågan lämnades framgångsrikt",
+    "Failed to retrieve gates: Error: Not Found": "Det gick inte att hämta Gates: Fel: hittades inte"
   }
 }

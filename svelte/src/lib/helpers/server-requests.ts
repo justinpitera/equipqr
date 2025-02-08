@@ -366,7 +366,10 @@ export async function get_gates(airport_icao_code: string) {
 		const responseData = await response.arrayBuffer();
 		const responseBytes = new Uint8Array(responseData);
 		const output = FetchGatesResponse.deserialize(responseBytes);
-		if (debug_routes) console.log("get_gates", output)
+		if (debug_routes) console.log("get_gates", output.gates)
+		for (const gate of output.gates) {
+			console.log("gate", gate.id, gate.name)
+		}
 	} catch (e) {
 		console.error(
 			"%cError retrieving gates",
