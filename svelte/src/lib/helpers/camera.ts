@@ -491,7 +491,9 @@ async function scanQRCode(customDevice?: string): Promise<string | null> {
 			} else {
 				loadingMessage.innerText = "⌛ Loading video...";
 			}
-			requestAnimationFrame(qrScanner);
+			setTimeout(() => {
+				requestAnimationFrame(qrScanner);
+			}, 3);
 		}
 	});
 }
