@@ -16,7 +16,7 @@
 
 <div
     id="qrScanner"
-    class="relative w-[100vw] h-[100vh] bg-black"
+    class="relative w-[100svw] h-[100svh] bg-black"
     style="filter: invert({$darkModeEnabled ? '1' : '0'});"
 >
     <div id="loadingMessage">🎥 {t("Loading Camera...")}</div>
@@ -25,7 +25,7 @@
     <div
         class="absolute bottom-0 bg-slate-300 left-0 w-full"
         style="
-    height: 100px;
+    height: 92px;
     border-top-left-radius: 10px;
     border-top-right-radius: 12px;
     filter: drop-shadow(1px 2px 8px rgba(255,255,255,0.5));"
