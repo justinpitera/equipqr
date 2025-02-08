@@ -3,7 +3,7 @@
  * compiler version: 0.0.0
  * source: requests/v1/requests.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
-import * as dependency_1 from "./../../google/protobuf/timestamp";
+import * as dependency_1 from "./..\\..\\google\\protobuf\\timestamp";
 import * as pb_1 from "google-protobuf";
 export namespace requests.v1 {
     export class HealthStatusRequest extends pb_1.Message {
@@ -2527,6 +2527,209 @@ export namespace requests.v1 {
         }
         static deserializeBinary(bytes: Uint8Array): Gate {
             return Gate.deserialize(bytes);
+        }
+    }
+    export class IssueComment extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            issue_id?: string;
+            comment?: string;
+            comment_by?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("issue_id" in data && data.issue_id != undefined) {
+                    this.issue_id = data.issue_id;
+                }
+                if ("comment" in data && data.comment != undefined) {
+                    this.comment = data.comment;
+                }
+                if ("comment_by" in data && data.comment_by != undefined) {
+                    this.comment_by = data.comment_by;
+                }
+            }
+        }
+        get issue_id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set issue_id(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get comment() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set comment(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get comment_by() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set comment_by(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        static fromObject(data: {
+            issue_id?: string;
+            comment?: string;
+            comment_by?: string;
+        }): IssueComment {
+            const message = new IssueComment({});
+            if (data.issue_id != null) {
+                message.issue_id = data.issue_id;
+            }
+            if (data.comment != null) {
+                message.comment = data.comment;
+            }
+            if (data.comment_by != null) {
+                message.comment_by = data.comment_by;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                issue_id?: string;
+                comment?: string;
+                comment_by?: string;
+            } = {};
+            if (this.issue_id != null) {
+                data.issue_id = this.issue_id;
+            }
+            if (this.comment != null) {
+                data.comment = this.comment;
+            }
+            if (this.comment_by != null) {
+                data.comment_by = this.comment_by;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.issue_id.length)
+                writer.writeString(1, this.issue_id);
+            if (this.comment.length)
+                writer.writeString(2, this.comment);
+            if (this.comment_by.length)
+                writer.writeString(3, this.comment_by);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): IssueComment {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new IssueComment();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.issue_id = reader.readString();
+                        break;
+                    case 2:
+                        message.comment = reader.readString();
+                        break;
+                    case 3:
+                        message.comment_by = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): IssueComment {
+            return IssueComment.deserialize(bytes);
+        }
+    }
+    export class IssueCommentResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            id?: string;
+            error?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("id" in data && data.id != undefined) {
+                    this.id = data.id;
+                }
+                if ("error" in data && data.error != undefined) {
+                    this.error = data.error;
+                }
+            }
+        }
+        get id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set id(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get error() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set error(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            id?: string;
+            error?: string;
+        }): IssueCommentResponse {
+            const message = new IssueCommentResponse({});
+            if (data.id != null) {
+                message.id = data.id;
+            }
+            if (data.error != null) {
+                message.error = data.error;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                id?: string;
+                error?: string;
+            } = {};
+            if (this.id != null) {
+                data.id = this.id;
+            }
+            if (this.error != null) {
+                data.error = this.error;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.id.length)
+                writer.writeString(1, this.id);
+            if (this.error.length)
+                writer.writeString(2, this.error);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): IssueCommentResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new IssueCommentResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.id = reader.readString();
+                        break;
+                    case 2:
+                        message.error = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): IssueCommentResponse {
+            return IssueCommentResponse.deserialize(bytes);
         }
     }
 }

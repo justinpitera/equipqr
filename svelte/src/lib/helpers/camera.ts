@@ -20,17 +20,37 @@ store.showPopup.subscribe((value) => {
 	showPopup = value;
 });
 
+let startQRScanner: boolean = false;
+store.startQRScanner.subscribe((value) => {
+	startQRScanner = value;
+});
+
+let showLoader: boolean = false;
+store.showLoader.subscribe((value) => {
+	showLoader = value;
+});
+
 let isAutoOpenMostRecentIssue: boolean = typeof window !== "undefined" ? localStorage?.getItem("autoOpenMostRecentIssue") === "true" : false;
 store.isAutoOpenMostRecentIssue.subscribe((value) => {
 	isAutoOpenMostRecentIssue = value;
 });
 
 const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
-	await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
 	const devices = await navigator.mediaDevices.enumerateDevices();
 	console.log("Available devices:", devices);
 	const videoInputs = devices.filter((device) => device.kind === "videoinput");
 	console.log("Available cameras:", videoInputs);
+	store.cameraDevicesList.set(videoInputs);
+	if (videoInputs && videoInputs.length > 0) {
+		const test_stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+		test_stream.getTracks().forEach(t => {
+			t.stop();
+			test_stream.removeTrack(t);
+		 });
+	} else {
+		console.warn("camera is unavailable!");
+		return { hasCamera: false, hasTorch: false, track: undefined, stream: undefined };
+	}
 	let lastStream: MediaStream | undefined = undefined;
 	let lastTrack: MediaStreamTrack | undefined = undefined;
 	let lastDevice: MediaDeviceInfo | undefined = undefined;
@@ -40,36 +60,39 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	}[] = [];
 	for (const device of videoInputs) {
 		try {
-			if (device.label.toLowerCase().indexOf('back') >= 0) {
-				// we want the back lol
-			} else if (device.label.toLowerCase().indexOf('front') >= 0) {
-				continue;
-			}
+			// if (device.label.toLowerCase().indexOf('back') >= 0) {
+			// 	// we want the back lol
+			// } else
+			if (device.label.toLowerCase().indexOf('front') >= 0) continue;
 			// notify(
 			// 	"QR Code Scanner",
 			// 	`Checking Device: ${device.label} - ${device.deviceId} - ${JSON.stringify(device)}`,
 			// 	"info",
 			// );
-			if (lastStream) {
-				lastStream.getTracks().forEach(t => {
-					t.stop();
-					lastStream?.removeTrack(t);
-				});
-			}
+			// if (lastStream) {
+			// 	lastStream.getTracks().forEach(t => {
+			// 		t.stop();
+			// 		lastStream?.removeTrack(t);
+			// 	});
+			// }
+			console.log("loading device:", device.deviceId, device)
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: {
-					facingMode: "environment",
+					// facingMode: "environment",
 					deviceId: { exact: device.deviceId },
-					width: { ideal: 4096 },
-					height: { ideal: 2160 },
-					frameRate: { ideal: 60 }
-				}
+					// width: { ideal: 4096 },
+					// height: { ideal: 2160 },
+					// frameRate: { ideal: 60 }
+				},
+				// audio: true
 			});
 			const track = stream.getVideoTracks()[0];
 			notify(
 				"QR Code Scanner",
 				`Checking track: ${track}`,
 				"info",
+				3000,
+				true
 			);
 			const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
 			console.log(`Capabilities for ${device.label}:`, capabilities);
@@ -89,8 +112,10 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 		} catch (error) {
 			notify(
 				"QR Code Scanner",
-				`Checking track: ${error.message}`,
+				`Could not start camera: ${error}`,
 				"info",
+				3000,
+				true
 			);
 			continue; // `Error accessing camera ${device.label}: ${error}`
 		}
@@ -106,40 +131,60 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 };
 
 export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) {
+	if (showLoader || startQRScanner) {
+		console.warn("QR Scanner already running")
+		return;
+	}
 	store.qrCodeData.set('');
 	store.showLoader.set(true);
 	try {
 		store.startQRScanner.set(true);
+		console.log("Waiting for old scanner to destroy..")
 		if (!DEBUG_MODE) await destroyScanner(); // Before
+		console.log("Scanning for QR Code...")
 		const custom_gse_id = forceDebug || (await scanQRCode()); // Scanning...
+		console.log("Found QR Code:", custom_gse_id)
 		if (!DEBUG_MODE) requestAnimationFrame(destroyScanner); // After
+		console.log("Checking...")
 		if (custom_gse_id) {
+			console.log("Code Valid!", custom_gse_id)
 			store.qrCodeData.set(custom_gse_id);
+			console.log("isCheckOnly?", isCheckOnly, custom_gse_id)
 			if (isCheckOnly) {
 				store.startQRScanner.set(false); // Goes back to homepage
 			} else {
 				store.showPopup.set(true);
 			}
 			document.getElementById("qrScanner")?.classList.add("hidden");
+			console.log("Waiting for GSE details for code:", custom_gse_id)
 			const gseDetails = await getGSEDetails(custom_gse_id);
+			console.log("gseDetails for code", custom_gse_id, gseDetails)
 			if (gseDetails?.gse_id) {
+				console.log("Found GSEID", gseDetails.gse_id, 'for code:', custom_gse_id)
 				store.detectedGSE.set(gseDetails);
+				console.log("Checking for errors:", gseDetails.error, gseDetails.details, 'for code:', custom_gse_id)
 				if (gseDetails.error && gseDetails.details) {
+					console.warn("Found errors!", 'for code:', custom_gse_id)
 					notify(gseDetails.error, gseDetails.details, "error")
 				} else {
+					console.log("No errors found with the code:", custom_gse_id)
 					if (isAutoOpenIssueDetails || isCheckOnly) store.hideGSEDetail.set(false);
 					if (gseDetails.most_recent_issue && (isAutoOpenMostRecentIssue || isCheckOnly)) store.isRecentIssueDrawerHidden.set(false);
 				}
+				console.log("Open ui normally for code", custom_gse_id)
 			} else {
+				console.warn("Server error for code:", custom_gse_id)
 				notify("Error", t("Could not find any information for") + ' ' + custom_gse_id, "error", 5000, true);
 				store.detectedGSE.set(null);
 				if (showPopup) store.closeReportHidden.set(false);
 			}
 		} else {
+			console.log("Invalid code found!", custom_gse_id)
 			store.showPopup.set(false);
 			store.detectedGSE.set(null);
 			store.qrCodeData.set(t("Unable to read QR code."));
 			const loadingMessage = document.getElementById("loadingMessage");
+			console.log("loadingMessage", loadingMessage)
 			if (loadingMessage) {
 				loadingMessage.hidden = false;
 				loadingMessage.textContent = '🎥 ' + t('Unable to access video stream (please make sure you have a webcam');
@@ -191,12 +236,6 @@ export async function destroyScanner() {
 		loadingMessage.hidden = false;
 		loadingMessage.textContent = "🎥 " + t("Loading Camera...");
 	}
-
-	const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-	stream.getTracks().forEach((track) => track.stop());
-	const devices = await navigator.mediaDevices.enumerateDevices();
-	const activeStreams = devices.filter((device) => device.kind === "videoinput");
-	console.log("Active video streams:", activeStreams);
 }
 
 async function scanQRCode(): Promise<string | null> {
@@ -252,7 +291,19 @@ async function scanQRCode(): Promise<string | null> {
 				if (cameraWithTorch.hasTorch) {
 					const torchButton = document.getElementById("toggleFlashlight");
 					torchButton?.classList.remove('hidden');
-					torchButton?.addEventListener("click", async () => {
+					// Torch Button Click Event:
+					let isTorchLoading = false;
+					let debounceTorch = false;
+					if (torchButton) torchButton.onclick = async () => {
+						if (debounceTorch) {
+							setTimeout(() => {
+								debounceTorch = false;
+							}, 300);
+							return;
+						}
+						debounceTorch = true;
+						if (isTorchLoading) return;
+						isTorchLoading = true
 						try {
 							if (!torchInfo.track) return;
 							const on = torch_state === "Off";
@@ -269,7 +320,8 @@ async function scanQRCode(): Promise<string | null> {
 						} catch (e) {
 							notify("QR Code Scanner", `Error toggling flashlight: ${e}`, "error");
 						}
-					});
+						isTorchLoading = false;
+					};
 					torch_state = "Off";
 				} else {
 					const torchButton = document.getElementById("toggleFlashlight");
@@ -289,7 +341,9 @@ async function scanQRCode(): Promise<string | null> {
 				console.error((error as Error).message)
 			}
 		});
+		let cancelThisQRScanner = false;
 		function qrScanner() {
+			if (cancelThisQRScanner) return;
 			if (!videoTrack) return;
 			if (!videoTrack.enabled) return;
 			if (!videoElement)
@@ -377,6 +431,7 @@ async function scanQRCode(): Promise<string | null> {
 					outputMessage.hidden = true;
 					outputData.parentElement.hidden = false;
 					outputData.innerText = code.data;
+					console.log("code.data", code.data)
 					if (torchInfo.hasTorch && torchInfo.track) {
 						try {
 							torchInfo.track.applyConstraints({
@@ -388,6 +443,8 @@ async function scanQRCode(): Promise<string | null> {
 						} catch (e) { }
 					}
 					resolve(code.data);
+					cancelThisQRScanner = true;
+					return;
 				} else {
 					outputMessage.hidden = false;
 					outputData.parentElement.hidden = true;

@@ -17,8 +17,8 @@ const registerSw = (
 				}, updateCheckInterval);
 				resolve(true);
 			} catch (err) {
-				console.error("[ServiceWorker] Failed to register:", err);
-				notify("[ServiceWorker]", `Failed to register service worker: ${err}`, "error");
+				// console.error("[ServiceWorker] Failed to register:", err);
+				notify("[ServiceWorker]", `Failed to register service worker: ${err}`, "error", 1000, true);
 				reject(err);
 			}
 		});
@@ -26,7 +26,9 @@ const registerSw = (
 
 let deferredPrompt: any | null = null;
 export async function registerServiceWorker() {
-	await registerSw("sw.js", /* 12 hours */ 1000 * 60 * 60 * 12);
+	try {
+		await registerSw("sw.js", /* 12 hours */ 1000 * 60 * 60 * 12);
+	} catch (e) {}
 	// if (DEBUG_MODE) return;
 	window.addEventListener('beforeinstallprompt', (e) => {
 		deferredPrompt = e; // e.preventDefault();

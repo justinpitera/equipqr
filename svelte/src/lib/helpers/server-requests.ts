@@ -35,7 +35,7 @@ const {
 	// Gate,
 } = requests.v1;
 
-const debug_routes = true;
+const debug_routes = false;
 
 export async function getAppVersion() {
 	try {
@@ -367,9 +367,9 @@ export async function get_gates(airport_icao_code: string) {
 		const responseBytes = new Uint8Array(responseData);
 		const output = FetchGatesResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("get_gates", output.gates)
-		for (const gate of output.gates) {
-			console.log("gate", gate.id, gate.name)
-		}
+		// for (const gate of output.gates) {
+		// 	// console.log("gate", gate.id, gate.name)
+		// }
 	} catch (e) {
 		console.error(
 			"%cError retrieving gates",
