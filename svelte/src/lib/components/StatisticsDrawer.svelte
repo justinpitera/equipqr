@@ -227,7 +227,7 @@
 
         <div class="mb-4">
             <div
-                class="h-[calc(100svh-72px-25px)] overflow-y-auto overflow-x-hidden pb-3 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                class="h-[calc(100vh-72px-25px)] overflow-y-auto overflow-x-hidden pb-3 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             >
                 <div class="mt-2">
                     <h3 class="text-xl font-semibold mb-4 text-center">

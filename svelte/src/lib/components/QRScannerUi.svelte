@@ -16,7 +16,7 @@
 
 <div
     id="qrScanner"
-    class="relative w-[100svw] h-[100svh] flex items-center justify-center bg-black"
+    class="relative w-[100vw] h-[100vh] flex items-center justify-center bg-black"
     style="filter: invert({$darkModeEnabled ? '1' : '0'});"
 >
     <div

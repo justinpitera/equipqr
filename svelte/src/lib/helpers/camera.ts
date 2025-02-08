@@ -81,7 +81,7 @@ const getCameraWithTorchInfo = async (customDevice?: string): Promise<ITorchInfo
 					width: { ideal: 1280 },  // 720p width
 					height: { ideal: 720 },  // 720p height
 					// aspectRatio: { ideal: 1 }, // 16:9 aspect ratio
-					frameRate: { ideal: 10, max: 15 }
+					frameRate: { ideal: 15, max: 30 }
 				}
 			});
 			const track = stream.getVideoTracks()[0];
