@@ -76,13 +76,13 @@ const getCameraWithTorchInfo = async (customDevice?: string): Promise<ITorchInfo
 			console.log("loading device:", device.deviceId, device)
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: {
-					facingMode: "environment", 
+					facingMode: "environment",
 					deviceId: { exact: device.deviceId },
-					width: { ideal: screen.width },
-					height: { ideal: screen.height },
+					width: { ideal: 1920 },  // Standard HD width
+					height: { ideal: 1080 }, // Standard HD height
+					aspectRatio: { ideal: 1.777777778 }, // 16:9 aspect ratio
 					frameRate: { ideal: 30, max: 30 }
-				},
-				// audio: true  
+				}
 			});
 			const track = stream.getVideoTracks()[0];
 			// notify(
