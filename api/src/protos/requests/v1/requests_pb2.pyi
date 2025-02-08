@@ -510,3 +510,42 @@ class Gate(google.protobuf.message.Message):
     def ClearField(self, field_name: typing.Literal["id", b"id", "name", b"name", "type", b"type"]) -> None: ...
 
 global___Gate = Gate
+
+@typing.final
+class IssueComment(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ISSUE_ID_FIELD_NUMBER: builtins.int
+    COMMENT_FIELD_NUMBER: builtins.int
+    COMMENT_BY_FIELD_NUMBER: builtins.int
+    issue_id: builtins.str
+    comment: builtins.str
+    comment_by: builtins.str
+    def __init__(
+        self,
+        *,
+        issue_id: builtins.str = ...,
+        comment: builtins.str = ...,
+        comment_by: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["comment", b"comment", "comment_by", b"comment_by", "issue_id", b"issue_id"]) -> None: ...
+
+global___IssueComment = IssueComment
+
+@typing.final
+class IssueCommentResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ID_FIELD_NUMBER: builtins.int
+    ERROR_FIELD_NUMBER: builtins.int
+    id: builtins.str
+    error: builtins.str
+    def __init__(
+        self,
+        *,
+        id: builtins.str = ...,
+        error: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["error", b"error", "id", b"id"]) -> None: ...
+
+global___IssueCommentResponse = IssueCommentResponse

@@ -24,7 +24,7 @@ from loguru import logger
 from colorama import Fore, Style
 
 # Local
-from src.models import Issue, IssueAttachment
+from src.models import Issue, IssueAttachment, IssueComment
 from src.tasks import upload_attachments_to_minio
 
 # Protobufs
@@ -35,6 +35,8 @@ from src.protos.requests.v1.requests_pb2 import (
     FetchIssuesResponse,
     SubmitIssueRequest,
     SubmitIssueResponse,
+    IssueComment as ProtoIssueComment,
+    IssueCommentResponse
 )
 
     
@@ -267,3 +269,41 @@ async def fetch_issues(request: Request) -> Response:
 async def edit_issue(request: Request) -> None:
     """POST route for editing an issue"""
     pass
+
+async def leave_comment(request: Request) -> Response:
+    """POST route for leaving a comment on an issue"""
+    body: bytes = await request.body()
+    issue_comment_request: ProtoIssueComment = ProtoIssueComment()
+    issue_comment_request.ParseFromString(body)
+    
+    
+    # Find the issue
+    issue: Issue | None = await Issue.get_or_none(id=issue_comment_request.issue_id)
+    
+    # Handle issue dne
+    if not issue:
+        dne_error: IssueCommentResponse = IssueCommentResponse(
+            id="",
+            error="Issue not found."
+        )
+        return Response(content=dne_error.SerializeToString(), media_type="application/protobuf")
+    
+    # Create issue comment
+    new_id: UUID = uuid4()
+    await IssueComment.create(
+        id=new_id,
+        issue=issue,
+        comment=issue_comment_request.comment,
+        commented_by=issue_comment_request.comment_by    
+    )
+    
+    # Build Protobuf response
+    response_message: IssueCommentResponse = IssueCommentResponse(
+        id=str(new_id),
+        error=""
+    )
+    
+    # Return response
+    serialized_response: bytes = response_message.SerializeToString()
+    return Response(content=serialized_response, media_type="application/protobuf")
+

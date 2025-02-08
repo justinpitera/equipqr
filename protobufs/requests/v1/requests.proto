@@ -136,3 +136,14 @@ message Gate {
   string name = 2;
   string type = 3;
 }
+
+message IssueComment {
+  string issue_id = 1;
+  string comment = 2;
+  string comment_by = 3;
+}
+
+message IssueCommentResponse {
+  string id = 1;
+  string error = 2;
+}

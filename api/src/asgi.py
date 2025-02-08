@@ -8,12 +8,11 @@ Authors:
 """
 
 # Standard
-from contextlib import asynccontextmanager
 from typing import Literal
-from collections.abc import AsyncGenerator
 from uuid import uuid4
 
 # Third-party
+from src.routes.issues import leave_comment
 from starlette.applications import Starlette
 from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
@@ -23,7 +22,7 @@ from loguru import logger
 # Local
 from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
 from src.models import CrewMember
-from src.database import database_importer, location_importer
+from src.database import database_importer
 from src.enums import CrewMemberPositionEnum
 
 from src.routes import (
@@ -80,9 +79,8 @@ async def startup() -> None:
     
     await _validate_master_account()
     # await generate_issues()
-    await database_importer()
+    # await database_importer()
     # await location_importer("./locations.csv", "EKCH")
-    # await location_importer(file_path="../locations/EKCH/locations_EKCH.csv", icao_code="EKCH")
     logger.success("Startup completed successfully!") 
 
 async def shutdown() -> None:
@@ -120,6 +118,7 @@ def init_asgi() -> Starlette:
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/submit", route=submit_issue, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/delete", route=delete_issues, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/fetch", route=fetch_issues, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/comment", route=leave_comment, methods=["POST"])
 
     # Locations
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/locations/fetch", route=fetch_locations, methods=["POST"])

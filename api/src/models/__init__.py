@@ -12,6 +12,7 @@ from src.models.GroundSupportEquiptment import GroundSupportEquiptment
 from src.models.ImportMetadata import ImportMetadata
 from src.models.Issue import Issue
 from src.models.IssueAttachment import IssueAttachment
+from src.models.IssueComment import IssueComment
 from src.models.Location import Location
 
 __all__: list[str] = [
@@ -20,5 +21,6 @@ __all__: list[str] = [
     "ImportMetadata",
     "Issue",
     "IssueAttachment",
+    "IssueComment",
     "Location"
 ]

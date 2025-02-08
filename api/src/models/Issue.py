@@ -22,7 +22,7 @@ from src.enums import IssueProgressEnum
 if TYPE_CHECKING:
     from src.models import (
         IssueAttachment,
-        Location
+        IssueComment
     )
 
 class Issue(Model):
@@ -37,3 +37,4 @@ class Issue(Model):
     progress                         : IssueProgressEnum = CharEnumField(enum_type=IssueProgressEnum, null=False, default=IssueProgressEnum.REPORTED)
     estimated_time                   : Field[datetime] = DatetimeField(null=True)
     attachments                      : ReverseRelation["IssueAttachment"] | None = None
+    comments                         : ReverseRelation["IssueComment"] | None = None
