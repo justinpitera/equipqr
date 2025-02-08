@@ -40,15 +40,37 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	}[] = [];
 	for (const device of videoInputs) {
 		try {
+			if (device.label.toLowerCase().indexOf('back') >= 0) {
+				// we want the back lol
+			} else if (device.label.toLowerCase().indexOf('front') >= 0) {
+				continue;
+			}
 			// notify(
 			// 	"QR Code Scanner",
-			// 	`Checking Device: ${device.label} - ${device.deviceId}`,
+			// 	`Checking Device: ${device.label} - ${device.deviceId} - ${JSON.stringify(device)}`,
 			// 	"info",
 			// );
+			if (lastStream) {
+				lastStream.getTracks().forEach(t => {
+					t.stop();
+					lastStream?.removeTrack(t);
+				});
+			}
 			const stream = await navigator.mediaDevices.getUserMedia({
-				video: { facingMode: "environment", deviceId: { exact: device.deviceId } },
+				video: {
+					facingMode: "environment",
+					deviceId: { exact: device.deviceId },
+					width: { ideal: 4096 },
+					height: { ideal: 2160 },
+					frameRate: { ideal: 60 }
+				}
 			});
 			const track = stream.getVideoTracks()[0];
+			notify(
+				"QR Code Scanner",
+				`Checking track: ${track}`,
+				"info",
+			);
 			const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
 			console.log(`Capabilities for ${device.label}:`, capabilities);
 			lastStream = stream;
@@ -65,6 +87,11 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 				track,
 			});
 		} catch (error) {
+			notify(
+				"QR Code Scanner",
+				`Checking track: ${error.message}`,
+				"info",
+			);
 			continue; // `Error accessing camera ${device.label}: ${error}`
 		}
 	}
