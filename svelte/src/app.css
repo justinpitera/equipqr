@@ -314,3 +314,7 @@ html {
 #speech-btn.text-red svg {
   fill: red;
 }
+
+.hide {
+  display: none;
+}
