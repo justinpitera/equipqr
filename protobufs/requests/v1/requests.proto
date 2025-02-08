@@ -30,8 +30,8 @@ message GSEDetailsResponse {
   bool in_use = 10;
   MostRecentIssueResponse most_recent_issue = 11;
   string lift_inspection_expires = 12;
-  optional google.protobuf.Timestamp latest_service_chassi = 13;
-  optional google.protobuf.Timestamp latest_service_unit = 14;
+  string latest_service_chassi = 13;
+  string latest_service_unit = 14;
   optional double capacity = 15;
   optional string details = 16;
   optional string error = 17;
