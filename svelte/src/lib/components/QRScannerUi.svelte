@@ -3,7 +3,7 @@
     import Lightbulb from "lucide-svelte/icons/lightbulb";
     import Menu from "lucide-svelte/icons/menu";
     import { disableContextMenu } from "$lib/helpers/basics";
-    import { destroyScanner } from "$lib/helpers/camera";
+    import { destroyScanner, switchCamera } from "$lib/helpers/camera";
     import { t } from "$lib/locales";
     import store from "$lib/store";
     const {
@@ -48,12 +48,11 @@
         <div id="outputMessage">{t("No QR code detected.")}</div>
         <div hidden><b>{t("Data:")}</b> <span id="outputData"></span></div>
     </div>
-    <select
-        id="videoSource"
-        class="absolute bottom-4 z-50 p-2 bg-white rounded-md shadow-md"
-        style="left: 5.5rem;"
-    >
-        {#if $cameraDevicesList && $cameraDevicesList.length > 0}
+    {#if $cameraDevicesList && $cameraDevicesList.length > 0}
+        <select
+            id="videoSource"
+            class="absolute top-[20px] right-[80px] z-50 p-2 bg-white rounded-md shadow-md"
+        >
             {#each $cameraDevicesList as deviceInfo}
                 {#if deviceInfo.kind === "videoinput"}
                     <option value={deviceInfo.deviceId}>
@@ -61,18 +60,21 @@
                     </option>
                 {/if}
             {/each}
-        {/if}
-    </select>
+        </select>
+    {/if}
     <button
-        class="absolute bottom-4 left-16 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
+        class="absolute top-4 right-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
         onclick={() => {
-            if (typeof document !== 'undefined') {
-                const videoSelect = document.querySelector('select#videoSource') as HTMLSelectElement;
+            if (typeof document !== "undefined") {
+                const videoSelect = document.querySelector(
+                    "select#videoSource",
+                ) as HTMLSelectElement;
                 if (videoSelect) {
                     const currentIndex = videoSelect.selectedIndex;
                     const nextIndex = (currentIndex + 1) % videoSelect.options.length;
                     videoSelect.selectedIndex = nextIndex;
-                    videoSelect.dispatchEvent(new Event('change'));
+                    videoSelect.dispatchEvent(new Event("change"));
+                    switchCamera(videoSelect.value);
                 }
             }
         }}
@@ -94,11 +96,7 @@
         </svg>
     </button>
     {#if !$flashlightDisabled}
-        <button
-            type="button"
-            id="toggleFlashlight"
-            class="select-none hidden"
-        >
+        <button type="button" id="toggleFlashlight" class="select-none hidden">
             {#if $flashlightOn}
                 <Lightbulb
                     oncontextmenu={disableContextMenu}

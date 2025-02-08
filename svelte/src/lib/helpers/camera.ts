@@ -46,7 +46,7 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 		test_stream.getTracks().forEach(t => {
 			t.stop();
 			test_stream.removeTrack(t);
-		 });
+		});
 	} else {
 		console.warn("camera is unavailable!");
 		return { hasCamera: false, hasTorch: false, track: undefined, stream: undefined };
@@ -130,7 +130,12 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	return { hasCamera: videoInputs.length > 0, hasTorch: false, track: lastTrack, stream: lastStream };
 };
 
-export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) {
+export async function switchCamera(deviceId: string) {
+	await destroyScanner();
+	await loadQRScanner(undefined, false, deviceId);
+}
+
+export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean, customDevice?: string) {
 	if (showLoader || startQRScanner) {
 		console.warn("QR Scanner already running")
 		return;
@@ -142,7 +147,7 @@ export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean) 
 		console.log("Waiting for old scanner to destroy..")
 		if (!DEBUG_MODE) await destroyScanner(); // Before
 		console.log("Scanning for QR Code...")
-		const custom_gse_id = forceDebug || (await scanQRCode()); // Scanning...
+		const custom_gse_id = forceDebug || (await scanQRCode(customDevice)); // Scanning...
 		console.log("Found QR Code:", custom_gse_id)
 		if (!DEBUG_MODE) requestAnimationFrame(destroyScanner); // After
 		console.log("Checking...")
@@ -238,7 +243,7 @@ export async function destroyScanner() {
 	}
 }
 
-async function scanQRCode(): Promise<string | null> {
+async function scanQRCode(customDevice?: string): Promise<string | null> {
 	return new Promise((resolve) => {
 		if (
 			!navigator.mediaDevices ||
@@ -329,11 +334,38 @@ async function scanQRCode(): Promise<string | null> {
 					torch_state = "Disabled";
 				}
 				if (!cameraWithTorch.stream || !cameraWithTorch.track) return notify("QR Code Scanner", "Could not find an available camera device!", "error");
-				videoElement.srcObject = cameraWithTorch.stream;
-				videoElement.playsInline = true;
-				videoElement.play();
-				videoTrack = cameraWithTorch.track;
-				requestAnimationFrame(qrScanner);
+				if (customDevice) {
+					console.log("Using custom device:", customDevice);
+					navigator.mediaDevices.getUserMedia({
+						video: {
+							deviceId: { exact: customDevice }
+						}
+					}).then(stream => {
+						if (!videoElement) return console.error("Missing Video Element");
+						videoElement.srcObject = stream;
+						videoElement.playsInline = true;
+						videoElement.play();
+						videoTrack = stream.getVideoTracks()[0];
+						requestAnimationFrame(qrScanner);
+					}).catch(error => {
+						if (!videoElement) return console.error("Missing Video Element");
+						if (!cameraWithTorch.stream) return console.error("Missing Video Element Stream");
+						if (!cameraWithTorch.track) return console.error("Missing Video Element Track");
+						console.error("Error accessing custom device:", error);
+						// Fallback to default camera
+						videoElement.srcObject = cameraWithTorch.stream;
+						videoElement.playsInline = true;
+						videoElement.play();
+						videoTrack = cameraWithTorch.track;
+						requestAnimationFrame(qrScanner);
+					});
+				} else {
+					videoElement.srcObject = cameraWithTorch.stream;
+					videoElement.playsInline = true;
+					videoElement.play();
+					videoTrack = cameraWithTorch.track;
+					requestAnimationFrame(qrScanner);
+				}
 			} catch (error) {
 				const torchButton = document.getElementById("toggleFlashlight");
 				torchButton?.classList.add('hidden');
