@@ -3,7 +3,7 @@
     import Lightbulb from "lucide-svelte/icons/lightbulb";
     import Menu from "lucide-svelte/icons/menu";
     import { disableContextMenu } from "$lib/helpers/basics";
-    import { destroyScanner } from "$lib/helpers/camera";
+    import { destroyScanner, switchCamera } from "$lib/helpers/camera";
     import { t } from "$lib/locales";
     import store from "$lib/store";
     const {
@@ -12,7 +12,6 @@
         startQRScanner,
         darkModeEnabled,
         cameraDevicesList,
-        showLoader,
     } = store;
 </script>
 
@@ -23,7 +22,6 @@
 >
     <div
         class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
-        class:hide={$showLoader}
         onclick={async () => {
             startQRScanner.set(false);
             store.showLoader.set(false);
@@ -53,7 +51,6 @@
     {#if $cameraDevicesList && $cameraDevicesList.length > 0}
         <select
             id="videoSource"
-            class:hide={$showLoader}
             class="absolute top-[20px] right-[80px] z-50 p-2 bg-white rounded-md shadow-md"
         >
             {#each $cameraDevicesList as deviceInfo}
@@ -65,10 +62,8 @@
             {/each}
         </select>
     {/if}
-    <!-- Switch Camera: -->
-    <!-- <button
+    <button
         class="absolute top-4 right-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
-        class:hide={$showLoader}
         onclick={() => {
             if (typeof document !== "undefined") {
                 const videoSelect = document.querySelector(
@@ -76,8 +71,7 @@
                 ) as HTMLSelectElement;
                 if (videoSelect) {
                     const currentIndex = videoSelect.selectedIndex;
-                    const nextIndex =
-                        (currentIndex + 1) % videoSelect.options.length;
+                    const nextIndex = (currentIndex + 1) % videoSelect.options.length;
                     videoSelect.selectedIndex = nextIndex;
                     videoSelect.dispatchEvent(new Event("change"));
                     switchCamera(videoSelect.value);
@@ -100,15 +94,9 @@
             />
             <rect x="2" y="9" width="20" height="6" />
         </svg>
-    </button> -->
-    <!-- Flashlight: -->
+    </button>
     {#if !$flashlightDisabled}
-        <button
-            type="button"
-            id="toggleFlashlight"
-            class="select-none hidden"
-            class:hide={$showLoader}
-        >
+        <button type="button" id="toggleFlashlight" class="select-none hidden">
             {#if $flashlightOn}
                 <Lightbulb
                     oncontextmenu={disableContextMenu}

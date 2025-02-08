@@ -85,13 +85,13 @@ const getCameraWithTorchInfo = async (customDevice?: string): Promise<ITorchInfo
 				// audio: true
 			});
 			const track = stream.getVideoTracks()[0];
-			notify(
-				"QR Code Scanner",
-				`Checking track: ${track}`,
-				"info",
-				3000,
-				true
-			);
+			// notify(
+			// 	"QR Code Scanner",
+			// 	`Checking track: ${track}`,
+			// 	"info",
+			// 	3000,
+			// 	true
+			// );
 			const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
 			console.log(`Capabilities for ${device.label}:`, capabilities);
 			lastStream = stream;
@@ -209,59 +209,29 @@ export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean, 
 }
 
 export async function destroyScanner() {
-	// Reset store states first
-	store.startQRScanner.set(false);
-	store.showLoader.set(false);
-	store.flashlightOn.set(false);
-	store.flashlightDisabled.set(true);
-
 	// Turn off the flashlight
-	if (torchInfo.track) {
-		try {
-			await torchInfo.track.applyConstraints({
-				advanced: [{ torch: false } as ExtendedMediaTrackConstraintSet],
-			});
-		} catch (e) {
-			console.warn("Error turning off torch:", e);
-		}
-	}
+	store.flashlightOn.set(false);
 
 	// Stop the video track
 	if (videoTrack) {
-		try {
-			videoTrack.stop();
-			videoTrack = null;
-		} catch (e) {
-			console.warn("Error stopping video track:", e);
-		}
+		videoTrack.stop();
+		videoTrack = null;
 	}
 
 	// Cleanup the video element
 	if (videoElement) {
-		try {
-			videoElement.pause();
-			videoElement.src = "";
-			videoElement.srcObject = null;
-			videoElement.remove();
-			videoElement = null;
-		} catch (e) {
-			console.warn("Error cleaning up video element:", e);
-		}
+		videoElement.pause();
+		videoElement.src = ""; // Detach the stream
+		videoElement.srcObject = null; // Detach the stream
+		videoElement.remove(); // Remove from the DOM
+		videoElement = null; // Nullify reference
 	}
 
-	// Stop all tracks in the torch stream
+	// Stop all tracks in the torch stream (if any)
 	if (torchInfo.stream) {
-		try {
-			torchInfo.stream.getTracks().forEach((track) => track.stop());
-			torchInfo.stream = undefined;
-		} catch (e) {
-			console.warn("Error stopping torch stream:", e);
-		}
+		torchInfo.stream.getTracks().forEach((track) => track.stop());
+		torchInfo.stream = undefined;
 	}
-
-	// Reset torch info
-	torchInfo = { hasCamera: false, hasTorch: false };
-	torch_state = "Uninitialized";
 
 	// Hide and clear the canvas
 	const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
