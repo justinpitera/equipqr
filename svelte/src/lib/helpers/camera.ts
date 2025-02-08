@@ -80,7 +80,7 @@ const getCameraWithTorchInfo = async (customDevice?: string): Promise<ITorchInfo
 					deviceId: { exact: device.deviceId },
 					// width: { ideal: 4096 },
 					// height: { ideal: 2160 },
-					frameRate: { ideal: 60 }
+					frameRate: { ideal: 30, max: 30 }
 				},
 				// audio: true
 			});
