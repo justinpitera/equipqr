@@ -147,3 +147,13 @@ message IssueCommentResponse {
   string id = 1;
   string error = 2;
 }
+
+message UploadFieldImage {
+  bytes image = 1;
+  string gse_id = 2;
+}
+
+message UploadFieldImageResponse {
+  string success = 1;
+  string error = 2;
+}

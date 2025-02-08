@@ -27,6 +27,8 @@ from src.protos.requests.v1.requests_pb2 import (
     GSEDetailsResponse,
     ListGSEReponse,
     MostRecentIssueResponse,
+    UploadFieldImage,
+    UploadFieldImageResponse
 )
 
 async def serialize_most_recent_issue(most_recent_issue: Issue) -> MostRecentIssueResponse:
@@ -136,6 +138,37 @@ async def fetch_gse(request: Request) -> Response:
     for model in models:
         response.gse_id.append(model.gse_id or "N/A")
         
+    return Response(
+        status_code=200,
+        content=response.SerializeToString()
+    )
+    
+async def upload_field_image(request: Request) -> Response:
+    
+    # Parse request
+    upload_image_request: UploadFieldImage = UploadFieldImage()
+    upload_image_request.ParseFromString(await request.body())
+    logger.info(f"{Fore.GREEN}✅ Validation successful for GSE ID: {upload_image_request.gse_id}{Style.RESET_ALL}")
+
+    gse: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(id=upload_image_request.gse_id)
+    
+    if not gse:
+        error_response: UploadFieldImageResponse = UploadFieldImageResponse(
+            success="false",
+            error="GSE not found."
+        )
+        return Response(
+            status_code=400,
+            content=error_response.SerializeToString()
+        )
+        
+    gse.field_image = upload_image_request.image
+    await gse.save()
+    
+    response: UploadFieldImageResponse = UploadFieldImageResponse (
+        success="true"
+    )
+    
     return Response(
         status_code=200,
         content=response.SerializeToString()

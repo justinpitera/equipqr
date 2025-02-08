@@ -14,7 +14,10 @@ DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing.final
 class HealthStatusRequest(google.protobuf.message.Message):
-    """Health Check"""
+    """import "google/protobuf/timestamp.proto";
+
+    Health Check
+    """
 
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -546,3 +549,39 @@ class IssueCommentResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing.Literal["error", b"error", "id", b"id"]) -> None: ...
 
 global___IssueCommentResponse = IssueCommentResponse
+
+@typing.final
+class UploadFieldImage(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    IMAGE_FIELD_NUMBER: builtins.int
+    GSE_ID_FIELD_NUMBER: builtins.int
+    image: builtins.bytes
+    gse_id: builtins.str
+    def __init__(
+        self,
+        *,
+        image: builtins.bytes = ...,
+        gse_id: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["gse_id", b"gse_id", "image", b"image"]) -> None: ...
+
+global___UploadFieldImage = UploadFieldImage
+
+@typing.final
+class UploadFieldImageResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    SUCCESS_FIELD_NUMBER: builtins.int
+    ERROR_FIELD_NUMBER: builtins.int
+    success: builtins.str
+    error: builtins.str
+    def __init__(
+        self,
+        *,
+        success: builtins.str = ...,
+        error: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["error", b"error", "success", b"success"]) -> None: ...
+
+global___UploadFieldImageResponse = UploadFieldImageResponse
