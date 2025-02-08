@@ -38,11 +38,8 @@
         <Menu class="w-6 h-6 text-black" />
     </div>
     <div id="loadingMessage">🎥 {t("Loading Camera...")}</div>
-    <canvas
-        id="canvas"
-        hidden
-        style="max-width: 100%;position: absolute; top: 0; left: 0; width: 100svw; height: 100svh;"
-    ></canvas>
+    <!-- svelte-ignore a11y_media_has_caption -->
+    <div id="video_streams"></div>
     <div id="output" hidden>
         <div id="outputMessage">{t("No QR code detected.")}</div>
         <div hidden><b>{t("Data:")}</b> <span id="outputData"></span></div>

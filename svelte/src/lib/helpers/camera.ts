@@ -233,16 +233,6 @@ export async function destroyScanner() {
 		torchInfo.stream = undefined;
 	}
 
-	// Hide and clear the canvas
-	const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-	if (canvasElement) {
-		canvasElement.hidden = true;
-		const canvas = canvasElement.getContext("2d", { willReadFrequently: true });
-		if (canvas) {
-			canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
-		}
-	}
-
 	const loadingMessage = document.getElementById("loadingMessage");
 	if (loadingMessage) {
 		loadingMessage.hidden = false;
@@ -265,31 +255,18 @@ async function scanQRCode(customDevice?: string): Promise<string | null> {
 			return;
 		}
 		videoElement = document.createElement("video");
-		const canvasElement = document.getElementById(
-			"canvas",
-		) as HTMLCanvasElement;
-		const canvas = canvasElement.getContext("2d", {
-			willReadFrequently: true,
-		});
-		if (canvas) canvas.willReadFrequently = true;
+		const videoStreams = document.getElementById("video_streams");
+		if (videoStreams) {
+			videoStreams.classList.add('hidden');
+			videoStreams.append(videoElement);
+			videoElement.addEventListener('loadeddata', () => {
+				videoStreams.classList.remove('hidden');
+			});
+		}
 		const loadingMessage = document.getElementById("loadingMessage");
 		const outputContainer = document.getElementById("output");
 		const outputMessage = document.getElementById("outputMessage");
 		const outputData = document.getElementById("outputData");
-		function drawLine(
-			begin: Point,
-			end: Point,
-			color: string | CanvasGradient | CanvasPattern,
-		) {
-			if (!canvas)
-				return notify("QR Code Scanner", "Could not find canvas", "error");
-			canvas.beginPath();
-			canvas.moveTo(begin.x, begin.y);
-			canvas.lineTo(end.x, end.y);
-			canvas.lineWidth = 4;
-			canvas.strokeStyle = color;
-			canvas.stroke();
-		}
 		getCameraWithTorchInfo(customDevice).then((cameraWithTorch) => {
 			if (!videoElement)
 				return notify(
@@ -382,57 +359,17 @@ async function scanQRCode(customDevice?: string): Promise<string | null> {
 		});
 		let cancelThisQRScanner = false;
 		function qrScanner() {
-			if (cancelThisQRScanner) return;
-			if (!videoTrack) return;
-			if (!videoTrack.enabled) return;
-			if (!videoElement)
-				return notify(
-					"QR Code Scanner",
-					"Could not find videoElement",
-					"error",
-				);
-			if (!loadingMessage)
-				return notify(
-					"QR Code Scanner",
-					"Could not find loadingMessage",
-					"error",
-				);
-			if (!outputContainer)
-				return notify(
-					"QR Code Scanner",
-					"Could not find outputContainer",
-					"error",
-				);
-			if (!canvas)
-				return notify("QR Code Scanner", "Could not find canvas", "error");
-			if (!outputMessage)
-				return notify(
-					"QR Code Scanner",
-					"Could not find outputMessage",
-					"error",
-				);
-			if (!outputData)
-				return notify("QR Code Scanner", "Could not find outputData", "error");
-			if (!outputData.parentElement)
-				return notify(
-					"QR Code Scanner",
-					"Could not find outputData parent",
-					"error",
-				);
+			if (cancelThisQRScanner || !videoTrack || !videoTrack.enabled || !videoElement || !loadingMessage || !outputContainer || !outputMessage || !outputData || !outputData.parentElement)
+				return notify("QR Code Scanner", "Could not find required data", "error");
 			if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
 				loadingMessage.hidden = true;
-				canvasElement.hidden = false;
 				outputContainer.hidden = false;
-				canvasElement.height = videoElement.videoHeight;
+				const canvasElement = document.createElement('canvas');
 				canvasElement.width = videoElement.videoWidth;
-				canvas.drawImage(
-					videoElement,
-					0,
-					0,
-					canvasElement.width,
-					canvasElement.height,
-				);
-				canvas.willReadFrequently = true;
+				canvasElement.height = videoElement.videoHeight;
+				const canvas = canvasElement.getContext('2d');
+				if (!canvas) return;
+				canvas.drawImage(videoElement, 0, 0);
 				const imageData = canvas.getImageData(
 					0,
 					0,
@@ -447,26 +384,26 @@ async function scanQRCode(customDevice?: string): Promise<string | null> {
 					inversionAttempts: "dontInvert",
 				});
 				if (code) {
-					drawLine(
-						code.location.topLeftCorner,
-						code.location.topRightCorner,
-						"#FF3B58",
-					);
-					drawLine(
-						code.location.topRightCorner,
-						code.location.bottomRightCorner,
-						"#FF3B58",
-					);
-					drawLine(
-						code.location.bottomRightCorner,
-						code.location.bottomLeftCorner,
-						"#FF3B58",
-					);
-					drawLine(
-						code.location.bottomLeftCorner,
-						code.location.topLeftCorner,
-						"#FF3B58",
-					);
+					// drawLine(
+					// 	code.location.topLeftCorner,
+					// 	code.location.topRightCorner,
+					// 	"#FF3B58",
+					// );
+					// drawLine(
+					// 	code.location.topRightCorner,
+					// 	code.location.bottomRightCorner,
+					// 	"#FF3B58",
+					// );
+					// drawLine(
+					// 	code.location.bottomRightCorner,
+					// 	code.location.bottomLeftCorner,
+					// 	"#FF3B58",
+					// );
+					// drawLine(
+					// 	code.location.bottomLeftCorner,
+					// 	code.location.topLeftCorner,
+					// 	"#FF3B58",
+					// );
 					outputMessage.hidden = true;
 					outputData.parentElement.hidden = false;
 					outputData.innerText = code.data;
