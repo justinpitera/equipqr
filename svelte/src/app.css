@@ -139,8 +139,8 @@ html {
   padding-bottom: 0;
   position: absolute;
   border-radius: 20px;
-  bottom: 15px;
-  right: 10px;
+  bottom: 25px;
+  right: 15px;
   max-width: fit-content;
   z-index: 10;
   margin: auto;

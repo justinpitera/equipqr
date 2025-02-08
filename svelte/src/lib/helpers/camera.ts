@@ -1,5 +1,4 @@
 import jsQR from "jsqr";
-import type { Point } from "jsqr/dist/locator";
 import { notify } from "$lib/helpers/notify";
 import { getGSEDetails } from "./server-requests";
 import { DEBUG_MODE } from "$lib/config";
@@ -18,11 +17,6 @@ store.isAutoOpenIssueDetails.subscribe((value) => {
 let showPopup: boolean = false;
 store.showPopup.subscribe((value) => {
 	showPopup = value;
-});
-
-let startQRScanner: boolean = false;
-store.startQRScanner.subscribe((value) => {
-	startQRScanner = value;
 });
 
 let showLoader: boolean = false;
@@ -143,7 +137,7 @@ const getCameraWithTorchInfo = async (customDevice?: string): Promise<ITorchInfo
 // }
 
 export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean, customDevice?: string) {
-	if (showLoader || startQRScanner) {
+	if (showLoader) {
 		console.warn("QR Scanner already running")
 		return;
 	}

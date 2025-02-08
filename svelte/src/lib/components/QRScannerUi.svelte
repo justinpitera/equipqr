@@ -26,12 +26,12 @@
         class="absolute bottom-0 bg-slate-300 left-0 w-full"
         style="
     height: 92px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 12px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
     filter: drop-shadow(1px 2px 8px rgba(255,255,255,0.5));"
     >
         <div
-            class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
+            class="absolute bottom-6 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
             onclick={async () => {
                 startQRScanner.set(false);
                 store.showLoader.set(false);
