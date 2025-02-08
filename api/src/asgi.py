@@ -23,7 +23,7 @@ from loguru import logger
 # Local
 from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
 from src.models import CrewMember
-from src.database import database_importer
+from src.database import database_importer, location_importer
 from src.enums import CrewMemberPositionEnum
 
 from src.routes import (
@@ -72,10 +72,7 @@ async def _validate_master_account(email: str = API_CONFIG["auth"]["master"]) ->
 
     logger.success(f"Validated master account for {email} successfully!")
 
-
-@asynccontextmanager
-async def _lifespan(_app: Starlette) -> AsyncGenerator[None, None]:
-    """Lifespan to handle the runtime duration of the Starlette app."""
+async def startup() -> None:
     # Startup
     logger.info("Connecting to database...")    
     await Tortoise.init(config=TORTOISE_CONFIG) # pyright: ignore[reportUnknownMemberType]
@@ -84,10 +81,11 @@ async def _lifespan(_app: Starlette) -> AsyncGenerator[None, None]:
     await _validate_master_account()
     # await generate_issues()
     await database_importer()
+    # await location_importer("./locations.csv", "EKCH")
     # await location_importer(file_path="../locations/EKCH/locations_EKCH.csv", icao_code="EKCH")
-    logger.success("Startup completed successfully!")    
-    yield # Yielding to Starlette to run the server.
-    # Shutdown
+    logger.success("Startup completed successfully!") 
+
+async def shutdown() -> None:
     await Tortoise.close_connections()
     logger.success("Database connections closed successfully!")
     await RedisClient.close_all()
@@ -96,8 +94,8 @@ async def _lifespan(_app: Starlette) -> AsyncGenerator[None, None]:
 def init_asgi() -> Starlette:
     """Initializes the Starlette API."""
     _ASGI: Starlette = Starlette(
-        debug=False,
-        lifespan=lambda app: _lifespan(_app=app)
+        on_startup=[startup],
+        on_shutdown=[shutdown]
     )
     
     _ASGI.add_middleware(

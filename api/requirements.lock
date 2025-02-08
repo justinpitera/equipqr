@@ -96,7 +96,7 @@ pillow==11.0.0
     # via api
 prompt-toolkit==3.0.48
     # via click-repl
-protobuf==5.29.1
+protobuf==5.29.3
     # via api
 pycparser==2.22
     # via cffi

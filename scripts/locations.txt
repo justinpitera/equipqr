@@ -1,0 +1,342 @@
+103 Apn	GA
+A-10, C208, Citation X, CRJs, P-38
+104 Apn	GA
+A-10, C208, Citation X, CRJs, P-38
+106 Apn	GA
+A-10, C208, Citation X, CRJs, P-38
+117 Apn	GA
+A321, 737, Dash-8, Embraers
+141 Apn	GA
+A-10, C208, Citation X, CRJs, P-38
+142 S Apn	GA
+A-10, C208, Citation X, CRJs, P-38
+144 E Apn	GA
+A321, 737, Dash-8, Embraers
+144 W Apn	GA
+A321, 737, Dash-8, Embraers
+253 Apn	GA
+A321, 737, Dash-8, Embraers
+259 Apn	GA
+Small GA, most fighters
+262 Apn	GA
+Small GA, most fighters
+268 Apn	GA
+Small GA, most fighters
+273 Apn	GA
+A321, 737, Dash-8, Embraers
+273-2 Apn	GA
+A321, 737, Dash-8, Embraers
+302 Apn	GA
+A-10, C208, Citation X, CRJs, P-38
+303 Apn	GA
+Small GA, most fighters
+A11	Airline
+A321, 737, Dash-8, Embraers
+A12	Airline
+A321, 737, Dash-8, Embraers
+A14	Airline
+757, 767, C-17, C-130, MD11/DC10
+A15	Airline
+A321, 737, Dash-8, Embraers
+A17	Airline
+A321, 737, Dash-8, Embraers
+A18	Airline
+A321, 737, Dash-8, Embraers
+A19	Airline
+757, 767, C-17, C-130, MD11/DC10
+A20	Airline
+A321, 737, Dash-8, Embraers
+A21	Airline
+A321, 737, Dash-8, Embraers
+A22	Airline
+A321, 737, Dash-8, Embraers
+A23	Airline
+A321, 737, Dash-8, Embraers
+A25	Airline
+A321, 737, Dash-8, Embraers
+A26	Airline
+A321, 737, Dash-8, Embraers
+A27	Airline
+A321, 737, Dash-8, Embraers
+A28	Airline
+A-10, C208, Citation X, CRJs, P-38
+A30	Airline
+A321, 737, Dash-8, Embraers
+A31	Airline
+A321, 737, Dash-8, Embraers
+A32	Airline
+A321, 737, Dash-8, Embraers
+A33	Airline
+A321, 737, Dash-8, Embraers
+A34	Airline
+A321, 737, Dash-8, Embraers
+A4	Airline
+A321, 737, Dash-8, Embraers
+A50	Airline
+A321, 737, Dash-8, Embraers
+A6	Airline
+A321, 737, Dash-8, Embraers
+A7	Airline
+A-10, C208, Citation X, CRJs, P-38
+A8	Airline
+A321, 737, Dash-8, Embraers
+A9	Airline
+A321, 737, Dash-8, Embraers
+B10	Airline
+A380, 747-800
+B15	Airline
+A321, 737, Dash-8, Embraers
+B16	Airline
+A321, 737, Dash-8, Embraers
+B17	Airline
+A340, 747-400, 777, 787
+B19	Airline
+A321, 737, Dash-8, Embraers
+B3	Airline
+757, 767, C-17, C-130, MD11/DC10
+B4	Airline
+A321, 737, Dash-8, Embraers
+B5	Airline
+757, 767, C-17, C-130, MD11/DC10
+B6	Airline
+A321, 737, Dash-8, Embraers
+B7	Airline
+757, 767, C-17, C-130, MD11/DC10
+B8	Airline
+A321, 737, Dash-8, Embraers
+B9	Airline
+757, 767, C-17, C-130, MD11/DC10
+C10	Airline
+A340, 747-400, 777, 787
+C26	Airline
+757, 767, C-17, C-130, MD11/DC10
+C27	Airline
+A321, 737, Dash-8, Embraers
+C28	Airline
+A340, 747-400, 777, 787
+C29	Airline
+A340, 747-400, 777, 787
+C30	Airline
+757, 767, C-17, C-130, MD11/DC10
+C32	Airline
+A340, 747-400, 777, 787
+C33	Airline
+A340, 747-400, 777, 787
+C34	Airline
+A340, 747-400, 777, 787
+C35	Airline
+A340, 747-400, 777, 787
+C36	Airline
+A340, 747-400, 777, 787
+C37	Airline
+A340, 747-400, 777, 787
+C39	Airline
+A380, 747-800
+D1	Airline
+A321, 737, Dash-8, Embraers
+D2	Airline
+A321, 737, Dash-8, Embraers
+D3	Airline
+A321, 737, Dash-8, Embraers
+D4	Airline
+A321, 737, Dash-8, Embraers
+E20	Airline
+A321, 737, Dash-8, Embraers
+E22	Airline
+A380, 747-800
+E24	Airline
+757, 767, C-17, C-130, MD11/DC10
+E25	Airline
+757, 767, C-17, C-130, MD11/DC10
+E27	Airline
+A380, 747-800
+E29	Airline
+A321, 737, Dash-8, Embraers
+E31	Airline
+757, 767, C-17, C-130, MD11/DC10
+E33	Airline
+A380, 747-800
+E35	Airline
+A321, 737, Dash-8, Embraers
+E36	Airline
+A321, 737, Dash-8, Embraers
+E70	Airline
+A321, 737, Dash-8, Embraers
+E71	Airline
+A340, 747-400, 777, 787
+E72	Airline
+A321, 737, Dash-8, Embraers
+E73	Airline
+A321, 737, Dash-8, Embraers
+E74	Airline
+A340, 747-400, 777, 787
+E75	Airline
+A321, 737, Dash-8, Embraers
+E76	Airline
+A321, 737, Dash-8, Embraers
+E77	Airline
+A321, 737, Dash-8, Embraers
+E78	Airline
+A321, 737, Dash-8, Embraers
+E82	Airline
+757, 767, C-17, C-130, MD11/DC10
+E83	Airline
+757, 767, C-17, C-130, MD11/DC10
+E84	Airline
+A380, 747-800
+E85	Airline
+757, 767, C-17, C-130, MD11/DC10
+E86	Airline
+A380, 747-800
+E87	Airline
+757, 767, C-17, C-130, MD11/DC10
+E88	Airline
+757, 767, C-17, C-130, MD11/DC10
+E89	Airline
+A380, 747-800
+E90	Airline
+757, 767, C-17, C-130, MD11/DC10
+F1	Airline
+A321, 737, Dash-8, Embraers
+F4	Airline
+A321, 737, Dash-8, Embraers
+F5	Airline
+A321, 737, Dash-8, Embraers
+F7	Airline
+A321, 737, Dash-8, Embraers
+F8	Airline
+A321, 737, Dash-8, Embraers
+F89	Airline
+A321, 737, Dash-8, Embraers
+F9	Airline
+A321, 737, Dash-8, Embraers
+F90	Airline
+A-10, C208, Citation X, CRJs, P-38
+F91	Airline
+A-10, C208, Citation X, CRJs, P-38
+F92	Airline
+A-10, C208, Citation X, CRJs, P-38
+F93	Airline
+A-10, C208, Citation X, CRJs, P-38
+F94	Airline
+A-10, C208, Citation X, CRJs, P-38
+F95	Airline
+A-10, C208, Citation X, CRJs, P-38
+F96	Airline
+A-10, C208, Citation X, CRJs, P-38
+F97	None
+A-10, C208, Citation X, CRJs, P-38
+F98	Airline
+A-10, C208, Citation X, CRJs, P-38
+G110	None
+A-10, C208, Citation X, CRJs, P-38
+G111	None
+A-10, C208, Citation X, CRJs, P-38
+G112	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G113	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G114	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G120	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G121	Cargo
+A380, 747-800
+G122	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G123	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G124	Cargo
+A380, 747-800
+G125	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G126	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G127	Cargo
+A380, 747-800
+G128	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G129	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G130	Cargo
+A380, 747-800
+G131	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G132	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G133	Cargo
+A380, 747-800
+G134	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G135	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G136	Cargo
+A380, 747-800
+G137	Cargo
+757, 767, C-17, C-130, MD11/DC10
+G15	GA
+A-10, C208, Citation X, CRJs, P-38
+G16	GA
+A-10, C208, Citation X, CRJs, P-38
+G17	GA
+A-10, C208, Citation X, CRJs, P-38
+G18	GA
+A-10, C208, Citation X, CRJs, P-38
+G19	GA
+A-10, C208, Citation X, CRJs, P-38
+Ga S1	GA
+A-10, C208, Citation X, CRJs, P-38
+Ga S2-1	GA
+A321, 737, Dash-8, Embraers
+Ga S2-2	GA
+A321, 737, Dash-8, Embraers
+Ga S23	GA
+757, 767, C-17, C-130, MD11/DC10
+H101	Airline
+757, 767, C-17, C-130, MD11/DC10
+H102	Airline
+A340, 747-400, 777, 787
+H103	Airline
+757, 767, C-17, C-130, MD11/DC10
+H104	Airline
+757, 767, C-17, C-130, MD11/DC10
+H105	Airline
+A340, 747-400, 777, 787
+H106	Airline
+757, 767, C-17, C-130, MD11/DC10
+Maintenance 1	GA
+A321, 737, Dash-8, Embraers
+Maintenance 2	GA
+A321, 737, Dash-8, Embraers
+Maintenance 3	GA
+A321, 737, Dash-8, Embraers
+Maintenance 4	GA
+A321, 737, Dash-8, Embraers
+Maintenance 5	GA
+A340, 747-400, 777, 787
+Maintenance 6	GA
+A340, 747-400, 777, 787
+Maintenance 7	GA
+757, 767, C-17, C-130, MD11/DC10
+Maintenance 8	GA
+757, 767, C-17, C-130, MD11/DC10
+Ri	None
+A321, 737, Dash-8, Embraers
+Rii	None
+A321, 737, Dash-8, Embraers
+Riii	None
+A321, 737, Dash-8, Embraers
+Service My Travel 1	None
+A321, 737, Dash-8, Embraers
+Service My Travel 2	None
+A321, 737, Dash-8, Embraers
+Service My Travel 3	None
+A321, 737, Dash-8, Embraers
+W1	GA
+A380, 747-800
+W1 B	GA
+757, 767, C-17, C-130, MD11/DC10
+W1 East	GA
+A-10, C208, Citation X, CRJs, P-38
+W1 West	GA
+A-10, C208, Citation X, CRJs, P-38

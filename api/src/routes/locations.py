@@ -54,6 +54,7 @@ async def fetch_locations(request: Request) -> Response | JSONResponse:
             gate = fetch_gates_response.gates.add()
             gate.id = str(location.id)
             gate.name = location.location  # Assuming "location" is the name; adjust as needed
+            gate.type = location.location_type
 
         return Response(
             content=fetch_gates_response.SerializeToString(), 

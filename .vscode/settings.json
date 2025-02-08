@@ -4,13 +4,14 @@
         "projectKey": "zeki_fejlmelings_7ed5815c-cfdc-4821-8bbe-5d1dcfad446a"
     },
     "files.exclude": {
-        ".vscode": true,
         "**/__pycache__": true,
         "**/.venv": true,
         "**/.python-version": true,
         "**/*.lock*": true,
         "**/.npmrc": true,
         "**/.svelte-kit": true,
-        "api/web": false 
+        "api/web": true,
+        "buf.*.yaml": true,
+        "**/.mypy_cache": true,
     }
 }

@@ -134,4 +134,5 @@ message FetchGatesResponse {
 message Gate {
   string id = 1;
   string name = 2;
+  string type = 3;
 }

@@ -1,7 +1,7 @@
 import csv
 
 # Read raw data from file
-input_file = "file.txt"
+input_file = "locations.txt"
 with open(input_file, mode="r") as file:
     raw_data = file.read()
 

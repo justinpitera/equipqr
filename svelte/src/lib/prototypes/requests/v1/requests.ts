@@ -3,7 +3,7 @@
  * compiler version: 0.0.0
  * source: requests/v1/requests.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
-import * as dependency_1 from "./..\\..\\google\\protobuf\\timestamp";
+import * as dependency_1 from "./../../google/protobuf/timestamp";
 import * as pb_1 from "google-protobuf";
 export namespace requests.v1 {
     export class HealthStatusRequest extends pb_1.Message {
@@ -2421,6 +2421,7 @@ export namespace requests.v1 {
         constructor(data?: any[] | {
             id?: string;
             name?: string;
+            type?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -2430,6 +2431,9 @@ export namespace requests.v1 {
                 }
                 if ("name" in data && data.name != undefined) {
                     this.name = data.name;
+                }
+                if ("type" in data && data.type != undefined) {
+                    this.type = data.type;
                 }
             }
         }
@@ -2445,9 +2449,16 @@ export namespace requests.v1 {
         set name(value: string) {
             pb_1.Message.setField(this, 2, value);
         }
+        get type() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set type(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
         static fromObject(data: {
             id?: string;
             name?: string;
+            type?: string;
         }): Gate {
             const message = new Gate({});
             if (data.id != null) {
@@ -2456,18 +2467,25 @@ export namespace requests.v1 {
             if (data.name != null) {
                 message.name = data.name;
             }
+            if (data.type != null) {
+                message.type = data.type;
+            }
             return message;
         }
         toObject() {
             const data: {
                 id?: string;
                 name?: string;
+                type?: string;
             } = {};
             if (this.id != null) {
                 data.id = this.id;
             }
             if (this.name != null) {
                 data.name = this.name;
+            }
+            if (this.type != null) {
+                data.type = this.type;
             }
             return data;
         }
@@ -2479,6 +2497,8 @@ export namespace requests.v1 {
                 writer.writeString(1, this.id);
             if (this.name.length)
                 writer.writeString(2, this.name);
+            if (this.type.length)
+                writer.writeString(3, this.type);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -2493,6 +2513,9 @@ export namespace requests.v1 {
                         break;
                     case 2:
                         message.name = reader.readString();
+                        break;
+                    case 3:
+                        message.type = reader.readString();
                         break;
                     default: reader.skipField();
                 }

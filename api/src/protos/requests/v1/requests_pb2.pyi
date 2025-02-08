@@ -8,6 +8,7 @@ import collections.abc
 import google.protobuf.descriptor
 import google.protobuf.internal.containers
 import google.protobuf.message
+import google.protobuf.timestamp_pb2
 import typing
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
@@ -87,20 +88,19 @@ class GSEDetailsResponse(google.protobuf.message.Message):
     manufacturer: builtins.str
     location: builtins.str
     status: builtins.str
-    issue_count: builtins.str
+    issue_count: builtins.int
     type_of_fuel: builtins.str
     in_use: builtins.bool
     lift_inspection_expires: builtins.str
-    latest_service_chassi: builtins.str
-    latest_service_unit: builtins.str
     capacity: builtins.float
-    """Example Optionals"""
     details: builtins.str
-    """Optional"""
     error: builtins.str
-    """Optional"""
     @property
     def most_recent_issue(self) -> global___MostRecentIssueResponse: ...
+    @property
+    def latest_service_chassi(self) -> google.protobuf.timestamp_pb2.Timestamp: ...
+    @property
+    def latest_service_unit(self) -> google.protobuf.timestamp_pb2.Timestamp: ...
     def __init__(
         self,
         *,
@@ -111,18 +111,18 @@ class GSEDetailsResponse(google.protobuf.message.Message):
         manufacturer: builtins.str = ...,
         location: builtins.str = ...,
         status: builtins.str = ...,
-        issue_count: builtins.str = ...,
+        issue_count: builtins.int = ...,
         type_of_fuel: builtins.str = ...,
         in_use: builtins.bool = ...,
         most_recent_issue: global___MostRecentIssueResponse | None = ...,
         lift_inspection_expires: builtins.str = ...,
-        latest_service_chassi: builtins.str = ...,
-        latest_service_unit: builtins.str = ...,
+        latest_service_chassi: google.protobuf.timestamp_pb2.Timestamp | None = ...,
+        latest_service_unit: google.protobuf.timestamp_pb2.Timestamp | None = ...,
         capacity: builtins.float | None = ...,
         details: builtins.str | None = ...,
         error: builtins.str | None = ...,
     ) -> None: ...
-    def HasField(self, field_name: typing.Literal["_capacity", b"_capacity", "_details", b"_details", "_error", b"_error", "capacity", b"capacity", "details", b"details", "error", b"error", "most_recent_issue", b"most_recent_issue"]) -> builtins.bool: ...
+    def HasField(self, field_name: typing.Literal["_capacity", b"_capacity", "_details", b"_details", "_error", b"_error", "capacity", b"capacity", "details", b"details", "error", b"error", "latest_service_chassi", b"latest_service_chassi", "latest_service_unit", b"latest_service_unit", "most_recent_issue", b"most_recent_issue"]) -> builtins.bool: ...
     def ClearField(self, field_name: typing.Literal["_capacity", b"_capacity", "_details", b"_details", "_error", b"_error", "capacity", b"capacity", "details", b"details", "error", b"error", "gse_id", b"gse_id", "gse_type", b"gse_type", "in_use", b"in_use", "issue_count", b"issue_count", "latest_service_chassi", b"latest_service_chassi", "latest_service_unit", b"latest_service_unit", "lift_inspection_expires", b"lift_inspection_expires", "location", b"location", "manufacturer", b"manufacturer", "model", b"model", "most_recent_issue", b"most_recent_issue", "old_gse_id", b"old_gse_id", "status", b"status", "type_of_fuel", b"type_of_fuel"]) -> None: ...
     @typing.overload
     def WhichOneof(self, oneof_group: typing.Literal["_capacity", b"_capacity"]) -> typing.Literal["capacity"] | None: ...
@@ -496,14 +496,17 @@ class Gate(google.protobuf.message.Message):
 
     ID_FIELD_NUMBER: builtins.int
     NAME_FIELD_NUMBER: builtins.int
+    TYPE_FIELD_NUMBER: builtins.int
     id: builtins.str
     name: builtins.str
+    type: builtins.str
     def __init__(
         self,
         *,
         id: builtins.str = ...,
         name: builtins.str = ...,
+        type: builtins.str = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["id", b"id", "name", b"name"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["id", b"id", "name", b"name", "type", b"type"]) -> None: ...
 
 global___Gate = Gate
