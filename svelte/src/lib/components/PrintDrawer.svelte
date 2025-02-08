@@ -260,7 +260,7 @@
 
         <div class="mb-4 mt-2">
             <div
-                class="h-[calc(100vh-185px)] overflow-y-auto overflow-x-hidden pb-3"
+                class="h-[calc(100svh-185px)] overflow-y-auto overflow-x-hidden pb-3"
             >
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 justify-items-center gap-6"

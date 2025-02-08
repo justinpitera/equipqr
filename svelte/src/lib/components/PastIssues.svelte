@@ -90,7 +90,7 @@
         </button>
     </div>
 
-    <div class="mt-4 overflow-y-auto max-h-[calc(97vh-76px-15px)] space-y-2">
+    <div class="mt-4 overflow-y-auto max-h-[calc(97svh-76px-15px)] space-y-2">
         {#each issues as issue (issue.gse_id)}
             <div
                 class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer transition relative flex items-center justify-between"

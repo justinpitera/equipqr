@@ -90,7 +90,7 @@
     </div>
     <hr />
     <div
-        class="space-y-4 pt-4 pr-2 pl-2 overflow-y-auto max-h-[calc(100vh-135px)]"
+        class="space-y-4 pt-4 pr-2 pl-2 overflow-y-auto max-h-[calc(100svh-135px)]"
     >
         <div>
             <label for="gse_type" class="block text-sm font-medium"

@@ -773,7 +773,7 @@
                     shouldRefresh = false;
                 }
             }}
-            class="overflow-y-auto h-[calc(100vh-24px-40px-10px)] relative"
+            class="overflow-y-auto h-[calc(100svh-24px-40px-10px)] relative"
             bind:this={issuesScroller}
             onscroll={() => {
                 if (issuesScroller && issuesScroller.scrollTop > 200) {

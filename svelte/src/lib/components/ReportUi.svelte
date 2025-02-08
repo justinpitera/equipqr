@@ -267,7 +267,7 @@
       >
         <Spinner
           color="blue"
-          class="w-14 h-14 mt-[calc(50vh-78px-29px-4px)]"
+          class="w-14 h-14 mt-[calc(50svh-78px-29px-4px)]"
         />
       </div>
     {/if}
