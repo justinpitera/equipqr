@@ -380,6 +380,7 @@ async function scanQRCode(customDevice?: string): Promise<string | null> {
 						willReadFrequently: true
 					}
 				);
+				canvasElement.remove();
 				const code = jsQR(imageData.data, imageData.width, imageData.height, {
 					inversionAttempts: "dontInvert",
 				});
