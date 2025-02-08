@@ -3,7 +3,7 @@
     import Lightbulb from "lucide-svelte/icons/lightbulb";
     import Menu from "lucide-svelte/icons/menu";
     import { disableContextMenu } from "$lib/helpers/basics";
-    import { destroyScanner, switchCamera } from "$lib/helpers/camera";
+    import { destroyScanner } from "$lib/helpers/camera";
     import { t } from "$lib/locales";
     import store from "$lib/store";
     const {
@@ -11,7 +11,6 @@
         flashlightDisabled,
         startQRScanner,
         darkModeEnabled,
-        cameraDevicesList,
     } = store;
 </script>
 
@@ -48,7 +47,7 @@
         <div id="outputMessage">{t("No QR code detected.")}</div>
         <div hidden><b>{t("Data:")}</b> <span id="outputData"></span></div>
     </div>
-    {#if $cameraDevicesList && $cameraDevicesList.length > 0}
+    <!-- {#if $cameraDevicesList && $cameraDevicesList.length > 0}
         <select
             id="videoSource"
             class="absolute top-[20px] right-[80px] z-50 p-2 bg-white rounded-md shadow-md"
@@ -61,8 +60,8 @@
                 {/if}
             {/each}
         </select>
-    {/if}
-    <button
+    {/if} -->
+    <!-- <button
         class="absolute top-4 right-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
         onclick={() => {
             if (typeof document !== "undefined") {
@@ -94,7 +93,7 @@
             />
             <rect x="2" y="9" width="20" height="6" />
         </svg>
-    </button>
+    </button> -->
     {#if !$flashlightDisabled}
         <button type="button" id="toggleFlashlight" class="select-none hidden">
             {#if $flashlightOn}

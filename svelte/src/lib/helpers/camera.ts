@@ -132,15 +132,15 @@ const getCameraWithTorchInfo = async (customDevice?: string): Promise<ITorchInfo
 	return { hasCamera: videoInputs.length > 0, hasTorch: false, track: lastTrack, stream: lastStream };
 };
 
-export async function switchCamera(deviceId: string) {
-	await destroyScanner();
-	console.log("Waiting for camera to terminate...");
-	while(showLoader || startQRScanner) {
-		await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms between checks
-	}
-	console.log("Reloaded camera...");
-	await loadQRScanner(undefined, false, deviceId);
-}
+// export async function switchCamera(deviceId: string) {
+// 	await destroyScanner();
+// 	console.log("Waiting for camera to terminate...");
+// 	while(showLoader || startQRScanner) {
+// 		await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms between checks
+// 	}
+// 	console.log("Reloaded camera...");
+// 	await loadQRScanner(undefined, false, deviceId);
+// }
 
 export async function loadQRScanner(forceDebug?: string, isCheckOnly?: boolean, customDevice?: string) {
 	if (showLoader || startQRScanner) {
