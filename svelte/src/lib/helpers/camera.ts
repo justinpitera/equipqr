@@ -35,7 +35,7 @@ store.isAutoOpenMostRecentIssue.subscribe((value) => {
 	isAutoOpenMostRecentIssue = value;
 });
 
-const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
+const getCameraWithTorchInfo = async (customDevice?: string): Promise<ITorchInfo> => {
 	const devices = await navigator.mediaDevices.enumerateDevices();
 	console.log("Available devices:", devices);
 	const videoInputs = devices.filter((device) => device.kind === "videoinput");
@@ -60,10 +60,8 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 	}[] = [];
 	for (const device of videoInputs) {
 		try {
-			// if (device.label.toLowerCase().indexOf('back') >= 0) {
-			// 	// we want the back lol
-			// } else
-			if (device.label.toLowerCase().indexOf('front') >= 0) continue;
+			// if (device.label.toLowerCase().indexOf('back') >= 0)
+			if (!customDevice && device.label.toLowerCase().indexOf('front') >= 0) continue;
 			// notify(
 			// 	"QR Code Scanner",
 			// 	`Checking Device: ${device.label} - ${device.deviceId} - ${JSON.stringify(device)}`,
@@ -78,7 +76,7 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 			console.log("loading device:", device.deviceId, device)
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: {
-					// facingMode: "environment",
+					facingMode: "environment",
 					deviceId: { exact: device.deviceId },
 					// width: { ideal: 4096 },
 					// height: { ideal: 2160 },
@@ -132,6 +130,11 @@ const getCameraWithTorchInfo = async (): Promise<ITorchInfo> => {
 
 export async function switchCamera(deviceId: string) {
 	await destroyScanner();
+	console.log("Waiting for camera to terminate...");
+	while(showLoader || startQRScanner) {
+		await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms between checks
+	}
+	console.log("Reloaded camera...");
 	await loadQRScanner(undefined, false, deviceId);
 }
 
@@ -283,7 +286,7 @@ async function scanQRCode(customDevice?: string): Promise<string | null> {
 			canvas.strokeStyle = color;
 			canvas.stroke();
 		}
-		getCameraWithTorchInfo().then((cameraWithTorch) => {
+		getCameraWithTorchInfo(customDevice).then((cameraWithTorch) => {
 			if (!videoElement)
 				return notify(
 					"QR Code Scanner",
