@@ -118,6 +118,14 @@ html {
   text-align: center;
   padding: 40px;
   background-color: #eee;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 30vh;
+  height: fit-content;
+  margin: auto;
 }
 
 #video_streams {

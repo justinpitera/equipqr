@@ -16,33 +16,42 @@
 
 <div
     id="qrScanner"
-    class="relative w-[100vw] h-[100vh] flex items-center justify-center bg-black"
+    class="relative w-[100vw] h-[100vh] bg-black"
     style="filter: invert({$darkModeEnabled ? '1' : '0'});"
 >
-    <div
-        class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
-        onclick={async () => {
-            startQRScanner.set(false);
-            store.showLoader.set(false);
-            await destroyScanner();
-        }}
-        onkeypress={async (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-                startQRScanner.set(false);
-                await destroyScanner();
-            }
-        }}
-        role="button"
-        tabindex="0"
-    >
-        <Menu class="w-6 h-6 text-black" />
-    </div>
     <div id="loadingMessage">🎥 {t("Loading Camera...")}</div>
     <!-- svelte-ignore a11y_media_has_caption -->
     <div id="video_streams"></div>
-    <div id="output" hidden>
-        <div id="outputMessage">{t("No QR code detected.")}</div>
-        <div hidden><b>{t("Data:")}</b> <span id="outputData"></span></div>
+    <div
+        class="absolute bottom-0 bg-slate-300 left-0 w-full"
+        style="
+    height: 70px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 12px;
+    filter: drop-shadow(1px 2px 8px rgba(255,255,255,0.5));"
+    >
+        <div
+            class="absolute bottom-4 left-4 z-50 p-3 bg-white rounded-full cursor-pointer shadow-md hover:bg-gray-300"
+            onclick={async () => {
+                startQRScanner.set(false);
+                store.showLoader.set(false);
+                await destroyScanner();
+            }}
+            onkeypress={async (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    startQRScanner.set(false);
+                    await destroyScanner();
+                }
+            }}
+            role="button"
+            tabindex="0"
+        >
+            <Menu class="w-6 h-6 text-black" />
+        </div>
+        <div id="output" hidden>
+            <div id="outputMessage">{t("No QR code detected.")}</div>
+            <div hidden><b>{t("Data:")}</b> <span id="outputData"></span></div>
+        </div>
     </div>
     <!-- {#if $cameraDevicesList && $cameraDevicesList.length > 0}
         <select
