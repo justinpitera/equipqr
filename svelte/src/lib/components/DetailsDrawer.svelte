@@ -162,7 +162,7 @@
                 {/if}
 
                 <!-- Details Card -->
-                {#if $detectedGSE.details}
+                {#if $detectedGSE.details && $detectedGSE.details !== 'success'}
                     <div
                         class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-yellow-50"
                     >
@@ -170,10 +170,11 @@
                             {t("Details:")}
                         </p>
                         <p>{$detectedGSE.details}</p>
+                        {JSON.stringify($detectedGSE)}
                     </div>
                 {/if}
 
-                {#if !$detectedGSE.details && !$detectedGSE.error}
+                {#if (!$detectedGSE.details || $detectedGSE.details === 'success') && !$detectedGSE.error}
                     {#if $detectedGSE.manufacturer}
                         <!-- Manufacturer Card -->
                         <div

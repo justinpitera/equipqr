@@ -3,7 +3,6 @@
  * compiler version: 0.0.0
  * source: requests/v1/requests.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
-import * as dependency_1 from "./../../google/protobuf/timestamp";
 import * as pb_1 from "google-protobuf";
 export namespace requests.v1 {
     export class HealthStatusRequest extends pb_1.Message {
@@ -2724,6 +2723,186 @@ export namespace requests.v1 {
         }
         static deserializeBinary(bytes: Uint8Array): IssueCommentResponse {
             return IssueCommentResponse.deserialize(bytes);
+        }
+    }
+    export class UploadFieldImage extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            image?: Uint8Array;
+            gse_id?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("image" in data && data.image != undefined) {
+                    this.image = data.image;
+                }
+                if ("gse_id" in data && data.gse_id != undefined) {
+                    this.gse_id = data.gse_id;
+                }
+            }
+        }
+        get image() {
+            return pb_1.Message.getFieldWithDefault(this, 1, new Uint8Array(0)) as Uint8Array;
+        }
+        set image(value: Uint8Array) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get gse_id() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set gse_id(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            image?: Uint8Array;
+            gse_id?: string;
+        }): UploadFieldImage {
+            const message = new UploadFieldImage({});
+            if (data.image != null) {
+                message.image = data.image;
+            }
+            if (data.gse_id != null) {
+                message.gse_id = data.gse_id;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                image?: Uint8Array;
+                gse_id?: string;
+            } = {};
+            if (this.image != null) {
+                data.image = this.image;
+            }
+            if (this.gse_id != null) {
+                data.gse_id = this.gse_id;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.image.length)
+                writer.writeBytes(1, this.image);
+            if (this.gse_id.length)
+                writer.writeString(2, this.gse_id);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): UploadFieldImage {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new UploadFieldImage();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.image = reader.readBytes();
+                        break;
+                    case 2:
+                        message.gse_id = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): UploadFieldImage {
+            return UploadFieldImage.deserialize(bytes);
+        }
+    }
+    export class UploadFieldImageResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            success?: string;
+            error?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("success" in data && data.success != undefined) {
+                    this.success = data.success;
+                }
+                if ("error" in data && data.error != undefined) {
+                    this.error = data.error;
+                }
+            }
+        }
+        get success() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set success(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get error() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set error(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            success?: string;
+            error?: string;
+        }): UploadFieldImageResponse {
+            const message = new UploadFieldImageResponse({});
+            if (data.success != null) {
+                message.success = data.success;
+            }
+            if (data.error != null) {
+                message.error = data.error;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                success?: string;
+                error?: string;
+            } = {};
+            if (this.success != null) {
+                data.success = this.success;
+            }
+            if (this.error != null) {
+                data.error = this.error;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.success.length)
+                writer.writeString(1, this.success);
+            if (this.error.length)
+                writer.writeString(2, this.error);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): UploadFieldImageResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new UploadFieldImageResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.success = reader.readString();
+                        break;
+                    case 2:
+                        message.error = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): UploadFieldImageResponse {
+            return UploadFieldImageResponse.deserialize(bytes);
         }
     }
 }

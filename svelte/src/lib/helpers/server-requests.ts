@@ -107,8 +107,10 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 		const responseData = await request.arrayBuffer();
 		const responseBytes = new Uint8Array(responseData);
 		const response = GSEDetailsResponse.deserialize(responseBytes);
-		if (debug_routes) console.log("getGSEDetails", response)
-		return response;
+		// if (debug_routes)
+		console.log("getGSEDetails", response.toObject()) //  {"f":{},"D":-1,"u":["AHU 00001","H01","Airplane heater unit (AHU)","GSH-1","Polar","AAP","3. Okay",null,"N/A",null,null,null,null,null,0,"success"],"G":1.7976931348623157e+308,"a":{}} asd
+		// return response;
+		return response.toObject() as GSEDetails;
 	} catch (e) {
 		console.error(
 			"%cError fetching GSE Details",
