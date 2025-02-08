@@ -493,7 +493,7 @@ async function scanQRCode(customDevice?: string): Promise<string | null> {
 			}
 			setTimeout(() => {
 				requestAnimationFrame(qrScanner);
-			}, 3);
+			}, 300);
 		}
 	});
 }
