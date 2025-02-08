@@ -366,7 +366,7 @@ async function scanQRCode(customDevice?: string): Promise<string | null> {
 		let cancelThisQRScanner = false;
 		function qrScanner() {
 			if (cancelThisQRScanner || !videoTrack || !videoTrack.enabled || !videoElement || !loadingMessage || !outputContainer || !outputMessage || !outputData || !outputData.parentElement)
-				return notify("QR Code Scanner", "Could not find required data", "error");
+				return notify("QR Code Scanner", "Camera has been closed", "success");
 			if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
 				loadingMessage.hidden = true;
 				outputContainer.hidden = false;
