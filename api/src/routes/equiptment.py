@@ -152,7 +152,7 @@ async def upload_field_image(request: Request) -> Response:
     upload_image_request.ParseFromString(await request.body())
     logger.info(f"{Fore.GREEN}✅ Validation successful for GSE ID: {upload_image_request.gse_id}{Style.RESET_ALL}")
 
-    gse: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(id=upload_image_request.gse_id)
+    gse: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(gse_id=upload_image_request.gse_id)
     
     if not gse:
         error_response: UploadFieldImageResponse = UploadFieldImageResponse(
@@ -178,17 +178,16 @@ async def upload_field_image(request: Request) -> Response:
 
 async def delete_field_image(request: Request) -> Response:
     
-    # Parse request
     image_request: FieldImageRequest = FieldImageRequest()
     image_request.ParseFromString(await request.body())
     logger.info(f"{Fore.GREEN}✅ Validation successful for GSE ID: {image_request.gse_id}{Style.RESET_ALL}")
 
     gse: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(id=image_request.gse_id)
     
-    if not gse:
+    if not gse or not gse.field_image:
         error_response: UploadFieldImageResponse = UploadFieldImageResponse(
             success="false",
-            error="GSE not found."
+            error=f"{"GSE" if not gse else "Field image"} not found."
         )
         return Response(
             status_code=400,
@@ -213,7 +212,7 @@ async def retrieve_field_image(request: Request) -> Response:
     image_request: FieldImageRequest = FieldImageRequest()
     image_request.ParseFromString(await request.body())
 
-    gse: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(id=image_request.gse_id)
+    gse: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(gse_id=image_request.gse_id)
     
     if not gse or gse.field_image is None:
         error_response: UploadFieldImageResponse = UploadFieldImageResponse(

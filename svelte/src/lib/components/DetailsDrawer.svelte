@@ -11,11 +11,13 @@
     import Drawer from "flowbite-svelte/Drawer.svelte";
     import Checkbox from "flowbite-svelte/Checkbox.svelte";
     import { t } from "$lib/locales";
-    import { onDestroy } from "svelte";
+    import { onDestroy, onMount } from "svelte";
+    import { notify } from "$lib/helpers/notify";
     import { equipment } from "$lib/helpers/equipment";
     import { flyTransitionParamsBottom } from "$lib/helpers/fly";
     import CheckOutline from "flowbite-svelte-icons/CheckOutline.svelte";
     import store from "$lib/store";
+    import { uploadGSEImage, retrieveGSEImage } from "$lib/helpers/server-requests";
     const {
         darkModeEnabled,
         qrCodeData,
@@ -71,6 +73,83 @@
                 String($isAutoOpenIssueDetails),
             );
     };
+
+    let customGSEImage: string | null = null;
+    let fileInput: HTMLInputElement;
+    let unsubscribe: () => void;
+
+    async function loadGSEImage() {
+        // Clear existing image first
+        if (customGSEImage) {
+            URL.revokeObjectURL(customGSEImage);
+            customGSEImage = null;
+        }
+
+        if (!$detectedGSE?.gse_id) return;
+        
+        try {
+            console.log("Loading GSE image for:", $detectedGSE.gse_id);
+            const imageUrl = await retrieveGSEImage($detectedGSE.gse_id);
+            if (imageUrl) {
+                console.log("Found image URL for", $detectedGSE.gse_id);
+                customGSEImage = imageUrl;
+            } else {
+                console.log("No custom image found for", $detectedGSE.gse_id);
+                customGSEImage = null;
+            }
+        } catch (error) {
+            console.error("Error loading GSE image:", error);
+            customGSEImage = null;
+        }
+    }
+
+    // Setup subscription when component mounts
+    onMount(() => {
+        loadGSEImage(); // Load initial image if GSE exists
+        
+        unsubscribe = detectedGSE.subscribe((gse) => {
+            if (gse?.gse_id) {
+                loadGSEImage();
+            } else {
+                // Clear image when no GSE is selected
+                if (customGSEImage) {
+                    URL.revokeObjectURL(customGSEImage);
+                    customGSEImage = null;
+                }
+            }
+        });
+    });
+
+    // Clean up when component is destroyed
+    onDestroy(() => {
+        if (customGSEImage) {
+            URL.revokeObjectURL(customGSEImage);
+            customGSEImage = null;
+        }
+        if (unsubscribe) {
+            unsubscribe();
+        }
+    });
+
+    async function handleImageUpload(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (!input.files?.length || !$detectedGSE?.gse_id) return;
+
+        try {
+            const file = input.files[0];
+            const success = await uploadGSEImage(file, $detectedGSE.gse_id);
+            
+            if (success) {
+                notify(t("Success"), t("Image uploaded successfully"), "success");
+                await loadGSEImage(); // Reload the image after successful upload
+            }
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            notify(t("Error"), t("Failed to upload image"), "error");
+        }
+        
+        input.value = ''; // Clear the input
+    }
 </script>
 
 <!-- activateClickOutside={!$isRecentIssueDrawerHidden ? false : true} -->
@@ -112,41 +191,60 @@
     </div>
     <div class="mt-6">
         {#if $detectedGSE}
-            <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4">
+            <div class="relative group">
                 <Avatar
-                    src={$detectedGSE.gse_type
+                    src={customGSEImage || ($detectedGSE.gse_type
                         ? equipment[$detectedGSE.gse_type]
-                        : undefined}
+                        : undefined)}
                     rounded
                     class="w-16 h-16 ring-4 ring-{!$detectedGSE.details &&
                     !$detectedGSE.error
                         ? 'green'
-                        : 'red'}-400 dark:ring-red-300"
+                        : 'red'}-400 dark:ring-red-300 cursor-pointer"
                     style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                    on:click={() => {
+                        if (fileInput) fileInput.click();
+                    }}
                 />
-                <div class="flex flex-col">
-                    <span class="text-xl font-medium text-gray-800"
-                        >{$detectedGSE.gse_type}</span
-                    >
-                    <div class="flex gap-1">
-                        {#if $detectedGSE.manufacturer}
-                            <Avatar
-                                src="/images/kalmar.png"
-                                rounded
-                                class="w-7 h-7 bg-transparent ring-red-400 dark:ring-red-300"
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
-                            />
-                        {/if}
-                        <span class="font-semibold text-gray-700"
-                            >{$detectedGSE.manufacturer
-                                ? $detectedGSE.manufacturer + " - "
-                                : ""}{$detectedGSE.model}</span
-                        >
-                    </div>
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
+                    onclick={() => {
+                        if (fileInput) fileInput.click();
+                    }}
+                >
+                    <span class="text-white text-xs">{t("Change Image")}</span>
                 </div>
             </div>
+            <input
+                type="file"
+                accept="image/*"
+                class="hidden"
+                bind:this={fileInput}
+                onchange={handleImageUpload}
+            />
+            <div class="flex flex-col">
+                <span class="text-xl font-medium text-gray-800"
+                    >{$detectedGSE.gse_type}</span
+                >
+                <div class="flex gap-1">
+                    {#if $detectedGSE.manufacturer}
+                        <Avatar
+                            src="/images/kalmar.png"
+                            rounded
+                            class="w-7 h-7 bg-transparent ring-red-400 dark:ring-red-300"
+                            style="filter: invert({$darkModeEnabled
+                                ? '1'
+                                : '0'});"
+                        />
+                    {/if}
+                    <span class="font-semibold text-gray-700"
+                        >{$detectedGSE.manufacturer
+                            ? $detectedGSE.manufacturer + " - "
+                            : ""}{$detectedGSE.model}</span
+                    >
+                </div>
+            </div>
+        </div>
 
             <div
                 class="grid mt-4 grid-cols-2 lg:grid-cols-3 gap-4 text-gray-800"

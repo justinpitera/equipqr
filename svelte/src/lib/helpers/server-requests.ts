@@ -33,6 +33,9 @@ const {
 	// Issue,
 	// Attachment,
 	// Gate,
+	UploadFieldImage,
+	FieldImageRequest,
+	FieldImageResponse,
 } = requests.v1;
 
 const debug_routes = false;
@@ -380,6 +383,73 @@ export async function get_gates(airport_icao_code: string) {
 		);
 		notify("Error retrieving gates", `Failed to retrieve gates: ${e}`, "error");
 	}
+}
+
+export async function uploadGSEImage(imageFile: File, gseId: string): Promise<boolean> {
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort('Request timed out after 30s'), 30000);
+        
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const imageBytes = new Uint8Array(arrayBuffer);
+        
+        const request = new UploadFieldImage({
+            image: imageBytes,
+            gse_id: gseId
+        });
+
+        const response = await fetch(`${BACKEND_URL}/api/gse/image/upload`, {
+            method: 'POST',
+            body: request.serializeBinary(),
+            signal: controller.signal,
+            headers: {
+                'Content-Type': 'application/protobuf'
+            }
+        });
+        
+        clearTimeout(timeout);
+        return response.ok;
+    } catch (e) {
+        console.error("Error uploading GSE image:", e);
+        notify("Error", "Failed to upload GSE image", "error");
+        return false;
+    }
+}
+
+export async function retrieveGSEImage(gseId: string): Promise<string | null> {
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+        
+        const request = new FieldImageRequest({
+            gse_id: gseId
+        });
+
+        const response = await fetch(`${BACKEND_URL}/api/gse/image/retrieve`, {
+            method: 'POST',
+            body: request.serializeBinary(),
+            signal: controller.signal,
+            headers: {
+                'Content-Type': 'application/protobuf'
+            }
+        });
+        
+        clearTimeout(timeout);
+
+        if (!response.ok) return null;
+
+        const responseData = await response.arrayBuffer();
+        const responseBytes = new Uint8Array(responseData);
+        const data = FieldImageResponse.deserialize(responseBytes);
+        
+        if (!data.image || data.image.length === 0) return null;
+        
+        const blob = new Blob([data.image], { type: 'image/jpeg' });
+        return URL.createObjectURL(blob);
+    } catch (e) {
+        console.error("Error retrieving GSE image:", e);
+        return null;
+    }
 }
 
 get_gates('EKCH');

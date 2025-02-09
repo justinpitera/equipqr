@@ -1,6 +1,6 @@
 [project]
 name = "api"
-version = "2024.11.22-rev0"
+version = "2025.02.08-dev"
 description = "Backend API for Fejlmelings app"
 authors = [
     { name = "Justin N. Pitera", email = "justinpitera@gmail.com" }

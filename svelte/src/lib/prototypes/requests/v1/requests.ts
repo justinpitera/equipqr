@@ -2905,4 +2905,161 @@ export namespace requests.v1 {
             return UploadFieldImageResponse.deserialize(bytes);
         }
     }
+    export class FieldImageRequest extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            gse_id?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("gse_id" in data && data.gse_id != undefined) {
+                    this.gse_id = data.gse_id;
+                }
+            }
+        }
+        get gse_id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set gse_id(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        static fromObject(data: {
+            gse_id?: string;
+        }): FieldImageRequest {
+            const message = new FieldImageRequest({});
+            if (data.gse_id != null) {
+                message.gse_id = data.gse_id;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                gse_id?: string;
+            } = {};
+            if (this.gse_id != null) {
+                data.gse_id = this.gse_id;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.gse_id.length)
+                writer.writeString(1, this.gse_id);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): FieldImageRequest {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new FieldImageRequest();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.gse_id = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): FieldImageRequest {
+            return FieldImageRequest.deserialize(bytes);
+        }
+    }
+    export class FieldImageResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            image?: Uint8Array;
+            delete_success?: boolean;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("image" in data && data.image != undefined) {
+                    this.image = data.image;
+                }
+                if ("delete_success" in data && data.delete_success != undefined) {
+                    this.delete_success = data.delete_success;
+                }
+            }
+        }
+        get image() {
+            return pb_1.Message.getFieldWithDefault(this, 1, new Uint8Array(0)) as Uint8Array;
+        }
+        set image(value: Uint8Array) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get delete_success() {
+            return pb_1.Message.getFieldWithDefault(this, 2, false) as boolean;
+        }
+        set delete_success(value: boolean) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            image?: Uint8Array;
+            delete_success?: boolean;
+        }): FieldImageResponse {
+            const message = new FieldImageResponse({});
+            if (data.image != null) {
+                message.image = data.image;
+            }
+            if (data.delete_success != null) {
+                message.delete_success = data.delete_success;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                image?: Uint8Array;
+                delete_success?: boolean;
+            } = {};
+            if (this.image != null) {
+                data.image = this.image;
+            }
+            if (this.delete_success != null) {
+                data.delete_success = this.delete_success;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.image.length)
+                writer.writeBytes(1, this.image);
+            if (this.delete_success != false)
+                writer.writeBool(2, this.delete_success);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): FieldImageResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new FieldImageResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.image = reader.readBytes();
+                        break;
+                    case 2:
+                        message.delete_success = reader.readBool();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): FieldImageResponse {
+            return FieldImageResponse.deserialize(bytes);
+        }
+    }
 }
