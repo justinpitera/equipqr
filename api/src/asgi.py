@@ -23,12 +23,14 @@ from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
 from src.models import CrewMember
 # from src.database import database_importer
 from src.enums import CrewMemberPositionEnum
-from src.routes.issues import leave_comment
 
 from src.routes import (
+    retrieve_field_image,
+    upload_field_image,
     get_status,
     fetch_gse,
     details_request,
+    leave_comment,
     submit_issue,
     delete_issues,
     fetch_issues,
@@ -105,7 +107,7 @@ def init_asgi() -> Starlette:
     )
 
     # api route prefix (used for production only)
-    _API_ROUTE_PREFIX: Literal['/api', ''] = "/api" if API_CONFIG["api"]["mode"] == "production" else ""
+    _API_ROUTE_PREFIX: Literal["/api", ""] = "/api" if API_CONFIG["api"]["mode"] == "production" else ""
 
     # Health
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/health/status", route=get_status, methods=["GET"])
@@ -113,7 +115,9 @@ def init_asgi() -> Starlette:
     # GroundSupportEquiptment (GSEs) related
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/details", route=details_request, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/all", route=fetch_gse, methods=["GET"])
-
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/image/upload", route=upload_field_image, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/image/retrieve", route=retrieve_field_image, methods=["POST"])
+    
     # Issues
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/submit", route=submit_issue, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/delete", route=delete_issues, methods=["POST"])
@@ -130,7 +134,7 @@ def init_asgi() -> Starlette:
     # Media
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/media/attachment", route=fetch_issue_attachment, methods=["GET"])
     
-    # Index    
+    # Index
     _ASGI.mount(path="/", app=StaticFiles(directory="web", html=True), name="_app")
     _ASGI.add_route(path="/{path:path}", route=homepage, methods=["GET"]) # Handles Index subpaths
     

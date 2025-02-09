@@ -585,3 +585,36 @@ class UploadFieldImageResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing.Literal["error", b"error", "success", b"success"]) -> None: ...
 
 global___UploadFieldImageResponse = UploadFieldImageResponse
+
+@typing.final
+class FieldImageRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    GSE_ID_FIELD_NUMBER: builtins.int
+    gse_id: builtins.str
+    def __init__(
+        self,
+        *,
+        gse_id: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["gse_id", b"gse_id"]) -> None: ...
+
+global___FieldImageRequest = FieldImageRequest
+
+@typing.final
+class FieldImageResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    IMAGE_FIELD_NUMBER: builtins.int
+    DELETE_SUCCESS_FIELD_NUMBER: builtins.int
+    image: builtins.bytes
+    delete_success: builtins.bool
+    def __init__(
+        self,
+        *,
+        image: builtins.bytes = ...,
+        delete_success: builtins.bool = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["delete_success", b"delete_success", "image", b"image"]) -> None: ...
+
+global___FieldImageResponse = FieldImageResponse

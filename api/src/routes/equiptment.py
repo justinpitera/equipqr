@@ -23,6 +23,8 @@ from src.models import GroundSupportEquiptment, Issue, IssueAttachment
 
 # Protobufs
 from src.protos.requests.v1.requests_pb2 import (
+    FieldImageRequest,
+    FieldImageResponse,
     GSEDetailsRequest,
     GSEDetailsResponse,
     ListGSEReponse,
@@ -167,6 +169,64 @@ async def upload_field_image(request: Request) -> Response:
     
     response: UploadFieldImageResponse = UploadFieldImageResponse (
         success="true"
+    )
+    
+    return Response(
+        status_code=200,
+        content=response.SerializeToString()
+    )
+
+async def delete_field_image(request: Request) -> Response:
+    
+    # Parse request
+    image_request: FieldImageRequest = FieldImageRequest()
+    image_request.ParseFromString(await request.body())
+    logger.info(f"{Fore.GREEN}✅ Validation successful for GSE ID: {image_request.gse_id}{Style.RESET_ALL}")
+
+    gse: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(id=image_request.gse_id)
+    
+    if not gse:
+        error_response: UploadFieldImageResponse = UploadFieldImageResponse(
+            success="false",
+            error="GSE not found."
+        )
+        return Response(
+            status_code=400,
+            content=error_response.SerializeToString()
+        )
+        
+    gse.field_image = None
+    await gse.save()
+    
+    response: FieldImageResponse = FieldImageResponse (
+        delete_success=True
+    )
+    
+    return Response(
+        status_code=200,
+        content=response.SerializeToString()
+    )
+
+async def retrieve_field_image(request: Request) -> Response:
+    
+    # Parse request
+    image_request: FieldImageRequest = FieldImageRequest()
+    image_request.ParseFromString(await request.body())
+
+    gse: GroundSupportEquiptment | None = await GroundSupportEquiptment.get_or_none(id=image_request.gse_id)
+    
+    if not gse or gse.field_image is None:
+        error_response: UploadFieldImageResponse = UploadFieldImageResponse(
+            success="false",
+            error=f"{"GSE" if not gse else "Field image"} not found."
+        )
+        return Response(
+            status_code=400,
+            content=error_response.SerializeToString()
+        )
+        
+    response: FieldImageResponse = FieldImageResponse (
+        image=gse.field_image
     )
     
     return Response(

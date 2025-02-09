@@ -157,3 +157,12 @@ message UploadFieldImageResponse {
   string success = 1;
   string error = 2;
 }
+
+message FieldImageRequest {
+  string gse_id = 1;
+}
+
+message FieldImageResponse {
+  bytes image = 1;
+  bool delete_success = 2;
+}

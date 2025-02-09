@@ -108,7 +108,7 @@ async def submit_issue(request: Request) -> Response:
 
         await _queue_attachments(attachments_data=attachment_data)
 
-        logger.info("\ud83d\udcec Attachments queued and issue saved successfully!")
+        logger.info("Attachments queued and issue saved successfully!")
 
         # Prepare the response using SubmitIssueResponse
         response: bytes = SubmitIssueResponse(id=str(issue_id)).SerializeToString()
