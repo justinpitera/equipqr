@@ -12,11 +12,9 @@ from tortoise.fields import (
     TextField,
     UUIDField,
     ReverseRelation,
-    CharEnumField
+    # CharEnumField
 )
 
-# Local
-from src.enums import IssueProgressEnum
 
 if TYPE_CHECKING:
     from src.models import (
@@ -33,7 +31,7 @@ class Issue(Model):
     reported_by                      : str      = CharField(max_length=3)
     is_operable                      : bool     = BooleanField(default=True)
    # Location                         : "Location" = 
-    progress                         : IssueProgressEnum = CharEnumField(enum_type=IssueProgressEnum, null=False, default=IssueProgressEnum.REPORTED)
+    progress                         : str = CharField(max_length=255, default="Reported", null=False)
     estimated_time                   : datetime | None = DatetimeField(null=True)
     attachments                      : ReverseRelation["IssueAttachment"] | None = None
     comments                         : ReverseRelation["IssueComment"] | None = None

@@ -21,7 +21,7 @@ from loguru import logger
 # Local
 from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
 from src.models import CrewMember
-# from src.database import database_importer
+from src.database import database_importer, location_importer
 from src.enums import CrewMemberPositionEnum
 
 from src.routes import (
@@ -32,6 +32,7 @@ from src.routes import (
     details_request,
     leave_comment,
     submit_issue,
+    edit_issue,
     delete_issues,
     fetch_issues,
     fetch_issue_attachment,
@@ -81,8 +82,8 @@ async def startup() -> None:
     
     await _validate_master_account()
     # await generate_issues()
-    # await database_importer()
-    # await location_importer("./locations.csv", "EKCH")
+    await database_importer()
+    await location_importer("./locations.csv", "EKCH")
     logger.success("Startup completed successfully!") 
 
 async def shutdown() -> None:
@@ -123,6 +124,7 @@ def init_asgi() -> Starlette:
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/delete", route=delete_issues, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/fetch", route=fetch_issues, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/comment", route=leave_comment, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/gse/issues/edit", route=edit_issue, methods=["POST"])
 
     # Locations
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/locations/fetch", route=fetch_locations, methods=["POST"])

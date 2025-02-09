@@ -618,3 +618,42 @@ class FieldImageResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing.Literal["delete_success", b"delete_success", "image", b"image"]) -> None: ...
 
 global___FieldImageResponse = FieldImageResponse
+
+@typing.final
+class EditIssueRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ISSUE_ID_FIELD_NUMBER: builtins.int
+    PROGRESS_FIELD_NUMBER: builtins.int
+    ESTIMATED_TIME_FIELD_NUMBER: builtins.int
+    issue_id: builtins.str
+    progress: builtins.str
+    estimated_time: builtins.str
+    def __init__(
+        self,
+        *,
+        issue_id: builtins.str = ...,
+        progress: builtins.str = ...,
+        estimated_time: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["estimated_time", b"estimated_time", "issue_id", b"issue_id", "progress", b"progress"]) -> None: ...
+
+global___EditIssueRequest = EditIssueRequest
+
+@typing.final
+class EditIssueResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    SUCCESS_FIELD_NUMBER: builtins.int
+    MESSAGE_FIELD_NUMBER: builtins.int
+    success: builtins.bool
+    message: builtins.str
+    def __init__(
+        self,
+        *,
+        success: builtins.bool = ...,
+        message: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["message", b"message", "success", b"success"]) -> None: ...
+
+global___EditIssueResponse = EditIssueResponse

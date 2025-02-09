@@ -17,13 +17,13 @@ class CrewMemberPositionEnum(str, Enum):
     MECHANIC = "mechanic"
     MANAGEMENT = "master"
     
-class IssueProgressEnum(str, Enum):
-    """Enum to describe issue progress."""
-    REPORTED   = "Reported"
-    IN_PROGRESS = "In Progress"
-    WAITING = "Waiting for parts"
-    READY = "Ready for pickup"
-    IN_SERVICE = "Back in service"
+# class IssueProgressEnum(str, Enum):
+#     """Enum to describe issue progress."""
+#     REPORTED   = "Reported"
+#     IN_PROGRESS = "In Progress"
+#     WAITING = "Waiting for parts"
+#     READY = "Ready for pickup"
+#     IN_SERVICE = "Back in service"
 
 class LocationTypeEnum(str, Enum):
     """Enum to describe location types."""

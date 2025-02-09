@@ -10,6 +10,7 @@ Authors:
 # Standard
 from __future__ import annotations
 from typing import Any
+from datetime import datetime
 from uuid import UUID, uuid4
 
 # Third-party
@@ -29,6 +30,8 @@ from src.tasks import upload_attachments_to_minio
 
 # Protobufs
 from src.protos.requests.v1.requests_pb2 import (
+    EditIssueRequest,
+    EditIssueResponse,
     FetchIssuesRequest,
     Attachment as ProtoAttachment,
     Issue as ProtoIssue,
@@ -266,10 +269,36 @@ async def fetch_issues(request: Request) -> Response:
         return Response(content="Internal server error", media_type="text/plain", status_code=500)
 
 
-async def edit_issue(request: Request) -> None:
+async def edit_issue(request: Request) -> Response:
     """POST route for editing an issue"""
-    pass
+    body: bytes = await request.body()
+    edit_issue_request: EditIssueRequest = EditIssueRequest()
+    edit_issue_request.ParseFromString(body)
 
+    issue: Issue | None = await Issue.get_or_none(id=edit_issue_request.issue_id)
+
+    # Handle issue dne
+    if not issue:
+        dne_error: IssueCommentResponse = IssueCommentResponse(
+            id="",
+            error="Issue not found."
+        )
+        return Response(status_code=400, content=dne_error.SerializeToString(), media_type="application/protobuf")
+    
+    # Edit the issue
+    issue.progress = edit_issue_request.progress or issue.progress
+    issue.estimated_time = datetime.fromisoformat(edit_issue_request.estimated_time) if edit_issue_request.estimated_time else issue.estimated_time
+    await issue.save()
+    
+    response: EditIssueResponse = EditIssueResponse(
+        success=True,
+        message="Issue edited successfully."
+    )
+    return Response(
+        content=response.SerializeToString(),
+        status_code=200   
+    )
+    
 async def leave_comment(request: Request) -> Response:
     """POST route for leaving a comment on an issue"""
     body: bytes = await request.body()
@@ -306,4 +335,3 @@ async def leave_comment(request: Request) -> Response:
     # Return response
     serialized_response: bytes = response_message.SerializeToString()
     return Response(content=serialized_response, media_type="application/protobuf")
-

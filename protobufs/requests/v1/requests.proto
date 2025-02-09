@@ -166,3 +166,14 @@ message FieldImageResponse {
   bytes image = 1;
   bool delete_success = 2;
 }
+
+message EditIssueRequest {
+  string issue_id = 1;
+  string progress = 2;
+  string estimated_time = 3;
+}
+
+message EditIssueResponse {
+  bool success = 1;
+  string message = 2;
+}
