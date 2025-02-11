@@ -309,14 +309,6 @@ async def leave_comment(request: Request) -> Response:
     # Find the issue
     issue: Issue | None = await Issue.get_or_none(id=issue_comment_request.issue_id)
     
-    # Handle issue dne
-    if not issue:
-        dne_error: IssueCommentResponse = IssueCommentResponse(
-            id="",
-            error="Issue not found."
-        )
-        return Response(content=dne_error.SerializeToString(), media_type="application/protobuf")
-    
     # Create issue comment
     new_id: UUID = uuid4()
     await IssueComment.create(
@@ -335,3 +327,6 @@ async def leave_comment(request: Request) -> Response:
     # Return response
     serialized_response: bytes = response_message.SerializeToString()
     return Response(content=serialized_response, media_type="application/protobuf")
+
+async def delete_comment(request: Request) -> None: # Response
+    pass

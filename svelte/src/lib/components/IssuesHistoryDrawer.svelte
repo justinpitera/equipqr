@@ -42,6 +42,7 @@
         delete_issue,
         getGSEDetails,
         getIssues,
+        editIssue
     } from "$lib/helpers/server-requests";
     import { notify } from "$lib/helpers/notify";
     import { flyTransitionParamsBottom } from "$lib/helpers/fly";
@@ -92,7 +93,7 @@
     let issuesPerPage = $state(10);
     let isLoading = $state(false);
     let multiSelectMode = $state(false);
-    let editIssue = $state("");
+    let editIssueId = $state(""); // Changed from editIssue to editIssueId
     let showScrollUp = $state(false);
     let searchDropdownOpen = $state(false);
     let filterDropdownOpen = $state(false);
@@ -155,7 +156,7 @@
         selectedCategory = search_categories[0];
         selectedFilter = filter_by_operable_categories[0];
         searchQuery = "";
-        editIssue = "";
+        editIssueId = ""; // Changed from editIssue to editIssueId
         searchDropdownOpen = false;
         filterDropdownOpen = false;
         isListening = false;
@@ -267,16 +268,21 @@
     }
 
     async function changeIssueStatus(issue: HistoryIssue, status: string) {
-        if (editIssue !== issue.id.toString()) return;
-        issues.set(
-            $issues.map((single_issue) => {
-                if (issue.id === single_issue.id) {
-                    single_issue.status = status;
-                }
-                return single_issue;
-            }),
-        );
-        console.warn("WIP tell server");
+        if (editIssueId !== issue.id.toString()) return; // Changed from editIssue to editIssueId
+        isLoading = true;
+        const success = await editIssue(issue.id.toString(), status);
+        if (success) {
+            issues.set(
+                $issues.map((single_issue) => {
+                    if (issue.id === single_issue.id) {
+                        single_issue.status = status;
+                    }
+                    return single_issue;
+                })
+            );
+            notify("Success", "Issue status updated successfully", "success");
+        }
+        isLoading = false;
     }
 
     function simulateLoadingWithFilters() {
@@ -391,10 +397,10 @@
     function handleEdit(event: Event, issue: HistoryIssue) {
         event.stopPropagation();
         console.log("Edit Issue", issue);
-        if (editIssue !== "" && editIssue === issue.id.toString()) {
-            editIssue = "";
+        if (editIssueId !== "" && editIssueId === issue.id.toString()) { // Changed from editIssue to editIssueId
+            editIssueId = ""; // Changed from editIssue to editIssueId
         } else {
-            editIssue = issue.id.toString();
+            editIssueId = issue.id.toString(); // Changed from editIssue to editIssueId
         }
     }
 
@@ -1131,7 +1137,7 @@
                     {#if $issues}
                         {#each $issues as issue, issue_number}
                             <div
-                                class="p-4 flex flex-col justify-between items-start issue-item select-none relative {editIssue ===
+                                class="p-4 flex flex-col justify-between items-start issue-item select-none relative {editIssueId === // Changed from editIssue to editIssueId
                                 issue.id.toString()
                                     ? 'bg-blue-50'
                                     : 'bg-gray-100'} rounded-md border-b-4"
@@ -1534,34 +1540,41 @@
                                     <!-- Spacer -->
                                     <hr class="mb-2 mt-2 w-[80%] m-auto" />
                                     <!-- Date Picker -->
-                                    {#if issue.status !== "Back in service" && editIssue === issue.id.toString()}
+                                    {#if issue.status !== "Back in service" && editIssueId === issue.id.toString()} <!-- Changed from editIssue to editIssueId -->
                                         <div
                                             class="flex justify-between mb-1 p-2"
                                         >
                                             <Button
                                                 class="bg-green-600 hover:bg-green-800"
-                                                onclick={(event: Event) => {
-                                                    issues.set(
-                                                        $issues.map(
-                                                            (single_issue) => {
-                                                                if (
-                                                                    issue.id ===
-                                                                    single_issue.id
-                                                                ) {
-                                                                    single_issue.estimated_date =
-                                                                        new Date().toLocaleDateString();
-                                                                }
-                                                                return single_issue;
-                                                            },
-                                                        ),
+                                                onclick={async (event: Event) => {
+                                                    const today = new Date().toLocaleDateString();
+                                                    isLoading = true;
+                                                    const success = await editIssue(
+                                                        issue.id.toString(),
+                                                        undefined,
+                                                        today
                                                     );
-                                                    editIssue = "";
-                                                    requestAnimationFrame(
-                                                        () => {
-                                                            editIssue =
-                                                                issue.id.toString();
-                                                        },
-                                                    );
+                                                    if (success) {
+                                                        issues.set(
+                                                            $issues.map(
+                                                                (single_issue) => {
+                                                                    if (
+                                                                        issue.id ===
+                                                                        single_issue.id
+                                                                    ) {
+                                                                        single_issue.estimated_date = today;
+                                                                    }
+                                                                    return single_issue;
+                                                                },
+                                                            ),
+                                                        );
+                                                        notify("Success", "Estimated time updated successfully", "success");
+                                                    }
+                                                    isLoading = false;
+                                                    editIssueId = "";
+                                                    requestAnimationFrame(() => {
+                                                        editIssueId = issue.id.toString();
+                                                    });
                                                 }}
                                                 style="filter: invert({$darkModeEnabled
                                                     ? '1'
@@ -1572,28 +1585,34 @@
                                             </Button>
                                             <Button
                                                 class="bg-red-600 hover:bg-red-800"
-                                                onclick={(event: Event) => {
-                                                    issues.set(
-                                                        $issues.map(
-                                                            (single_issue) => {
-                                                                if (
-                                                                    issue.id ===
-                                                                    single_issue.id
-                                                                ) {
-                                                                    single_issue.estimated_date =
-                                                                        undefined;
-                                                                }
-                                                                return single_issue;
-                                                            },
-                                                        ),
+                                                onclick={async (event: Event) => {
+                                                    isLoading = true;
+                                                    const success = await editIssue(
+                                                        issue.id.toString(),
+                                                        undefined,
+                                                        undefined
                                                     );
-                                                    editIssue = "";
-                                                    requestAnimationFrame(
-                                                        () => {
-                                                            editIssue =
-                                                                issue.id.toString();
-                                                        },
-                                                    );
+                                                    if (success) {
+                                                        issues.set(
+                                                            $issues.map(
+                                                                (single_issue) => {
+                                                                    if (
+                                                                        issue.id ===
+                                                                        single_issue.id
+                                                                    ) {
+                                                                        single_issue.estimated_date = undefined;
+                                                                    }
+                                                                    return single_issue;
+                                                                },
+                                                            ),
+                                                        );
+                                                        notify("Success", "Estimated time cleared successfully", "success");
+                                                    }
+                                                    isLoading = false;
+                                                    editIssueId = "";
+                                                    requestAnimationFrame(() => {
+                                                        editIssueId = issue.id.toString();
+                                                    });
                                                 }}
                                                 style="filter: invert({$darkModeEnabled
                                                     ? '1'
@@ -1634,27 +1653,29 @@
                                                         ),
                                                     );
                                                 }}
-                                                on:apply={(event) => {
-                                                    issues.set(
-                                                        $issues.map(
-                                                            (single_issue) => {
-                                                                if (
-                                                                    issue.id ===
-                                                                    single_issue.id
-                                                                ) {
-                                                                    single_issue.estimated_date =
-                                                                        event.detail
-                                                                            ? event.detail.toLocaleDateString()
-                                                                            : undefined;
+                                                on:apply={async (event) => {
+                                                    const newDate = event.detail ? event.detail.toLocaleDateString() : undefined;
+                                                    isLoading = true;
+                                                    const success = await editIssue(
+                                                        issue.id.toString(), 
+                                                        undefined, 
+                                                        newDate
+                                                    );
+                                                    if (success) {
+                                                        issues.set(
+                                                            $issues.map(
+                                                                (single_issue) => {
+                                                                    if (issue.id === single_issue.id) {
+                                                                        single_issue.estimated_date = newDate;
+                                                                    }
+                                                                    return single_issue;
                                                                 }
-                                                                return single_issue;
-                                                            },
-                                                        ),
-                                                    );
-                                                    console.warn(
-                                                        "WIP tell server",
-                                                    );
-                                                    editIssue = "";
+                                                            )
+                                                        );
+                                                        notify("Success", "Estimated time updated successfully", "success");
+                                                    }
+                                                    isLoading = false;
+                                                    editIssueId = "";
                                                 }}
                                                 color="blue"
                                                 dateFormat={{
@@ -1674,7 +1695,7 @@
                                             : '0'});"
                                     >
                                         <Edit class="h-5 w-5 mr-2" />
-                                        {#if editIssue === issue.id.toString()}
+                                        {#if editIssueId === issue.id.toString()} <!-- Changed from editIssue to editIssueId -->
                                             {t("Exit Edit Mode")}
                                         {:else}
                                             {t("Edit")}

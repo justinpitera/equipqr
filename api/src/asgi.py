@@ -82,8 +82,8 @@ async def startup() -> None:
     
     await _validate_master_account()
     # await generate_issues()
-    await database_importer()
-    await location_importer("./locations.csv", "EKCH")
+    # await database_importer()
+    # await location_importer("./locations.csv", "EKCH")
     logger.success("Startup completed successfully!") 
 
 async def shutdown() -> None:

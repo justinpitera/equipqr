@@ -15,6 +15,8 @@ const {
 	// /api/gse/issues/fetch
 	FetchIssuesRequest,
 	FetchIssuesResponse,
+	EditIssueRequest,
+	EditIssueResponse,
 	// /api/auth
 	LoginRequest,
 	LoginResponse,
@@ -449,6 +451,45 @@ export async function retrieveGSEImage(gseId: string): Promise<string | null> {
     } catch (e) {
         console.error("Error retrieving GSE image:", e);
         return null;
+    }
+}
+
+export async function editIssue(issue_id: string, progress?: string, estimated_time?: string): Promise<boolean> {
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+        
+        const requestData = new EditIssueRequest({
+            issue_id,
+            progress,
+            estimated_time
+        });
+
+        const response = await fetch(`${BACKEND_URL}/api/gse/issues/edit`, {
+            method: 'POST',
+            body: requestData.serializeBinary(),
+            signal: controller.signal,
+            headers: {
+                'Content-Type': 'application/protobuf'
+            }
+        });
+        
+        clearTimeout(timeout);
+        
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+
+        const responseData = await response.arrayBuffer();
+        const responseBytes = new Uint8Array(responseData);
+        const data = EditIssueResponse.deserialize(responseBytes);
+        
+        if (debug_routes) console.log("editIssue", data);
+        return true;
+    } catch (e) {
+        console.error("Error editing issue:", e);
+        notify("Error", `Failed to edit issue: ${e}`, "error");
+        return false;
     }
 }
 

@@ -3062,4 +3062,207 @@ export namespace requests.v1 {
             return FieldImageResponse.deserialize(bytes);
         }
     }
+    export class EditIssueRequest extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            issue_id?: string;
+            progress?: string;
+            estimated_time?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("issue_id" in data && data.issue_id != undefined) {
+                    this.issue_id = data.issue_id;
+                }
+                if ("progress" in data && data.progress != undefined) {
+                    this.progress = data.progress;
+                }
+                if ("estimated_time" in data && data.estimated_time != undefined) {
+                    this.estimated_time = data.estimated_time;
+                }
+            }
+        }
+        get issue_id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set issue_id(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get progress() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set progress(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get estimated_time() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set estimated_time(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        static fromObject(data: {
+            issue_id?: string;
+            progress?: string;
+            estimated_time?: string;
+        }): EditIssueRequest {
+            const message = new EditIssueRequest({});
+            if (data.issue_id != null) {
+                message.issue_id = data.issue_id;
+            }
+            if (data.progress != null) {
+                message.progress = data.progress;
+            }
+            if (data.estimated_time != null) {
+                message.estimated_time = data.estimated_time;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                issue_id?: string;
+                progress?: string;
+                estimated_time?: string;
+            } = {};
+            if (this.issue_id != null) {
+                data.issue_id = this.issue_id;
+            }
+            if (this.progress != null) {
+                data.progress = this.progress;
+            }
+            if (this.estimated_time != null) {
+                data.estimated_time = this.estimated_time;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.issue_id.length)
+                writer.writeString(1, this.issue_id);
+            if (this.progress.length)
+                writer.writeString(2, this.progress);
+            if (this.estimated_time.length)
+                writer.writeString(3, this.estimated_time);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): EditIssueRequest {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new EditIssueRequest();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.issue_id = reader.readString();
+                        break;
+                    case 2:
+                        message.progress = reader.readString();
+                        break;
+                    case 3:
+                        message.estimated_time = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): EditIssueRequest {
+            return EditIssueRequest.deserialize(bytes);
+        }
+    }
+    export class EditIssueResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            success?: boolean;
+            message?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("success" in data && data.success != undefined) {
+                    this.success = data.success;
+                }
+                if ("message" in data && data.message != undefined) {
+                    this.message = data.message;
+                }
+            }
+        }
+        get success() {
+            return pb_1.Message.getFieldWithDefault(this, 1, false) as boolean;
+        }
+        set success(value: boolean) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get message() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set message(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        static fromObject(data: {
+            success?: boolean;
+            message?: string;
+        }): EditIssueResponse {
+            const message = new EditIssueResponse({});
+            if (data.success != null) {
+                message.success = data.success;
+            }
+            if (data.message != null) {
+                message.message = data.message;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                success?: boolean;
+                message?: string;
+            } = {};
+            if (this.success != null) {
+                data.success = this.success;
+            }
+            if (this.message != null) {
+                data.message = this.message;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.success != false)
+                writer.writeBool(1, this.success);
+            if (this.message.length)
+                writer.writeString(2, this.message);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): EditIssueResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new EditIssueResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.success = reader.readBool();
+                        break;
+                    case 2:
+                        message.message = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): EditIssueResponse {
+            return EditIssueResponse.deserialize(bytes);
+        }
+    }
 }
