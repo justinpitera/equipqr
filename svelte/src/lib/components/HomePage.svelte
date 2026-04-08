@@ -146,7 +146,7 @@
 </div>
 
 <main
-    class="px-4 py-5 pt-2 h-screen overflow-y-auto relative bg-slate-100{$startQRScanner ||
+    class="px-4 py-5 pt-2 h-screen overflow-y-auto relative bg-slate-100 dark:bg-gray-950{$startQRScanner ||
     !$isIssuesHistoryHidden
         ? ' hidden'
         : ''}"
@@ -157,8 +157,7 @@
             alt="logo"
             width="128"
             height="auto"
-            class="m-auto mt-2"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            class="m-auto mt-2 dark:invert"
         />
         <h1
             class="text-3xl font-semibold text-gray-800 dark:text-white{!$isLoggedIn
@@ -187,20 +186,20 @@
 
     <!-- Settings Bubble -->
     <button
-        class="absolute top-4 left-4 rounded-full h-10 w-10 bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
+        class="absolute top-4 left-4 rounded-full h-10 w-10 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
         onclick={toggleSettings}
         aria-label="Settings"
         style="min-width: auto;"
     >
-        <Settings class="h-6 w-6 text-gray-700" />
+        <Settings class="h-6 w-6 text-gray-700 dark:text-gray-200" />
     </button>
     <button
-        class="absolute top-4 right-4 rounded-full h-10 w-10 bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
+        class="absolute top-4 right-4 rounded-full h-10 w-10 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
         onclick={toggleLogin}
         aria-label="Account"
         style="min-width: auto;"
     >
-        <User class="h-6 w-6 text-gray-700" />
+        <User class="h-6 w-6 text-gray-700 dark:text-gray-200" />
     </button>
 
     <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5 justify-items-center">
@@ -222,9 +221,6 @@
                     <div class="card-content">
                         <ChartBarStacked
                             class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Statistics")}
@@ -256,9 +252,6 @@
                     <div class="card-content">
                         <FileText
                             class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("View Issue History")}
@@ -293,9 +286,6 @@
                     <div class="card-content">
                         <Search
                             class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Check Code (QR)")}
@@ -325,9 +315,6 @@
                     <div class="card-content">
                         <Search
                             class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Check Code (Manual)")}
@@ -357,9 +344,6 @@
                     <div class="card-content">
                         <Clipboard
                             class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Report Failure (QR)")}
@@ -418,9 +402,6 @@
                     <div class="card-content">
                         <Clipboard
                             class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Report Failure (QR)")}
@@ -479,9 +460,6 @@
                     <div class="card-content">
                         <Search
                             class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Check Code (QR)")}
@@ -511,9 +489,6 @@
                     <div class="card-content">
                         <Search
                             class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Check Code (Manual)")}
@@ -545,9 +520,6 @@
                     <div class="card-content">
                         <Camera
                             class="w-12 h-12 mx-auto text-green-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Print QR Codes")}
@@ -582,9 +554,6 @@
                     <div class="card-content">
                         <Car
                             class="w-12 h-12 mx-auto text-cyan-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Add Vehicles and Ground Equipment")}
@@ -620,9 +589,6 @@
                     <div class="card-content">
                         <UserCog
                             class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Account Management")}
@@ -653,7 +619,6 @@
             <div class="card-content">
                 <Settings
                     class="w-12 h-12 mx-auto text-red-600 dark:text-white"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
                 <div class="card-title mt-3 text-xl font-semibold">
                     {t("Settings")}
@@ -684,7 +649,6 @@
                 {#if $isLoggedIn}
                     <LogIn
                         class="w-12 h-12 mx-auto text-green-600 dark:text-white"
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
                         {t("Logged In")}
@@ -700,7 +664,6 @@
                     <button
                         class="button"
                         onclick={toggleLogin}
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                         >{t("Login")}</button
                     >
                     <div
@@ -725,6 +688,23 @@
     .card:hover {
         background-color: #f1f5f9;
         cursor: pointer;
+    }
+
+    :global(.dark) .card:hover {
+        background-color: #374151;
+    }
+
+    :global(.dark) .card {
+        background-color: #1f2937;
+        color: #f9fafb;
+    }
+
+    :global(.dark) .card-title {
+        color: #f9fafb;
+    }
+
+    :global(.dark) .card-description {
+        color: #9ca3af;
     }
 
     .card-content {
@@ -755,6 +735,14 @@
 
     .button:hover {
         background-color: #1d4ed8;
+    }
+
+    :global(.dark) .button {
+        background-color: #1d4ed8;
+    }
+
+    :global(.dark) .button:hover {
+        background-color: #2563eb;
     }
 
     *:focus:not(:focus-visible) {

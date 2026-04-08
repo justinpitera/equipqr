@@ -652,7 +652,7 @@
         placement="right"
         bind:hidden={$isIssuesHistoryHidden}
         backdrop={true}
-        class="drawer-box p-4 md:p-6 md:pt-4 bg-white rounded-lg md:rounded-none shadow-lg overflow-y-hidden"
+        class="drawer-box p-4 md:p-6 md:pt-4 bg-white dark:bg-gray-900 rounded-lg md:rounded-none shadow-lg overflow-y-hidden"
         width="w-full"
         activateClickOutside={false}
         transitionParams={{
@@ -664,7 +664,6 @@
             <div class="text-center">
                 <ExclamationCircleOutline
                     class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
                 <h3
                     class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400"
@@ -688,7 +687,6 @@
                     }}
                     color="red"
                     class="me-2"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >{t("Yes, I'm sure")}</Button
                 >
                 <Button
@@ -697,7 +695,6 @@
                         deleteIssuePopup = false;
                     }}
                     color="alternative"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     >{t("No, cancel")}</Button
                 >
             </div>
@@ -713,11 +710,11 @@
                     resetDrawer();
                     isIssuesHistoryHidden.set(true);
                 }}
-                class="p-2 hover:bg-gray-200 rounded-md"
+                class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
             >
-                <ArrowLeft class="h-6 w-6 text-gray-800" />
+                <ArrowLeft class="h-6 w-6 text-gray-800 dark:text-white" />
             </button>
-            <h2 class="text-xl font-bold text-gray-800 mr-2">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white mr-2">
                 {t("Issue History")}
             </h2>
         </div>
@@ -821,11 +818,10 @@
                 </div>
             {/if}
             <div
-                class="content-wrapper relative p-1{isLoading
+                class="content-wrapper relative p-1 bg-gray-50 dark:bg-gray-900{isLoading
                     ? ' opacity-55 pointer-events-none'
                     : ''}"
-                style="transform: translateY({translateY}px); 
-            background: rgb(247, 247, 247);"
+                style="transform: translateY({translateY}px);"
             >
                 <!-- Search -->
                 <form
@@ -907,9 +903,6 @@
                         <div class="relative w-full md:w-fit">
                             <Button
                                 class="category-select mt-2 whitespace-nowrap border w-full border-primary-700"
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
                             >
                                 <div class="flex items-center mt-0">
                                     {#if selectedCategory.icon === "OctagonAlert"}
@@ -948,10 +941,6 @@
                                     >
                                         <div
                                             class="flex items-center mt-0"
-                                            style="filter: invert({index > 0 &&
-                                            $darkModeEnabled
-                                                ? '1'
-                                                : '0'});"
                                         >
                                             {#if category.icon === "OctagonAlert"}
                                                 <OctagonAlert
@@ -998,9 +987,6 @@
                         <div class="relative w-full md:w-fit">
                             <Button
                                 class="filter-by-operable mt-2 whitespace-nowrap border w-full border-primary-700"
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
                             >
                                 <div class="flex items-center mt-0">
                                     {#if selectedFilter.icon === "check"}
@@ -1035,10 +1021,6 @@
                                     >
                                         <div
                                             class="flex items-center mt-0"
-                                            style="filter: invert({index > 0 &&
-                                            $darkModeEnabled
-                                                ? '1'
-                                                : '0'});"
                                         >
                                             {#if filter.icon === "check"}
                                                 <CheckOutline
@@ -1111,9 +1093,6 @@
                             onclick={() => changePage(false, "top")}
                             disabled={isLoading || currentPage === 1}
                             class="btn"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         >
                             <ArrowLeft class="h-5 w-5" />
                         </Button>
@@ -1122,9 +1101,6 @@
                             disabled={isLoading ||
                                 currentPage * issuesPerPage >= totalIssuesCount}
                             class="btn"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         >
                             <ArrowRight class="h-5 w-5" />
                         </Button>
@@ -1164,9 +1140,6 @@
                                     {#if issue.gse_id}
                                         <div
                                             class="font-medium h-fit inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
-                                            style="filter: invert({$darkModeEnabled
-                                                ? '1'
-                                                : '0'});"
                                             onclick={() =>
                                                 openDetailsDrawer(issue)}
                                             onkeypress={(event) => {
@@ -1187,9 +1160,7 @@
                                     {#if issue.gate_type && issue.gate_name}
                                         <div
                                             class="flex absolute top-2 right-2 items-center bg-yellow-300 border-2 border-navy-800 rounded-md px-2 py-1 ml-3 text-navy-900 shadow-sm"
-                                            style="width: fit-content; min-width: fit-content;filter: invert({$darkModeEnabled
-                                                ? '1'
-                                                : '0'});"
+                                            style="width: fit-content; min-width: fit-content;"
                                         >
                                             <!-- Airplane Icon -->
                                             <div
@@ -1222,16 +1193,10 @@
                                         {#if issue.operable.toLowerCase() === "yes"}
                                             <CheckOutline
                                                 class="ml-2 h-4 w-4 text-green-500"
-                                                style="filter: invert({$darkModeEnabled
-                                                    ? '1'
-                                                    : '0'});"
                                             />
                                         {:else}
                                             <X
                                                 class="ml-2 h-4 w-4 text-red-500"
-                                                style="filter: invert({$darkModeEnabled
-                                                    ? '1'
-                                                    : '0'});"
                                             />
                                         {/if}
                                     </div>
@@ -1380,17 +1345,6 @@
                                                                     ? `bg-${statuses[status].color}-500`
                                                                     : "bg-gray-200"
                                                             }`}
-                                                            style="filter: invert({(index ===
-                                                                statusKeys.indexOf(
-                                                                    issue.status,
-                                                                ) ||
-                                                                index <
-                                                                    statusKeys.indexOf(
-                                                                        issue.status,
-                                                                    )) &&
-                                                            $darkModeEnabled
-                                                                ? '1'
-                                                                : '0'});"
                                                         ></div>
                                                         <div
                                                             class="mt-4 flex flex-col items-center"
@@ -1409,17 +1363,6 @@
                                                                         ? `bg-${statuses[status].color}-500 text-white`
                                                                         : "bg-gray-200 text-gray-500"
                                                                 }`}
-                                                                style="filter: invert({(index ===
-                                                                    statusKeys.indexOf(
-                                                                        issue.status,
-                                                                    ) ||
-                                                                    index <
-                                                                        statusKeys.indexOf(
-                                                                            issue.status,
-                                                                        )) &&
-                                                                $darkModeEnabled
-                                                                    ? '1'
-                                                                    : '0'});"
                                                                 onclick={() =>
                                                                     changeIssueStatus(
                                                                         issue,
@@ -1483,9 +1426,6 @@
                                             </div>
                                             <div
                                                 class="flex m-auto w-fit text-center items-center mt-2"
-                                                style="filter: invert({$darkModeEnabled
-                                                    ? '1'
-                                                    : '0'});"
                                             >
                                                 {#if statuses[issue.status].icon === "OctagonAlert"}
                                                     <OctagonAlert
@@ -1576,9 +1516,6 @@
                                                         editIssueId = issue.id.toString();
                                                     });
                                                 }}
-                                                style="filter: invert({$darkModeEnabled
-                                                    ? '1'
-                                                    : '0'});"
                                             >
                                                 <Clock class="h-5 w-5 mr-2" />
                                                 {t("Today")}
@@ -1614,9 +1551,6 @@
                                                         editIssueId = issue.id.toString();
                                                     });
                                                 }}
-                                                style="filter: invert({$darkModeEnabled
-                                                    ? '1'
-                                                    : '0'});"
                                             >
                                                 <X class="h-5 w-5 mr-2" />
                                                 {t("Clear")}
@@ -1690,9 +1624,6 @@
                                         class="bg-blue-600 w-full"
                                         onclick={(event: Event) =>
                                             handleEdit(event, issue)}
-                                        style="filter: invert({$darkModeEnabled
-                                            ? '1'
-                                            : '0'});"
                                     >
                                         <Edit class="h-5 w-5 mr-2" />
                                         {#if editIssueId === issue.id.toString()} <!-- Changed from editIssue to editIssueId -->
@@ -1706,9 +1637,6 @@
                                         onclick={(event: Event) => {
                                             leaveCommentDrawerHidden = false;
                                         }}
-                                        style="filter: invert({$darkModeEnabled
-                                            ? '1'
-                                            : '0'});"
                                     >
                                         <EnvelopeOpenOutline
                                             class="h-5 w-5 mr-2"
@@ -1720,9 +1648,6 @@
                                             class="bg-red-600 hover:bg-red-800 w-full mt-2"
                                             onclick={(event: Event) =>
                                                 handleDelete(event, issue)}
-                                            style="filter: invert({$darkModeEnabled
-                                                ? '1'
-                                                : '0'});"
                                         >
                                             <Trash2 class="h-5 w-5 mr-2" />
                                             {t("Close Case")}
@@ -1790,9 +1715,6 @@
                             onclick={() => changePage(false, "bottom")}
                             disabled={isLoading || currentPage === 1}
                             class="btn"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         >
                             <ArrowLeft class="h-5 w-5" />
                         </Button>
@@ -1801,9 +1723,6 @@
                             disabled={isLoading ||
                                 currentPage * issuesPerPage >= totalIssuesCount}
                             class="btn"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         >
                             <ArrowRight class="h-5 w-5" />
                         </Button>

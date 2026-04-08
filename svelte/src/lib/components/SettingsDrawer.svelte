@@ -1,6 +1,5 @@
 <script lang="ts">
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
-    import Bell from "lucide-svelte/icons/bell";
     import Globe from "lucide-svelte/icons/globe";
     import Sun from "lucide-svelte/icons/sun";
     import Trash2 from "lucide-svelte/icons/trash-2";
@@ -20,14 +19,7 @@
     } = store;
 
     $effect(() => {
-        const html = document.querySelector("html");
-        if (!html) return;
-        const invert = `invert(${$darkModeEnabled ? "1" : "0"})`;
-        html.style.filter = invert;
-        html.style.background = $darkModeEnabled ? "white" : "";
-        for (const container of document.querySelectorAll(".toast-container")) {
-            (container as HTMLElement).style.filter = invert;
-        }
+        document.documentElement.classList.toggle("dark", $darkModeEnabled);
     });
 
     const toggleSettings = () => {
@@ -58,7 +50,7 @@
     placement="bottom"
     bind:hidden={$isSettingsHidden}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg max-w-[600px] m-auto"
+    class="drawer-box p-6 md:p-8 bg-gray-100 dark:bg-gray-900 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
     transitionParams={flyTransitionParamsBottom}
@@ -69,11 +61,11 @@
         <button
             type="button"
             onclick={() => isSettingsHidden.set(true)}
-            class="p-2 hover:bg-gray-200 rounded-md"
+            class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
         >
-            <ArrowLeft class="h-6 w-6 text-gray-800" />
+            <ArrowLeft class="h-6 w-6 text-gray-800 dark:text-white" />
         </button>
-        <h2 class="text-xl font-bold text-gray-800">{t("Settings")}</h2>
+        <h2 class="text-xl font-bold text-gray-800 dark:text-white">{t("Settings")}</h2>
     </div>
 
     <!-- Content -->
@@ -83,17 +75,16 @@
             <div class="flex items-center gap-2">
                 <Globe
                     class="h-5 w-5 text-green-500"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
                 <label
                     for="language-selector"
-                    class="text-gray-800 font-semibold">{t("Language")}</label
+                    class="text-gray-800 dark:text-gray-200 font-semibold">{t("Language")}</label
                 >
             </div>
             <select
                 id="language-selector"
                 bind:value={$selectedLanguage}
-                class="mt-2 p-2 border rounded-md focus:ring-2 focus:ring-blue-400"
+                class="mt-2 p-2 border rounded-md focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 onchange={() => {
                     localStorage.setItem("savedLang", $selectedLanguage);
                     location.reload();
@@ -104,12 +95,11 @@
                 {/each}
             </select>
         </div>
-        <!-- Notifications Toggle -->
+        <!-- Notifications Toggle
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <Bell
                     class="h-5 w-5 text-blue-500"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
                 <span class="text-gray-800 font-semibold"
                     >{t("Notifications")}</span
@@ -117,7 +107,6 @@
             </div>
             <label
                 class="switch"
-                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 <input
                     type="checkbox"
@@ -131,21 +120,17 @@
                 />
                 <span class="slider round"></span>
             </label>
-        </div>
+        </div> -->
         <!-- Darkmode Toggle -->
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <Sun
                     class="h-5 w-5 text-yellow-500"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
-                <span class="text-gray-800 font-semibold">{t("Dark Mode")}</span
+                <span class="text-gray-800 dark:text-gray-200 font-semibold">{t("Dark Mode")}</span
                 >
             </div>
-            <label
-                class="switch"
-                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
-            >
+            <label class="switch">
                 <input
                     type="checkbox"
                     bind:checked={$darkModeEnabled}
@@ -165,8 +150,7 @@
     <div class="mt-6 flex justify-between items-center">
         <button
             onclick={resetSettings}
-            class="flex items-center text-red-600 hover:text-red-800"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            class="flex items-center text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
         >
             <Trash2 class="h-5 w-5 mr-1" />
             {t("Reset to Defaults")}
@@ -174,7 +158,6 @@
         <Button
             on:click={toggleSettings}
             class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             {t("Close")}
         </Button>

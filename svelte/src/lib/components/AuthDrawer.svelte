@@ -57,7 +57,7 @@
     bind:hidden={$isAuthDrawerHidden}
     activateClickOutside={false}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg shadow-lg max-w-[600px] m-auto"
+    class="drawer-box p-6 md:p-8 bg-gray-100 dark:bg-gray-900 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
     transitionParams={flyTransitionParamsBottom}
@@ -71,9 +71,9 @@
         <button
             type="button"
             onclick={() => isAuthDrawerHidden.set(true)}
-            class="p-2 hover:bg-gray-200 rounded-md"
+            class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
         >
-            <ArrowLeft class="h-6 w-6 text-gray-800" />
+            <ArrowLeft class="h-6 w-6 text-gray-800 dark:text-white" />
         </button>
     </div>
 
@@ -121,10 +121,7 @@
                     <div class="form-footer mt-6">
                         <button
                             type="submit"
-                            class="btn"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});">{t("Submit")}</button
+                            class="btn">{t("Submit")}</button
                         >
                     </div>
                 </form>
@@ -151,7 +148,6 @@
             class="bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2{!$isLoggedIn
                 ? ' hidden'
                 : ''}"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             {t("Logout")}
             <LogOut class="w-4 h-4 ml-2" />
@@ -166,7 +162,6 @@
             class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2{$isLoggedIn
                 ? ' hidden'
                 : ''}"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             {t("Login as Guest")}
             <LogIn class="w-4 h-4 ml-2" />

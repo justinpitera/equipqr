@@ -22,7 +22,7 @@
             closeFullscreen();
         }
     }}
-    style="z-index: 100; filter: invert({$darkModeEnabled ? '1' : '0'});"
+    style="z-index: 100;"
 >
     <button
         id="closeButton"

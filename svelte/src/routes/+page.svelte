@@ -8,7 +8,6 @@
   // QR Scanner utilities
   import { destroyScanner } from "$lib/helpers/camera";
   // UI Components:
-  import NotifyUi from "$lib/components/NotifyUi.svelte";
   import CloseReportUi from "$lib/components/CloseReportUi.svelte";
   import ReportUi from "$lib/components/ReportUi.svelte";
   import DetailsDrawer from "$lib/components/DetailsDrawer.svelte";
@@ -52,7 +51,6 @@
   <StatisticsDrawer />
   <IssuesHistoryDrawer />
   <DetailsDrawer />
-  <NotifyUi />
   <CloseReportUi />
   <ReportUi />
 {/if}

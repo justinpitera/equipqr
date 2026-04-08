@@ -11,7 +11,7 @@ dependencies = [
     "argon2-cffi>=23.1.0",
     "pyjwt[crypto]>=2.10.0",
     "pandas>=2.2.3",
-    "toml>=0.10.2",
+    "python-dotenv>=1.0.0",
     "asyncpg>=0.30.0",
     "granian[pname]>=1.6.4",
     "colorama>=0.4.6",
@@ -31,11 +31,12 @@ dependencies = [
     "celery-types>=0.22.0",
     "faker>=33.1.0",
     "types-requests>=2.32.0.20241016",
-    "types-toml>=0.10.8.20240310",
     "types-tortoise>=0.3.6",
     "protobuf>=5.29.3",
     "python-magic>=0.4.27",
     "orjson>=3.10.15",
+    "pytz>=2026.1.post1",
+    "fastapi>=0.135.3",
 ]
 requires-python = ">= 3.12.6"
 
@@ -43,8 +44,7 @@ requires-python = ">= 3.12.6"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.rye]
-managed = true
+[tool.uv]
 dev-dependencies = [
     "black>=24.10.0",
     "aerich>=0.7.2",
@@ -59,10 +59,6 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
-
-[tool.rye.scripts]
-start = "python -m src.main"
-gen_stubs = "python ../scripts/stubgenerator.py"
 
 
 [tool.aerich]

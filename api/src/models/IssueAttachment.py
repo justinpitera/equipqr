@@ -29,7 +29,7 @@ class IssueAttachment(Model):
     """Stores attachments (photos/videos) related to Issues mapped to object storage."""
     id: UUID = UUIDField(primary_key=True, unique=True, null=False)
     issue: "Issue" = ForeignKeyField(
-        model_name="models.Issue",
+        "models.Issue",
         related_name="attachments",
         on_delete=OnDelete.CASCADE,
     )

@@ -62,7 +62,7 @@
     placement="bottom"
     bind:hidden={$addVehiclesDrawerHidden}
     backdrop={true}
-    class="drawer-box p-0 bg-gray-100 rounded-lg shadow-lg max-w-[600px] m-auto"
+    class="drawer-box p-0 bg-gray-100 dark:bg-gray-900 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
     activateClickOutside={false}
@@ -72,7 +72,7 @@
     }}
 >
     <div
-        class="flex items-center justify-between p-4 pb-2 md:p-6 md:bg-white"
+        class="flex items-center justify-between p-4 pb-2 md:p-6 md:bg-white md:dark:bg-gray-900"
         style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.3));"
     >
         <button
@@ -235,7 +235,6 @@
         <Button
             on:click={() => addVehiclesDrawerHidden.set(true)}
             class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             {t("Close")}
         </Button>

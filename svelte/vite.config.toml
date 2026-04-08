@@ -1,0 +1,14 @@
+# vite.toml - Configuration for Vite development server.
+# Loaded at (from $CWD): ../vite.config.ts
+
+[server]
+host = "0.0.0.0"
+port = 5173
+use_https = true
+cert_folder = "../private/certificates/"
+
+[proxy]
+target = "https://127.0.0.1:7879"
+
+[logging]
+level = "info"

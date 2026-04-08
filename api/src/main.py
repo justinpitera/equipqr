@@ -35,9 +35,9 @@ async def _main() -> None:
         interface=Interfaces.ASGI,
         log_enabled=True,
         log_level=LogLevels.warn,
-        port=7879,
-        ssl_cert=Path("../private/certificates/localhost+2.pem"),
-        ssl_key=Path("../private/certificates/localhost+2-key.pem"),
+        port=API_CONFIG["api"]["port"],
+        # ssl_cert=Path("../private/certificates/localhost+2.pem"),
+        # ssl_key=Path("../private/certificates/localhost+2-key.pem"),
         process_name="aviator_fjelmelings",
         pid_file=Path("./.pid")
     )

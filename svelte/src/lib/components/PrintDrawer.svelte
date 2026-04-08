@@ -195,7 +195,7 @@
     id="qr-print-drawer"
     placement="bottom"
     backdrop={true}
-    class="drawer-box p-6 bg-gray-100 fixed inset-0 z-50"
+    class="drawer-box p-6 bg-gray-100 dark:bg-gray-900 fixed inset-0 z-50"
     width="100"
     bind:hidden={$qrPrintDrawerHidden}
     activateClickOutside={false}
@@ -248,11 +248,11 @@
                 onclick={() => {
                     qrPrintDrawerHidden.set(true);
                 }}
-                class="p-2 hover:bg-gray-200 rounded-md"
+                class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
             >
-                <ArrowLeft class="h-6 w-6 text-gray-800" />
+                <ArrowLeft class="h-6 w-6 text-gray-800 dark:text-white" />
             </button>
-            <h2 class="text-xl font-bold text-gray-800 mr-2">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white mr-2">
                 {t("QR Code Printing")}
             </h2>
         </div>
@@ -267,7 +267,7 @@
                 >
                     {#each vehicles as vehicle}
                         <Card
-                            class="bg-white border border-gray-200 rounded-lg shadow-lg transition-all hover:shadow-xl p-6"
+                            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg transition-all hover:shadow-xl p-6"
                         >
                             <div
                                 class="flex items-center relative w-fit m-auto"
@@ -287,12 +287,12 @@
                                 />
                             </div>
                             <h4
-                                class="font-bold text-2xl text-gray-800 mb-2 text-center"
+                                class="font-bold text-2xl text-gray-800 dark:text-white mb-2 text-center"
                             >
                                 {vehicle.name}
                             </h4>
                             <div
-                                class="space-y-2 text-sm text-gray-600 text-center"
+                                class="space-y-2 text-sm text-gray-600 dark:text-gray-300 text-center"
                             >
                                 <p>
                                     <strong>{t("Manufacturer:")}</strong>

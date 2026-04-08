@@ -10,12 +10,14 @@ Authors:
 # Standard
 from typing import Literal
 from uuid import uuid4
+from contextlib import asynccontextmanager
 
 # Third-party
+from fastapi.applications import FastAPI
 from starlette.applications import Starlette
 from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
-from tortoise import Tortoise # pyright: ignore
+from tortoise.contrib.fastapi import RegisterTortoise
 from loguru import logger
 
 # Local
@@ -74,29 +76,30 @@ async def _validate_master_account(email: str = API_CONFIG["auth"]["master"]) ->
 
     logger.success(f"Validated master account for {email} successfully!")
 
-async def startup() -> None:
-    # Startup
-    logger.info("Connecting to database...")    
-    await Tortoise.init(config=TORTOISE_CONFIG) # pyright: ignore[reportUnknownMemberType]
-    await Tortoise.generate_schemas()
-    
-    await _validate_master_account()
-    # await generate_issues()
-    await database_importer()
-    await location_importer("./locations.csv", "EKCH")
-    logger.success("Startup completed successfully!") 
 
-async def shutdown() -> None:
-    await Tortoise.close_connections()
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    # Startup
+    logger.info("Connecting to database...")
+    async with RegisterTortoise(app=app, config=TORTOISE_CONFIG, generate_schemas=True):
+        await _validate_master_account()
+        # await generate_issues()
+        await database_importer()
+        await location_importer("./locations.csv", "EKCH")
+        logger.success("Startup completed successfully!")
+
+        yield
+        # RegisterTortoise.__aexit__ closes DB connections
+
+    # Shutdown
     logger.success("Database connections closed successfully!")
     await RedisClient.close_all()
     logger.success("Redis connections closed successfully!")
     
-def init_asgi() -> Starlette:
+def init_asgi() -> FastAPI:
     """Initializes the Starlette API."""
-    _ASGI: Starlette = Starlette(
-        on_startup=[startup],
-        on_shutdown=[shutdown]
+    _ASGI: FastAPI = FastAPI(
+        lifespan=_lifespan,
     )
     
     _ASGI.add_middleware(
@@ -108,7 +111,7 @@ def init_asgi() -> Starlette:
     )
 
     # api route prefix (used for production only)
-    _API_ROUTE_PREFIX: Literal["/api", ""] = "/api" if API_CONFIG["api"]["mode"] == "production" else ""
+    _API_ROUTE_PREFIX: Literal["/api", ""] = "/api" if API_CONFIG["api"]["mode"] == "production" else "/api"
 
     # Health
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/health/status", route=get_status, methods=["GET"])
