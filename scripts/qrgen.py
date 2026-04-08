@@ -33,7 +33,7 @@ def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_resized, em
         gse_id_value = str(gse_id_value)
         old_gse_id_value = str(old_gse_id_value)
         qr = qrcode.QRCode(
-            version=1,
+            version=None,
             error_correction=qrcode.constants.ERROR_CORRECT_H,
             box_size=16,
             border=2,
@@ -54,7 +54,7 @@ def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_resized, em
         text_area_h = (label_height // 2) - padding
 
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        font_path = os.path.join(script_dir, "..", "fonts", "arial.ttf")
+        font_path = os.path.join(script_dir, "..", "fonts", "frutiger.ttf")
         font = ImageFont.load_default()
         draw = ImageDraw.Draw(canvas)
         for size in range(600, 10, -2):
