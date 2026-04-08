@@ -39,19 +39,17 @@ def clean_value(value: object, field_name: str) -> str | None:
 
 
 
+
 def clean_numeric_value(value: object, field_name: str, numeric_type: type[int | float] = int) -> int | float | None:
-    """
-    Cleans numeric values by removing non-numeric characters and converts to the specified numeric type.
-    """
     try:
-        if value is None or math.isnan(value):
+        if value is None or (isinstance(value, float) and math.isnan(value)):
             return None
 
         match value:
             case int() | float():
                 return numeric_type(value)
             case str():
-                cleaned_value = re.sub(r"[^\d.]", "", value)
+                cleaned_value = value.replace(",", "").strip()
                 return numeric_type(cleaned_value)
     except (ValueError, TypeError) as e:
         logger.warning(f"Invalid numeric value in field '{field_name}': {value}. Error: {e}")

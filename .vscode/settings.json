@@ -9,9 +9,13 @@
         "**/.python-version": true,
         "**/*.lock*": true,
         "**/.npmrc": true,
-        "**/.svelte-kit": true,
+        // "**/.svelte-kit": true,
         "api/web": true,
         "buf.*.yaml": true,
         "**/.mypy_cache": true,
+    },
+    "files.associations": {
+        "*.dbclient-js": "javascript",
+        "ostream": "cpp"
     }
 }

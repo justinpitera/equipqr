@@ -1,7 +1,7 @@
 <script lang="ts">
     import QRScannerUi from "$lib/components/QRScannerUi.svelte";
     import { DEBUG_MODE } from "$lib/config";
-    import { loadQRScanner } from "$lib/helpers/camera";
+    import { loadQRScanner, loadOverlayScanner } from "$lib/helpers/camera";
     import Camera from "lucide-svelte/icons/camera";
     import Settings from "lucide-svelte/icons/settings";
     import Search from "lucide-svelte/icons/search";
@@ -90,7 +90,7 @@
     };
 
     const startQRCode = () => {
-        loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
+        loadOverlayScanner();
     };
 
     const startManualReport = async () => {

@@ -20,7 +20,7 @@
   import Spinner from "flowbite-svelte/Spinner.svelte";
   import Tooltip from "flowbite-svelte/Tooltip.svelte";
   import { disableContextMenu, formatNumber } from "$lib/helpers/basics";
-  import { loadQRScanner } from "$lib/helpers/camera";
+  import { loadOverlayScanner } from "$lib/helpers/camera";
   import {
     startWiggle,
     stopWiggle,
@@ -124,7 +124,7 @@
       if (DEBUG_MODE) {
         store.startQRScanner.set(false);
       } else {
-        loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
+        loadOverlayScanner();
       }
     } else {
       notify("Error", "Failed to submit the issue", "error");

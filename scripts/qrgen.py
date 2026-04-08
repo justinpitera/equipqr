@@ -26,38 +26,63 @@ def resize_logo(logo_path):
         print(f"Error converting logo to black: {e}")
         return None
 
-def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_resized, embed_logo_path, output_dir="../qr_codes"):
+def generate_qr_code_with_label(gse_id_value, old_gse_id_value, logo_resized, embed_logo_path, output_dir="./qr_codes"):
     try:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         gse_id_value = str(gse_id_value)
         old_gse_id_value = str(old_gse_id_value)
         qr = qrcode.QRCode(
-            version=10,
+            version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_H,
             box_size=16,
             border=2,
         )
         qr.add_data(gse_id_value)
         qr.make(fit=True)
-        qr_img = qr.make_image(image_factory=StyledPilImage, embeded_image_path=embed_logo_path, fill_color="black", back_color="white").convert("RGB")
+        qr_img = qr.make_image(image_factory=StyledPilImage, embeded_image_path=embed_logo_path if embed_logo_path else None, fill_color="black", back_color="white").convert("RGB")
         label_width = mm_to_pixels(140)
-        label_height = mm_to_pixels(40)
+        label_height = mm_to_pixels(65)
         canvas = Image.new("RGB", (label_width, label_height), "white")
         qr_img = qr_img.resize((label_height, label_height), Image.Resampling.LANCZOS)
         canvas.paste(qr_img, (0, 0))
 
-        try:
-            font = ImageFont.truetype("../fonts/arial.ttf", size=190)
-        except IOError:
-            font = ImageFont.load_default()
-        
+        padding = 20
+        text_x = label_height + padding
+        text_area_w = label_width - text_x - padding
+        # Each of the two text lines gets ~half the canvas height minus padding
+        text_area_h = (label_height // 2) - padding
+
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        font_path = os.path.join(script_dir, "..", "fonts", "arial.ttf")
+        font = ImageFont.load_default()
         draw = ImageDraw.Draw(canvas)
+        for size in range(600, 10, -2):
+            try:
+                candidate = ImageFont.truetype(font_path, size=size)
+            except IOError:
+                print(f"Font not found at {font_path}, using default font")
+                break
+            bb1 = draw.textbbox((0, 0), gse_id_value, font=candidate)
+            bb2 = draw.textbbox((0, 0), old_gse_id_value, font=candidate)
+            w1, h1 = bb1[2] - bb1[0], bb1[3] - bb1[1]
+            w2, h2 = bb2[2] - bb2[0], bb2[3] - bb2[1]
+            if w1 <= text_area_w and h1 <= text_area_h and w2 <= text_area_w and h2 <= text_area_h:
+                font = candidate
+                break
+
         label1_bbox = draw.textbbox((0, 0), gse_id_value, font=font)
-        draw.text((label_height + 20, 20), gse_id_value, fill="black", font=font)
-        line_y = label1_bbox[3] + 40
-        draw.line([(label_height + 20, line_y), (label_width, line_y)], fill="black", width=5)
-        draw.text((label_height + 20, line_y), old_gse_id_value, fill="black", font=font)
+        line1_h = label1_bbox[3] - label1_bbox[1]
+        y1 = (label_height // 2 - line1_h) // 2
+        draw.text((text_x, y1), gse_id_value, fill="black", font=font)
+
+        line_y = label_height // 2
+        draw.line([(text_x, line_y), (label_width - padding, line_y)], fill="black", width=5)
+
+        label2_bbox = draw.textbbox((0, 0), old_gse_id_value, font=font)
+        line2_h = label2_bbox[3] - label2_bbox[1]
+        y2 = line_y + (label_height // 2 - line2_h) // 2
+        draw.text((text_x, y2), old_gse_id_value, fill="black", font=font)
 
         logo_width, logo_height = logo_resized.size
         canvas_width, canvas_height = canvas.size
@@ -85,19 +110,19 @@ def generate_qr_codes_from_csv(input_csv, logo_resized, embed_logo_path):
         print(f"Error processing CSV file: {e}")
 
 def main():
-    if len(sys.argv) != 4:
-        print("Usage: python script.py <input_csv_file> <logo_path> <embed_logo_path>")
+    if len(sys.argv) not in (3, 4):
+        print("Usage: python script.py <input_csv_file> <logo_path> [embed_logo_path]")
         sys.exit(1)
 
     input_csv = sys.argv[1]
     logo_path = sys.argv[2]
-    embed_logo_path = sys.argv[3]
+    embed_logo_path = sys.argv[3] if len(sys.argv) == 4 else None
 
     if not os.path.exists(logo_path):
         print(f"❌ Logo file not found: {logo_path}")
         sys.exit(1)
 
-    if not os.path.exists(embed_logo_path):
+    if embed_logo_path and not os.path.exists(embed_logo_path):
         print(f"❌ Embed logo file not found: {embed_logo_path}")
         sys.exit(1)
 

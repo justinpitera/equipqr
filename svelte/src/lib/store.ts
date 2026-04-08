@@ -58,6 +58,7 @@ class Store {
         public is_gate_type_dropdown_open: Writable<boolean> = writable(false),
         public showSuccessStamp: Writable<boolean> = writable(false),
         public gates: Writable<{ value: string; name: string }[]> = writable([]),
+        public qrOverlayItems: Writable<QROverlayItem[]> = writable([]),
     ) { }
 }
 

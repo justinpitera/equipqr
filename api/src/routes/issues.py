@@ -99,6 +99,7 @@ async def submit_issue(request: Request) -> Response:
     try:
         # Parse the body into the SubmitIssueRequest object
         body: bytes = await request.body()
+        
         submit_issue_request: SubmitIssueRequest = SubmitIssueRequest()
         submit_issue_request.ParseFromString(body)
 

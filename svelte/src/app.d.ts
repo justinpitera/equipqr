@@ -1,6 +1,18 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 declare global {
+	interface QROverlayItem {
+		gse_id: string;
+		/** Bounding box as percentage of video dimensions (0–100) */
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+		gseDetails: GSEDetails | null;
+		loading: boolean;
+		lastSeen: number; // Date.now() timestamp
+	}
+
 	/* Issues */
 	interface GSEDetails { // getGSEDetails - /api/gse/details
 		gse_id?: string;
@@ -97,9 +109,11 @@ declare global {
 	// Torch Capability:
 	interface ExtendedMediaTrackConstraintSet extends MediaTrackConstraintSet {
 		torch?: boolean;
+		zoom?: number;
 	}
 	interface ExtendedMediaTrackCapabilities extends MediaTrackCapabilities {
 		torch?: boolean;
+		zoom?: { min: number; max: number; step: number };
 	}
 	interface ITorchInfo {
 		hasCamera: boolean;

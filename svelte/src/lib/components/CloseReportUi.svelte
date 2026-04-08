@@ -5,7 +5,7 @@
   import InfoCircleSolid from "flowbite-svelte-icons/InfoCircleSolid.svelte";
   import ArrowRightOutline from "flowbite-svelte-icons/ArrowRightOutline.svelte";
   import { disableContextMenu } from "$lib/helpers/basics";
-  import { loadQRScanner } from "$lib/helpers/camera";
+  import { loadOverlayScanner } from "$lib/helpers/camera";
   import { DEBUG_MODE } from "$lib/config";
   import { onDestroy } from "svelte";
   import { flyTransitionParamsTop } from "$lib/helpers/fly";
@@ -67,7 +67,7 @@
       if (DEBUG_MODE) {
         store.startQRScanner.set(false);
       } else if ($startQRScanner) {
-        loadQRScanner(DEBUG_MODE ? "AHU 00001" : undefined);
+        loadOverlayScanner();
       }
     }}
     href="/"
