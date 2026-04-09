@@ -56,7 +56,7 @@
     id="auth-drawer"
     placement="bottom"
     bind:hidden={$isAuthDrawerHidden}
-    activateClickOutside={false}
+    activateClickOutside={true}
     backdrop={true}
     class="drawer-box p-6 md:p-8 bg-gray-100 dark:bg-gray-900 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
@@ -153,15 +153,6 @@
                 isLoading.set(true);
                 await logout();
                 location.reload();
-                // const didLogout =
-                // if (!didLogout) isLoading.set(false);
-                // if (window.location.hostname === "localhost")
-                //     return location.reload();
-                // if (didLogout) {
-                //     location.reload();
-                // } else {
-                //     isLoading.set(false);
-                // }
             }}
             class="bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2{!$isLoggedIn
                 ? ' hidden'
@@ -173,7 +164,6 @@
         <Button
             on:click={async () => {
                 isLoading.set(true);
-
                 document.cookie = "auth=true;";
                 location.reload();
             }}
@@ -183,6 +173,17 @@
         >
             {t("Login as Guest")}
             <LogIn class="w-4 h-4 ml-2" />
+        </Button>
+        <Button
+            on:click={() => {
+                isAuthDrawerHidden.set(true);
+                store.isSignupDrawerHidden.set(false);
+            }}
+            class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-full px-6 py-2{$isLoggedIn
+                ? ' hidden'
+                : ''}"
+        >
+            Create Org
         </Button>
     </div>
 </Drawer>

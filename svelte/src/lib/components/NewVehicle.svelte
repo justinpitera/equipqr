@@ -65,7 +65,7 @@
     class="drawer-box p-0 bg-gray-100 dark:bg-gray-900 rounded-lg shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
-    activateClickOutside={false}
+    activateClickOutside={true}
     transitionParams={{
         duration: 0,
         easing: undefined,

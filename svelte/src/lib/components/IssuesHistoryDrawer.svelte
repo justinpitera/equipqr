@@ -608,7 +608,7 @@
     backdrop={true}
     style="z-index: 60;"
     placement="bottom"
-    activateClickOutside={false}
+    activateClickOutside={true}
     bind:hidden={leaveCommentDrawerHidden}
     class="drawer-box"
 >
@@ -654,7 +654,7 @@
         backdrop={true}
         class="drawer-box p-4 md:p-6 md:pt-4 bg-white dark:bg-gray-900 rounded-lg md:rounded-none shadow-lg overflow-y-hidden"
         width="w-full"
-        activateClickOutside={false}
+        activateClickOutside={leaveCommentDrawerHidden}
         transitionParams={{
             duration: 0,
             easing: undefined,

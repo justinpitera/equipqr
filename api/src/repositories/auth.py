@@ -52,6 +52,15 @@ async def store_access_token(access_token: str, email: str, expires_seconds: int
     await client.set(name=access_token, value=email, ex=expires_seconds)
 
 
+async def get_session_email(access_token: str) -> str | None:
+    """Return the email mapped to a session access-token, or None if expired/missing."""
+    client = await _totp_client()
+    value = await client.get(name=access_token)
+    if value is None:
+        return None
+    return value if isinstance(value, str) else value.decode()
+
+
 # ---------------------------------------------------------------------------
 # Database helpers
 # ---------------------------------------------------------------------------

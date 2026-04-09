@@ -38,7 +38,13 @@ from src.routes import (
     auth_user,
     set_token,
     homepage,
-    fetch_locations
+    fetch_locations,
+    fetch_tenant_logo,
+    register_tenant,
+    upload_tenant_logo,
+    invite_tenant_member,
+    create_tenant,
+    invite_user,
 )
 
 
@@ -99,6 +105,19 @@ def init_asgi() -> FastAPI:
     # Authentication
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/auth", route=auth_user, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/set-token", route=set_token, methods=["GET"])
+
+    # Tenant
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/logo", route=fetch_tenant_logo, methods=["GET"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/logo", route=upload_tenant_logo, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/register", route=register_tenant, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/invite", route=invite_tenant_member, methods=["POST"])
+
+    # Self-service registration (public)
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/register", route=register_tenant, methods=["POST"])
+
+    # Admin provisioning
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/admin/tenant", route=create_tenant, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/admin/tenant/invite", route=invite_user, methods=["POST"])
 
     # Media
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/media/attachment", route=fetch_issue_attachment, methods=["GET"])

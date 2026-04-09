@@ -25,6 +25,7 @@
         isAutoOpenIssueDetails,
         showPopup,
         hideGSEDetail,
+        isRecentIssueDrawerHidden,
     } = store;
 
     onDestroy(() => {
@@ -152,7 +153,6 @@
     }
 </script>
 
-<!-- activateClickOutside={!$isRecentIssueDrawerHidden ? false : true} -->
 <Drawer
     id="gse-details-drawer"
     placement="bottom"
@@ -161,7 +161,7 @@
     class="drawer-box p-6 md:p-8 bg-gray-100 dark:bg-gray-900 rounded-lg md:rounded-none shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
-    activateClickOutside={false}
+    activateClickOutside={$isRecentIssueDrawerHidden}
     transitionParams={flyTransitionParamsBottom}
 >
     <div class="flex items-center justify-between">

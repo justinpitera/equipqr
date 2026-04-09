@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 
 from itsdangerous import URLSafeTimedSerializer
 from loguru import logger
+from starlette.requests import Request
 from tortoise.exceptions import DoesNotExist, OperationalError
 
 from src import API_CONFIG
@@ -106,6 +107,26 @@ async def exchange_magic_token(token: str) -> tuple[Member, Tenant] | None:
     return member, tenant
 
 
+async def invite_member(email: str, tenant_slug: str) -> None:
+    """
+    Send a magic-link invite to an *already-created* member, bypassing the
+    domain allow-list check.  Intended for use by admin provisioning flows
+    where the domain restriction should not apply.
+
+    Raises:
+        DoesNotExist: if the tenant slug is invalid.
+    """
+    tenant: Tenant = await auth_repo.get_tenant_by_slug(tenant_slug)
+
+    random_token = secrets.token_urlsafe(nbytes=32)
+    await auth_repo.store_magic_token(token=random_token, email=email, tenant_slug=tenant_slug, expires_seconds=600)
+
+    api_prefix = "/api" if API_CONFIG["api"]["mode"] == "production" else ""
+    set_token_link = f"{_BASE_URL}{api_prefix}/api/set-token?token={random_token}"
+    send_magic_link_email(email=email, set_token_link=set_token_link)
+    logger.info(f"Invite email sent to {email} for tenant '{tenant_slug}'")
+
+
 async def create_session(email: str) -> str:
     """
     Mint a new signed session token, persist it in Redis, and return it.
@@ -113,3 +134,66 @@ async def create_session(email: str) -> str:
     access_token: str = _TOKEN_SERIALIZER.dumps(obj=secrets.token_urlsafe(nbytes=32))
     await auth_repo.store_access_token(access_token=access_token, email=email, expires_seconds=3600)
     return access_token
+
+
+async def get_authenticated_member(request: Request) -> tuple[Member, Tenant] | None:
+    """
+    Validate the ``access_token`` cookie and return the authenticated
+    ``(Member, Tenant)`` pair, or ``None`` if the session is missing, expired,
+    or the member/tenant can no longer be found.
+
+    The tenant is resolved from the Host-header subdomain so callers don't have
+    to pass it separately.
+    """
+    access_token = request.cookies.get("access_token")
+    if not access_token:
+        return None
+
+    email = await auth_repo.get_session_email(access_token)
+    if email is None:
+        return None
+
+    # Derive tenant slug from the Host-header subdomain (e.g. acme.localhost → "acme")
+    host = request.headers.get("host", "").split(":")[0]
+    parts = host.split(".")
+    if len(parts) < 2 or parts[0] in ("www", ""):
+        return None
+    tenant_slug = parts[0]
+
+    try:
+        tenant = await auth_repo.get_tenant_by_slug(tenant_slug)
+        member = await auth_repo.get_member_by_email_and_tenant(email=email, tenant=tenant)
+        return member, tenant
+    except DoesNotExist:
+        return None
+
+
+async def get_authenticated_member(request) -> tuple[Member, Tenant] | None:
+    """
+    Authenticate a request via the ``access_token`` httponly cookie.
+
+    Returns ``(Member, Tenant)`` when the session is valid, or ``None`` when
+    the cookie is missing, expired, or the member/tenant no longer exists.
+    The tenant is derived from the ``Host`` header subdomain.
+    """
+    access_token = request.cookies.get("access_token")
+    if not access_token:
+        return None
+
+    email = await auth_repo.get_session_email(access_token)
+    if not email:
+        return None
+
+    # Extract tenant slug from Host header (e.g. acme.localhost → "acme")
+    host = request.headers.get("host", "").split(":")[0]
+    parts = host.split(".")
+    slug = parts[0] if len(parts) >= 2 and parts[0] not in ("www", "") else None
+    if not slug:
+        return None
+
+    try:
+        tenant = await auth_repo.get_tenant_by_slug(slug)
+        member = await auth_repo.get_member_by_email_and_tenant(email=email, tenant=tenant)
+        return member, tenant
+    except Exception:
+        return None

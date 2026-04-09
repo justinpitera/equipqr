@@ -494,4 +494,178 @@ export async function editIssue(issue_id: string, progress?: string, estimated_t
     }
 }
 
+/**
+ * Fetches the tenant logo from the backend (which proxies Minio).
+ * Returns a blob URL string on success, or null if no logo is set.
+ */
+export async function getTenantLogo(): Promise<string | null> {
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+        const response = await fetch(`${BACKEND_URL}/api/tenant/logo`, {
+            method: 'GET',
+            signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        if (!response.ok) return null;
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+    } catch {
+        return null;
+    }
+}
+
 get_gates('EKCH');
+
+// ---------------------------------------------------------------------------
+// Admin provisioning helpers
+// ---------------------------------------------------------------------------
+
+export async function adminCreateTenant(
+    secret: string,
+    name: string,
+    slug: string,
+): Promise<{ id: string; name: string; slug: string } | { error: string }> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort('Request timed out after 10s'), 10000);
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/admin/tenant`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Admin-Secret': secret,
+            },
+            body: JSON.stringify({ name, slug }),
+            signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        const data = await response.json();
+        if (!response.ok) return { error: data.error ?? response.statusText };
+        return data as { id: string; name: string; slug: string };
+    } catch (e) {
+        clearTimeout(timeout);
+        return { error: String(e) };
+    }
+}
+
+export async function adminInviteUser(
+    secret: string,
+    email: string,
+    tenantSlug: string,
+    position: string,
+    languagePreference: string,
+    sendInvite: boolean,
+): Promise<{ id: string; email: string; tenant: string } | { error: string }> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort('Request timed out after 10s'), 10000);
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/admin/tenant/invite`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Admin-Secret': secret,
+            },
+            body: JSON.stringify({
+                email,
+                tenant_slug: tenantSlug,
+                position,
+                language_preference: languagePreference,
+                send_invite: sendInvite,
+            }),
+            signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        const data = await response.json();
+        if (!response.ok) return { error: data.error ?? response.statusText };
+        return data as { id: string; email: string; tenant: string };
+    } catch (e) {
+        clearTimeout(timeout);
+        return { error: String(e) };
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Self-service tenant registration
+// ---------------------------------------------------------------------------
+
+export async function registerTenant(
+    name: string,
+    slug: string,
+    email: string,
+    language: string,
+    logoFile?: File,
+): Promise<{ tenant_slug: string; tenant_name: string; warning?: string } | { error: string }> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort('Request timed out after 15s'), 15000);
+    try {
+        const form = new FormData();
+        form.append('name', name);
+        form.append('slug', slug);
+        form.append('email', email);
+        form.append('language', language);
+        if (logoFile) form.append('logo', logoFile);
+        const response = await fetch(`${BACKEND_URL}/api/tenant/register`, {
+            method: 'POST',
+            body: form,
+            signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        const data = await response.json();
+        if (!response.ok) return { error: data.error ?? response.statusText };
+        return data as { tenant_slug: string; tenant_name: string; warning?: string };
+    } catch (e) {
+        clearTimeout(timeout);
+        return { error: String(e) };
+    }
+}
+
+export async function uploadTenantLogo(file: File): Promise<{ object_name: string } | { error: string }> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort('Request timed out after 30s'), 30000);
+    try {
+        const form = new FormData();
+        form.append('logo', file);
+        const response = await fetch(`${BACKEND_URL}/api/tenant/logo`, {
+            method: 'POST',
+            body: form,
+            signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        const data = await response.json();
+        if (!response.ok) return { error: data.error ?? response.statusText };
+        return data as { object_name: string };
+    } catch (e) {
+        clearTimeout(timeout);
+        return { error: String(e) };
+    }
+}
+
+export async function inviteTenantMember(
+    email: string,
+    position: string,
+    languagePreference: string,
+    sendInvite: boolean,
+): Promise<{ id: string; email: string; warning?: string } | { error: string }> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort('Request timed out after 10s'), 10000);
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/tenant/invite`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email,
+                position,
+                language_preference: languagePreference,
+                send_invite: sendInvite,
+            }),
+            signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        const data = await response.json();
+        if (!response.ok) return { error: data.error ?? response.statusText };
+        return data as { id: string; email: string; warning?: string };
+    } catch (e) {
+        clearTimeout(timeout);
+        return { error: String(e) };
+    }
+}

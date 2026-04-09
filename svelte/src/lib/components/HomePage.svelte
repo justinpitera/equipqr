@@ -10,15 +10,18 @@
     import FileText from "lucide-svelte/icons/file-text";
     import Clipboard from "lucide-svelte/icons/clipboard";
     import UserCog from "lucide-svelte/icons/user-cog";
+    import Users from "lucide-svelte/icons/users";
+    import PlusCircle from "lucide-svelte/icons/plus-circle";
     import ChartBarStacked from "lucide-svelte/icons/chart-bar-stacked";
     import User from "lucide-svelte/icons/user";
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
     import AuthDrawer from "$lib/components/AuthDrawer.svelte";
     import { t } from "$lib/locales";
-    import { getGSEDetails } from "$lib/helpers/server-requests";
+    import { getGSEDetails, getTenantLogo } from "$lib/helpers/server-requests";
     import { notify } from "$lib/helpers/notify";
     import Building2 from "lucide-svelte/icons/building-2";
     import store from "$lib/store";
+    import { onMount, onDestroy } from "svelte";
     const {
         isLoggedIn,
         isSettingsHidden,
@@ -31,12 +34,30 @@
         addVehiclesDrawerHidden,
         statisticsDrawerHidden,
         selectGSEIDDrawerHidden,
+        isAdminDrawerHidden,
+        isSignupDrawerHidden,
+        isTenantMgmtDrawerHidden,
         gseAction,
         isAutoOpenMostRecentIssue,
         isAutoOpenIssueDetails,
         showPopup,
         tenantName,
+        tenantLogoUrl,
     } = store;
+
+    let logoObjectUrl: string | null = null;
+
+    onMount(async () => {
+        const url = await getTenantLogo();
+        if (url) {
+            logoObjectUrl = url;
+            tenantLogoUrl.set(url);
+        }
+    });
+
+    onDestroy(() => {
+        if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl);
+    });
 
     const toggleLogin = () => {
         isAuthDrawerHidden.set(false);
@@ -155,11 +176,11 @@
 >
     <div class="text-center mb-4">
         <img
-            src="/Fejlemingsapp_logo.png"
+            src={$tenantLogoUrl ?? "/Fejlemingsapp_logo.png"}
             alt="logo"
             width="128"
             height="auto"
-            class="m-auto mt-2 dark:invert"
+            class="m-auto mt-2{!$tenantLogoUrl ? ' dark:invert' : ''}" 
         />
 
         <!-- Tenant badge — always visible so users know which org they're on -->
@@ -585,15 +606,42 @@
                 </div>
             {/if}
 
-            <!-- Master: Account Management -->
+            <!-- Master: Account Management (Admin Panel) -->
             {#if $userRole === "master"}
-                <!-- Account Management -->
+                <!-- Manage Team: logo + invite (session-authenticated) -->
                 <div
                     class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => alert("WIP")}
+                    onclick={() => isTenantMgmtDrawerHidden.set(false)}
                     onkeypress={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
-                            alert("WIP");
+                            isTenantMgmtDrawerHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Users
+                            class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            Manage Team
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            Invite members and upload your organisation logo.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Panel -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => isAdminDrawerHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            isAdminDrawerHidden.set(false);
                         }
                     }}
                     tabindex="0"
@@ -648,7 +696,7 @@
 
         <!-- Login -->
         <div
-            class="card w-full p-4 pt-3 bg-white rounded-lg rounded-br-none rounded-bl-none shadow-md"
+            class="card w-full p-4 pt-3 bg-white rounded-lg {!$isLoggedIn ? 'rounded-br-none rounded-bl-none' : ''} shadow-md"
             onclick={toggleLogin}
             onkeypress={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
@@ -687,6 +735,31 @@
                 {/if}
             </div>
         </div>
+
+        <!-- Create Organisation — visible only to unauthenticated users -->
+        {#if !$isLoggedIn}
+            <div
+                class="card w-full p-4 pt-3 bg-white rounded-lg rounded-tr-none rounded-tl-none shadow-md border-t border-gray-100 dark:border-gray-700"
+                onclick={() => isSignupDrawerHidden.set(false)}
+                onkeypress={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        isSignupDrawerHidden.set(false);
+                    }
+                }}
+                tabindex="0"
+                role="button"
+            >
+                <div class="card-content">
+                    <PlusCircle class="w-12 h-12 mx-auto text-blue-500 dark:text-white" />
+                    <div class="card-title mt-3 text-xl font-semibold">
+                        Create Organisation
+                    </div>
+                    <div class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1">
+                        Set up a new workspace, invite your team, and upload your logo.
+                    </div>
+                </div>
+            </div>
+        {/if}
     </div>
 
     <SettingsDrawer />

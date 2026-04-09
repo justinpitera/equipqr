@@ -98,16 +98,26 @@ API_CONFIG: dict[str, Any] = {
         "secure":   os.getenv("REDIS_SECURE", "false").lower() == "true",
         "password": os.getenv("REDIS_PASSWORD", ""),
     },
+    "admin": {
+        # Shared secret for admin endpoints — set ADMIN_SECRET in your .env.
+        # If left empty, all admin endpoints will refuse requests (fail-secure).
+        "secret": os.getenv("ADMIN_SECRET", ""),
+    },
 }
 
 API_VERSION: str = (lambda line: line.split(sep="=")[1].strip().strip('"') if line.startswith("version") else "Unknown")(line=open(file="pyproject.toml").readlines()[2].strip())
 API_STARTUP_MESSAGE: str = f"""
-╭━━╮╱╱╱╭╮╱╱╭╮
-┃╭╮┣━┳━╋╋━╮┃╰┳━┳┳╮
-┃┣┫┣╮┃╭┫┃╋╰┫╭┫╋┃╭╯
-╰╯╰╯╰━╯╰┻━━┻━┻━┻╯  {Style.BRIGHT} Reporter {API_VERSION}{Style.RESET_ALL}\n
-=================
-Listening on {API_CONFIG["api"]["address"]}:{API_CONFIG["api"]["port"]}
+=======================================================================
+╔═══╗─────────╔═══╦═══╗
+║╔══╝─────────║╔═╗║╔═╗║
+║╚══╦══╦╗╔╦╦══╣║─║║╚═╝║
+║╔══╣╔╗║║║╠╣╔╗║║─║║╔╗╔╝
+║╚══╣╚╝║╚╝║║╚╝║╚═╝║║║╚╗
+╚═══╩═╗╠══╩╣╔═╩══╗╠╝╚═╝
+──────║║───║║────╚╝
+──────╚╝───╚╝  {Style.BRIGHT}{API_VERSION}{Style.RESET_ALL}\n
+=======================================================================
+\nListening on {API_CONFIG["api"]["address"]}:{API_CONFIG["api"]["port"]}
 """
 TORTOISE_CONFIG: dict[str, Any] = {
     "connections": {
@@ -141,7 +151,7 @@ class RedisConfig(TypedDict):
 _redis_cfg: RedisConfig = API_CONFIG["redis"]
 _REDIS_URL: str = (
     f"{'rediss' if _redis_cfg.get('secure', False) else 'redis'}://"
-    f"{f':{_redis_cfg.get('password')}@' if _redis_cfg.get('password') else ''}"
+    f"{f':{_redis_cfg.get('password')}@' if _redis_cfg.get('password') else ''}" # pyright: ignore[reportGeneralTypeIssues]
     f"{_redis_cfg['address']}:{_redis_cfg['port']}"
 )
             

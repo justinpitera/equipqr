@@ -91,17 +91,29 @@ def _send_via_smtp(to: str, subject: str, html_body: str) -> None:
 
 
 def _send_via_resend(to: str, subject: str, html_body: str) -> None:
-    resend.api_key = API_CONFIG["smtp"]["resend"]["api_key"]
+    api_key = API_CONFIG["smtp"]["resend"].get("api_key")
+    from_email = API_CONFIG["smtp"]["resend"].get("from_email")
+
+    if not api_key:
+        raise RuntimeError("Resend API key is missing")
+    if not str(api_key).startswith("re_"):
+        raise RuntimeError("Resend API key looks invalid")
+    if not from_email:
+        raise RuntimeError("Resend from_email is missing")
+
+    resend.api_key = api_key
+
     try:
-        resend.Emails.send({
-            "from": API_CONFIG["smtp"]["resend"]["from_email"],
+        result = resend.Emails.send({
+            "from": from_email,
             "to": [to],
             "subject": subject,
             "html": html_body,
         })
+        logger.info(f"Resend send result: {result}")
     except Exception as e:
-        logger.error(f"Resend error: {e}")
-        raise RuntimeError("An error occurred while sending the email via Resend")
+        logger.exception("Resend send failed")
+        raise
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +131,6 @@ def send_magic_link_email(email: str, set_token_link: str) -> None:
     subject = random.choice(_SUBJECT_LINES)
     html_body = _build_magic_link_html(set_token_link)
     provider: str = API_CONFIG["smtp"].get("provider", "smtp")
-
     if provider == "resend":
         _send_via_resend(to=email, subject=subject, html_body=html_body)
     else:

@@ -29,7 +29,7 @@
   placement="top"
   width="w-full"
   transitionType="fly"
-  activateClickOutside={false}
+  activateClickOutside={true}
   transitionParams={flyTransitionParamsTop}
   bind:hidden={$closeReportHidden}
   class="drawer-box max-w-[600px] m-auto"

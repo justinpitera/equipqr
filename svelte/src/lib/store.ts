@@ -28,6 +28,9 @@ class Store {
         public isLoggedIn: Writable<boolean> = writable(typeof window !== 'undefined' ? getCookie('auth') === 'true' : false), // UI Only - Fetch requests will fail anyways without http-only cookie
         public isSettingsHidden: Writable<boolean> = writable(true),
         public isAuthDrawerHidden: Writable<boolean> = writable(true),
+        public isAdminDrawerHidden: Writable<boolean> = writable(true),
+        public isSignupDrawerHidden: Writable<boolean> = writable(true),
+        public isTenantMgmtDrawerHidden: Writable<boolean> = writable(true),
         public isIssuesHistoryHidden: Writable<boolean> = writable(true),
         public isRecentIssueDrawerHidden: Writable<boolean> = writable(true),
         public qrPrintDrawerHidden: Writable<boolean> = writable(true),
@@ -61,6 +64,7 @@ class Store {
         public showSuccessStamp: Writable<boolean> = writable(false),
         public gates: Writable<{ value: string; name: string }[]> = writable([]),
         public qrOverlayItems: Writable<QROverlayItem[]> = writable([]),
+        public tenantLogoUrl: Writable<string | null> = writable(null),
     ) { }
 }
 

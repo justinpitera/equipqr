@@ -54,7 +54,7 @@
     width="w-full"
     transitionType="fly"
     transitionParams={flyTransitionParamsBottom}
-    activateClickOutside={false}
+    activateClickOutside={true}
 >
     <!-- Header -->
     <div class="flex items-center justify-between">

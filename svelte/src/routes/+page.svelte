@@ -21,6 +21,9 @@
   import IssuesHistoryDrawer from "$lib/components/IssuesHistoryDrawer.svelte";
   import FullScreenMediaViewer from "$lib/components/FullScreenMediaViewer.svelte";
   import NewVehicle from "$lib/components/NewVehicle.svelte";
+  import AdminDrawer from "$lib/components/AdminDrawer.svelte";
+  import SignupDrawer from "$lib/components/SignupDrawer.svelte";
+  import TenantManagementDrawer from "$lib/components/TenantManagementDrawer.svelte";
 
   onMount(() => {
     registerServiceWorker();
@@ -46,6 +49,9 @@
   <MostRecentIssue />
   <PastIssues />
   <NewVehicle />
+  <AdminDrawer />
+  <SignupDrawer />
+  <TenantManagementDrawer />
   <SelectGSEID />
   <PrintDrawer />
   <StatisticsDrawer />

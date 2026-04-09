@@ -193,7 +193,7 @@
         class="drawer-box p-6 bg-gray-100 dark:bg-gray-900 dark:text-white fixed inset-0 z-50"
         width="100"
         bind:hidden={$statisticsDrawerHidden}
-        activateClickOutside={false}
+        activateClickOutside={true}
         transitionParams={{
             duration: 0,
             easing: undefined,
