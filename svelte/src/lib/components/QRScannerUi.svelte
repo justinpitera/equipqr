@@ -96,7 +96,6 @@
     bind:this={scannerEl}
     id="qrScanner"
     class="relative w-[100svw] h-[100svh] bg-black overflow-hidden"
-    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
     ontouchstart={handleTouchStart}
     ontouchend={handleTouchEnd}
 >

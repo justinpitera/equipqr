@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: fejlmelings-postgres
     environment:

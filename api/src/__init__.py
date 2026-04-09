@@ -8,35 +8,127 @@ Authors:
 """
 
 # Standard
-import toml, os
+import os
 from pathlib import Path
 from typing import Any, TypedDict
 
 # Third-party
 from colorama import Style
+from dotenv import load_dotenv
 import redis.asyncio as redis
 
+# Load .env — root repo .env first, then api/.env overrides (higher priority)
+load_dotenv(Path(os.getcwd()).parent / ".env")
+load_dotenv(Path(os.getcwd()) / ".env", override=True)
 
-API_CONFIG: dict[str, Any] = toml.load(Path(os.getcwd()).joinpath("../private/configurations/api.config.toml"))
+
+def _csv(val: str | None, default: list[str] | None = None) -> list[str]:
+    """Parse a comma-separated env var into a list."""
+    if not val:
+        return default if default is not None else ["*"]
+    return [v.strip() for v in val.split(",") if v.strip()]
+
+
+API_CONFIG: dict[str, Any] = {
+    "api": {
+        "mode":    os.getenv("API_MODE", "development"),
+        "address": os.getenv("API_ADDRESS", "0.0.0.0"),
+        "port":    int(os.getenv("API_PORT", "7879")),
+        "domain":  os.getenv("API_DOMAIN", "http://localhost:7879"),
+        "performance": {
+            "workers":          int(os.getenv("API_WORKERS", "4")),
+            "threads":          int(os.getenv("API_THREADS", "4")),
+            "blocking_threads": int(os.getenv("API_BLOCKING_THREADS", "2")),
+        },
+    },
+    "cors": {
+        "allow_credentials": os.getenv("CORS_ALLOW_CREDENTIALS", "true").lower() == "true",
+        "allow_origins":     _csv(os.getenv("CORS_ALLOW_ORIGINS"), ["*"]),
+        "allow_methods":     _csv(os.getenv("CORS_ALLOW_METHODS"), ["*"]),
+        "allow_headers":     _csv(os.getenv("CORS_ALLOW_HEADERS"), ["*"]),
+    },
+    "auth": {
+        "mode":   os.getenv("AUTH_MODE", "magic"),
+        "master": os.getenv("AUTH_MASTER", "admin@example.com"),
+        "magic": {
+            "allowed_domains": _csv(os.getenv("AUTH_MAGIC_ALLOWED_DOMAINS"), []),
+        },
+        "credentials": {
+            "min_password_length": int(os.getenv("AUTH_MIN_PASSWORD_LENGTH", "14")),
+        },
+        "jwt": {
+            "secret":             os.getenv("AUTH_JWT_SECRET", ""),
+            "expires_in":         int(os.getenv("AUTH_JWT_EXPIRES_IN", "30")),
+            "refresh_expires_in": int(os.getenv("AUTH_JWT_REFRESH_EXPIRES_IN", "7")),
+        },
+    },
+    "smtp": {
+        "provider": os.getenv("SMTP_PROVIDER", "smtp"),  # smtp | resend
+        "host":     os.getenv("SMTP_HOST", "smtp.example.com"),
+        "domain":   os.getenv("SMTP_DOMAIN", "example.com"),
+        "port":     int(os.getenv("SMTP_PORT", "587")),
+        "username": os.getenv("SMTP_USERNAME", ""),
+        "password": os.getenv("SMTP_PASSWORD", ""),
+        "resend": {
+            "api_key":    os.getenv("RESEND_API_KEY", ""),
+            "from_email": os.getenv("RESEND_FROM_EMAIL", f"no-reply@{os.getenv('SMTP_DOMAIN', 'example.com')}"),
+        },
+    },
+    "database": {
+        "engine":   os.getenv("DB_ENGINE", "tortoise.backends.asyncpg"),
+        "address":  os.getenv("POSTGRES_HOST", "localhost"),
+        "port":     int(os.getenv("POSTGRES_PORT", "5432")),
+        "username": os.getenv("POSTGRES_USERNAME", "equipqr"),
+        "password": os.getenv("POSTGRES_PASSWORD", ""),
+        "name":     os.getenv("POSTGRES_DATABASE", "aviator_pg"),
+        "importer": {
+            "legacy_path": os.getenv("DB_IMPORTER_LEGACY_PATH", ""),
+        },
+    },
+    "object_storage": {
+        "address":    os.getenv("MINIO_ADDRESS", "localhost"),
+        "port":       int(os.getenv("MINIO_PORT", "9000")),
+        "secure":     os.getenv("MINIO_SECURE", "false").lower() == "true",
+        "access_key": os.getenv("MINIO_ACCESS_KEY", ""),
+        "secret_key": os.getenv("MINIO_SECRET_KEY", ""),
+    },
+    "redis": {
+        "address":  os.getenv("REDIS_ADDRESS", "localhost"),
+        "port":     int(os.getenv("REDIS_PORT", "6379")),
+        "secure":   os.getenv("REDIS_SECURE", "false").lower() == "true",
+        "password": os.getenv("REDIS_PASSWORD", ""),
+    },
+    "admin": {
+        # Shared secret for admin endpoints — set ADMIN_SECRET in your .env.
+        # If left empty, all admin endpoints will refuse requests (fail-secure).
+        "secret": os.getenv("ADMIN_SECRET", ""),
+    },
+}
+
 API_VERSION: str = (lambda line: line.split(sep="=")[1].strip().strip('"') if line.startswith("version") else "Unknown")(line=open(file="pyproject.toml").readlines()[2].strip())
 API_STARTUP_MESSAGE: str = f"""
-╭━━╮╱╱╱╭╮╱╱╭╮
-┃╭╮┣━┳━╋╋━╮┃╰┳━┳┳╮
-┃┣┫┣╮┃╭┫┃╋╰┫╭┫╋┃╭╯
-╰╯╰╯╰━╯╰┻━━┻━┻━┻╯  {Style.BRIGHT} Reporter {API_VERSION}{Style.RESET_ALL}\n
-=================
-Listening on {API_CONFIG["api"]["address"]}:{API_CONFIG["api"]["port"]}
+=======================================================================
+╔═══╗─────────╔═══╦═══╗
+║╔══╝─────────║╔═╗║╔═╗║
+║╚══╦══╦╗╔╦╦══╣║─║║╚═╝║
+║╔══╣╔╗║║║╠╣╔╗║║─║║╔╗╔╝
+║╚══╣╚╝║╚╝║║╚╝║╚═╝║║║╚╗
+╚═══╩═╗╠══╩╣╔═╩══╗╠╝╚═╝
+──────║║───║║────╚╝
+──────╚╝───╚╝  {Style.BRIGHT}{API_VERSION}{Style.RESET_ALL}\n
+=======================================================================
+\nListening on {API_CONFIG["api"]["address"]}:{API_CONFIG["api"]["port"]}
 """
 TORTOISE_CONFIG: dict[str, Any] = {
     "connections": {
         "default": {
             "engine": API_CONFIG["database"]["engine"],
             "credentials": {
-                "host": API_CONFIG["database"]["address"],
-                "port": API_CONFIG["database"]["port"],
-                "user": API_CONFIG["database"]["username"],
+                "host":     API_CONFIG["database"]["address"],
+                "port":     API_CONFIG["database"]["port"],
+                "user":     API_CONFIG["database"]["username"],
                 "password": API_CONFIG["database"]["password"],
-                "database": "aviator_pg",
+                "database": API_CONFIG["database"]["name"],
             }
         }
     },
@@ -59,7 +151,7 @@ class RedisConfig(TypedDict):
 _redis_cfg: RedisConfig = API_CONFIG["redis"]
 _REDIS_URL: str = (
     f"{'rediss' if _redis_cfg.get('secure', False) else 'redis'}://"
-    f"{f':{_redis_cfg.get('password')}@' if _redis_cfg.get('password') else ''}"
+    f"{f':{_redis_cfg.get('password')}@' if _redis_cfg.get('password') else ''}" # pyright: ignore[reportGeneralTypeIssues]
     f"{_redis_cfg['address']}:{_redis_cfg['port']}"
 )
             

@@ -14,6 +14,10 @@ from src.models.Issue import Issue
 from src.models.IssueAttachment import IssueAttachment
 from src.models.IssueComment import IssueComment
 from src.models.Location import Location
+# SaaS conversion models
+from src.models.Asset import Asset
+from src.models.Tenant import Tenant
+from src.models.Member import Member
 
 __all__: list[str] = [
     "GroundSupportEquiptment",
@@ -22,5 +26,8 @@ __all__: list[str] = [
     "Issue",
     "IssueAttachment",
     "IssueComment",
-    "Location"
+    "Location",
+    "Asset",
+    "Tenant",
+    "Member"
 ]

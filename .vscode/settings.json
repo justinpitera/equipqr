@@ -10,7 +10,7 @@
         "**/*.lock*": true,
         "**/.npmrc": true,
         // "**/.svelte-kit": true,
-        "api/web": true,
+        // "api/web": true,
         "buf.*.yaml": true,
         "**/.mypy_cache": true,
     },

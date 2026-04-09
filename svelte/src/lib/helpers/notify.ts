@@ -1,5 +1,4 @@
-import type { Placement, Theme, ToastType } from "svelte-toasts/types/common";
-import { toasts } from "svelte-toasts";
+import { toast } from "svelte-sonner";
 import { t } from "$lib/locales";
 import store from "$lib/store";
 
@@ -8,26 +7,25 @@ store.notificationsEnabled.subscribe((value) => {
 	notificationsEnabled = value;
 });
 
+export type NotifyType = "success" | "error" | "info" | "warning";
+
 export function notify(
 	title: string,
 	description: string,
-	type: ToastType,
-	duration = 5000,
+	type: NotifyType,
+	duration = 4000,
 	ignore_translate = false,
-	placement: Placement = "top-center",
-	theme: Theme = "dark",
-	showProgress = true,
 ) {
 	if (!notificationsEnabled) return console.log(title, description);
-	toasts.add({
-		title: ignore_translate ? title : t(title),
-		description: ignore_translate ? description : t(description),
-		duration,
-		placement,
-		type,
-		theme,
-		showProgress,
-		onClick: () => { },
-		onRemove: () => { },
-	});
+	const resolvedTitle = ignore_translate ? title : t(title);
+	const resolvedDesc = ignore_translate ? description : t(description);
+
+	const opts = { description: resolvedDesc, duration };
+
+	switch (type) {
+		case "success": toast.success(resolvedTitle, opts); break;
+		case "error":   toast.error(resolvedTitle, opts);   break;
+		case "warning": toast.warning(resolvedTitle, opts); break;
+		default:        toast.info(resolvedTitle, opts);    break;
+	}
 }

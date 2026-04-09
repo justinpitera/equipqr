@@ -190,13 +190,10 @@
         id="statistics-drawer"
         placement="bottom"
         backdrop={true}
-        class="drawer-box p-6 {$darkModeEnabled
-            ? 'bg-gray-500 text-white'
-            : 'bg-gray-100'} fixed inset-0 z-50"
-        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+        class="drawer-box p-6 bg-gray-100 dark:bg-gray-900 dark:text-white fixed inset-0 z-50"
         width="100"
         bind:hidden={$statisticsDrawerHidden}
-        activateClickOutside={false}
+        activateClickOutside={true}
         transitionParams={{
             duration: 0,
             easing: undefined,
@@ -211,14 +208,12 @@
                 onclick={() => {
                     statisticsDrawerHidden.set(true);
                 }}
-                class="p-2 hover:bg-gray-200 rounded-md"
-                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
             >
-                <ArrowLeft class="h-6 w-6 text-gray-800" />
+                <ArrowLeft class="h-6 w-6 text-gray-800 dark:text-white" />
             </button>
             <h2
-                class="text-xl font-bold text-gray-800 mr-2"
-                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+                class="text-xl font-bold text-gray-800 dark:text-white mr-2"
             >
                 {t("Statistics")}
             </h2>

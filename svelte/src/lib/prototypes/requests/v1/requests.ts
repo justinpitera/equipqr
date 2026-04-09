@@ -1908,12 +1908,16 @@ export namespace requests.v1 {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             email?: string;
+            tenant_slug?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
                 if ("email" in data && data.email != undefined) {
                     this.email = data.email;
+                }
+                if ("tenant_slug" in data && data.tenant_slug != undefined) {
+                    this.tenant_slug = data.tenant_slug;
                 }
             }
         }
@@ -1923,21 +1927,35 @@ export namespace requests.v1 {
         set email(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
+        get tenant_slug() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set tenant_slug(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
         static fromObject(data: {
             email?: string;
+            tenant_slug?: string;
         }): LoginRequest {
             const message = new LoginRequest({});
             if (data.email != null) {
                 message.email = data.email;
+            }
+            if (data.tenant_slug != null) {
+                message.tenant_slug = data.tenant_slug;
             }
             return message;
         }
         toObject() {
             const data: {
                 email?: string;
+                tenant_slug?: string;
             } = {};
             if (this.email != null) {
                 data.email = this.email;
+            }
+            if (this.tenant_slug != null) {
+                data.tenant_slug = this.tenant_slug;
             }
             return data;
         }
@@ -1947,6 +1965,8 @@ export namespace requests.v1 {
             const writer = w || new pb_1.BinaryWriter();
             if (this.email.length)
                 writer.writeString(1, this.email);
+            if (this.tenant_slug.length)
+                writer.writeString(2, this.tenant_slug);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -1958,6 +1978,9 @@ export namespace requests.v1 {
                 switch (reader.getFieldNumber()) {
                     case 1:
                         message.email = reader.readString();
+                        break;
+                    case 2:
+                        message.tenant_slug = reader.readString();
                         break;
                     default: reader.skipField();
                 }
@@ -1975,12 +1998,16 @@ export namespace requests.v1 {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             message?: string;
+            tenant_name?: string;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
                 if ("message" in data && data.message != undefined) {
                     this.message = data.message;
+                }
+                if ("tenant_name" in data && data.tenant_name != undefined) {
+                    this.tenant_name = data.tenant_name;
                 }
             }
         }
@@ -1990,21 +2017,35 @@ export namespace requests.v1 {
         set message(value: string) {
             pb_1.Message.setField(this, 1, value);
         }
+        get tenant_name() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set tenant_name(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
         static fromObject(data: {
             message?: string;
+            tenant_name?: string;
         }): LoginResponse {
             const message = new LoginResponse({});
             if (data.message != null) {
                 message.message = data.message;
+            }
+            if (data.tenant_name != null) {
+                message.tenant_name = data.tenant_name;
             }
             return message;
         }
         toObject() {
             const data: {
                 message?: string;
+                tenant_name?: string;
             } = {};
             if (this.message != null) {
                 data.message = this.message;
+            }
+            if (this.tenant_name != null) {
+                data.tenant_name = this.tenant_name;
             }
             return data;
         }
@@ -2014,6 +2055,8 @@ export namespace requests.v1 {
             const writer = w || new pb_1.BinaryWriter();
             if (this.message.length)
                 writer.writeString(1, this.message);
+            if (this.tenant_name.length)
+                writer.writeString(2, this.tenant_name);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -2025,6 +2068,9 @@ export namespace requests.v1 {
                 switch (reader.getFieldNumber()) {
                     case 1:
                         message.message = reader.readString();
+                        break;
+                    case 2:
+                        message.tenant_name = reader.readString();
                         break;
                     default: reader.skipField();
                 }

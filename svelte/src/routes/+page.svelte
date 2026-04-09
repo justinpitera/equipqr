@@ -8,7 +8,6 @@
   // QR Scanner utilities
   import { destroyScanner } from "$lib/helpers/camera";
   // UI Components:
-  import NotifyUi from "$lib/components/NotifyUi.svelte";
   import CloseReportUi from "$lib/components/CloseReportUi.svelte";
   import ReportUi from "$lib/components/ReportUi.svelte";
   import DetailsDrawer from "$lib/components/DetailsDrawer.svelte";
@@ -22,6 +21,9 @@
   import IssuesHistoryDrawer from "$lib/components/IssuesHistoryDrawer.svelte";
   import FullScreenMediaViewer from "$lib/components/FullScreenMediaViewer.svelte";
   import NewVehicle from "$lib/components/NewVehicle.svelte";
+  import AdminDrawer from "$lib/components/AdminDrawer.svelte";
+  import SignupDrawer from "$lib/components/SignupDrawer.svelte";
+  import TenantManagementDrawer from "$lib/components/TenantManagementDrawer.svelte";
 
   onMount(() => {
     registerServiceWorker();
@@ -47,12 +49,14 @@
   <MostRecentIssue />
   <PastIssues />
   <NewVehicle />
+  <AdminDrawer />
+  <SignupDrawer />
+  <TenantManagementDrawer />
   <SelectGSEID />
   <PrintDrawer />
   <StatisticsDrawer />
   <IssuesHistoryDrawer />
   <DetailsDrawer />
-  <NotifyUi />
   <CloseReportUi />
   <ReportUi />
 {/if}

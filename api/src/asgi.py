@@ -10,19 +10,18 @@ Authors:
 # Standard
 from typing import Literal
 from uuid import uuid4
+from contextlib import asynccontextmanager
 
 # Third-party
-from starlette.applications import Starlette
+from fastapi.applications import FastAPI
 from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
-from tortoise import Tortoise # pyright: ignore
+from tortoise.contrib.fastapi import RegisterTortoise
 from loguru import logger
 
 # Local
 from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
-from src.models import CrewMember
 from src.database import database_importer, location_importer
-from src.enums import CrewMemberPositionEnum
 
 from src.routes import (
     retrieve_field_image,
@@ -39,64 +38,38 @@ from src.routes import (
     auth_user,
     set_token,
     homepage,
-    fetch_locations
+    fetch_locations,
+    fetch_tenant_logo,
+    register_tenant,
+    upload_tenant_logo,
+    invite_tenant_member,
+    create_tenant,
+    invite_user,
 )
 
 
-async def _validate_master_account(email: str = API_CONFIG["auth"]["master"]) -> None:
-    """
-    Validates the master account, ensuring only one account has is_master=True.
-    Creates or updates the master account as needed.
-    """
-    logger.info(f"Validating master account: {email}...")
-
-    # Find current master and reset if needed
-    if (current_master := await CrewMember.filter(is_master=True).first()) and current_master.email != email:
-        logger.warning(f"Updating master from {current_master.email} to {email}...")
-        current_master.is_master = False
-        await current_master.save()
-
-    # Get or create the crew member
-    crew_member: CrewMember | None = await CrewMember.filter(email=email).first()
-    if not crew_member:
-        logger.warning(f"Master account for {email} does not exist, creating a new account now...")
-        _ = await CrewMember.create(
-            id=uuid4(),
-            email=email,
-            language_preference="EN",
-            position=CrewMemberPositionEnum.MANAGEMENT,
-            is_master=True,
-        )
-    else:
-        crew_member.is_master = True
-        crew_member.position = CrewMemberPositionEnum.MANAGEMENT
-        await crew_member.save()
-
-    logger.success(f"Validated master account for {email} successfully!")
-
-async def startup() -> None:
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
     # Startup
-    logger.info("Connecting to database...")    
-    await Tortoise.init(config=TORTOISE_CONFIG) # pyright: ignore[reportUnknownMemberType]
-    await Tortoise.generate_schemas()
-    
-    await _validate_master_account()
-    # await generate_issues()
-    await database_importer()
-    await location_importer("./locations.csv", "EKCH")
-    logger.success("Startup completed successfully!") 
+    logger.info("Connecting to database...")
+    async with RegisterTortoise(app=app, config=TORTOISE_CONFIG, generate_schemas=True):
+        # await generate_issues()
+        await database_importer()
+        await location_importer("./locations.csv", "EKCH")
+        logger.success("Startup completed successfully!")
 
-async def shutdown() -> None:
-    await Tortoise.close_connections()
+        yield
+        # RegisterTortoise.__aexit__ closes DB connections
+
+    # Shutdown
     logger.success("Database connections closed successfully!")
     await RedisClient.close_all()
     logger.success("Redis connections closed successfully!")
     
-def init_asgi() -> Starlette:
+def init_asgi() -> FastAPI:
     """Initializes the Starlette API."""
-    _ASGI: Starlette = Starlette(
-        on_startup=[startup],
-        on_shutdown=[shutdown]
+    _ASGI: FastAPI = FastAPI(
+        lifespan=_lifespan,
     )
     
     _ASGI.add_middleware(
@@ -108,7 +81,7 @@ def init_asgi() -> Starlette:
     )
 
     # api route prefix (used for production only)
-    _API_ROUTE_PREFIX: Literal["/api", ""] = "/api" if API_CONFIG["api"]["mode"] == "production" else ""
+    _API_ROUTE_PREFIX: Literal["/api", ""] = "/api" if API_CONFIG["api"]["mode"] == "production" else "/api"
 
     # Health
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/health/status", route=get_status, methods=["GET"])
@@ -132,6 +105,19 @@ def init_asgi() -> Starlette:
     # Authentication
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/auth", route=auth_user, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/set-token", route=set_token, methods=["GET"])
+
+    # Tenant
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/logo", route=fetch_tenant_logo, methods=["GET"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/logo", route=upload_tenant_logo, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/register", route=register_tenant, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/invite", route=invite_tenant_member, methods=["POST"])
+
+    # Self-service registration (public)
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/register", route=register_tenant, methods=["POST"])
+
+    # Admin provisioning
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/admin/tenant", route=create_tenant, methods=["POST"])
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/admin/tenant/invite", route=invite_user, methods=["POST"])
 
     # Media
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/media/attachment", route=fetch_issue_attachment, methods=["GET"])

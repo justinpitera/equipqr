@@ -150,24 +150,24 @@
     placement="bottom"
     bind:hidden={$isRecentIssueDrawerHidden}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-white rounded-lg md:rounded-none shadow-lg max-w-[600px] m-auto z-[51]"
+    class="drawer-box p-6 md:p-8 bg-white dark:bg-gray-900 rounded-lg md:rounded-none shadow-lg max-w-[600px] m-auto z-[51]"
     width="w-full"
-    activateClickOutside={false}
+    activateClickOutside={true}
     transitionParams={{
         duration: 0,
         easing: undefined,
     }}
 >
     <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold text-gray-800">
+        <h2 class="text-xl font-bold text-gray-800 dark:text-white">
             {t("Most Recent Issue")}
         </h2>
         <button
             type="button"
             onclick={() => isRecentIssueDrawerHidden.set(true)}
-            class="p-2 hover:bg-gray-200 rounded-md"
+            class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
         >
-            <ArrowLeft class="h-6 w-6 text-gray-800" />
+            <ArrowLeft class="h-6 w-6 text-gray-800 dark:text-white" />
         </button>
     </div>
 
@@ -186,11 +186,9 @@
                 </p>
                 <Button
                     onclick={selectIssue}
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 >
                     <Copy
                         class="h-5 w-5 text-gray-800"
-                        style="filter: invert(1);"
                     />
                     Copy
                 </Button>
@@ -211,9 +209,6 @@
                         <div
                             id="gallery-container"
                             class="ignore-js"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         >
                             <div id="gallery" class="ignore-js">
                                 {#each $detectedGSE.most_recent_issue.attachments.split(", ") as attachment}
@@ -275,7 +270,6 @@
                     checked={$isAutoOpenMostRecentIssue}
                     on:change={toggleAutoOpenRecentIssue}
                     color="blue"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 >
                     {#if $isAutoOpenMostRecentIssue}
                         {t("On")}
@@ -287,7 +281,6 @@
             <Button
                 onclick={() => isRecentIssueDrawerHidden.set(true)}
                 class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2"
-                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 {t("Close")}
             </Button>

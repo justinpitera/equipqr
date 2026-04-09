@@ -33,7 +33,7 @@
   placement="top"
   width="w-full"
   transitionType="fly"
-  activateClickOutside={false}
+  activateClickOutside={true}
   transitionParams={flyTransitionParamsTop}
   bind:hidden={$selectGSEIDDrawerHidden}
   class="drawer-box max-w-[600px] m-auto"
@@ -88,7 +88,6 @@
       }}
       href="/"
       class="px-4 p-2 pr-3 pl-3 select-none bg-green-500 hover:bg-green-600"
-      style="filter: invert({$darkModeEnabled ? '1' : '0'});"
       >{t("Find")}
       <ArrowRightOutline
         oncontextmenu={disableContextMenu}

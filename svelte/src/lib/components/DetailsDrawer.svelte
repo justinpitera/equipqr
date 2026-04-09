@@ -25,6 +25,7 @@
         isAutoOpenIssueDetails,
         showPopup,
         hideGSEDetail,
+        isRecentIssueDrawerHidden,
     } = store;
 
     onDestroy(() => {
@@ -152,30 +153,28 @@
     }
 </script>
 
-<!-- activateClickOutside={!$isRecentIssueDrawerHidden ? false : true} -->
 <Drawer
     id="gse-details-drawer"
     placement="bottom"
     bind:hidden={$hideGSEDetail}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-gray-100 rounded-lg md:rounded-none shadow-lg max-w-[600px] m-auto"
+    class="drawer-box p-6 md:p-8 bg-gray-100 dark:bg-gray-900 rounded-lg md:rounded-none shadow-lg max-w-[600px] m-auto"
     width="w-full"
     transitionType="fly"
-    activateClickOutside={false}
+    activateClickOutside={$isRecentIssueDrawerHidden}
     transitionParams={flyTransitionParamsBottom}
 >
     <div class="flex items-center justify-between">
         <button
             type="button"
             onclick={() => hideGSEDetail.set(true)}
-            class="p-2 hover:bg-gray-200 rounded-md"
+            class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
         >
-            <ArrowLeft class="h-6 w-6 text-gray-800" />
+            <ArrowLeft class="h-6 w-6 text-gray-800 dark:text-white" />
         </button>
         {#if $qrCodeData}
             <div
                 class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
-                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 {$qrCodeData}
             </div>
@@ -183,7 +182,6 @@
         {#if $detectedGSE && $detectedGSE.old_gse_id}
             <div
                 class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-red-100 text-red-800 dark:bg-gray-700 dark:text-red-400 border-red-400 dark:border-red-400 rounded"
-                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 {$detectedGSE.old_gse_id}
             </div>
@@ -202,7 +200,6 @@
                     !$detectedGSE.error
                         ? 'green'
                         : 'red'}-400 dark:ring-red-300 cursor-pointer"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     on:click={() => {
                         if (fileInput) fileInput.click();
                     }}
@@ -223,7 +220,7 @@
                 onchange={handleImageUpload}
             />
             <div class="flex flex-col">
-                <span class="text-xl font-medium text-gray-800"
+                <span class="text-xl font-medium text-gray-800 dark:text-white"
                     >{$detectedGSE.gse_type}</span
                 >
                 <div class="flex gap-1">
@@ -232,9 +229,6 @@
                             src="/images/kalmar.png"
                             rounded
                             class="w-7 h-7 bg-transparent ring-red-400 dark:ring-red-300"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                     {/if}
                     <span class="font-semibold text-gray-700"
@@ -247,7 +241,7 @@
         </div>
 
             <div
-                class="grid mt-4 grid-cols-2 lg:grid-cols-3 gap-4 text-gray-800"
+                class="grid mt-4 grid-cols-2 lg:grid-cols-3 gap-4 text-gray-800 dark:text-gray-100"
             >
                 <!-- Error Card -->
                 {#if $detectedGSE.error}
@@ -276,7 +270,7 @@
                     {#if $detectedGSE.manufacturer}
                         <!-- Manufacturer Card -->
                         <div
-                            class="card p-3 rounded-lg shadow-md bg-white flex items-center gap-2 justify-center"
+                            class="card p-3 rounded-lg shadow-md bg-white dark:bg-gray-800 flex items-center gap-2 justify-center"
                         >
                             <div class="text-center">
                                 <p class="font-semibold">
@@ -289,7 +283,7 @@
 
                     <!-- Model Card -->
                     <div
-                        class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
+                        class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white dark:bg-gray-800"
                     >
                         <p class="font-semibold">{t("Model:")}</p>
                         <p>{$detectedGSE.model || t("Unknown")}</p>
@@ -297,7 +291,7 @@
 
                     <!-- Location Card -->
                     <div
-                        class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
+                        class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white dark:bg-gray-800"
                     >
                         <p class="font-semibold">{t("Location:")}</p>
                         <p>{$detectedGSE.location || t("Not specified")}</p>
@@ -305,7 +299,7 @@
 
                     <!-- Status Card -->
                     <div
-                        class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
+                        class="card flex-col p-3 rounded-lg shadow-md bg-white dark:bg-gray-800 flex items-center justify-between"
                     >
                         <p class="font-semibold">{t("Status:")}</p>
                         <div
@@ -320,9 +314,6 @@
                             ]}-400 dark:border-{statusColors[
                                 getStatusNumber($detectedGSE?.status)
                             ]}-400 rounded"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         >
                             {$detectedGSE.status || t("Unavailable")}
                         </div>
@@ -331,7 +322,7 @@
                     <!-- Fuel Type Card -->
                     {#if $detectedGSE.type_of_fuel}
                         <div
-                            class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
+                            class="card flex-col p-3 rounded-lg shadow-md bg-white dark:bg-gray-800 flex items-center justify-between"
                         >
                             <p class="font-semibold">{t("Fuel Type:")}</p>
                             <div class="flex items-center gap-2">
@@ -350,7 +341,7 @@
 
                     <!-- In Use Card -->
                     <div
-                        class="card flex-col p-3 rounded-lg shadow-md bg-white flex items-center justify-between"
+                        class="card flex-col p-3 rounded-lg shadow-md bg-white dark:bg-gray-800 flex items-center justify-between"
                     >
                         <p class="font-semibold">{t("In Use:")}</p>
                         {#if $detectedGSE.in_use}
@@ -359,9 +350,6 @@
                                 rounded
                                 large
                                 class="!p-1 !font-semibold"
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
                             >
                                 <CheckOutline class="h-4 w-4" />
                             </Badge>
@@ -370,9 +358,6 @@
                                 rounded
                                 large
                                 class="!p-1 !font-semibold"
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
                             >
                                 <X
                                     class="h-4 w-4 text-primary-800 dark:text-primary-400"
@@ -384,7 +369,7 @@
                     <!-- Last Service Date Card -->
                     {#if $detectedGSE.latest_service_chassi}
                         <div
-                            class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
+                            class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white dark:bg-gray-800"
                         >
                             <p class="font-semibold">
                                 {t("Last Service Date:")}
@@ -396,7 +381,7 @@
                     <!-- Lift Inspection Expiry Card -->
                     {#if $detectedGSE.lift_inspection_expires}
                         <div
-                            class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
+                            class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white dark:bg-gray-800"
                         >
                             <p class="font-semibold">
                                 {t("Lift Inspection Expiry:")}
@@ -410,7 +395,7 @@
                     <!-- Latest Service Unit Card -->
                     {#if $detectedGSE.latest_service_unit}
                         <div
-                            class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
+                            class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white dark:bg-gray-800"
                         >
                             <p class="font-semibold">
                                 {t("Latest Service Unit:")}
@@ -422,7 +407,7 @@
                     <!-- Capacity Card -->
                     {#if $detectedGSE.capacity}
                         <div
-                            class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white"
+                            class="card flex-col items-center text-center p-3 rounded-lg shadow-md bg-white dark:bg-gray-800"
                         >
                             <p class="font-semibold">{t("Capacity:")}</p>
                             <p>{$detectedGSE.capacity}</p>
@@ -437,7 +422,6 @@
                 </h2>
                 <div
                     class="font-medium mt-3 inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 >
                     {$qrCodeData}
                 </div>
@@ -460,7 +444,6 @@
                 checked={$isAutoOpenIssueDetails}
                 on:change={toggleAutoOpenIssueDetails}
                 color="blue"
-                style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
                 {#if $isAutoOpenIssueDetails}
                     {t("On")}
@@ -472,7 +455,6 @@
         <Button
             on:click={() => hideGSEDetail.set(true)}
             class="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
             {t("Close")}
         </Button>

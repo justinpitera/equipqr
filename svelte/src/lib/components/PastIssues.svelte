@@ -72,7 +72,7 @@
     placement="right"
     bind:hidden={$isPastIssuesForSpecificIDHidden}
     backdrop={true}
-    class="drawer-box p-6 md:p-8 bg-white rounded-lg md:rounded-none shadow-lg"
+    class="drawer-box p-6 md:p-8 bg-white dark:bg-gray-900 rounded-lg md:rounded-none shadow-lg"
     width="w-80"
     transitionParams={{
         duration: 0,
@@ -80,20 +80,20 @@
     }}
 >
     <div class="flex items-center justify-between">
-        <h2 class="text-lg font-bold text-gray-800">{t("Past Issues")}</h2>
+        <h2 class="text-lg font-bold text-gray-800 dark:text-white">{t("Past Issues")}</h2>
         <button
             type="button"
             onclick={() => isPastIssuesForSpecificIDHidden.set(true)}
-            class="p-2 hover:bg-gray-200 rounded-md"
+            class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
         >
-            <ArrowLeft class="h-5 w-5 text-gray-800" />
+            <ArrowLeft class="h-5 w-5 text-gray-800 dark:text-white" />
         </button>
     </div>
 
     <div class="mt-4 overflow-y-auto max-h-[calc(97svh-76px-15px)] space-y-2">
         {#each issues as issue (issue.gse_id)}
             <div
-                class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer transition relative flex items-center justify-between"
+                class="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer transition relative flex items-center justify-between"
                 onclick={() => selectIssue(issue.gse_id)}
                 onkeypress={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
@@ -105,26 +105,20 @@
             >
                 <!-- Issue Details -->
                 <div>
-                    <h3 class="text-md font-semibold">{issue.worker_id}</h3>
-                    <p class="text-sm text-gray-500 flex items-center">
+                    <h3 class="text-md font-semibold dark:text-white">{issue.worker_id}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
                         {t("Operable:")}
                         {#if issue.is_operable.toLowerCase() === "yes"}
                             <CheckOutline
                                 class="ml-2 h-4 w-4 text-green-500"
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
                             />
                         {:else}
                             <X
                                 class="ml-2 h-4 w-4 text-red-500"
-                                style="filter: invert({$darkModeEnabled
-                                    ? '1'
-                                    : '0'});"
                             />
                         {/if}
                     </p>
-                    <p class="text-sm text-gray-600">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
                         {issue.issue_description}
                     </p>
                 </div>
@@ -132,9 +126,7 @@
                 {#if issue.gate_type && issue.gate_name}
                     <div
                         class="flex items-center bg-yellow-300 border-2 border-navy-800 rounded-md px-2 py-1 ml-3 text-navy-900 shadow-sm"
-                        style="width: fit-content; min-width: fit-content;filter: invert({$darkModeEnabled
-                            ? '1'
-                            : '0'});"
+                        style="width: fit-content; min-width: fit-content;"
                     >
                         <!-- Airplane Icon -->
                         <div class="flex-shrink-0 rounded-md bg-yellow-400 p-1">

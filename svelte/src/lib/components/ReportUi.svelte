@@ -183,9 +183,9 @@
     ? 'flex'
     : 'hidden'}"
 >
-  <div class="popup-content bg-white md:bg-[#f5f5f5] w-full h-full">
+  <div class="popup-content bg-white dark:bg-gray-900 md:bg-[#f5f5f5] md:dark:bg-gray-900 w-full h-full">
     <div
-      class="flex items-center justify-between p-4 pb-2 md:p-6 md:bg-white"
+      class="flex items-center justify-between p-4 pb-2 md:p-6 md:bg-white md:dark:bg-gray-900"
       style="filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.3));"
     >
       <button
@@ -218,14 +218,12 @@
         <div class="flex gap-2">
           <div
             class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-purple-100 text-purple-800 dark:bg-gray-700 dark:text-purple-400 border-purple-400 dark:border-purple-400 rounded"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
           >
             {$qrCodeData}
           </div>
           {#if $detectedGSE && $detectedGSE.old_gse_id}
             <div
               class="font-medium inline-flex items-center justify-center px-2.5 py-0.5 text-xs border bg-red-100 text-red-800 dark:bg-gray-700 dark:text-red-400 border-red-400 dark:border-red-400 rounded"
-              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
               {$detectedGSE.old_gse_id}
             </div>
@@ -250,7 +248,6 @@
         src="/images/kalmar.png"
         rounded
         class="bg-transparent ring-red-400 dark:ring-red-300"
-        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
       />
       <Tooltip
         class="z-20"
@@ -292,7 +289,6 @@
             onclick={() => {
               isRecentIssueDrawerHidden.set(false);
             }}
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
           >
             <TriangleAlert class="w-5 h-5 mr-2" />
             {t("Recent Issue")}
@@ -320,7 +316,6 @@
           onclick={() => {
             isPastIssuesForSpecificIDHidden.set(false);
           }}
-          style="filter: invert({$darkModeEnabled ? '1' : '0'});"
         >
           {t("Past Issues")}
           <Badge
@@ -357,9 +352,8 @@
             class:text-white={!$darkModeEnabled && $operable === "yes"}
             class:text-black={$operable !== "yes"}
             onclick={() => ($operable = "yes")}
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
           >
-            <span style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            <span style=""
               >{t("Yes")}</span
             >
           </button>
@@ -371,9 +365,8 @@
             class:text-white={!$darkModeEnabled && $operable === "no"}
             class:text-black={$operable !== "no"}
             onclick={() => ($operable = "no")}
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
           >
-            <span style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            <span style=""
               >{t("No")}</span
             >
           </button>
@@ -475,7 +468,6 @@
             <label
               for="takePicture"
               class="file-button w-12 h-12"
-              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
               <Image oncontextmenu={disableContextMenu} class="w-6 h-6" />
             </label>
@@ -491,7 +483,6 @@
             <label
               for="captureVideo"
               class="file-button ml-4 w-12 h-12"
-              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
               <Video oncontextmenu={disableContextMenu} class="w-6 h-6" />
             </label>
@@ -507,7 +498,6 @@
             <label
               for="selectMediaFiles"
               class="file-button ml-4 w-12 h-12"
-              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
               <Upload oncontextmenu={disableContextMenu} class="w-6 h-6" />
             </label>
@@ -525,7 +515,6 @@
             <div
               id="gallery-container"
               class="ignore-js"
-              style="filter: invert({$darkModeEnabled ? '1' : '0'});"
             >
               <div id="gallery" class="ignore-js">
                 {#each $mediaFiles as { url, type, deleteFile, handleClick }}
@@ -593,7 +582,6 @@
       <button
         type="submit"
         class="w-full select-none py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
       >
         {t("Submit Issue")}
       </button>

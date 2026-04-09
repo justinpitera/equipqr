@@ -10,14 +10,18 @@
     import FileText from "lucide-svelte/icons/file-text";
     import Clipboard from "lucide-svelte/icons/clipboard";
     import UserCog from "lucide-svelte/icons/user-cog";
+    import Users from "lucide-svelte/icons/users";
+    import PlusCircle from "lucide-svelte/icons/plus-circle";
     import ChartBarStacked from "lucide-svelte/icons/chart-bar-stacked";
     import User from "lucide-svelte/icons/user";
     import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
     import AuthDrawer from "$lib/components/AuthDrawer.svelte";
     import { t } from "$lib/locales";
-    import { getGSEDetails } from "$lib/helpers/server-requests";
+    import { getGSEDetails, getTenantLogo } from "$lib/helpers/server-requests";
     import { notify } from "$lib/helpers/notify";
+    import Building2 from "lucide-svelte/icons/building-2";
     import store from "$lib/store";
+    import { onMount, onDestroy } from "svelte";
     const {
         isLoggedIn,
         isSettingsHidden,
@@ -30,11 +34,30 @@
         addVehiclesDrawerHidden,
         statisticsDrawerHidden,
         selectGSEIDDrawerHidden,
+        isAdminDrawerHidden,
+        isSignupDrawerHidden,
+        isTenantMgmtDrawerHidden,
         gseAction,
         isAutoOpenMostRecentIssue,
         isAutoOpenIssueDetails,
         showPopup,
+        tenantName,
+        tenantLogoUrl,
     } = store;
+
+    let logoObjectUrl: string | null = null;
+
+    onMount(async () => {
+        const url = await getTenantLogo();
+        if (url) {
+            logoObjectUrl = url;
+            tenantLogoUrl.set(url);
+        }
+    });
+
+    onDestroy(() => {
+        if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl);
+    });
 
     const toggleLogin = () => {
         isAuthDrawerHidden.set(false);
@@ -146,20 +169,30 @@
 </div>
 
 <main
-    class="px-4 py-5 pt-2 h-screen overflow-y-auto relative bg-slate-100{$startQRScanner ||
+    class="px-4 py-5 pt-2 h-screen overflow-y-auto relative bg-slate-100 dark:bg-gray-950{$startQRScanner ||
     !$isIssuesHistoryHidden
         ? ' hidden'
         : ''}"
 >
     <div class="text-center mb-4">
         <img
-            src="/Fejlemingsapp_logo.png"
+            src={$tenantLogoUrl ?? "/Fejlemingsapp_logo.png"}
             alt="logo"
             width="128"
             height="auto"
-            class="m-auto mt-2"
-            style="filter: invert({$darkModeEnabled ? '1' : '0'});"
+            class="m-auto mt-2{!$tenantLogoUrl ? ' dark:invert' : ''}" 
         />
+
+        <!-- Tenant badge — always visible so users know which org they're on -->
+        {#if $tenantName}
+            <div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 dark:bg-blue-900 border border-blue-300 dark:border-blue-700 rounded-full">
+                <Building2 class="h-3.5 w-3.5 text-blue-600 dark:text-blue-300" />
+                <span class="text-xs font-semibold text-blue-700 dark:text-blue-200 tracking-wide uppercase">
+                    {$tenantName}
+                </span>
+            </div>
+        {/if}
+
         <h1
             class="text-3xl font-semibold text-gray-800 dark:text-white{!$isLoggedIn
                 ? ' hidden'
@@ -187,20 +220,20 @@
 
     <!-- Settings Bubble -->
     <button
-        class="absolute top-4 left-4 rounded-full h-10 w-10 bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
+        class="absolute top-4 left-4 rounded-full h-10 w-10 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
         onclick={toggleSettings}
         aria-label="Settings"
         style="min-width: auto;"
     >
-        <Settings class="h-6 w-6 text-gray-700" />
+        <Settings class="h-6 w-6 text-gray-700 dark:text-gray-200" />
     </button>
     <button
-        class="absolute top-4 right-4 rounded-full h-10 w-10 bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
+        class="absolute top-4 right-4 rounded-full h-10 w-10 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center transition-colors duration-200 focus:outline-none p-0"
         onclick={toggleLogin}
         aria-label="Account"
         style="min-width: auto;"
     >
-        <User class="h-6 w-6 text-gray-700" />
+        <User class="h-6 w-6 text-gray-700 dark:text-gray-200" />
     </button>
 
     <div class="grid gap-5 md:grid-cols-3 xl:grid-cols-5 justify-items-center">
@@ -222,9 +255,6 @@
                     <div class="card-content">
                         <ChartBarStacked
                             class="w-12 h-12 mx-auto text-indigo-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Statistics")}
@@ -256,9 +286,6 @@
                     <div class="card-content">
                         <FileText
                             class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("View Issue History")}
@@ -293,9 +320,6 @@
                     <div class="card-content">
                         <Search
                             class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Check Code (QR)")}
@@ -325,9 +349,6 @@
                     <div class="card-content">
                         <Search
                             class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Check Code (Manual)")}
@@ -357,9 +378,6 @@
                     <div class="card-content">
                         <Clipboard
                             class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Report Failure (QR)")}
@@ -418,9 +436,6 @@
                     <div class="card-content">
                         <Clipboard
                             class="w-12 h-12 mx-auto text-blue-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Report Failure (QR)")}
@@ -479,9 +494,6 @@
                     <div class="card-content">
                         <Search
                             class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Check Code (QR)")}
@@ -511,9 +523,6 @@
                     <div class="card-content">
                         <Search
                             class="w-12 h-12 mx-auto text-yellow-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Check Code (Manual)")}
@@ -545,9 +554,6 @@
                     <div class="card-content">
                         <Camera
                             class="w-12 h-12 mx-auto text-green-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Print QR Codes")}
@@ -582,9 +588,6 @@
                     <div class="card-content">
                         <Car
                             class="w-12 h-12 mx-auto text-cyan-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Add Vehicles and Ground Equipment")}
@@ -603,15 +606,42 @@
                 </div>
             {/if}
 
-            <!-- Master: Account Management -->
+            <!-- Master: Account Management (Admin Panel) -->
             {#if $userRole === "master"}
-                <!-- Account Management -->
+                <!-- Manage Team: logo + invite (session-authenticated) -->
                 <div
                     class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
-                    onclick={() => alert("WIP")}
+                    onclick={() => isTenantMgmtDrawerHidden.set(false)}
                     onkeypress={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
-                            alert("WIP");
+                            isTenantMgmtDrawerHidden.set(false);
+                        }
+                    }}
+                    tabindex="0"
+                    role="button"
+                >
+                    <div class="card-content">
+                        <Users
+                            class="w-12 h-12 mx-auto text-teal-600 dark:text-white"
+                        />
+                        <div class="card-title mt-3 text-xl font-semibold">
+                            Manage Team
+                        </div>
+                        <div
+                            class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1"
+                        >
+                            Invite members and upload your organisation logo.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Panel -->
+                <div
+                    class="card w-full p-4 pt-3 bg-white rounded-lg shadow-md"
+                    onclick={() => isAdminDrawerHidden.set(false)}
+                    onkeypress={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            isAdminDrawerHidden.set(false);
                         }
                     }}
                     tabindex="0"
@@ -620,9 +650,6 @@
                     <div class="card-content">
                         <UserCog
                             class="w-12 h-12 mx-auto text-purple-600 dark:text-white"
-                            style="filter: invert({$darkModeEnabled
-                                ? '1'
-                                : '0'});"
                         />
                         <div class="card-title mt-3 text-xl font-semibold">
                             {t("Account Management")}
@@ -653,7 +680,6 @@
             <div class="card-content">
                 <Settings
                     class="w-12 h-12 mx-auto text-red-600 dark:text-white"
-                    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                 />
                 <div class="card-title mt-3 text-xl font-semibold">
                     {t("Settings")}
@@ -670,7 +696,7 @@
 
         <!-- Login -->
         <div
-            class="card w-full p-4 pt-3 bg-white rounded-lg rounded-br-none rounded-bl-none shadow-md"
+            class="card w-full p-4 pt-3 bg-white rounded-lg {!$isLoggedIn ? 'rounded-br-none rounded-bl-none' : ''} shadow-md"
             onclick={toggleLogin}
             onkeypress={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
@@ -684,7 +710,6 @@
                 {#if $isLoggedIn}
                     <LogIn
                         class="w-12 h-12 mx-auto text-green-600 dark:text-white"
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                     />
                     <div class="card-title mt-3 text-xl font-semibold">
                         {t("Logged In")}
@@ -700,7 +725,6 @@
                     <button
                         class="button"
                         onclick={toggleLogin}
-                        style="filter: invert({$darkModeEnabled ? '1' : '0'});"
                         >{t("Login")}</button
                     >
                     <div
@@ -711,6 +735,31 @@
                 {/if}
             </div>
         </div>
+
+        <!-- Create Organisation — visible only to unauthenticated users -->
+        {#if !$isLoggedIn}
+            <div
+                class="card w-full p-4 pt-3 bg-white rounded-lg rounded-tr-none rounded-tl-none shadow-md border-t border-gray-100 dark:border-gray-700"
+                onclick={() => isSignupDrawerHidden.set(false)}
+                onkeypress={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        isSignupDrawerHidden.set(false);
+                    }
+                }}
+                tabindex="0"
+                role="button"
+            >
+                <div class="card-content">
+                    <PlusCircle class="w-12 h-12 mx-auto text-blue-500 dark:text-white" />
+                    <div class="card-title mt-3 text-xl font-semibold">
+                        Create Organisation
+                    </div>
+                    <div class="card-description text-sm text-gray-500 dark:text-gray-300 mt-1">
+                        Set up a new workspace, invite your team, and upload your logo.
+                    </div>
+                </div>
+            </div>
+        {/if}
     </div>
 
     <SettingsDrawer />
@@ -725,6 +774,23 @@
     .card:hover {
         background-color: #f1f5f9;
         cursor: pointer;
+    }
+
+    :global(.dark) .card:hover {
+        background-color: #374151;
+    }
+
+    :global(.dark) .card {
+        background-color: #1f2937;
+        color: #f9fafb;
+    }
+
+    :global(.dark) .card-title {
+        color: #f9fafb;
+    }
+
+    :global(.dark) .card-description {
+        color: #9ca3af;
     }
 
     .card-content {
@@ -755,6 +821,14 @@
 
     .button:hover {
         background-color: #1d4ed8;
+    }
+
+    :global(.dark) .button {
+        background-color: #1d4ed8;
+    }
+
+    :global(.dark) .button:hover {
+        background-color: #2563eb;
     }
 
     *:focus:not(:focus-visible) {

@@ -29,7 +29,7 @@
   placement="top"
   width="w-full"
   transitionType="fly"
-  activateClickOutside={false}
+  activateClickOutside={true}
   transitionParams={flyTransitionParamsTop}
   bind:hidden={$closeReportHidden}
   class="drawer-box max-w-[600px] m-auto"
@@ -72,7 +72,6 @@
     }}
     href="/"
     class="px-4 p-2 pr-3 pl-3 select-none bg-red-500 hover:bg-red-600"
-    style="filter: invert({$darkModeEnabled ? '1' : '0'});"
     >{t("Yes, Cancel it")}
     <ArrowRightOutline
       oncontextmenu={disableContextMenu}

@@ -76,7 +76,7 @@
 
 html,
 body {
-  background: #000;
+  background: hsl(var(--background));
 }
 
 .drawer-box {

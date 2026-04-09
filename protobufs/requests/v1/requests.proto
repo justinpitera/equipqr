@@ -104,9 +104,11 @@ message SetLanguageResponse {
 // Login
 message LoginRequest {
   string email = 1;
+  string tenant_slug = 2;
 }
 message LoginResponse {
   string message = 1;
+  string tenant_name = 2;
 }
 
 // Delete Issues
