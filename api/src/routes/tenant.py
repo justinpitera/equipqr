@@ -362,3 +362,14 @@ async def invite_tenant_member(request: Request) -> Response:
 
     logger.success(f"Invited '{email}' to tenant '{tenant.slug}' (position={position.value})")
     return JSONResponse({"id": str(new_member.id), "email": new_member.email}, status_code=201)
+
+
+async def list_tenants(request: Request) -> Response:
+    """
+    GET /api/tenants
+
+    Returns a public list of all registered tenants (slug + name only).
+    Used by the root-domain landing page so anonymous users can pick their org.
+    """
+    tenants = await Tenant.all().order_by("name").values("slug", "name")
+    return JSONResponse([{"slug": t["slug"], "name": t["name"]} for t in tenants])

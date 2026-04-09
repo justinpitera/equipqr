@@ -669,3 +669,16 @@ export async function inviteTenantMember(
         return { error: String(e) };
     }
 }
+
+export async function listTenants(): Promise<{ slug: string; name: string }[]> {
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
+        const response = await fetch(`${BACKEND_URL}/api/tenants`, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (!response.ok) return [];
+        return await response.json() as { slug: string; name: string }[];
+    } catch {
+        return [];
+    }
+}

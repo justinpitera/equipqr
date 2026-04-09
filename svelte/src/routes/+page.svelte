@@ -3,7 +3,7 @@
   import { onDestroy, onMount } from "svelte";
   // Utilities
   import { browser } from "$app/environment";
-  import { getAppVersion } from "$lib/helpers/server-requests";
+  import { getAppVersion, getTenantSlug } from "$lib/helpers/server-requests";
   import { registerServiceWorker } from "$lib/service-worker/register-sw";
   // QR Scanner utilities
   import { destroyScanner } from "$lib/helpers/camera";
@@ -24,10 +24,16 @@
   import AdminDrawer from "$lib/components/AdminDrawer.svelte";
   import SignupDrawer from "$lib/components/SignupDrawer.svelte";
   import TenantManagementDrawer from "$lib/components/TenantManagementDrawer.svelte";
+  import TenantSelector from "$lib/components/TenantSelector.svelte";
+
+  // True when the user is on the root domain with no tenant subdomain.
+  const hasTenant = typeof window !== "undefined" ? !!getTenantSlug() : true;
 
   onMount(() => {
-    registerServiceWorker();
-    getAppVersion();
+    if (hasTenant) {
+      registerServiceWorker();
+      getAppVersion();
+    }
     // Cleanup
     return () => {};
   });
@@ -43,6 +49,8 @@
       <Spinner color="blue" class="w-12 h-12" />
     </div>
   </main>
+{:else if !hasTenant}
+  <TenantSelector />
 {:else}
   <HomePage />
   <FullScreenMediaViewer />

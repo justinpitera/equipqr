@@ -45,6 +45,7 @@ from src.routes import (
     invite_tenant_member,
     create_tenant,
     invite_user,
+    list_tenants,
 )
 
 
@@ -107,6 +108,7 @@ def init_asgi() -> FastAPI:
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/set-token", route=set_token, methods=["GET"])
 
     # Tenant
+    _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenants", route=list_tenants, methods=["GET"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/logo", route=fetch_tenant_logo, methods=["GET"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/logo", route=upload_tenant_logo, methods=["POST"])
     _ASGI.add_route(path=f"{_API_ROUTE_PREFIX}/tenant/register", route=register_tenant, methods=["POST"])

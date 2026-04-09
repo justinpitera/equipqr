@@ -14,7 +14,7 @@ from src.routes.issues import delete_issues, submit_issue, fetch_issues, leave_c
 from src.routes.auth import auth_user, set_token
 from src.routes.media import fetch_issue_attachment
 from src.routes.locations import fetch_locations
-from src.routes.tenant import fetch_tenant_logo, register_tenant, upload_tenant_logo, invite_tenant_member
+from src.routes.tenant import fetch_tenant_logo, register_tenant, upload_tenant_logo, invite_tenant_member, list_tenants
 from src.routes.admin import create_tenant, invite_user
 
 __all__: list[str] = [
@@ -39,4 +39,5 @@ __all__: list[str] = [
     "invite_tenant_member",
     "create_tenant",
     "invite_user",
+    "list_tenants",
 ]
