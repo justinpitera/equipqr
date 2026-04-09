@@ -47,6 +47,8 @@ class Store {
         public darkModeEnabled: Writable<boolean> = writable(typeof window !== 'undefined' ? localStorage.getItem('darkModeEnabled') === 'true' : false),
         public selectedLanguage: Writable<LanguageKeys> = writable((typeof window !== 'undefined' ? (localStorage.getItem('savedLang') || defaultLang) : defaultLang) as LanguageKeys),
         public userRole: Writable<string> = writable(typeof window !== 'undefined' ? getCookie('role') || "employee" : "employee"),
+        public tenantSlug: Writable<string> = writable(typeof window !== 'undefined' ? getCookie('tenant_slug') || "" : ""),
+        public tenantName: Writable<string> = writable(typeof window !== 'undefined' ? getCookie('tenant_name') || "" : ""),
         public debugMode: Writable<boolean> = writable(false),
         public qrScannerSound: Writable<boolean> = writable(true),
         public issues: Writable<HistoryIssue[]> = writable([]),

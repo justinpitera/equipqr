@@ -14,7 +14,6 @@ from contextlib import asynccontextmanager
 
 # Third-party
 from fastapi.applications import FastAPI
-from starlette.applications import Starlette
 from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import RegisterTortoise
@@ -22,9 +21,7 @@ from loguru import logger
 
 # Local
 from src import API_CONFIG, TORTOISE_CONFIG, RedisClient
-from src.models import CrewMember
 from src.database import database_importer, location_importer
-from src.enums import CrewMemberPositionEnum
 
 from src.routes import (
     retrieve_field_image,
@@ -45,44 +42,11 @@ from src.routes import (
 )
 
 
-async def _validate_master_account(email: str = API_CONFIG["auth"]["master"]) -> None:
-    """
-    Validates the master account, ensuring only one account has is_master=True.
-    Creates or updates the master account as needed.
-    """
-    logger.info(f"Validating master account: {email}...")
-
-    # Find current master and reset if needed
-    if (current_master := await CrewMember.filter(is_master=True).first()) and current_master.email != email:
-        logger.warning(f"Updating master from {current_master.email} to {email}...")
-        current_master.is_master = False
-        await current_master.save()
-
-    # Get or create the crew member
-    crew_member: CrewMember | None = await CrewMember.filter(email=email).first()
-    if not crew_member:
-        logger.warning(f"Master account for {email} does not exist, creating a new account now...")
-        _ = await CrewMember.create(
-            id=uuid4(),
-            email=email,
-            language_preference="EN",
-            position=CrewMemberPositionEnum.MANAGEMENT,
-            is_master=True,
-        )
-    else:
-        crew_member.is_master = True
-        crew_member.position = CrewMemberPositionEnum.MANAGEMENT
-        await crew_member.save()
-
-    logger.success(f"Validated master account for {email} successfully!")
-
-
 @asynccontextmanager
 async def _lifespan(app: FastAPI):
     # Startup
     logger.info("Connecting to database...")
     async with RegisterTortoise(app=app, config=TORTOISE_CONFIG, generate_schemas=True):
-        await _validate_master_account()
         # await generate_issues()
         await database_importer()
         await location_importer("./locations.csv", "EKCH")

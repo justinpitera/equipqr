@@ -63,11 +63,16 @@ API_CONFIG: dict[str, Any] = {
         },
     },
     "smtp": {
+        "provider": os.getenv("SMTP_PROVIDER", "smtp"),  # smtp | resend
         "host":     os.getenv("SMTP_HOST", "smtp.example.com"),
         "domain":   os.getenv("SMTP_DOMAIN", "example.com"),
         "port":     int(os.getenv("SMTP_PORT", "587")),
         "username": os.getenv("SMTP_USERNAME", ""),
         "password": os.getenv("SMTP_PASSWORD", ""),
+        "resend": {
+            "api_key":    os.getenv("RESEND_API_KEY", ""),
+            "from_email": os.getenv("RESEND_FROM_EMAIL", f"no-reply@{os.getenv('SMTP_DOMAIN', 'example.com')}"),
+        },
     },
     "database": {
         "engine":   os.getenv("DB_ENGINE", "tortoise.backends.asyncpg"),

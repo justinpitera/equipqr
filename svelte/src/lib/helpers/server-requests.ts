@@ -1,6 +1,5 @@
 import { BACKEND_URL } from "$lib/config";
 import { notify } from "$lib/helpers/notify";
-import { t } from "$lib/locales";
 import { requests } from '$lib/prototypes/requests/v1/requests';
 const {
 	// /api/health/status
@@ -74,23 +73,15 @@ export async function getAppVersion() {
 				`%cStatus: ${response.status}`,
 				"color: red; font-size: 18px; font-weight: bold;",
 			);
+			notify("Service Degraded", `Status: ${response.status}`, "warning", 6000, true);
 		}
-		notify(
-			t("Aviation Failure Reporting"),
-			`${t('Version:')} ${response.version}\n${t('Status:')} ${t(response.status)}`,
-			response.status === "healthy" ? "success" : "error",
-			5000,
-			true
-		);
 	} catch (e) {
 		console.error(
 			"%cError fetching status",
 			"color: red; font-size: 18px; font-weight: bold;",
 			e,
 		);
-		notify(t("Error fetching status"), `${t('Failed to get app version:')} ${t(`${e}`)}`, "error",
-			5000,
-			true);
+		notify("Cannot reach server", `${e}`, "error", 6000, true);
 	}
 }
 
@@ -122,7 +113,6 @@ export async function getGSEDetails(gse_id: string): Promise<GSEDetails | undefi
 			"color: red; font-size: 18px; font-weight: bold;",
 			e,
 		);
-		notify("Error fetching GSE Details", `Failed to get information: ${e}`, "error");
 	}
 	return undefined
 }
@@ -254,21 +244,32 @@ export async function getAllGSEs(): Promise<{ gse_id?: string[] } | undefined> {
 		return data
 	} catch (e) {
 		console.error(
-			"%cError setting language",
+			"%cError fetching GSE list",
 			"color: red; font-size: 18px; font-weight: bold;",
 			e,
 		);
-		notify("Error setting language", `Failed to set language: ${e}`, "error");
+		notify("Error fetching GSE list", `Failed to load equipment: ${e}`, "error");
 	}
 	return undefined;
 }
 
-export async function login(email: string): Promise<{ message: string } | undefined> {
+export function getTenantSlug(): string {
+	if (typeof window === 'undefined') return '';
+	const parts = window.location.hostname.split('.');
+	// e.g. acme.localhost → ['acme', 'localhost']  — first part is the tenant
+	if (parts.length >= 2 && parts[0] !== 'www' && parts[0] !== '') {
+		return parts[0];
+	}
+	return '';
+}
+
+export async function login(email: string): Promise<{ message: string; tenant_name?: string } | undefined> {
 	try {
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort('Request timed out after 5s'), 5000);
 		const requestData = new LoginRequest();
 		requestData.email = email;
+		requestData.tenant_slug = getTenantSlug();
 		const response = await fetch(`${BACKEND_URL}/api/auth`, {
 			method: 'POST',
 			body: requestData.serializeBinary(),
@@ -283,7 +284,7 @@ export async function login(email: string): Promise<{ message: string } | undefi
 		const responseBytes = new Uint8Array(responseData);
 		const data = LoginResponse.deserialize(responseBytes);
 		if (debug_routes) console.log("login", data)
-		return data;
+		return { message: data.message || "", tenant_name: data.tenant_name };
 	} catch (e) {
 		console.error(
 			"%cError logging in",

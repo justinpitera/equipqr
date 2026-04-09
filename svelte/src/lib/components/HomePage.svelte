@@ -17,6 +17,7 @@
     import { t } from "$lib/locales";
     import { getGSEDetails } from "$lib/helpers/server-requests";
     import { notify } from "$lib/helpers/notify";
+    import Building2 from "lucide-svelte/icons/building-2";
     import store from "$lib/store";
     const {
         isLoggedIn,
@@ -34,6 +35,7 @@
         isAutoOpenMostRecentIssue,
         isAutoOpenIssueDetails,
         showPopup,
+        tenantName,
     } = store;
 
     const toggleLogin = () => {
@@ -159,6 +161,17 @@
             height="auto"
             class="m-auto mt-2 dark:invert"
         />
+
+        <!-- Tenant badge — always visible so users know which org they're on -->
+        {#if $tenantName}
+            <div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 dark:bg-blue-900 border border-blue-300 dark:border-blue-700 rounded-full">
+                <Building2 class="h-3.5 w-3.5 text-blue-600 dark:text-blue-300" />
+                <span class="text-xs font-semibold text-blue-700 dark:text-blue-200 tracking-wide uppercase">
+                    {$tenantName}
+                </span>
+            </div>
+        {/if}
+
         <h1
             class="text-3xl font-semibold text-gray-800 dark:text-white{!$isLoggedIn
                 ? ' hidden'

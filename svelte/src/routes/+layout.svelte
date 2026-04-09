@@ -1,5 +1,6 @@
 <script>
 	import "../app.css";
+	import NotifyUi from "$lib/components/NotifyUi.svelte";
 	let { children } = $props();
 </script>
 
@@ -7,3 +8,4 @@
 <div class="min-h-screen">
 	{@render children()}
 </div>
+<NotifyUi />
