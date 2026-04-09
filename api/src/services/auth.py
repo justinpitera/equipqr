@@ -29,14 +29,44 @@ _ALLOWED_DOMAINS: list[str] = API_CONFIG["auth"]["magic"]["allowed_domains"]
 
 
 # ---------------------------------------------------------------------------
+# Custom auth exceptions
+# ---------------------------------------------------------------------------
+
+class TenantNotFound(Exception):
+    """Raised when no active tenant matches the requested slug."""
+
+
+class NotATenantMember(Exception):
+    """Raised when the email is not registered as a member of the requested tenant."""
+
+
+# ---------------------------------------------------------------------------
 # Cookie helpers (used by the route layer)
 # ---------------------------------------------------------------------------
 
 def get_cookie_settings() -> dict:
-    """Return shared cookie flags derived from the configured domain."""
+    """Return shared cookie flags derived from the configured domain.
+
+    Domain is intentionally omitted so the browser uses the default host-only
+    binding (i.e. the exact hostname that set the cookie, e.g. acme.localhost).
+    Explicitly setting domain=localhost is rejected by browsers because
+    'localhost' is treated as a public-suffix TLD.
+    """
     secure = urlparse(_BASE_URL).scheme == "https"
-    domain = urlparse(_BASE_URL).hostname
-    return {"secure": secure, "domain": domain}
+    return {"secure": secure}
+
+
+def build_tenant_base_url(tenant_slug: str) -> str:
+    """Return the base URL with *tenant_slug* inserted as an immediate subdomain.
+
+    Example:
+        _BASE_URL = "http://localhost:7878"  →  "http://acme.localhost:7878"
+    """
+    parsed = urlparse(_BASE_URL)
+    netloc = f"{tenant_slug}.{parsed.hostname}"
+    if parsed.port:
+        netloc = f"{netloc}:{parsed.port}"
+    return f"{parsed.scheme}://{netloc}"
 
 
 # ---------------------------------------------------------------------------
@@ -52,12 +82,16 @@ async def initiate_magic_link(email: str, tenant_slug: str) -> Tenant:
     Returns the Tenant so the caller can include its name in the response.
 
     Raises:
-        DoesNotExist:   if the tenant slug is invalid or the email is not a
-                        member of that tenant.
-        ValueError:     if the email domain is not on the allow-list.
+        TenantNotFound:   if the tenant slug does not match an active tenant.
+        NotATenantMember: if the email is not registered as a member of that tenant.
+        ValueError:       if the email domain is not on the allow-list.
     """
     # 1. Resolve the tenant
-    tenant: Tenant = await auth_repo.get_tenant_by_slug(tenant_slug)
+    try:
+        tenant: Tenant = await auth_repo.get_tenant_by_slug(tenant_slug)
+    except DoesNotExist:
+        logger.warning(f"Magic-link requested for unknown tenant slug '{tenant_slug}'")
+        raise TenantNotFound(tenant_slug)
 
     # 2. Domain allow-list check
     email_domain = email.split("@")[-1]
@@ -65,17 +99,22 @@ async def initiate_magic_link(email: str, tenant_slug: str) -> Tenant:
         logger.warning(f"Email domain '{email_domain}' is restricted.")
         raise ValueError("The email domain is not allowed to receive magic links.")
 
-    # 3. Verify the user exists as a member of this tenant (raises DoesNotExist if not)
-    await auth_repo.get_member_by_email_and_tenant(email=email, tenant=tenant)
+    # 3. Verify the user exists as a member of this tenant
+    try:
+        await auth_repo.get_member_by_email_and_tenant(email=email, tenant=tenant)
+    except DoesNotExist:
+        logger.warning(f"Login attempt for '{email}' who is not a member of tenant '{tenant_slug}'")
+        raise NotATenantMember(email)
     logger.info(f"Sending magic-link to {email} for tenant '{tenant_slug}'")
 
     # 4. Mint a one-time token and store it alongside the tenant slug
     random_token = secrets.token_urlsafe(nbytes=32)
     await auth_repo.store_magic_token(token=random_token, email=email, tenant_slug=tenant_slug, expires_seconds=600)
 
-    # 5. Build the set-token URL and send the email
+    # 5. Build the set-token URL rooted at the tenant's subdomain and send the email
     api_prefix = "/api" if API_CONFIG["api"]["mode"] == "production" else ""
-    set_token_link = f"{_BASE_URL}{api_prefix}/api/set-token?token={random_token}"
+    tenant_base = build_tenant_base_url(tenant_slug)
+    set_token_link = f"{tenant_base}{api_prefix}/api/set-token?token={random_token}"
     send_magic_link_email(email=email, set_token_link=set_token_link)
 
     return tenant
@@ -122,7 +161,8 @@ async def invite_member(email: str, tenant_slug: str) -> None:
     await auth_repo.store_magic_token(token=random_token, email=email, tenant_slug=tenant_slug, expires_seconds=600)
 
     api_prefix = "/api" if API_CONFIG["api"]["mode"] == "production" else ""
-    set_token_link = f"{_BASE_URL}{api_prefix}/api/set-token?token={random_token}"
+    tenant_base = build_tenant_base_url(tenant_slug)
+    set_token_link = f"{tenant_base}{api_prefix}/api/set-token?token={random_token}"
     send_magic_link_email(email=email, set_token_link=set_token_link)
     logger.info(f"Invite email sent to {email} for tenant '{tenant_slug}'")
 
@@ -147,16 +187,19 @@ async def get_authenticated_member(request: Request) -> tuple[Member, Tenant] | 
     """
     access_token = request.cookies.get("access_token")
     if not access_token:
+        logger.debug("get_authenticated_member: no access_token cookie in request")
         return None
 
     email = await auth_repo.get_session_email(access_token)
     if email is None:
+        logger.debug("get_authenticated_member: access_token not found in Redis (expired or invalid)")
         return None
 
     # Derive tenant slug from the Host-header subdomain (e.g. acme.localhost → "acme")
     host = request.headers.get("host", "").split(":")[0]
     parts = host.split(".")
     if len(parts) < 2 or parts[0] in ("www", ""):
+        logger.debug(f"get_authenticated_member: could not extract tenant slug from Host header '{request.headers.get('host', '')}'")
         return None
     tenant_slug = parts[0]
 
@@ -165,35 +208,5 @@ async def get_authenticated_member(request: Request) -> tuple[Member, Tenant] | 
         member = await auth_repo.get_member_by_email_and_tenant(email=email, tenant=tenant)
         return member, tenant
     except DoesNotExist:
-        return None
-
-
-async def get_authenticated_member(request) -> tuple[Member, Tenant] | None:
-    """
-    Authenticate a request via the ``access_token`` httponly cookie.
-
-    Returns ``(Member, Tenant)`` when the session is valid, or ``None`` when
-    the cookie is missing, expired, or the member/tenant no longer exists.
-    The tenant is derived from the ``Host`` header subdomain.
-    """
-    access_token = request.cookies.get("access_token")
-    if not access_token:
-        return None
-
-    email = await auth_repo.get_session_email(access_token)
-    if not email:
-        return None
-
-    # Extract tenant slug from Host header (e.g. acme.localhost → "acme")
-    host = request.headers.get("host", "").split(":")[0]
-    parts = host.split(".")
-    slug = parts[0] if len(parts) >= 2 and parts[0] not in ("www", "") else None
-    if not slug:
-        return None
-
-    try:
-        tenant = await auth_repo.get_tenant_by_slug(slug)
-        member = await auth_repo.get_member_by_email_and_tenant(email=email, tenant=tenant)
-        return member, tenant
-    except Exception:
+        logger.debug(f"get_authenticated_member: tenant '{tenant_slug}' or member '{email}' not found in DB")
         return None

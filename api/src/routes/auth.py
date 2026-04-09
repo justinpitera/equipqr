@@ -18,6 +18,7 @@ from loguru import logger
 from src import API_CONFIG
 from src.protos.requests.v1.requests_pb2 import LoginRequest, LoginResponse
 import src.services.auth as auth_service
+from src.services.auth import build_tenant_base_url, NotATenantMember, TenantNotFound
 
 BASE_URL: str = API_CONFIG["api"]["domain"]
 
@@ -57,7 +58,8 @@ async def set_token(request: Request) -> RedirectResponse:
     access_token = await auth_service.create_session(email=member.email)
     cookie_opts = auth_service.get_cookie_settings()
 
-    response = RedirectResponse(url=f"{BASE_URL}/", status_code=302)
+    tenant_url = build_tenant_base_url(tenant.slug)
+    response = RedirectResponse(url=f"{tenant_url}/", status_code=302)
     response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="strict", **cookie_opts)
     response.set_cookie(key="auth", value="true", httponly=False, samesite="strict", **cookie_opts)
     response.set_cookie(key="role", value=member.position.value, httponly=False, samesite="strict", **cookie_opts)
@@ -97,10 +99,15 @@ async def auth_user(request: Request) -> Response:
             content=LoginResponse(message=str(e)).SerializeToString(),
             status_code=403,
         )
-    except DoesNotExist:
+    except TenantNotFound:
+        return Response(
+            content=LoginResponse(message="Tenant not found.").SerializeToString(),
+            status_code=404,
+        )
+    except NotATenantMember:
         return Response(
             content=LoginResponse(message="User is not a member of this tenant.").SerializeToString(),
-            status_code=400,
+            status_code=403,
         )
     except Exception as e:
         logger.error(f"Unexpected error in auth_user: {e}")
